@@ -1,0 +1,34 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Next.js
+.next/
+out/
+.vercel/
+
+# Build
+dist/
+build/
+
+# Testing
+coverage/
+
+# Env
+.env*
+
+# OS
+.DS_Store
+
+# Editor
+.idea/
+.vscode/
+
+# Archives
+*.tar.gz
+arriendo-zero-backup-*.tar.gz
+
+
