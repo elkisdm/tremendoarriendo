@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     template: "%s | Hommie",
   },
   description: "Arrienda departamentos con 0% de comisión. Compara, agenda visita y arrienda fácil.",
-  metadataBase: typeof window === "undefined" ? new URL("http://localhost:3000") : undefined,
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
   openGraph: {
     type: "website",
     locale: "es_CL",
@@ -39,6 +39,9 @@ const inter = Inter({ subsets: ["latin"] });
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" className={`dark ${inter.className}`}>
+      <head>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
       <body className="min-h-screen bg-gray-900 text-gray-100">
         {process.env.NEXT_PUBLIC_GA_ID ? (
           <>

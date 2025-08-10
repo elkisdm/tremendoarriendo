@@ -1,14 +1,26 @@
 import { useQuery } from "@tanstack/react-query";
 import type { FilterValues } from "../components/filters/FilterBar";
-import type { Building } from "../schemas/models";
+import type { TypologySummary, PromotionBadge } from "../schemas/models";
 
-export type BuildingSummary = Building & {
-  precioDesde: number | null;
+export type PriceRange = { min: number; max: number };
+
+export type BuildingSummary = {
+  id: string;
+  slug: string;
+  name: string;
+  comuna: string;
+  address: string;
+  gallery: string[];
+  coverImage?: string;
+  badges?: PromotionBadge[];
+  serviceLevel?: "pro" | "standard";
+  precioDesde: number; // computed, always present in list
+  precioRango?: PriceRange;
+  hasAvailability: boolean;
+  typologySummary?: TypologySummary[]; // compact summary for list
 };
 
-interface BuildingsResponse {
-  buildings: BuildingSummary[];
-}
+interface BuildingsResponse { buildings: BuildingSummary[] }
 
 interface FetchBuildingsParams {
   filters: FilterValues;

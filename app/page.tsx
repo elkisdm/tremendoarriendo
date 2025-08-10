@@ -5,16 +5,39 @@ import { ShieldCheck } from "lucide-react";
 import { PromotionBadge } from "@components/ui/PromotionBadge";
 import { PrimaryButton } from "@components/ui/PrimaryButton";
 import { track } from "@lib/analytics";
-import { BuildingCard } from "@components/cards/BuildingCard";
+import { buildWaLink } from "@lib/whatsapp";
+import { BuildingCard } from "@components/BuildingCard";
 import { FilterBar, type FilterValues } from "@components/filters/FilterBar";
 import { getAllBuildings } from "@lib/data";
 import type { Building } from "@schemas/models";
+import type { BuildingSummary } from "@hooks/useFetchBuildings";
+
+// Client page does not export route metadata
 
 export default function Page(){
   const [filters, setFilters] = useState<FilterValues>({ comuna: "Todas", tipologia: "Todas", minPrice: null, maxPrice: null });
   const [sort, setSort] = useState("price-asc");
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState<(Building & { precioDesde: number | null })[]>([]);
+
+  function toBuildingSummary(b: Building & { precioDesde: number | null }): BuildingSummary {
+    const hasAvailability = Array.isArray(b.units) && b.units.some((u) => u.disponible);
+    return {
+      id: b.id,
+      slug: b.slug,
+      name: b.name,
+      comuna: b.comuna,
+      address: b.address,
+      gallery: b.gallery,
+      coverImage: b.coverImage,
+      badges: b.badges,
+      serviceLevel: b.serviceLevel,
+      precioDesde: b.precioDesde ?? 0,
+      precioRango: b.precioDesde ? { min: b.precioDesde, max: b.precioDesde } : undefined,
+      hasAvailability,
+      typologySummary: b.typologySummary,
+    };
+  }
 
   useEffect(() => {
     let mounted = true;
@@ -44,7 +67,18 @@ export default function Page(){
             <a className="hover:text-white" href="#">Preguntas</a>
             <a className="hover:text-white" href="#">Contacto</a>
           </nav>
-          <PrimaryButton onClick={() => { track("cta_whatsapp_click", { context: "landing_header" }); window.open("https://wa.me/56993481594?text=Hola%20Elkis%2C%20quiero%20arrendar%20con%200%%20de%20comisión", "_blank"); }}>Quiero esta promo</PrimaryButton>
+          <PrimaryButton 
+            onClick={() => { 
+              track("cta_whatsapp_click", { context: "landing_header" }); 
+              const link = buildWaLink({ url: typeof window !== "undefined" ? window.location.href : undefined });
+              if (link) window.open(link, "_blank");
+            }}
+            aria-disabled={!Boolean(process.env.NEXT_PUBLIC_WHATSAPP_PHONE)}
+            disabled={!Boolean(process.env.NEXT_PUBLIC_WHATSAPP_PHONE)}
+            title={!Boolean(process.env.NEXT_PUBLIC_WHATSAPP_PHONE) ? "Pronto disponible" : undefined}
+          >
+            Quiero esta promo
+          </PrimaryButton>
         </div>
       </header>
 
@@ -100,9 +134,9 @@ export default function Page(){
             </div>
           ) : items.length ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
-              {items.map((b) => (
+              {items.map((b, i) => (
                 <m.div key={b.id} layout>
-                  <BuildingCard building={b} />
+                  <BuildingCard building={toBuildingSummary(b)} priority={i === 0} />
                 </m.div>
               ))}
             </div>

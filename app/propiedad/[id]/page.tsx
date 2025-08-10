@@ -6,31 +6,43 @@ import { AmenityList } from "@components/ui/AmenityList";
 import { PrimaryButton } from "@components/ui/PrimaryButton";
 import { ImageGallery } from "@components/gallery/ImageGallery";
 import { CostTable } from "@components/cost/CostTable";
-import { RelatedList } from "@components/lists/RelatedList";
 import { BookingForm } from "@components/forms/BookingForm";
 import { currency } from "@lib/utils";
 import { track } from "@lib/analytics";
-import { getBuildingBySlug, getRelatedBuildings } from "@lib/data";
+import { buildWaLink } from "@lib/whatsapp";
 import type { Building, Unit } from "@schemas/models";
+import type { BuildingSummary } from "@hooks/useFetchBuildings";
+import { BuildingCard } from "@components/BuildingCard";
 import Link from "next/link";
 
 export default function PropertyPage({ params }: { params: { id: string } }){
   const [loading, setLoading] = useState(true);
   const [building, setBuilding] = useState<(Building & { precioDesde: number | null }) | null>(null);
-  const [rel, setRel] = useState<(Building & { precioDesde: number | null })[]>([]);
+  const [related, setRelated] = useState<BuildingSummary[]>([]);
   const [unit, setUnit] = useState<Unit | null>(null);
 
   useEffect(() => {
     let mounted = true;
     (async () => {
       setLoading(true);
-      const data = await getBuildingBySlug(params.id);
+      const res = await fetch(`/api/buildings/${params.id}`);
+      const json = await res.json();
+      const data = json?.building as (Building & { precioDesde: number | null }) | null;
       if (!mounted) return;
       setBuilding(data);
       setUnit(data?.units.find((u) => u.disponible) ?? data?.units[0] ?? null);
-      const r = data ? await getRelatedBuildings(data.slug) : [];
+      // Fetch related summaries by comuna if building loaded
+      let summaries: BuildingSummary[] = [];
+      if (data) {
+        const listRes = await fetch(`/api/buildings?comuna=${encodeURIComponent(data.comuna)}`);
+        const listJson = await listRes.json();
+        const items = (listJson?.buildings ?? []) as Array<any>;
+        summaries = items
+          .filter((b: any) => b.slug !== data.slug)
+          .slice(0, 6);
+      }
       if (!mounted) return;
-      setRel(r);
+      setRelated(summaries);
       setLoading(false);
       window.scrollTo({ top: 0, behavior: "smooth" });
     })();
@@ -78,12 +90,23 @@ export default function PropertyPage({ params }: { params: { id: string } }){
                 <div className="mt-3"><AmenityList items={building.amenities} /></div>
               )}
             </div>
-            <CostTable unit={unit} />
+            {unit ? <CostTable unit={unit} /> : null}
           </div>
 
           <div className="mt-2">
             <h4 className="font-semibold mb-3">También te puede interesar</h4>
-            {rel.length ? (<RelatedList buildings={rel} />) : (<div className="text-[var(--subtext)] text-sm">No hay propiedades relacionadas.</div>)}
+            {related.length ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {related.map((b) => (
+                  <BuildingCard
+                    key={b.id}
+                    building={b}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="text-[var(--subtext)] text-sm">No hay propiedades relacionadas.</div>
+            )}
           </div>
         </div>
 
@@ -118,14 +141,29 @@ export default function PropertyPage({ params }: { params: { id: string } }){
               <div className="text-sm text-[var(--subtext)] truncate">Arrienda con 0% de comisión</div>
               <div className="font-semibold truncate">{building ? building.name : ""} — {unit ? unit.tipologia : ""} · {unit ? unit.m2 : ""} m²</div>
             </div>
-            <a
-              target="_blank"
-              href="https://wa.me/56993481594?text=Hola%20Elkis%2C%20quiero%20reservar"
-              onClick={() => track("cta_whatsapp_click", { context: "property_fab", property_id: building?.id })}
-              className="group relative inline-flex items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-semibold text-white shadow-[0_10px_30px_rgba(109,74,255,.35)] bg-[radial-gradient(120%_120%_at_30%_10%,#8B6CFF_0%,#6D4AFF_40%,#5233D3_100%)] ring-1 ring-[var(--ring)] hover:brightness-110 active:scale-[.98]"
-            >
-              Hablar por WhatsApp
-            </a>
+            {(() => {
+              const href = building ? buildWaLink({ propertyName: building.name, comuna: building.comuna, url: typeof window !== "undefined" ? window.location.href : undefined }) : "";
+              const canWhatsApp = Boolean(process.env.NEXT_PUBLIC_WHATSAPP_PHONE) && Boolean(href);
+              return canWhatsApp ? (
+                <a
+                  target="_blank"
+                  href={href}
+                  onClick={() => track("cta_whatsapp_click", { context: "property_fab", property_id: building?.id })}
+                  className="group relative inline-flex items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-semibold text-white shadow-[0_10px_30px_rgba(109,74,255,.35)] bg-[radial-gradient(120%_120%_at_30%_10%,#8B6CFF_0%,#6D4AFF_40%,#5233D3_100%)] ring-1 ring-[var(--ring)] hover:brightness-110 active:scale-[.98]"
+                >
+                  Hablar por WhatsApp
+                </a>
+              ) : (
+                <button
+                  type="button"
+                  className="group relative inline-flex items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-semibold text-white shadow-[0_10px_30px_rgba(109,74,255,.35)] bg-[radial-gradient(120%_120%_at_30%_10%,#8B6CFF_0%,#6D4AFF_40%,#5233D3_100%)] ring-1 ring-[var(--ring)] opacity-60 cursor-not-allowed"
+                  aria-disabled="true"
+                  title="Pronto disponible"
+                >
+                  Hablar por WhatsApp
+                </button>
+              );
+            })()}
           </div>
         </div>
       </div>
