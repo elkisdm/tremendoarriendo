@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Calendar, MessageSquare, Phone, Mail, User, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import { track } from "@lib/analytics";
+import { buildWaLink } from "@lib/whatsapp";
 
 type BookingFormProps = {
   buildingId: string;
@@ -317,16 +318,32 @@ export function BookingForm({ buildingId, buildingName, defaultUnitId }: Booking
 
       {/* WhatsApp Link */}
       <div className="mt-4 pt-4 border-t border-white/10">
-        <a 
-          href="https://wa.me/56993481594?text=Hola%20Elkis%2C%20quiero%20visitar%20una%20unidad" 
-          target="_blank" 
-          rel="noreferrer" 
-          onClick={() => track("cta_whatsapp_click", { context: "booking_form", property_id: buildingId })}
-          className="text-center text-sm text-[var(--subtext)] hover:underline inline-flex items-center justify-center gap-2 w-full"
-        >
-          <Phone className="w-4 h-4" aria-hidden="true" />
-          o escríbenos por WhatsApp
-        </a>
+        {(() => {
+          const href = buildWaLink({ propertyName: buildingName, url: typeof window !== "undefined" ? window.location.href : undefined });
+          const canWhatsApp = Boolean(process.env.NEXT_PUBLIC_WHATSAPP_PHONE) && Boolean(href);
+          return canWhatsApp ? (
+            <a 
+              href={href}
+              target="_blank" 
+              rel="noreferrer" 
+              onClick={() => track("cta_whatsapp_click", { context: "booking_form", property_id: buildingId })}
+              className="text-center text-sm text-[var(--subtext)] hover:underline inline-flex items-center justify-center gap-2 w-full"
+            >
+              <Phone className="w-4 h-4" aria-hidden="true" />
+              o escríbenos por WhatsApp
+            </a>
+          ) : (
+            <button
+              type="button"
+              className="text-center text-sm text-[var(--subtext)] inline-flex items-center justify-center gap-2 w-full cursor-not-allowed opacity-60"
+              aria-disabled="true"
+              title="Pronto disponible"
+            >
+              <Phone className="w-4 h-4" aria-hidden="true" />
+              o escríbenos por WhatsApp
+            </button>
+          );
+        })()}
       </div>
     </div>
   );

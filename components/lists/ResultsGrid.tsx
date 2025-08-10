@@ -34,16 +34,10 @@ export function ResultsGrid({ filters, sort, onResultsChange }: ResultsGridProps
     );
   }
 
-  // Error state
+  // Error state -> Throw to be handled by route error boundary
   if (error) {
-    return (
-      <div className="text-center py-12">
-        <div className="text-red-400 mb-2">Error al cargar las propiedades</div>
-        <div className="text-[var(--subtext)] text-sm">
-          {error instanceof Error ? error.message : "Error desconocido"}
-        </div>
-      </div>
-    );
+    if (error instanceof Error) throw error;
+    throw new Error("Error desconocido al cargar propiedades");
   }
 
   // Empty state
@@ -65,7 +59,7 @@ export function ResultsGrid({ filters, sort, onResultsChange }: ResultsGridProps
         <BuildingCard 
           key={building.id} 
           building={building} 
-          priority={idx < 2} 
+          priority={idx === 0} 
         />
       ))}
     </div>
