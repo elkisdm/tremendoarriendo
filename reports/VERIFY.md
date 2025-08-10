@@ -1,21 +1,21 @@
 # Smoke Test
 
-- Fecha: 2025-08-10T21:42:53.193Z
-- Sitio: https://tudominio.com
+- Fecha: 2025-08-10T23:13:48.333Z
+- Sitio: http://localhost:3000
 
 ### Resumen
-- **site**: https://tudominio.com
-- **estado**: 5/11 PASS
+- **site**: http://localhost:3000
+- **estado**: 5/15 PASS
 - **home**: 1º=200, 2º=200, cache=no header
-- **canonical home**: not found
-- **sitemap**: urls=0, propiedades=0
-- **muestra propiedad**: n/a
-- **robots Allow /**: sí
+- **canonical home**: https://elkisrealtor.cl
+- **sitemap**: urls=6, propiedades=5
+- **muestra propiedad**: https://elkisrealtor.cl/property/edificio-vista-las-condes
+- **robots Allow /**: no
 
 ### Detalles
 ```json
 {
-  "site": "https://tudominio.com",
+  "site": "http://localhost:3000",
   "checks": [
     {
       "name": "home-200-first",
@@ -40,7 +40,7 @@
     {
       "name": "home-canonical",
       "pass": false,
-      "detail": "not found"
+      "detail": "https://elkisrealtor.cl"
     },
     {
       "name": "sitemap-200",
@@ -50,17 +50,38 @@
     {
       "name": "sitemap-has-home",
       "pass": false,
-      "count": 0
+      "count": 6
     },
     {
       "name": "sitemap-has-property",
-      "pass": false,
-      "count": 0
+      "pass": true,
+      "count": 5
     },
     {
-      "name": "property-sample-skipped",
+      "name": "property-200",
       "pass": false,
-      "detail": "No hay URLs /property/ en sitemap"
+      "status": 404,
+      "url": "https://elkisrealtor.cl/property/edificio-vista-las-condes"
+    },
+    {
+      "name": "property-og-title",
+      "pass": false,
+      "detail": "not found"
+    },
+    {
+      "name": "property-og-image",
+      "pass": false,
+      "detail": "not found"
+    },
+    {
+      "name": "property-canonical",
+      "pass": false,
+      "detail": "not found"
+    },
+    {
+      "name": "property-whatsapp",
+      "pass": false,
+      "detail": "no encontrado (posible dinámico)"
     },
     {
       "name": "robots-200",
@@ -69,10 +90,14 @@
     },
     {
       "name": "robots-allow-root",
-      "pass": true,
-      "detail": "Allow: /"
+      "pass": false,
+      "detail": "No Allow: /"
     }
   ],
-  "propertySample": {}
+  "propertySample": {
+    "url": "https://elkisrealtor.cl/property/edificio-vista-las-condes",
+    "status": 404,
+    "whatsapp": null
+  }
 }
 ```

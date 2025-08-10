@@ -17,6 +17,7 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.54.0",
     "@tanstack/react-query": "^5.84.2",
+    "dotenv": "^17.2.1",
     "framer-motion": "11.0.0",
     "lucide-react": "0.424.0",
     "next": "14.2.5",

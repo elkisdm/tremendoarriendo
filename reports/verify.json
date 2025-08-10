@@ -1,5 +1,5 @@
 {
-  "site": "https://tudominio.com",
+  "site": "http://localhost:3000",
   "checks": [
     {
       "name": "home-200-first",
@@ -24,7 +24,7 @@
     {
       "name": "home-canonical",
       "pass": false,
-      "detail": "not found"
+      "detail": "https://elkisrealtor.cl"
     },
     {
       "name": "sitemap-200",
@@ -34,17 +34,38 @@
     {
       "name": "sitemap-has-home",
       "pass": false,
-      "count": 0
+      "count": 6
     },
     {
       "name": "sitemap-has-property",
-      "pass": false,
-      "count": 0
+      "pass": true,
+      "count": 5
     },
     {
-      "name": "property-sample-skipped",
+      "name": "property-200",
       "pass": false,
-      "detail": "No hay URLs /property/ en sitemap"
+      "status": 404,
+      "url": "https://elkisrealtor.cl/property/edificio-vista-las-condes"
+    },
+    {
+      "name": "property-og-title",
+      "pass": false,
+      "detail": "not found"
+    },
+    {
+      "name": "property-og-image",
+      "pass": false,
+      "detail": "not found"
+    },
+    {
+      "name": "property-canonical",
+      "pass": false,
+      "detail": "not found"
+    },
+    {
+      "name": "property-whatsapp",
+      "pass": false,
+      "detail": "no encontrado (posible dinámico)"
     },
     {
       "name": "robots-200",
@@ -53,9 +74,13 @@
     },
     {
       "name": "robots-allow-root",
-      "pass": true,
-      "detail": "Allow: /"
+      "pass": false,
+      "detail": "No Allow: /"
     }
   ],
-  "propertySample": {}
+  "propertySample": {
+    "url": "https://elkisrealtor.cl/property/edificio-vista-las-condes",
+    "status": 404,
+    "whatsapp": null
+  }
 }
