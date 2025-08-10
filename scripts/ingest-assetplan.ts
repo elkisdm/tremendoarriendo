@@ -4,6 +4,7 @@ import { deriveBuildingAggregates, computeUnitTotalArea } from "@lib/derive";
 import { createClient } from "@supabase/supabase-js";
 import path from "node:path";
 import fs from "node:fs/promises";
+import { loadCsv } from "./utils/parse";
 
 type IngestCounters = {
   rowsTotal: number;
@@ -62,6 +63,29 @@ async function loadBuildingsFromFiles(): Promise<Building[]> {
 }
 
 async function main() {
+  // Optional remote CSV argument in the form "@https://..."
+  const urlArg = process.argv.slice(2).find((a) => a.startsWith("@"));
+  const remoteUrl = urlArg ? urlArg.slice(1).trim() : undefined;
+
+  if (remoteUrl) {
+    try {
+      // Validate remote URL returns CSV-like content (or direct download)
+      await loadCsv(remoteUrl);
+      // eslint-disable-next-line no-console
+      console.log("Remote CSV validated successfully");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      if (message === "CSV expected") {
+        // eslint-disable-next-line no-console
+        console.error(
+          "CSV expected. Parece ser una página de confirmación de Google Drive. Instrucción: mover a Supabase Storage o usar link directo"
+        );
+        process.exitCode = 1;
+        return;
+      }
+      throw err;
+    }
+  }
   const supabaseUrl = getEnvOrThrow("SUPABASE_URL");
   const supabaseServiceKey = getEnvOrThrow("SUPABASE_SERVICE_ROLE_KEY");
   const supabase = createClient(supabaseUrl, supabaseServiceKey, {
@@ -71,7 +95,7 @@ async function main() {
   // Start run
   const { data: runStart, error: runErr } = await supabase
     .from("ingest_runs")
-    .insert({ provider: "assetplan", source_url: "local:data/sources" })
+    .insert({ provider: "assetplan", source_url: remoteUrl ?? "local:data/sources" })
     .select("id")
     .single();
   if (runErr || !runStart) {

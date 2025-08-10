@@ -37,7 +37,11 @@ export function PropertyClient({ building, relatedBuildings }: PropertyClientPro
           <div className="lg:col-span-2 space-y-8">
             {/* Gallery */}
             <section aria-label="Galería de imágenes">
-              <ImageGallery images={building.gallery} />
+              <ImageGallery 
+                images={building.gallery} 
+                media={building.media}
+                coverImage={building.coverImage}
+              />
             </section>
 
             {/* Unit Selector */}
