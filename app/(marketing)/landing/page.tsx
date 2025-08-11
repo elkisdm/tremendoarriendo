@@ -42,7 +42,7 @@ export default function LandingPage() {
             Transparencia total: la comisión de corretaje es 0%. El arriendo mensual y los gastos asociados
             se informan antes de reservar. Puedes agendar y cancelar tu visita sin costo.
           </p>
-          <p className="mt-2">// TODO(BLUEPRINT): texto legal final</p>
+          <p className="mt-2">{/* TODO(BLUEPRINT): texto legal final */}</p>
         </div>
       </section>
     </main>
