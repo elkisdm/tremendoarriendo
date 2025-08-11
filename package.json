@@ -12,7 +12,11 @@
     "smoke": "node scripts/smoke.mjs https://tudominio.com",
     "ingest:assetplan": "ts-node --compiler-options '{\"module\":\"commonjs\",\"moduleResolution\":\"node\"}' -r tsconfig-paths/register scripts/ingest-assetplan.ts",
     "convert:assetplan:csv": "ts-node --compiler-options '{\"module\":\"commonjs\",\"moduleResolution\":\"node\"}' -r tsconfig-paths/register scripts/convert-assetplan-csv.ts",
-    "ingest:csv:direct": "ts-node --compiler-options '{\"module\":\"commonjs\",\"moduleResolution\":\"node\"}' -r tsconfig-paths/register scripts/ingest-csv-direct.ts"
+    "ingest:csv:direct": "ts-node --compiler-options '{\"module\":\"commonjs\",\"moduleResolution\":\"node\"}' -r tsconfig-paths/register scripts/ingest-csv-direct.ts",
+    "migrate:mock": "node scripts/migrate-mock-to-supabase.mjs",
+    "qa:supabase": "node scripts/qa-supabase.mjs",
+    "setup:supabase": "node scripts/setup-supabase.mjs",
+    "verify": "node scripts/verify-setup.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.54.0",
