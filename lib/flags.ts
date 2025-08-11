@@ -1,2 +1,2 @@
-// Sistema de flags simplificado - solo variable de entorno
-export const COMING_SOON = process.env.COMING_SOON === 'true';
+// Sistema de flags simplificado - valor hardcodeado temporalmente
+export const COMING_SOON = true;
