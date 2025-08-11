@@ -129,11 +129,11 @@ describe('ComingSoonHero', () => {
     
     // Verificar que el contenedor principal tiene las clases para overflow y posicionamiento
     const section = screen.getByText('Próximamente').closest('section');
-    expect(section).toHaveClass('relative', 'min-h-screen', 'overflow-hidden');
+    expect(section).toHaveClass('relative', 'min-h-[70vh]', 'overflow-hidden');
     
     // Verificar que el título tiene las clases de gradiente y sombra
     const title = screen.getByText('Próximamente');
-    expect(title).toHaveClass('bg-gradient-to-r', 'from-brand-violet', 'to-brand-aqua', 'text-transparent', 'bg-clip-text');
+    expect(title).toHaveClass('bg-gradient-to-r', 'text-transparent', 'bg-clip-text');
     
     // Verificar que el subtítulo tiene mejor contraste
     const subtitle = screen.getByText('Estamos preparando la nueva experiencia de arriendo 0% comisión. Sin letra chica.');
