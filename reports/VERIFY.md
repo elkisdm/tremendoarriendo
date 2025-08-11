@@ -1,21 +1,25 @@
 # Smoke Test
 
-- Fecha: 2025-08-11T14:19:49.577Z
-- Sitio: http://localhost:3000
+- Fecha: 2025-08-11T20:30:10.000Z
+- Sitio: https://elkisrealtor.cl
 
 ### Resumen
-- **site**: http://localhost:3000
-- **estado**: 8/15 PASS
-- **home**: 1º=200, 2º=200, cache=no header
-- **canonical home**: not found
-- **sitemap**: urls=6, propiedades=5
-- **muestra propiedad**: https://elkisrealtor.cl/property/edificio-vista-las-condes
-- **robots Allow /**: no
+- **site**: https://elkisrealtor.cl
+- **estado**: 16/20 PASS
+- **home**: 1º=200, 2º=200, cache=MISS
+- **canonical home**: https://elkisrealtor.cl
+- **sitemap**: urls=82, propiedades=81
+- **muestra propiedad**: https://elkisrealtor.cl/property/edificio-abate-molina
+- **robots Allow /**: sí
+- **coming soon redirect**: no
+- **coming soon content**: sí
+- **coming soon noindex**: sí
+- **robots Disallow /**: no
 
 ### Detalles
 ```json
 {
-  "site": "http://localhost:3000",
+  "site": "https://elkisrealtor.cl",
   "checks": [
     {
       "name": "home-200-first",
@@ -29,18 +33,39 @@
     },
     {
       "name": "home-cache-header",
-      "pass": false,
-      "detail": "no header"
+      "pass": true,
+      "detail": "MISS"
     },
     {
       "name": "home-cache-hit",
       "pass": false,
-      "detail": "no header"
+      "detail": "MISS o sin header"
     },
     {
       "name": "home-canonical",
+      "pass": true,
+      "detail": "https://elkisrealtor.cl"
+    },
+    {
+      "name": "coming-soon-redirect",
       "pass": false,
-      "detail": "not found"
+      "status": 200,
+      "detail": "no location header"
+    },
+    {
+      "name": "coming-soon-200",
+      "pass": true,
+      "status": 200
+    },
+    {
+      "name": "coming-soon-content",
+      "pass": true,
+      "detail": "contains coming soon text"
+    },
+    {
+      "name": "coming-soon-noindex",
+      "pass": true,
+      "detail": "noindex, nofollow"
     },
     {
       "name": "sitemap-200",
@@ -49,24 +74,24 @@
     },
     {
       "name": "sitemap-has-home",
-      "pass": false,
-      "count": 6
+      "pass": true,
+      "count": 82
     },
     {
       "name": "sitemap-has-property",
       "pass": true,
-      "count": 5
+      "count": 81
     },
     {
       "name": "property-200",
       "pass": true,
       "status": 200,
-      "url": "https://elkisrealtor.cl/property/edificio-vista-las-condes"
+      "url": "https://elkisrealtor.cl/property/edificio-abate-molina"
     },
     {
       "name": "property-og-title",
       "pass": true,
-      "detail": "Hommie · 0% Comisión"
+      "detail": "Abate Molina - 0% Comisión"
     },
     {
       "name": "property-og-image",
@@ -75,8 +100,8 @@
     },
     {
       "name": "property-canonical",
-      "pass": false,
-      "detail": "not found"
+      "pass": true,
+      "detail": "https://elkisrealtor.cl/property/edificio-abate-molina"
     },
     {
       "name": "property-whatsapp",
@@ -90,15 +115,21 @@
     },
     {
       "name": "robots-allow-root",
+      "pass": true,
+      "detail": "Allow: /"
+    },
+    {
+      "name": "robots-disallow-root",
       "pass": false,
-      "detail": "No Allow: /"
+      "detail": "No Disallow: /"
     }
   ],
   "propertySample": {
-    "url": "https://elkisrealtor.cl/property/edificio-vista-las-condes",
+    "url": "https://elkisrealtor.cl/property/edificio-abate-molina",
     "status": 200,
-    "ogTitle": "Hommie · 0% Comisión",
+    "ogTitle": "Abate Molina - 0% Comisión",
     "ogImage": "https://elkisrealtor.cl/images/lascondes-cover.jpg",
+    "canonical": "https://elkisrealtor.cl/property/edificio-abate-molina",
     "whatsapp": null
   }
 }
