@@ -16,7 +16,9 @@
     "migrate:mock": "node scripts/migrate-mock-to-supabase.mjs",
     "qa:supabase": "node scripts/qa-supabase.mjs",
     "setup:supabase": "node scripts/setup-supabase.mjs",
-    "verify": "node scripts/verify-setup.mjs"
+    "verify": "node scripts/verify-setup.mjs",
+    "coming-soon:on": "node scripts/flags.mjs on",
+    "coming-soon:off": "node scripts/flags.mjs off"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.54.0",

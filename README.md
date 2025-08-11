@@ -1,3 +1,36 @@
+## Rollback de Coming Soon
+
+Para volver al sitio real desde el modo "coming soon":
+
+1. **Desde Vercel (recomendado):** Setea `COMING_SOON=false` en las variables de entorno de Vercel y redeploy.
+2. **Desde código:** Modifica `config/feature-flags.json` y haz commit & push.
+
+### Sistema de Toggle por Archivo
+
+El proyecto incluye un sistema de feature flags que permite activar/desactivar el modo "coming soon" simplemente con commit & push:
+
+#### Activar Coming Soon
+```bash
+npm run coming-soon:on
+git add config/feature-flags.json
+git commit -m "chore(flags): coming soon ON"
+git push origin main
+```
+
+#### Volver al sitio real
+```bash
+npm run coming-soon:off
+git add config/feature-flags.json
+git commit -m "chore(flags): coming soon OFF"
+git push origin main
+```
+
+#### Prioridad de configuración
+1. **Variables de entorno de Vercel** (máxima prioridad)
+2. **Archivo `config/feature-flags.json`** (fallback)
+
+Esto permite que Vercel detecte el push → build → redirija `/` a `/coming-soon` (con noindex) automáticamente.
+
 ## Ingesta y métricas (Supabase)
 
 - Histórico en tiempo real vía trigger en `public.units_history`.
@@ -69,5 +102,39 @@ Concede SELECT solo a:
 `units_snapshot_daily`, `buildings_snapshot_daily`, `mv_price_drops_7d`,
 `mv_new_listings_24h`, `v_exports_units_delta`, `v_filters_available`.
 No conceder acceso a `leads`/`bookings` (PII).
+
+## 🚀 Rollback - Coming Soon Mode
+
+### Para volver al sitio real desde modo "coming soon":
+
+1. **En Vercel Dashboard:**
+   - Ve a Project Settings → Environment Variables
+   - Cambia `COMING_SOON` de `true` a `false` (o elimínala)
+   - Guarda los cambios
+
+2. **Redeploy automático:**
+   - Vercel automáticamente redeployeará con la nueva configuración
+   - O manualmente: `git push` para trigger un nuevo deploy
+
+3. **Verificación:**
+   - `/` → 200 OK (landing normal)
+   - `/coming-soon` → 200 OK (accesible directamente)
+   - Meta robots removido de coming-soon
+
+### Comandos de verificación:
+
+```bash
+# Verificar estado actual
+curl -I https://tu-dominio.com/
+
+# Verificar coming-soon
+curl -I https://tu-dominio.com/coming-soon
+
+# Ejecutar smoke test completo
+node scripts/smoke.mjs https://tu-dominio.com/
+```
+
+### Reporte de QA:
+Ver `reports/COMING_SOON.md` para detalles completos del QA y checklist A11y.
 
 
