@@ -324,7 +324,7 @@ export function ComingSoonHero() {
               variants={itemVariants}
               className="text-sm text-neutral-100/70 max-w-lg mx-auto leading-relaxed"
             >
-              Precios &ldquo;Desde&rdquo; reales. // TODO(BLUEPRINT): copiar legal final.
+              Precios &ldquo;Desde&rdquo; reales. Sin costos ocultos ni sorpresas.
             </motion.p>
 
             {/* CTAs debajo del legal */}
@@ -414,7 +414,7 @@ export function ComingSoonHero() {
                 <div className="mt-6 p-4 bg-gradient-to-r from-brand-violet/20 to-brand-aqua/20 rounded-2xl backdrop-blur-sm border border-white/10">
                   <div className="flex items-center justify-center space-x-2 text-white font-semibold text-center">
                     <DollarSign className="w-5 h-5" />
-                    <span>Ejemplo: Arriendo $450.000 → Ahorras $214.500 en comisión (incluye IVA)</span>
+                    <span>Ejemplo: Arriendo $500.000 → Ahorras $297.500 en comisión (incluye IVA)</span>
                   </div>
                 </div>
               </div>
