@@ -1,0 +1,51 @@
+
+> hommie-0-commission@1.0.0 build
+> next build
+
+  ▲ Next.js 14.2.5
+  - Environments: .env.local
+
+   Creating an optimized production build ...
+Failed to compile.
+
+app/layout.tsx
+An error occurred in `next/font`.
+
+Error: Cannot find module '@tailwindcss/postcss'
+Require stack:
+- /Users/macbookpro/Documents/hommie-0-commission-next/node_modules/.pnpm/next@14.2.5_@babel+core@7.28.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/build/webpack/config/blocks/css/plugins.js
+- /Users/macbookpro/Documents/hommie-0-commission-next/node_modules/.pnpm/next@14.2.5_@babel+core@7.28.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/build/webpack/config/blocks/css/index.js
+- /Users/macbookpro/Documents/hommie-0-commission-next/node_modules/.pnpm/next@14.2.5_@babel+core@7.28.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/build/webpack/config/index.js
+- /Users/macbookpro/Documents/hommie-0-commission-next/node_modules/.pnpm/next@14.2.5_@babel+core@7.28.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/build/webpack-config.js
+- /Users/macbookpro/Documents/hommie-0-commission-next/node_modules/.pnpm/next@14.2.5_@babel+core@7.28.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/build/webpack-build/impl.js
+- /Users/macbookpro/Documents/hommie-0-commission-next/node_modules/.pnpm/next@14.2.5_@babel+core@7.28.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/compiled/jest-worker/processChild.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1410:15)
+    at /Users/macbookpro/Documents/hommie-0-commission-next/node_modules/.pnpm/next@14.2.5_@babel+core@7.28.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/server/require-hook.js:55:36
+    at require.resolve (node:internal/modules/helpers:163:19)
+    at loadPlugin (/Users/macbookpro/Documents/hommie-0-commission-next/node_modules/.pnpm/next@14.2.5_@babel+core@7.28.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/build/webpack/config/blocks/css/plugins.js:49:32)
+    at /Users/macbookpro/Documents/hommie-0-commission-next/node_modules/.pnpm/next@14.2.5_@babel+core@7.28.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/build/webpack/config/blocks/css/plugins.js:157:56
+    at Array.map (<anonymous>)
+    at getPostCssPlugins (/Users/macbookpro/Documents/hommie-0-commission-next/node_modules/.pnpm/next@14.2.5_@babel+core@7.28.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/build/webpack/config/blocks/css/plugins.js:157:47)
+    at async /Users/macbookpro/Documents/hommie-0-commission-next/node_modules/.pnpm/next@14.2.5_@babel+core@7.28.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/build/webpack/config/blocks/css/index.js:124:36
+    at async /Users/macbookpro/Documents/hommie-0-commission-next/node_modules/.pnpm/next@14.2.5_@babel+core@7.28.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/build/webpack/loaders/next-font-loader/index.js:86:33
+    at async Span.traceAsyncFn (/Users/macbookpro/Documents/hommie-0-commission-next/node_modules/.pnpm/next@14.2.5_@babel+core@7.28.0_react-dom@18.2.0_react@18.2.0__react@18.2.0/node_modules/next/dist/trace/trace.js:154:20)
+
+./hooks/useFetchBuildings.ts
+Module not found: Can't resolve '@tanstack/react-query'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./components/lists/ResultsGrid.tsx
+./components/LandingClient.tsx
+
+
+> Build failed because of webpack errors
+
+> hommie-0-commission@1.0.0 build
+> next build
+
+  ▲ Next.js 14.2.5
+  - Environments: .env.local
+
+   Creating an optimized production build ...
