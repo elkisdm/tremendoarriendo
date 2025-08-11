@@ -28,19 +28,44 @@ function LoadingFallback() {
   );
 }
 
-// Componente client para manejar la redirección
-function ComingSoonRedirect() {
-  if (typeof window !== 'undefined') {
-    window.location.href = '/coming-soon';
-    return null;
-  }
-  return null;
+// Componente de Coming Soon
+function ComingSoonContent() {
+  return (
+    <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
+      <div className="text-center max-w-3xl mx-auto px-4">
+        <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent">
+          Muy pronto
+        </h1>
+        <p className="text-xl md:text-2xl mb-8 text-gray-300">
+          Estamos preparando la nueva experiencia de arriendo <strong>0% comisión</strong>
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
+            <h3 className="text-lg font-semibold mb-2">0% comisión</h3>
+            <p className="text-gray-300">Sin costos ocultos ni letra chica</p>
+          </div>
+          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
+            <h3 className="text-lg font-semibold mb-2">Stock verificado</h3>
+            <p className="text-gray-300">Disponibilidad actualizada en tiempo real</p>
+          </div>
+          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
+            <h3 className="text-lg font-semibold mb-2">Agenda fácil</h3>
+            <p className="text-gray-300">WhatsApp o web, tú eliges</p>
+          </div>
+          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
+            <h3 className="text-lg font-semibold mb-2">Transparencia total</h3>
+            <p className="text-gray-300">Condiciones claras desde el inicio</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default function HomePage() {
-  // Si COMING_SOON está habilitado, mostrar componente de redirección
+  // Si COMING_SOON está habilitado, mostrar contenido de coming soon
   if (COMING_SOON) {
-    return <ComingSoonRedirect />;
+    return <ComingSoonContent />;
   }
 
   return (
