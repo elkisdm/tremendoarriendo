@@ -87,19 +87,16 @@ function BackgroundPattern() {
   );
 }
 
-// Componente para partículas sutiles con parallax
+// Componente para partículas sutiles con parallax - optimizado para performance
 function FloatingParticles({ prefersReducedMotion }: { prefersReducedMotion: boolean }) {
   if (prefersReducedMotion) return null;
 
+  // Reducir número de partículas para mejor performance
   const particles = [
-    { id: 1, x: "15%", y: "25%", size: "5", delay: 0 },
-    { id: 2, x: "80%", y: "20%", size: "7", delay: 0.5 },
-    { id: 3, x: "20%", y: "75%", size: "4", delay: 1 },
-    { id: 4, x: "75%", y: "80%", size: "6", delay: 1.5 },
-    { id: 5, x: "45%", y: "15%", size: "5", delay: 2 },
-    { id: 6, x: "30%", y: "65%", size: "4", delay: 2.5 },
-    { id: 7, x: "65%", y: "45%", size: "6", delay: 3 },
-    { id: 8, x: "85%", y: "65%", size: "5", delay: 3.5 },
+    { id: 1, x: "15%", y: "25%", size: "4", delay: 0 },
+    { id: 2, x: "80%", y: "20%", size: "6", delay: 2 },
+    { id: 3, x: "20%", y: "75%", size: "3", delay: 4 },
+    { id: 4, x: "75%", y: "80%", size: "5", delay: 6 },
   ];
 
   return (
@@ -114,14 +111,13 @@ function FloatingParticles({ prefersReducedMotion }: { prefersReducedMotion: boo
             width: `${particle.size}px`,
             height: `${particle.size}px`,
           }}
-          initial={{ opacity: 0, scale: 0 }}
+          initial={{ opacity: 0 }}
           animate={{
-            opacity: [0, 0.6, 0],
-            scale: [0, 1, 0.8],
-            y: [-10, 10, -5],
+            opacity: [0, 0.4, 0],
+            y: [-5, 5],
           }}
           transition={{
-            duration: 8,
+            duration: 6,
             delay: particle.delay,
             repeat: Infinity,
             ease: "easeInOut",
@@ -179,45 +175,44 @@ export function ComingSoonHero() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2,
+        staggerChildren: 0.05,
+        delayChildren: 0.1,
       },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 10 },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.6,
-        ease: [0.22, 1, 0.36, 1],
+        duration: 0.4,
+        ease: "easeOut",
       },
     },
   };
 
   const iconVariants = {
-    hidden: { opacity: 0, scale: 0.8 },
+    hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      scale: 1,
       transition: {
-        duration: 0.5,
-        ease: [0.22, 1, 0.36, 1],
+        duration: 0.3,
+        ease: "easeOut",
       },
     },
   };
 
   const benefitCardVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 10 },
     visible: (custom: number) => ({
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.6,
-        delay: custom * 0.05,
-        ease: [0.22, 1, 0.36, 1],
+        duration: 0.4,
+        delay: custom * 0.03,
+        ease: "easeOut",
       },
     }),
   };
@@ -249,7 +244,7 @@ export function ComingSoonHero() {
               ? "linear-gradient(135deg, rgba(139, 108, 255, 0.1) 0%, rgba(0, 230, 179, 0.05) 50%, rgba(139, 108, 255, 0.1) 100%)"
               : "linear-gradient(135deg, rgba(139, 108, 255, 0.15) 0%, rgba(0, 230, 179, 0.1) 25%, rgba(139, 108, 255, 0.05) 50%, rgba(0, 230, 179, 0.1) 75%, rgba(139, 108, 255, 0.15) 100%)",
             backgroundSize: prefersReducedMotion ? "100% 100%" : "400% 400%",
-            animation: prefersReducedMotion ? "none" : "gradientShift 8s ease-in-out infinite",
+            animation: prefersReducedMotion ? "none" : "gradientShift 6s ease-in-out infinite",
           }}
         />
 
@@ -389,10 +384,9 @@ export function ComingSoonHero() {
                   key={index}
                   variants={iconVariants}
                   whileHover={{ 
-                    y: prefersReducedMotion ? 0 : -4,
-                    scale: prefersReducedMotion ? 1 : 1.05,
+                    y: prefersReducedMotion ? 0 : -2,
                   }}
-                  transition={{ duration: 0.2 }}
+                  transition={{ duration: 0.15 }}
                   className="group relative"
                   tabIndex={0}
                   role="button"
@@ -463,7 +457,7 @@ export function ComingSoonHero() {
           }
           
           .animate-gradient {
-            animation: gradientShift 8s ease-in-out infinite;
+            animation: gradientShift 6s ease-in-out infinite;
           }
         `}</style>
       </section>
