@@ -203,7 +203,7 @@ export function ComingSoonHero() {
 
   return (
     <MotionConfig reducedMotion={prefersReducedMotion ? "user" : "never"}>
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[70vh] flex items-center overflow-hidden">
         {/* Background patterns and particles */}
         <BackgroundPattern />
         <FloatingParticles prefersReducedMotion={prefersReducedMotion} />
@@ -225,17 +225,17 @@ export function ComingSoonHero() {
         />
 
         {/* Contenido principal */}
-        <div className="relative z-10 max-w-3xl mx-auto px-4 py-16 text-center">
+        <div className="relative z-10 mx-auto max-w-3xl px-4 text-center pt-20 pb-16 md:pb-24">
           <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
             className="space-y-8"
           >
-            {/* Título principal con gradiente y sombra suave */}
+            {/* Título principal con gradiente violeta→aqua y tipografía headline */}
             <motion.h1 
               variants={itemVariants}
-              className="text-4xl md:text-6xl font-extrabold leading-tight bg-gradient-to-r from-brand-violet to-brand-aqua text-transparent bg-clip-text drop-shadow-[0_2px_4px_rgba(162,139,255,0.2)]"
+              className="text-5xl md:text-6xl font-extrabold leading-tight tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-[--brand-violet,#7C3AED] via-fuchsia-400 to-[--brand-aqua,#22D3EE]"
             >
               Próximamente
             </motion.h1>
@@ -302,10 +302,10 @@ export function ComingSoonHero() {
               </div>
             </motion.div>
 
-            {/* Grid de iconos con efectos glass mejorados */}
+            {/* Grid de iconos con spacing ajustado */}
             <motion.div 
               variants={itemVariants}
-              className="grid grid-cols-2 md:grid-cols-3 gap-6 max-w-md mx-auto"
+              className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 max-w-md mx-auto"
             >
               {icons.map(({ Icon, label }, index) => (
                 <motion.div
