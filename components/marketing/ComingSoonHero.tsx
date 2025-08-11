@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { buildWaLink } from "@lib/whatsapp";
 import { PromoBadge } from "./PromoBadge";
+import { track } from "@lib/analytics";
 
 // Componente para el background SVG pattern
 function BackgroundPattern() {
@@ -140,6 +141,7 @@ export function ComingSoonHero() {
   }, []);
 
   const handleWaitlistClick = () => {
+    track('cta_waitlist_click');
     const waitlistElement = document.getElementById("waitlist");
     if (waitlistElement) {
       waitlistElement.scrollIntoView({
@@ -149,6 +151,7 @@ export function ComingSoonHero() {
   };
 
   const handleWhatsAppClick = () => {
+    track('cta_whatsapp_click');
     const waLink = buildWaLink({
       propertyName: "la nueva experiencia de arriendo",
       comuna: "Santiago",
@@ -253,6 +256,43 @@ export function ComingSoonHero() {
             >
               Precios "Desde" reales. // TODO(BLUEPRINT): copiar legal final.
             </motion.p>
+
+            {/* CTAs debajo del legal */}
+            <motion.div 
+              variants={itemVariants}
+              className="flex flex-col sm:flex-row justify-center gap-3 md:gap-4 mt-6"
+            >
+              {/* Botón primario "Notificarme" */}
+              <motion.button
+                onClick={handleWaitlistClick}
+                className="rounded-2xl px-6 py-3 font-semibold bg-gradient-to-r from-[--brand-violet,#7C3AED] to-[--brand-aqua,#22D3EE] text-white shadow-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-violet-400/40 hover:shadow-xl transition-all duration-200"
+                aria-label="Notificarme cuando esté listo"
+              >
+                Notificarme
+              </motion.button>
+
+              {/* Botón secundario "WhatsApp" */}
+              {process.env.NEXT_PUBLIC_WHATSAPP_PHONE ? (
+                <motion.a
+                  href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_PHONE}?text=Hola%20me%20interesa%20el%20lanzamiento`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => track('cta_whatsapp_click')}
+                  className="rounded-2xl px-6 py-3 font-semibold bg-green-600 hover:bg-green-700 text-white shadow-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-green-400/40 hover:shadow-xl transition-all duration-200"
+                  aria-label="Contactar por WhatsApp"
+                >
+                  WhatsApp
+                </motion.a>
+              ) : (
+                <motion.button
+                  aria-disabled="true"
+                  title="Configura NEXT_PUBLIC_WHATSAPP_PHONE"
+                  className="rounded-2xl px-6 py-3 font-semibold bg-gray-500 text-white shadow-lg cursor-not-allowed opacity-50"
+                >
+                  WhatsApp
+                </motion.button>
+              )}
+            </motion.div>
 
             {/* Subtítulo con mejor contraste */}
             <motion.p 
