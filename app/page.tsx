@@ -28,7 +28,7 @@ function LoadingFallback() {
   );
 }
 
-// Componente de Coming Soon
+// Componente de Coming Soon - FORCE REDEPLOY
 function ComingSoonContent() {
   return (
     <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
