@@ -4,7 +4,7 @@ import { dirname } from 'node:path';
 const SITE = process.argv[2] || process.env.SITE || 'http://localhost:3000';
 
 async function fetchOnce(url) {
-  const res = await fetch(url);
+  const res = await fetch(url, { redirect: 'manual' });
   const text = await res.text();
   return { ok: res.ok, status: res.status, headers: Object.fromEntries(res.headers), text };
 }
@@ -42,6 +42,11 @@ function extractSitemapLocs(xml) {
   return locs;
 }
 
+function extractRobotsMeta(html) {
+  const m = html.match(/<meta[^>]+name=["']robots["'][^>]+content=["']([^"']+)["']/i);
+  return m?.[1];
+}
+
 async function ensureDir(p) {
   await mkdir(dirname(p), { recursive: true });
 }
@@ -66,6 +71,12 @@ function summarize(results) {
   const propCount = results.checks.find(c => c.name === 'sitemap-has-property')?.count ?? 0;
   const propertyUrl = results.propertySample?.url || 'n/a';
   const robotsAllow = results.checks.find(c => c.name === 'robots-allow-root')?.pass ? 'sí' : 'no';
+  
+  // Coming Soon specific checks
+  const comingSoonRedirect = results.checks.find(c => c.name === 'coming-soon-redirect')?.pass ? 'sí' : 'no';
+  const comingSoonContent = results.checks.find(c => c.name === 'coming-soon-content')?.pass ? 'sí' : 'no';
+  const comingSoonNoindex = results.checks.find(c => c.name === 'coming-soon-noindex')?.pass ? 'sí' : 'no';
+  const robotsDisallow = results.checks.find(c => c.name === 'robots-disallow-root')?.pass ? 'sí' : 'no';
 
   const lines = [
     `- **site**: ${results.site}`,
@@ -75,6 +86,10 @@ function summarize(results) {
     `- **sitemap**: urls=${locCount}, propiedades=${propCount}`,
     `- **muestra propiedad**: ${propertyUrl}`,
     `- **robots Allow /**: ${robotsAllow}`,
+    `- **coming soon redirect**: ${comingSoonRedirect}`,
+    `- **coming soon content**: ${comingSoonContent}`,
+    `- **coming soon noindex**: ${comingSoonNoindex}`,
+    `- **robots Disallow /**: ${robotsDisallow}`,
   ];
   return lines.join('\n');
 }
@@ -124,7 +139,32 @@ async function main() {
     { name: 'home-canonical', pass: !!canonicalHome && canonicalHome.startsWith(SITE), detail: canonicalHome || 'not found' }
   );
 
-  // 2) Sitemap
+  // 2) Coming Soon redirect check
+  const locationHeader = pickHeader(home1.headers || {}, 'location');
+  const isRedirect = home1.status >= 300 && home1.status < 400;
+  const redirectsToComingSoon = locationHeader && locationHeader.includes('/coming-soon');
+  
+  results.checks.push(
+    { name: 'coming-soon-redirect', pass: isRedirect && redirectsToComingSoon, status: home1.status, detail: locationHeader || 'no location header' }
+  );
+
+  // 3) Coming Soon page content check
+  const comingSoon = await fetchSafe(`${SITE}/coming-soon`);
+  const hasComingSoonContent = comingSoon.ok && (
+    comingSoon.text.includes('Próximamente') || 
+    comingSoon.text.includes('Muy pronto') ||
+    comingSoon.text.includes('coming soon')
+  );
+  const robotsMeta = comingSoon.ok ? extractRobotsMeta(comingSoon.text) : undefined;
+  const hasNoindex = robotsMeta && robotsMeta.toLowerCase().includes('noindex');
+  
+  results.checks.push(
+    { name: 'coming-soon-200', pass: comingSoon.ok && comingSoon.status === 200, status: comingSoon.status, error: comingSoon.error },
+    { name: 'coming-soon-content', pass: hasComingSoonContent, detail: hasComingSoonContent ? 'contains coming soon text' : 'missing coming soon text' },
+    { name: 'coming-soon-noindex', pass: hasNoindex, detail: robotsMeta || 'no robots meta' }
+  );
+
+  // 4) Sitemap
   const sm = await fetchSafe(`${SITE}/sitemap.xml`);
   const locs = sm.ok ? extractSitemapLocs(sm.text) : [];
   const propertyUrls = locs.filter(u => /\/property\//.test(u));
@@ -136,7 +176,7 @@ async function main() {
     { name: 'sitemap-has-property', pass: propertyUrls.length > 0, count: propertyUrls.length }
   );
 
-  // 3) Property sample
+  // 5) Property sample
   let propDetail = {};
   if (propertyUrls.length > 0) {
     const propertyUrl = propertyUrls[0];
@@ -167,12 +207,15 @@ async function main() {
   }
   results.propertySample = propDetail;
 
-  // 4) Robots
+  // 6) Robots
   const robots = await fetchSafe(`${SITE}/robots.txt`);
   const allowRoot = robots.ok ? /\bAllow:\s*\/$/im.test(robots.text) || /\bAllow:\s*\/\b/im.test(robots.text) : false;
+  const disallowRoot = robots.ok ? /\bDisallow:\s*\/$/im.test(robots.text) || /\bDisallow:\s*\/\b/im.test(robots.text) : false;
+  
   results.checks.push(
     { name: 'robots-200', pass: robots.ok && robots.status === 200, status: robots.status, error: robots.error },
-    { name: 'robots-allow-root', pass: allowRoot, detail: allowRoot ? 'Allow: /' : 'No Allow: /' }
+    { name: 'robots-allow-root', pass: allowRoot, detail: allowRoot ? 'Allow: /' : 'No Allow: /' },
+    { name: 'robots-disallow-root', pass: disallowRoot, detail: disallowRoot ? 'Disallow: /' : 'No Disallow: /' }
   );
 
   await writeReports(results);
@@ -180,6 +223,18 @@ async function main() {
   // Console summary
   console.log('--- Smoke Test Resumen ---');
   console.log(summarize(results));
+  
+  // Exit with error code if any checks failed
+  const failedChecks = results.checks.filter(c => !c.pass);
+  if (failedChecks.length > 0) {
+    console.log('\n--- Failed Checks ---');
+    failedChecks.forEach(check => {
+      console.log(`❌ ${check.name}: ${check.detail || check.error || 'failed'}`);
+    });
+    process.exitCode = 1;
+  } else {
+    console.log('\n✅ All checks passed!');
+  }
 }
 
 main().catch(async (err) => {
