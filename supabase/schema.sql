@@ -82,3 +82,24 @@ CREATE TRIGGER update_buildings_updated_at
 CREATE TRIGGER update_units_updated_at 
     BEFORE UPDATE ON public.units 
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- Crear tabla de waitlist
+CREATE TABLE IF NOT EXISTS public.waitlist (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  email text NOT NULL CHECK (position('@' in email) > 1),
+  phone text,
+  source text DEFAULT 'coming-soon',
+  utm jsonb DEFAULT '{}'::jsonb,
+  created_at timestamptz DEFAULT now()
+);
+
+-- Configurar RLS para waitlist
+ALTER TABLE public.waitlist ENABLE ROW LEVEL SECURITY;
+
+-- Política para inserción en waitlist
+CREATE POLICY "wl_insert" ON public.waitlist 
+    FOR INSERT TO anon, authenticated 
+    WITH CHECK (true);
+
+-- Índice para email en waitlist
+CREATE INDEX IF NOT EXISTS idx_waitlist_email ON public.waitlist (email);

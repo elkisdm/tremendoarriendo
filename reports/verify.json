@@ -24,7 +24,7 @@
     {
       "name": "home-canonical",
       "pass": false,
-      "detail": "https://elkisrealtor.cl"
+      "detail": "not found"
     },
     {
       "name": "sitemap-200",
@@ -43,19 +43,19 @@
     },
     {
       "name": "property-200",
-      "pass": false,
-      "status": 404,
+      "pass": true,
+      "status": 200,
       "url": "https://elkisrealtor.cl/property/edificio-vista-las-condes"
     },
     {
       "name": "property-og-title",
-      "pass": false,
-      "detail": "not found"
+      "pass": true,
+      "detail": "Hommie · 0% Comisión"
     },
     {
       "name": "property-og-image",
-      "pass": false,
-      "detail": "not found"
+      "pass": true,
+      "detail": "https://elkisrealtor.cl/images/lascondes-cover.jpg"
     },
     {
       "name": "property-canonical",
@@ -80,7 +80,9 @@
   ],
   "propertySample": {
     "url": "https://elkisrealtor.cl/property/edificio-vista-las-condes",
-    "status": 404,
+    "status": 200,
+    "ogTitle": "Hommie · 0% Comisión",
+    "ogImage": "https://elkisrealtor.cl/images/lascondes-cover.jpg",
     "whatsapp": null
   }
 }

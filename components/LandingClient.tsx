@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FilterBar, type FilterValues } from "./filters/FilterBar";
 import { ResultsGrid } from "./lists/ResultsGrid";
+import { HeroPromo } from "./marketing/HeroPromo";
 import { track } from "@lib/analytics";
 
 const DEFAULT_FILTERS: FilterValues = {
@@ -103,38 +104,40 @@ export function LandingClient() {
   }, [announcement]);
 
   return (
-    <div className="container mx-auto px-4 md:px-6 py-6">
-      <div className="mb-6">
-        <h1 className="text-2xl md:text-3xl font-bold">Arrienda con 0% de comisión</h1>
-        <p className="text-[var(--subtext)]">Explora proyectos disponibles hoy</p>
-      </div>
+    <div className="mx-auto max-w-6xl">
+      {/* Hero Promocional */}
+      <HeroPromo />
 
-      <div className="mb-6">
-        <FilterBar
-          value={filters}
-          onChange={handleFilterChange}
-          onApply={handleApplyFilters}
-          onClear={handleClearFilters}
-          sort={sort}
-          onSort={handleSortChange}
-        />
-      </div>
+      <div className="px-4 md:px-6 py-6">
+        <div className="mb-6">
+          <FilterBar
+            value={filters}
+            onChange={handleFilterChange}
+            onApply={handleApplyFilters}
+            onClear={handleClearFilters}
+            sort={sort}
+            onSort={handleSortChange}
+          />
+        </div>
 
-      {/* Accessibility: Live region for result announcements */}
-      <div 
-        aria-live="polite" 
-        aria-atomic="true" 
-        className="sr-only"
-        role="status"
-      >
-        {announcement}
-      </div>
+        {/* Accessibility: Live region for result announcements */}
+        <div 
+          aria-live="polite" 
+          aria-atomic="true" 
+          className="sr-only"
+          role="status"
+        >
+          {announcement}
+        </div>
 
-      <ResultsGrid
-        filters={filters}
-        sort={sort}
-        onResultsChange={handleResultsChange}
-      />
+        <div id="listado" className="gap-y-8">
+          <ResultsGrid
+            filters={filters}
+            sort={sort}
+            onResultsChange={handleResultsChange}
+          />
+        </div>
+      </div>
     </div>
   );
 }
