@@ -111,7 +111,7 @@ export function WaitlistForm({ initialFocusRef }: WaitlistFormProps) {
         <button
           type="button"
           onClick={handleReset}
-          className="w-full rounded-2xl px-5 py-3 bg-white/10 hover:bg-white/20 text-white font-medium transition-colors focus-visible:ring-4 focus-visible:ring-white/20 focus-visible:outline-none"
+          className="w-full rounded-2xl px-5 py-3 bg-white/10 hover:bg-white/20 text-white font-medium transition-colors focus-visible:ring-4 focus-visible:ring-white/20 focus-visible:outline-none min-h-[44px] flex items-center justify-center"
         >
           Enviar otro email
         </button>
@@ -145,9 +145,10 @@ export function WaitlistForm({ initialFocusRef }: WaitlistFormProps) {
           autoComplete="email"
           required
           disabled={isLoading}
+          aria-invalid={error ? "true" : "false"}
+          aria-describedby={error ? "email-error" : undefined}
           className="w-full rounded-2xl px-4 py-3 bg-white/10 border border-white/20 text-white placeholder-white/50 focus:border-white/40 focus:ring-4 focus:ring-white/20 focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           placeholder="tu@email.com"
-          aria-describedby={error ? "email-error" : undefined}
         />
         {error && (
           <p id="email-error" className="mt-1 text-sm text-red-400" role="alert">
@@ -177,7 +178,7 @@ export function WaitlistForm({ initialFocusRef }: WaitlistFormProps) {
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full rounded-2xl px-5 py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium transition-all focus-visible:ring-4 focus-visible:ring-white/20 focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none active:scale-[0.98]"
+        className="w-full rounded-2xl px-5 py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium transition-all focus-visible:ring-4 focus-visible:ring-white/20 focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none active:scale-[0.98] min-h-[44px] flex items-center justify-center"
       >
         {isLoading ? (
           <div className="flex items-center justify-center space-x-2">

@@ -274,12 +274,12 @@ export function ComingSoonHero() {
               <PromoBadge />
             </motion.div>
 
-            {/* Legal breve */}
+            {/* Legal breve - mejorado contraste */}
             <motion.p 
               variants={itemVariants}
-              className="text-sm text-neutral-100/70 max-w-lg mx-auto leading-relaxed"
+              className="text-sm text-neutral-100/80 max-w-lg mx-auto leading-relaxed"
             >
-              Precios &ldquo;Desde&rdquo; reales. Sin costos ocultos ni sorpresas.
+              Arriendos desde $210.000 pesos. Sin costos ocultos ni sorpresas.
             </motion.p>
 
             {/* CTAs debajo del legal */}
@@ -291,7 +291,7 @@ export function ComingSoonHero() {
               <motion.button
                 ref={triggerButtonRef}
                 onClick={handleWaitlistClick}
-                className="rounded-2xl px-6 py-3 font-semibold bg-gradient-to-r from-[--brand-violet,#7C3AED] to-[--brand-aqua,#22D3EE] text-white shadow-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-violet-400/40 hover:shadow-xl transition-all duration-200"
+                className="rounded-2xl px-6 py-3 font-semibold bg-gradient-to-r from-[--brand-violet,#7C3AED] to-[--brand-aqua,#22D3EE] text-white shadow-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-violet-400/40 hover:shadow-xl transition-all duration-200 min-h-[44px] flex items-center justify-center"
                 aria-label="Notificarme cuando esté listo"
               >
                 Notificarme
@@ -304,7 +304,7 @@ export function ComingSoonHero() {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => track('cta_whatsapp_click')}
-                  className="rounded-2xl px-6 py-3 font-semibold bg-green-600 hover:bg-green-700 text-white shadow-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-green-400/40 hover:shadow-xl transition-all duration-200"
+                  className="rounded-2xl px-6 py-3 font-semibold bg-green-600 hover:bg-green-700 text-white shadow-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-green-400/40 hover:shadow-xl transition-all duration-200 min-h-[44px] flex items-center justify-center"
                   aria-label="Contactar por WhatsApp"
                 >
                   WhatsApp
@@ -313,7 +313,7 @@ export function ComingSoonHero() {
                 <motion.button
                   aria-disabled="true"
                   title="Configura NEXT_PUBLIC_WHATSAPP_PHONE"
-                  className="rounded-2xl px-6 py-3 font-semibold bg-gray-500 text-white shadow-lg cursor-not-allowed opacity-50"
+                  className="rounded-2xl px-6 py-3 font-semibold bg-gray-500 text-white shadow-lg cursor-not-allowed opacity-50 min-h-[44px] flex items-center justify-center"
                 >
                   WhatsApp
                 </motion.button>
@@ -372,6 +372,9 @@ export function ComingSoonHero() {
                     <DollarSign className="w-5 h-5" />
                     <span>Ejemplo: Arriendo $500.000 → Ahorras $297.500 en comisión (incluye IVA)</span>
                   </div>
+                  <div className="mt-3 text-center">
+                    <span className="text-sm text-white/80">Precios desde: $210.000 pesos</span>
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -395,7 +398,7 @@ export function ComingSoonHero() {
                   role="button"
                   aria-label={label}
                 >
-                  <div className="relative p-6 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/8 transition-colors duration-200 h-full min-h-[120px] flex flex-col items-center justify-center">
+                  <div className="relative p-6 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/8 transition-colors duration-200 h-full min-h-[120px] flex flex-col items-center justify-center focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-violet-400/40">
                     <Icon 
                       className="w-8 h-8 text-brand-violet mb-3" 
                       aria-hidden="true"
@@ -418,7 +421,7 @@ export function ComingSoonHero() {
               {/* CTA principal */}
               <motion.button
                 onClick={handleWaitlistClick}
-                className="inline-flex items-center px-8 py-4 text-lg font-semibold rounded-2xl bg-gradient-to-r from-brand-violet to-brand-aqua text-white shadow-lg shadow-violet-500/20 hover:shadow-xl hover:shadow-violet-500/30 transition-all duration-200 focus-ring"
+                className="inline-flex items-center px-8 py-4 text-lg font-semibold rounded-2xl bg-gradient-to-r from-brand-violet to-brand-aqua text-white shadow-lg shadow-violet-500/20 hover:shadow-xl hover:shadow-violet-500/30 transition-all duration-200 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-violet-400/40 min-h-[44px]"
                 aria-label="Avísame cuando esté listo"
               >
                 <Zap className="w-5 h-5 mr-2" />
@@ -428,7 +431,7 @@ export function ComingSoonHero() {
               {/* CTA WhatsApp */}
               <motion.button
                 onClick={handleWhatsAppClick}
-                className="inline-flex items-center px-8 py-4 text-lg font-semibold rounded-2xl bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-600/20 hover:shadow-xl hover:shadow-green-600/30 transition-all duration-200 focus-ring"
+                className="inline-flex items-center px-8 py-4 text-lg font-semibold rounded-2xl bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-600/20 hover:shadow-xl hover:shadow-green-600/30 transition-all duration-200 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-green-400/40 min-h-[44px]"
                 aria-label="Hablá con nosotros por WhatsApp"
               >
                 <MessageSquare className="w-5 h-5 mr-2" />
