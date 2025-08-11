@@ -6,38 +6,40 @@ jest.mock('../../config/feature-flags.json', () => ({
 }));
 
 describe('Flags System', () => {
-  const originalEnv = process.env;
+  it('debería usar el valor del archivo JSON', () => {
+    expect(COMING_SOON).toBe(true);
+  });
 
+  it('debería convertir correctamente a boolean', () => {
+    // El valor viene del mock que tiene comingSoon: true
+    expect(typeof COMING_SOON).toBe('boolean');
+    expect(COMING_SOON).toBe(true);
+  });
+});
+
+// Test adicional con mock dinámico
+describe('Flags System - Dynamic JSON', () => {
   beforeEach(() => {
     jest.resetModules();
-    process.env = { ...originalEnv };
   });
 
-  afterAll(() => {
-    process.env = originalEnv;
-  });
-
-  it('debería usar el valor del archivo JSON cuando no hay variable de entorno', () => {
-    delete process.env.COMING_SOON;
-    const { COMING_SOON } = require('../../lib/flags');
-    expect(COMING_SOON).toBe(true);
-  });
-
-  it('debería usar COMING_SOON=true cuando la variable de entorno está en true', () => {
-    process.env.COMING_SOON = 'true';
-    const { COMING_SOON } = require('../../lib/flags');
-    expect(COMING_SOON).toBe(true);
-  });
-
-  it('debería usar COMING_SOON=false cuando la variable de entorno está en false', () => {
-    process.env.COMING_SOON = 'false';
+  it('debería usar comingSoon: false del archivo JSON', () => {
+    // Mock temporal con comingSoon: false
+    jest.doMock('../../config/feature-flags.json', () => ({
+      comingSoon: false
+    }));
+    
     const { COMING_SOON } = require('../../lib/flags');
     expect(COMING_SOON).toBe(false);
   });
 
-  it('debería priorizar la variable de entorno sobre el archivo JSON', () => {
-    process.env.COMING_SOON = 'false';
+  it('debería usar comingSoon: true del archivo JSON', () => {
+    // Mock temporal con comingSoon: true
+    jest.doMock('../../config/feature-flags.json', () => ({
+      comingSoon: true
+    }));
+    
     const { COMING_SOON } = require('../../lib/flags');
-    expect(COMING_SOON).toBe(false);
+    expect(COMING_SOON).toBe(true);
   });
 });
