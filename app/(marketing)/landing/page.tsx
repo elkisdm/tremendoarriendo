@@ -1,15 +1,8 @@
 import { Suspense } from "react";
-import type { Metadata } from "next";
 import { LandingClient } from "../../../components/LandingClient";
 import { BuildingCardSkeleton } from "../../../components/ui/BuildingCardSkeleton";
 
 export const revalidate = 3600;
-
-export const metadata: Metadata = {
-  title: "Arrienda con 0% comisión",
-  description: "Explora edificios disponibles, filtra por comuna y tipología, y agenda tu visita sin pagar comisión.",
-  alternates: { canonical: "/" },
-};
 
 function LoadingFallback() {
   return (
