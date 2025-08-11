@@ -1,4 +1,8 @@
-// Sistema de flags unificado - SOLO archivo JSON (commit & push deploy)
+// Sistema de flags unificado - archivo JSON + variable de entorno como respaldo
 import featureFlags from '../config/feature-flags.json';
 
-export const COMING_SOON = Boolean(featureFlags.comingSoon);
+// Lee del archivo JSON, con fallback a variable de entorno
+const comingSoonFromFile = Boolean(featureFlags.comingSoon);
+const comingSoonFromEnv = process.env.COMING_SOON === 'true';
+
+export const COMING_SOON = comingSoonFromFile || comingSoonFromEnv;
