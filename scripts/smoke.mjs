@@ -11,6 +11,8 @@ async function fetchOnce(url) {
 
 async function fetchSafe(url) {
   try {
+    // Pequeño delay para evitar problemas de timing
+    await new Promise(resolve => setTimeout(resolve, 100));
     return await fetchOnce(url);
   } catch (error) {
     return { ok: false, status: 0, headers: {}, text: '', error: error?.message || String(error) };
