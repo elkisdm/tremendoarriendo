@@ -1,13 +1,13 @@
 # Smoke Test
 
-- Fecha: 2025-08-10T23:27:24.998Z
+- Fecha: 2025-08-11T14:19:49.577Z
 - Sitio: http://localhost:3000
 
 ### Resumen
 - **site**: http://localhost:3000
-- **estado**: 5/15 PASS
+- **estado**: 8/15 PASS
 - **home**: 1º=200, 2º=200, cache=no header
-- **canonical home**: https://elkisrealtor.cl
+- **canonical home**: not found
 - **sitemap**: urls=6, propiedades=5
 - **muestra propiedad**: https://elkisrealtor.cl/property/edificio-vista-las-condes
 - **robots Allow /**: no
@@ -40,7 +40,7 @@
     {
       "name": "home-canonical",
       "pass": false,
-      "detail": "https://elkisrealtor.cl"
+      "detail": "not found"
     },
     {
       "name": "sitemap-200",
@@ -59,19 +59,19 @@
     },
     {
       "name": "property-200",
-      "pass": false,
-      "status": 404,
+      "pass": true,
+      "status": 200,
       "url": "https://elkisrealtor.cl/property/edificio-vista-las-condes"
     },
     {
       "name": "property-og-title",
-      "pass": false,
-      "detail": "not found"
+      "pass": true,
+      "detail": "Hommie · 0% Comisión"
     },
     {
       "name": "property-og-image",
-      "pass": false,
-      "detail": "not found"
+      "pass": true,
+      "detail": "https://elkisrealtor.cl/images/lascondes-cover.jpg"
     },
     {
       "name": "property-canonical",
@@ -96,7 +96,9 @@
   ],
   "propertySample": {
     "url": "https://elkisrealtor.cl/property/edificio-vista-las-condes",
-    "status": 404,
+    "status": 200,
+    "ogTitle": "Hommie · 0% Comisión",
+    "ogImage": "https://elkisrealtor.cl/images/lascondes-cover.jpg",
     "whatsapp": null
   }
 }
