@@ -1,13 +1,16 @@
-## Rollback de Coming Soon
+## Sistema de Feature Flags - Coming Soon
 
-Para volver al sitio real desde el modo "coming soon":
+El proyecto usa un sistema de feature flags unificado que permite activar/desactivar el modo "coming soon" simplemente con commit & push.
 
-1. **Desde Vercel (recomendado):** Setea `COMING_SOON=false` en las variables de entorno de Vercel y redeploy.
-2. **Desde código:** Modifica `config/feature-flags.json` y haz commit & push.
+### Toggle Unificado por Archivo
 
-### Sistema de Toggle por Archivo
+El sistema depende **ÚNICAMENTE** del archivo `config/feature-flags.json`:
 
-El proyecto incluye un sistema de feature flags que permite activar/desactivar el modo "coming soon" simplemente con commit & push:
+```json
+{
+  "comingSoon": true
+}
+```
 
 #### Activar Coming Soon
 ```bash
@@ -25,11 +28,28 @@ git commit -m "chore(flags): coming soon OFF"
 git push origin main
 ```
 
-#### Prioridad de configuración
-1. **Variables de entorno de Vercel** (máxima prioridad)
-2. **Archivo `config/feature-flags.json`** (fallback)
+#### Edición Manual
+También puedes editar manualmente `config/feature-flags.json`:
+- `"comingSoon": true` → Muestra página de coming soon
+- `"comingSoon": false` → Muestra landing real
 
-Esto permite que Vercel detecte el push → build → redirija `/` a `/coming-soon` (con noindex) automáticamente.
+### Flujo de Deploy
+
+1. **Commit & Push** → Vercel detecta cambios
+2. **Build automático** → Next.js lee `feature-flags.json`
+3. **Deploy** → `/` redirige según el flag
+
+### Verificación
+
+```bash
+# Verificar estado actual
+curl -I https://tudominio.com
+
+# Con comingSoon: true → 200 OK (página coming soon)
+# Con comingSoon: false → 200 OK (landing real)
+```
+
+**Nota:** El sistema ignora `process.env.COMING_SOON` para mantener consistencia en deploy por commit & push.
 
 ## Ingesta y métricas (Supabase)
 
