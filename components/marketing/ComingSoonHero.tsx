@@ -127,6 +127,9 @@ function FloatingParticles({ prefersReducedMotion }: { prefersReducedMotion: boo
 
 export function ComingSoonHero() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [formState, setFormState] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [formError, setFormError] = useState<string>('');
+  const [formData, setFormData] = useState({ email: '', phone: '' });
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -159,6 +162,55 @@ export function ComingSoonHero() {
     });
     if (waLink) {
       window.open(waLink, "_blank");
+    }
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setFormState('loading');
+    setFormError('');
+
+    try {
+      const response = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          phone: formData.phone || undefined,
+          utm: {
+            source: 'coming-soon',
+            medium: 'web',
+            campaign: 'waitlist'
+          }
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setFormState('success');
+        setFormData({ email: '', phone: '' });
+        track('waitlist_signup_success');
+      } else {
+        setFormState('error');
+        setFormError(result.error || 'Error al enviar el formulario');
+        track('waitlist_signup_error', { error: result.error });
+      }
+    } catch (error) {
+      setFormState('error');
+      setFormError('Error de conexión. Intenta de nuevo.');
+      track('waitlist_signup_error', { error: 'network_error' });
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    if (formState === 'error') {
+      setFormState('idle');
+      setFormError('');
     }
   };
 
@@ -423,6 +475,90 @@ export function ComingSoonHero() {
             >
               ¿Tenés dudas? Escribinos por WhatsApp y te respondemos al toque 🚀
             </motion.p>
+
+            {/* Formulario de Waitlist */}
+            <motion.div
+              variants={itemVariants}
+              id="waitlist"
+              className="w-full max-w-md mx-auto mt-12"
+            >
+              <form 
+                onSubmit={handleFormSubmit}
+                aria-describedby="wl-help wl-status"
+                noValidate
+                className="space-y-4"
+              >
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-white mb-2">
+                    Email *
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required
+                    disabled={formState === 'loading'}
+                    className="w-full px-4 py-3 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-brand-violet/50 focus:border-brand-violet/50 transition-all duration-200 disabled:opacity-50"
+                    placeholder="tu@email.com"
+                    aria-describedby="wl-help"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="phone" className="block text-sm font-medium text-white mb-2">
+                    Teléfono (opcional)
+                  </label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    disabled={formState === 'loading'}
+                    className="w-full px-4 py-3 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-brand-violet/50 focus:border-brand-violet/50 transition-all duration-200 disabled:opacity-50"
+                    placeholder="+56 9 1234 5678"
+                  />
+                </div>
+
+                <div id="wl-help" className="text-xs text-neutral-100/60">
+                  Te avisaremos cuando lancemos la nueva experiencia de arriendo 0% comisión.
+                </div>
+
+                <div 
+                  id="wl-status" 
+                  aria-live="polite" 
+                  className="min-h-[1.5rem]"
+                >
+                  {formState === 'loading' && (
+                    <div className="text-brand-aqua text-sm flex items-center">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-brand-aqua mr-2"></div>
+                      Enviando...
+                    </div>
+                  )}
+                  {formState === 'success' && (
+                    <div className="text-green-400 text-sm flex items-center">
+                      <CheckCircle className="w-4 h-4 mr-2" />
+                      ¡Listo! Te avisaremos cuando esté disponible.
+                    </div>
+                  )}
+                  {formState === 'error' && (
+                    <div className="text-red-400 text-sm">
+                      {formError}
+                    </div>
+                  )}
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={formState === 'loading' || !formData.email}
+                  className="w-full px-6 py-3 rounded-2xl bg-gradient-to-r from-brand-violet to-brand-aqua text-white font-semibold shadow-lg shadow-violet-500/20 hover:shadow-xl hover:shadow-violet-500/30 transition-all duration-200 focus-ring disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {formState === 'loading' ? 'Enviando...' : 'Unirme a la lista de espera'}
+                </button>
+              </form>
+            </motion.div>
           </motion.div>
         </div>
 
