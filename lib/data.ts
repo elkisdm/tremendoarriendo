@@ -1,7 +1,6 @@
 import { BookingRequestSchema, BuildingSchema, UnitSchema } from "@schemas/models";
 import type { BookingRequest, Building, Unit } from "@schemas/models";
 import { fromAssetPlan } from "@lib/adapters/assetplan";
-import { supabase, supabaseAdmin } from "@lib/supabase";
 
 type ListFilters = {
   comuna?: string;
@@ -28,6 +27,9 @@ function validateBuilding(raw: unknown): Building {
 async function readFromSupabase(): Promise<Building[] | null> {
   try {
     console.log('🔍 Intentando leer desde Supabase...');
+    
+    // Importar Supabase dinámicamente solo cuando se necesita
+    const { supabase, supabaseAdmin } = await import("@lib/supabase");
     
     // Usar el cliente admin para evitar problemas de permisos
     const client = supabaseAdmin || supabase;
