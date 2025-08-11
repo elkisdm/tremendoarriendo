@@ -6,11 +6,16 @@ import {
   Sparkles, 
   Clock, 
   Building, 
+  Building2,
   MessageCircle,
   MessageSquare,
   DollarSign,
   Zap,
-  CheckCircle
+  CheckCircle,
+  Smartphone,
+  Headphones,
+  FileText,
+  Calendar
 } from "lucide-react";
 import { buildWaLink } from "@lib/whatsapp";
 import { PromoBadge } from "./PromoBadge";
@@ -249,6 +254,19 @@ export function ComingSoonHero() {
     },
   };
 
+  const benefitCardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: (custom: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        delay: custom * 0.05,
+        ease: [0.22, 1, 0.36, 1],
+      },
+    }),
+  };
+
   const icons = [
     { Icon: ShieldCheck, label: "Seguridad garantizada" },
     { Icon: Sparkles, label: "Experiencia premium" },
@@ -306,7 +324,7 @@ export function ComingSoonHero() {
               variants={itemVariants}
               className="text-sm text-neutral-100/70 max-w-lg mx-auto leading-relaxed"
             >
-              Precios "Desde" reales. // TODO(BLUEPRINT): copiar legal final.
+              Precios &ldquo;Desde&rdquo; reales. // TODO(BLUEPRINT): copiar legal final.
             </motion.p>
 
             {/* CTAs debajo del legal */}
@@ -354,7 +372,7 @@ export function ComingSoonHero() {
               Estamos preparando la nueva experiencia de arriendo 0% comisión. Sin letra chica.
             </motion.p>
 
-            {/* Sección de beneficios de la promoción con efectos glass mejorados */}
+            {/* Sección de beneficios de la promoción con tarjetas glass */}
             <motion.div 
               variants={itemVariants}
               className="relative bg-white/5 backdrop-blur-sm rounded-3xl p-6 md:p-8 border border-white/10 hover:bg-white/8 transition-colors duration-200"
@@ -363,55 +381,49 @@ export function ComingSoonHero() {
               <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-200" />
               
               <div className="relative z-10">
-                <h2 className="text-xl md:text-2xl font-bold text-white mb-4">
+                <h2 className="text-xl md:text-2xl font-bold text-white mb-6 text-center">
                   🎉 ¡Ahorra hasta $500.000 en comisiones!
                 </h2>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
-                  <div className="space-y-3">
-                    <div className="flex items-center space-x-3">
-                      <CheckCircle className="w-5 h-5 text-brand-aqua flex-shrink-0" />
-                      <span className="text-neutral-100">0% comisión de corretaje</span>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <CheckCircle className="w-5 h-5 text-brand-aqua flex-shrink-0" />
-                      <span className="text-neutral-100">Proceso 100% digital</span>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <CheckCircle className="w-5 h-5 text-brand-aqua flex-shrink-0" />
-                      <span className="text-neutral-100">Edificios premium verificados</span>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-3">
-                    <div className="flex items-center space-x-3">
-                      <CheckCircle className="w-5 h-5 text-brand-aqua flex-shrink-0" />
-                      <span className="text-neutral-100">Soporte personalizado 24/7</span>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <CheckCircle className="w-5 h-5 text-brand-aqua flex-shrink-0" />
-                      <span className="text-neutral-100">Sin letra chica ni sorpresas</span>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <CheckCircle className="w-5 h-5 text-brand-aqua flex-shrink-0" />
-                      <span className="text-neutral-100">Reserva sin compromiso</span>
-                    </div>
-                  </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {[
+                    { icon: ShieldCheck, text: "0% comisión de corretaje" },
+                    { icon: Smartphone, text: "Proceso 100% digital" },
+                    { icon: Building2, text: "Edificios premium verificados" },
+                    { icon: Headphones, text: "Soporte personalizado 24/7" },
+                    { icon: FileText, text: "Sin letra chica ni sorpresas" },
+                    { icon: Calendar, text: "Reserva sin compromiso" }
+                  ].map(({ icon: Icon, text }, index) => (
+                    <motion.div
+                      key={index}
+                      variants={benefitCardVariants}
+                      custom={index}
+                      className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur p-4 transition-all duration-200 will-change-transform hover:-translate-y-[1px] hover:bg-white/8"
+                      whileHover={prefersReducedMotion ? {} : { y: -2 }}
+                    >
+                      <div className="flex flex-col items-center text-center space-y-3 h-full">
+                        <Icon className="size-5 text-white/90" aria-hidden="true" />
+                        <span className="text-sm text-neutral-100 font-medium leading-tight">
+                          {text}
+                        </span>
+                      </div>
+                    </motion.div>
+                  ))}
                 </div>
 
                 <div className="mt-6 p-4 bg-gradient-to-r from-brand-violet/20 to-brand-aqua/20 rounded-2xl backdrop-blur-sm border border-white/10">
-                  <div className="flex items-center justify-center space-x-2 text-white font-semibold">
+                  <div className="flex items-center justify-center space-x-2 text-white font-semibold text-center">
                     <DollarSign className="w-5 h-5" />
-                    <span>Ejemplo: Arriendo $800.000 → Ahorras $400.000 en comisión</span>
+                    <span>Ejemplo: Arriendo $450.000 → Ahorras $214.500 en comisión (incluye IVA)</span>
                   </div>
                 </div>
               </div>
             </motion.div>
 
-            {/* Grid de iconos con spacing ajustado */}
+            {/* Grid de iconos con dimensiones uniformes y centrado */}
             <motion.div 
               variants={itemVariants}
-              className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 max-w-md mx-auto"
+              className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 max-w-2xl mx-auto"
             >
               {icons.map(({ Icon, label }, index) => (
                 <motion.div
@@ -427,12 +439,12 @@ export function ComingSoonHero() {
                   role="button"
                   aria-label={label}
                 >
-                  <div className="relative p-4 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/8 transition-colors duration-200">
+                  <div className="relative p-6 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/8 transition-colors duration-200 h-full min-h-[120px] flex flex-col items-center justify-center">
                     <Icon 
-                      className="w-8 h-8 text-brand-violet mb-2" 
+                      className="w-8 h-8 text-brand-violet mb-3" 
                       aria-hidden="true"
                     />
-                    <span className="text-sm text-neutral-100 font-medium block">
+                    <span className="text-sm text-neutral-100 font-medium text-center leading-tight">
                       {label}
                     </span>
                     {/* Glass effect overlay */}
