@@ -13,6 +13,7 @@ import {
   CheckCircle
 } from "lucide-react";
 import { buildWaLink } from "@lib/whatsapp";
+import { PromoBadge } from "./PromoBadge";
 
 // Componente para el background SVG pattern
 function BackgroundPattern() {
@@ -239,6 +240,19 @@ export function ComingSoonHero() {
             >
               Próximamente
             </motion.h1>
+
+            {/* Badge "Sin letra chica" */}
+            <motion.div variants={itemVariants}>
+              <PromoBadge />
+            </motion.div>
+
+            {/* Legal breve */}
+            <motion.p 
+              variants={itemVariants}
+              className="text-sm text-neutral-100/70 max-w-lg mx-auto leading-relaxed"
+            >
+              Precios "Desde" reales. // TODO(BLUEPRINT): copiar legal final.
+            </motion.p>
 
             {/* Subtítulo con mejor contraste */}
             <motion.p 
