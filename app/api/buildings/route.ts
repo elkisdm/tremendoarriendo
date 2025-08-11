@@ -4,6 +4,9 @@ import { getAllBuildings } from "@lib/data";
 import type { Building, Unit, TypologySummary } from "@schemas/models";
 import { computeUnitTotalArea } from "@lib/derive";
 
+// Force dynamic rendering to avoid static generation issues
+export const dynamic = 'force-dynamic';
+
 const QuerySchema = z.object({
   comuna: z.string().min(1).optional(),
   tipologia: z.string().min(1).optional(),
