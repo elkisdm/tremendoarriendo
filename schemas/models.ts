@@ -102,9 +102,16 @@ export const BookingRequestSchema = z.object({
   preferredDate: z.string().datetime().optional(),
 });
 
+export const WaitlistRequestSchema = z.object({
+  email: z.string().email(),
+  phone: z.string().min(5).optional(),
+  utm: z.record(z.string()).optional(),
+});
+
 export type Unit = z.infer<typeof UnitSchema>;
 export type Building = z.infer<typeof BuildingSchema>;
 export type BookingRequest = z.infer<typeof BookingRequestSchema>;
+export type WaitlistRequest = z.infer<typeof WaitlistRequestSchema>;
 export type PromotionBadge = z.infer<typeof PromotionBadgeSchema>;
 export type TypologySummary = z.infer<typeof TypologySummarySchema>;
 export type Media = z.infer<typeof MediaSchema>;
