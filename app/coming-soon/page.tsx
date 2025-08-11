@@ -109,64 +109,12 @@ function FloatingParticles() {
 }
 
 export default function ComingSoonPage() {
-  const reduce = useReducedMotion();
-  const base = { initial: { opacity: 0, y: 12 }, animate: { opacity: 1, y: 0 } };
-  const t = { duration: 0.45, ease: [0.22, 1, 0.36, 1] };
-
   return (
-    <MotionConfig reducedMotion="user">
-      <section className="relative isolate min-h-[70vh] flex items-center">
-        {/* Background patterns */}
-        <BackgroundPattern />
-        <FloatingParticles />
-        
-        {/* Gradient overlay */}
-        <div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-br from-violet-900/40 via-fuchsia-700/25 to-cyan-700/30" />
-        
-        <div className="mx-auto max-w-3xl px-4 text-center">
-          <m.div {...(!reduce ? { ...base, transition: { ...t, delay: 0.05 } } : {})}>
-            <span className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 backdrop-blur text-white/90">
-              <Sparkles className="size-4" aria-hidden />
-              Próximamente
-            </span>
-          </m.div>
-
-          <m.h1
-            className="mt-4 text-4xl md:text-6xl font-extrabold leading-tight bg-clip-text text-transparent
-                       bg-gradient-to-r from-[--brand-violet,#7C3AED] via-fuchsia-400 to-[--brand-aqua,#22D3EE]"
-            {...(!reduce ? { ...base, transition: { ...t, delay: 0.1 } } : {})}
-          >
-            Muy pronto: Arriendo 0% comisión
-          </m.h1>
-
-          <m.p
-            className="mt-4 text-lg md:text-xl text-white/80"
-            {...(!reduce ? { ...base, transition: { ...t, delay: 0.15 } } : {})}
-          >
-            Experiencia simple, transparente y <strong>sin letra chica</strong>.
-          </m.p>
-
-          <m.div
-            className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4 text-left"
-            {...(!reduce ? { ...base, transition: { ...t, delay: 0.2 } } : {})}
-          >
-            {[
-              { icon: ShieldCheck, title: '0% comisión', desc: 'Sin costos ocultos.' },
-              { icon: Building2,  title: 'Stock verificado', desc: 'Disponibilidad actualizada.' },
-              { icon: Clock,      title: 'Agenda fácil', desc: 'WhatsApp o web.' },
-              { icon: Sparkles,   title: 'Sin letra chica', desc: 'Condiciones claras.' },
-            ].map(({ icon: Icon, title, desc }) => (
-              <div key={title} className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur p-4 flex items-start gap-3 hover:bg-white/8 transition-colors">
-                <Icon className="size-5 text-white/90" aria-hidden />
-                <div>
-                  <p className="font-semibold text-white">{title}</p>
-                  <p className="text-white/70 text-sm">{desc}</p>
-                </div>
-              </div>
-            ))}
-          </m.div>
-        </div>
-      </section>
-    </MotionConfig>
+    <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
+      <div className="text-center">
+        <h1 className="text-4xl font-bold mb-4">Muy pronto</h1>
+        <p className="text-xl">Estamos preparando la nueva experiencia de arriendo 0% comisión</p>
+      </div>
+    </div>
   );
 }
