@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+import { applyOverride, getFlagsStatus, type FlagOverride } from '@lib/flags';
 
 // Rate limiting in-memory (simple implementation)
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
@@ -64,18 +65,11 @@ export async function POST(request: NextRequest) {
 
     const { flag, value, duration = 1800 } = parsed.data; // 30min por defecto
 
-    // TODO: Implementar persistencia real (Redis/Supabase)
-    // Por ahora, solo simulamos el override
-    console.log(`Override request: ${flag} = ${value} for ${duration}s`);
+    // Aplicar override usando la función del lib
+    const override: FlagOverride = { flag, value, duration };
+    const result = applyOverride(override);
 
-    return NextResponse.json(
-      { 
-        success: true, 
-        message: `Flag ${flag} overrideado a ${value} por ${duration} segundos`,
-        expiresAt: new Date(Date.now() + duration * 1000).toISOString()
-      },
-      { status: 200 }
-    );
+    return NextResponse.json(result, { status: 200 });
 
   } catch (error) {
     console.error('Error en override API:', error);
@@ -89,13 +83,12 @@ export async function POST(request: NextRequest) {
 // GET para ver estado actual
 export async function GET() {
   try {
-    // TODO: Obtener estado real de flags
+    const flagsStatus = getFlagsStatus();
+    
     return NextResponse.json(
       { 
         success: true,
-        flags: {
-          comingSoon: true // Valor por defecto
-        }
+        flags: flagsStatus
       },
       { status: 200 }
     );
