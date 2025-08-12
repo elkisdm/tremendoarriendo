@@ -3,7 +3,7 @@ import type { MetadataRoute } from 'next';
 function readComingSoonSafe(): boolean {
   try {
     // Importación segura con fallback
-    const { featureFlags } = require('@/config/feature-flags');
+    const { featureFlags } = require('@/config/feature-flags.ts');
     return Boolean(featureFlags?.comingSoon);
   } catch {
     // Fallback seguro: permitir crawl por defecto
