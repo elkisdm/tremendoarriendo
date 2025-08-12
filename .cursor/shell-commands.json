@@ -1,0 +1,44 @@
+{
+  "shellCommands": [
+    {
+      "name": "QA: all",
+      "command": "pnpm lint && pnpm typecheck && pnpm test -s && pnpm build && node scripts/release-gate.mjs",
+      "description": "Ejecuta todas las verificaciones de calidad"
+    },
+    {
+      "name": "Gate (puerto custom)",
+      "command": "RG_PORT=3001 node scripts/release-gate.mjs",
+      "description": "Ejecuta release gate en puerto personalizado"
+    },
+    {
+      "name": "Dev",
+      "command": "pnpm dev",
+      "description": "Inicia el servidor de desarrollo"
+    },
+    {
+      "name": "Test: watch",
+      "command": "pnpm test --watch",
+      "description": "Ejecuta tests en modo watch"
+    },
+    {
+      "name": "Lint: fix",
+      "command": "pnpm lint --fix",
+      "description": "Ejecuta linting y corrige errores automáticamente"
+    },
+    {
+      "name": "Type check",
+      "command": "pnpm typecheck",
+      "description": "Verifica tipos de TypeScript"
+    },
+    {
+      "name": "Build",
+      "command": "pnpm build",
+      "description": "Construye la aplicación para producción"
+    },
+    {
+      "name": "Verify Cursor",
+      "command": "node scripts/verify-cursor-setup.mjs",
+      "description": "Verifica que el setup de Cursor esté correcto"
+    }
+  ]
+}

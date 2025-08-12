@@ -90,7 +90,7 @@ describe('assetplan.adapter', () => {
       // Unit 2: 1D/1B with promotions
       const unit2 = result.units.find(u => u.id === 'u2');
       expect(unit2).toBeDefined();
-      expect(unit2!.tipologia).toBe('1D/1B');
+      expect(unit2!.tipologia).toBe('1D1B');
       expect(unit2!.bedrooms).toBe(1);
       expect(unit2!.bathrooms).toBe(1);
       expect(unit2!.m2).toBe(35); // uses m2 field
@@ -105,7 +105,7 @@ describe('assetplan.adapter', () => {
       // Unit 3: 2D/2B not available
       const unit3 = result.units.find(u => u.id === 'u3');
       expect(unit3).toBeDefined();
-      expect(unit3!.tipologia).toBe('2D/2B');
+      expect(unit3!.tipologia).toBe('2D2B');
       expect(unit3!.bedrooms).toBe(2);
       expect(unit3!.bathrooms).toBe(2);
       expect(unit3!.area_interior_m2).toBe(55);
@@ -121,7 +121,7 @@ describe('assetplan.adapter', () => {
       // Should have typology summary based on available units
       const availableUnits = result.units.filter(u => u.disponible);
       const typologies = [...new Set(availableUnits.map(u => u.tipologia))];
-      expect(typologies).toEqual(['Studio', '1D/1B']);
+      expect(typologies).toEqual(['Studio', '1D1B']);
     });
 
     test('sets hasAvailability=true when units are available', () => {

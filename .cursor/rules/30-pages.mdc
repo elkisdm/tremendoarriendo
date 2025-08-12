@@ -1,0 +1,16 @@
+---
+description: Páginas App Router (SSR/ISR)
+globs:
+  - app/**/page.tsx
+  - app/**/layout.tsx
+alwaysApply: false
+---
+
+- Mantén SSR/ISR. Define `export const revalidate` cuando aplique.
+- Sin fallback a mocks en prod si faltan env (error claro).
+- Metadatos dinámicos con generateMetadata cuando sea necesario.
+- Error boundaries apropiadas para cada ruta.
+- Loading states con Suspense.
+- SEO: title, description, Open Graph, structured data.
+- Revalidación inteligente basada en la naturaleza de los datos.
+- Manejo de rutas dinámicas con validación de parámetros.

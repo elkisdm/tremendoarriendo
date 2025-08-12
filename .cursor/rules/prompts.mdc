@@ -1,0 +1,160 @@
+---
+description: Plantillas de prompts (Arranque, Diagnóstico, Componente, API, Cierre)
+alwaysApply: false
+---
+
+Usa cuando el usuario pida una de estas plantillas. Entrega EXACTO con las estructuras A–E (plan/paso1/QA/rollback).
+
+## A) PLANTILLA DIAGNÓSTICO
+```
+## 🔍 DIAGNÓSTICO: [Título del problema]
+
+### Contexto
+- [Descripción breve del problema]
+- [Archivos afectados]
+- [Comportamiento esperado vs actual]
+
+### Análisis
+- [Causa raíz identificada]
+- [Impacto en UX/Performance/Seguridad]
+- [Dependencias afectadas]
+
+### Plan de Acción (5-7 pasos)
+1. [Paso 1: Acción específica]
+2. [Paso 2: Acción específica]
+3. [Paso 3: Acción específica]
+4. [Paso 4: Acción específica]
+5. [Paso 5: Acción específica]
+
+### Comandos QA
+```bash
+# Verificar el problema
+[comando específico]
+
+# Tests relacionados
+[comando de test]
+```
+
+### Riesgos y Rollback
+- **Riesgos**: [Lista de posibles problemas]
+- **Rollback**: [Pasos para revertir si algo sale mal]
+```
+
+## B) PLANTILLA API
+```
+## 🚀 API: [Nombre del endpoint]
+
+### Plan (5-7 pasos)
+1. Crear schema Zod para validación
+2. Implementar rate limiting (20/60s/IP)
+3. Crear handler con validación
+4. Añadir manejo de errores
+5. Tests de integración
+6. Documentación y curl test
+
+### PASO 1: Schema y estructura base
+[Implementación del Paso 1]
+
+### Test Curl
+```bash
+curl -X POST http://localhost:3000/api/[endpoint] \
+  -H "Content-Type: application/json" \
+  -d '{"test": "data"}'
+```
+
+### Comandos QA
+```bash
+pnpm lint
+pnpm typecheck
+pnpm test -- --testNamePattern="[nombre del test]"
+```
+
+### Riesgos y Rollback
+- **Riesgos**: Rate limiting mal configurado, validación insuficiente
+- **Rollback**: Revertir commit, verificar logs
+```
+
+## C) PLANTILLA COMPONENTE
+```
+## 🎨 COMPONENTE: [Nombre del componente]
+
+### Plan (5-7 pasos)
+1. Crear estructura base (RSC por defecto)
+2. Implementar props tipadas
+3. Añadir estilos Tailwind + A11y
+4. Tests de render e interacción
+5. Integración en página
+6. Optimización performance
+
+### PASO 1: Estructura base
+[Implementación del Paso 1]
+
+### Comandos QA
+```bash
+pnpm lint
+pnpm typecheck
+pnpm test -- --testNamePattern="[ComponentName]"
+```
+
+### Riesgos y Rollback
+- **Riesgos**: Breaking changes en props, problemas de A11y
+- **Rollback**: Revertir componente, verificar build
+```
+
+## D) PLANTILLA PÁGINA
+```
+## 📄 PÁGINA: [Nombre de la página]
+
+### Plan (5-7 pasos)
+1. Crear estructura page.tsx + layout
+2. Implementar SSR/ISR con revalidate
+3. Metadatos dinámicos
+4. Error boundaries
+5. Loading states
+6. Tests de ruta
+
+### PASO 1: Estructura base
+[Implementación del Paso 1]
+
+### Comandos QA
+```bash
+pnpm build
+pnpm start
+# Verificar en http://localhost:3000/[ruta]
+```
+
+### Riesgos y Rollback
+- **Riesgos**: Problemas de SSR, metadatos incorrectos
+- **Rollback**: Revertir página, verificar routing
+```
+
+## E) PLANTILLA CIERRE
+```
+## ✅ CIERRE: [Título de la tarea]
+
+### Resumen de Cambios
+- [Lista de archivos modificados]
+- [Funcionalidades implementadas]
+- [Tests añadidos]
+
+### Verificación Final
+- [ ] Build exitoso
+- [ ] Tests pasando
+- [ ] Lint sin errores
+- [ ] TypeScript sin errores
+- [ ] A11y verificada
+- [ ] Performance OK
+
+### Próximos Pasos
+- [Siguiente tarea o mejora]
+- [Consideraciones para el futuro]
+
+### Comandos de Verificación
+```bash
+pnpm lint && pnpm typecheck && pnpm test && pnpm build
+```
+```
+description:
+globs:
+alwaysApply: false
+---
