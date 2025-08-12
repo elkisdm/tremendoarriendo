@@ -74,7 +74,6 @@ async function ensureBuilding(
     .select("id")
     .single();
   if (error) {
-    // eslint-disable-next-line no-console
     console.error(`Building upsert failed for ${buildingKey}: ${error.message}`);
     return null;
   }
@@ -125,7 +124,6 @@ async function upsertUnit(
     .from("units")
     .upsert([payload], { onConflict: "provider,source_unit_id" });
   if (error) {
-    // eslint-disable-next-line no-console
     console.error(`Unit upsert failed for ${payload.source_unit_id}: ${error.message}`);
     return false;
   }
@@ -135,7 +133,6 @@ async function upsertUnit(
 async function main() {
   const arg = process.argv[2];
   if (!arg) {
-    // eslint-disable-next-line no-console
     console.error("Uso: ts-node scripts/ingest-csv-direct.ts <ruta.csv | @URL>");
     process.exitCode = 1;
     return;
@@ -169,12 +166,10 @@ async function main() {
 
   await supabase.rpc("refresh_building_aggregates");
 
-  // eslint-disable-next-line no-console
   console.log(JSON.stringify({ buildingsTouched, unitsUpserted }, null, 2));
 }
 
 main().catch((err) => {
-  // eslint-disable-next-line no-console
   console.error(err);
   process.exitCode = 1;
 });
