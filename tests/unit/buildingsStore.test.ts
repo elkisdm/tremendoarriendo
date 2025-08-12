@@ -1,4 +1,3 @@
-import { renderHook, act } from '@testing-library/react';
 import { useBuildingsStore } from '../../stores/buildingsStore';
 import { Building } from '../../types';
 
@@ -27,115 +26,103 @@ const mockBuilding: Building = {
 describe('BuildingsStore', () => {
   beforeEach(() => {
     // Reset del store antes de cada test
-    act(() => {
-      useBuildingsStore().reset();
-    });
+    useBuildingsStore.getState().reset();
   });
 
   it('should initialize with default state', () => {
-    const { result } = renderHook(() => useBuildingsStore());
+    const state = useBuildingsStore.getState();
     
-    expect(result.current.buildings).toEqual([]);
-    expect(result.current.filteredBuildings).toEqual([]);
-    expect(result.current.loading).toBe(false);
-    expect(result.current.error).toBeNull();
-    expect(result.current.filters).toEqual({});
-    expect(result.current.sort).toBe('price-asc');
+    expect(state.buildings).toEqual([]);
+    expect(state.filteredBuildings).toEqual([]);
+    expect(state.loading).toBe(false);
+    expect(state.error).toBeNull();
+    expect(state.filters).toEqual({});
+    expect(state.sort).toBe('price-asc');
   });
 
   it('should set buildings correctly', () => {
-    const { result } = renderHook(() => useBuildingsStore());
+    const store = useBuildingsStore.getState();
     
-    act(() => {
-      result.current.setBuildings([mockBuilding]);
-    });
+    store.setBuildings([mockBuilding]);
     
-    expect(result.current.buildings).toEqual([mockBuilding]);
-    expect(result.current.filteredBuildings).toEqual([mockBuilding]);
+    const newState = useBuildingsStore.getState();
+    expect(newState.buildings).toEqual([mockBuilding]);
+    expect(newState.filteredBuildings).toEqual([mockBuilding]);
   });
 
   it('should set loading state', () => {
-    const { result } = renderHook(() => useBuildingsStore());
+    const store = useBuildingsStore.getState();
     
-    act(() => {
-      result.current.setLoading(true);
-    });
+    store.setLoading(true);
     
-    expect(result.current.loading).toBe(true);
+    const newState = useBuildingsStore.getState();
+    expect(newState.loading).toBe(true);
   });
 
   it('should set error state', () => {
-    const { result } = renderHook(() => useBuildingsStore());
+    const store = useBuildingsStore.getState();
     
-    act(() => {
-      result.current.setError('Test error');
-    });
+    store.setError('Test error');
     
-    expect(result.current.error).toBe('Test error');
+    const newState = useBuildingsStore.getState();
+    expect(newState.error).toBe('Test error');
   });
 
   it('should set filters correctly', () => {
-    const { result } = renderHook(() => useBuildingsStore());
+    const store = useBuildingsStore.getState();
     
-    act(() => {
-      result.current.setFilters({ comuna: 'Las Condes', minPrice: 400000 });
-    });
+    store.setFilters({ comuna: 'Las Condes', minPrice: 400000 });
     
-    expect(result.current.filters).toEqual({
+    const newState = useBuildingsStore.getState();
+    expect(newState.filters).toEqual({
       comuna: 'Las Condes',
       minPrice: 400000,
     });
   });
 
   it('should clear filters', () => {
-    const { result } = renderHook(() => useBuildingsStore());
+    const store = useBuildingsStore.getState();
     
     // Set filters first
-    act(() => {
-      result.current.setFilters({ comuna: 'Las Condes' });
-    });
+    store.setFilters({ comuna: 'Las Condes' });
     
-    expect(result.current.filters).toEqual({ comuna: 'Las Condes' });
+    let newState = useBuildingsStore.getState();
+    expect(newState.filters).toEqual({ comuna: 'Las Condes' });
     
     // Clear filters
-    act(() => {
-      result.current.clearFilters();
-    });
+    store.clearFilters();
     
-    expect(result.current.filters).toEqual({});
+    newState = useBuildingsStore.getState();
+    expect(newState.filters).toEqual({});
   });
 
   it('should set sort correctly', () => {
-    const { result } = renderHook(() => useBuildingsStore());
+    const store = useBuildingsStore.getState();
     
-    act(() => {
-      result.current.setSort('price-desc');
-    });
+    store.setSort('price-desc');
     
-    expect(result.current.sort).toBe('price-desc');
+    const newState = useBuildingsStore.getState();
+    expect(newState.sort).toBe('price-desc');
   });
 
   it('should reset to initial state', () => {
-    const { result } = renderHook(() => useBuildingsStore());
+    const store = useBuildingsStore.getState();
     
     // Modify state
-    act(() => {
-      result.current.setBuildings([mockBuilding]);
-      result.current.setLoading(true);
-      result.current.setError('Test error');
-      result.current.setFilters({ comuna: 'Las Condes' });
-      result.current.setSort('price-desc');
-    });
+    store.setBuildings([mockBuilding]);
+    store.setLoading(true);
+    store.setError('Test error');
+    store.setFilters({ comuna: 'Las Condes' });
+    store.setSort('price-desc');
     
     // Reset
-    act(() => {
-      result.current.reset();
-    });
+    store.reset();
     
-    expect(result.current.buildings).toEqual([]);
-    expect(result.current.loading).toBe(false);
-    expect(result.current.error).toBeNull();
-    expect(result.current.filters).toEqual({});
-    expect(result.current.sort).toBe('price-asc');
+    const finalState = useBuildingsStore.getState();
+    expect(finalState.buildings).toEqual([]);
+    expect(finalState.loading).toBe(false);
+    expect(finalState.error).toBeNull();
+    expect(finalState.filters).toEqual({});
+    expect(finalState.sort).toBe('price-asc');
   });
 });

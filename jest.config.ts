@@ -2,9 +2,9 @@ import type { Config } from 'jest';
 
 const config: Config = {
   preset: 'ts-jest',
-  testEnvironment: 'jsdom',
+  testEnvironment: 'node',
   roots: ['<rootDir>/tests'],
-  setupFilesAfterEnv: ['<rootDir>/tests/setupTests.ts'],
+  setupFilesAfterEnv: [],
   moduleNameMapper: {
     '^@components/(.*)$': '<rootDir>/components/$1',
     '^@lib/(.*)$': '<rootDir>/lib/$1',
@@ -15,7 +15,6 @@ const config: Config = {
     '^@lib/whatsapp$': '<rootDir>/tests/__mocks__/whatsapp.ts',
     '^@lib/analytics$': '<rootDir>/tests/__mocks__/analytics.ts',
     '^server-only$': '<rootDir>/tests/__mocks__/server-only.ts',
-    '^zustand$': '<rootDir>/tests/__mocks__/zustand.ts',
     '^framer-motion$': '<rootDir>/tests/__mocks__/framer-motion.tsx',
     '^@heroicons/react/24/outline$': '<rootDir>/tests/__mocks__/heroicons.tsx',
   },

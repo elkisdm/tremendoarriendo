@@ -1,9 +1,7 @@
-// TODO: Uncomment when zustand is installed
-/*
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import { Building } from '@/types';
-import { BuildingsStore, BuildingFilters, SortOption } from '@/types/buildings';
+import { Building } from '../types';
+import { BuildingsStore, BuildingFilters, SortOption } from '../types/buildings';
 
 // Estado inicial
 const initialState = {
@@ -84,16 +82,5 @@ export const useBuildingsLoading = () => useBuildingsStore((state) => state.load
 export const useBuildingsError = () => useBuildingsStore((state) => state.error);
 export const useBuildingsFilters = () => useBuildingsStore((state) => state.filters);
 export const useBuildingsSort = () => useBuildingsStore((state) => state.sort);
-*/
 
-// Mock temporal para desarrollo
-import { useBuildingsStore as mockStore } from '../tests/__mocks__/zustand';
 
-export const useBuildingsStore = mockStore;
-
-export const useBuildings = () => useBuildingsStore().buildings;
-export const useFilteredBuildings = () => useBuildingsStore().filteredBuildings;
-export const useBuildingsLoading = () => useBuildingsStore().loading;
-export const useBuildingsError = () => useBuildingsStore().error;
-export const useBuildingsFilters = () => useBuildingsStore().filters;
-export const useBuildingsSort = () => useBuildingsStore().sort;
