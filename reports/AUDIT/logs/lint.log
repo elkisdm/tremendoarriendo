@@ -30,3 +30,7 @@
 > hommie-0-commission@1.0.0 lint
 > eslint . --ext .ts,.tsx,.js,.jsx,.mjs,.cjs --report-unused-disable-directives --max-warnings=0
 
+
+> hommie-0-commission@1.0.0 lint
+> eslint . --ext .ts,.tsx,.js,.jsx,.mjs,.cjs --report-unused-disable-directives --max-warnings=0
+

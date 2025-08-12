@@ -1,6 +1,6 @@
 # Performance (estática)
 
-Generated at: 2025-08-12T00:45:49.721Z
+Generated at: 2025-08-12T00:46:21.276Z
 
 ### Assets más pesados en public/
 | Archivo | Bytes |

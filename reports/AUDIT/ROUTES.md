@@ -1,6 +1,6 @@
 # App Router Routes
 
-Generated at: 2025-08-12T00:45:36.927Z
+Generated at: 2025-08-12T00:46:06.565Z
 
 | Ruta | Tipo | Metadata | Loading | Error | Revalidate/ISR | Dynamic | Dir |
 | --- | --- | --- | --- | --- | --- | --- | --- |
