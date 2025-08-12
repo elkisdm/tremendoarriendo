@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function ComingSoonPage() {
   return (
-    <div className="relative">
+    <div className="relative min-h-screen w-full">
       <BackgroundFX />
       <ComingSoonHero />
     </div>

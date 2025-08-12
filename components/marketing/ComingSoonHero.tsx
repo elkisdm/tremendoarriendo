@@ -23,110 +23,7 @@ import { track } from "@lib/analytics";
 import { Modal } from "@components/ui/Modal";
 import { WaitlistForm } from "./WaitlistForm";
 
-// Componente para el background SVG pattern
-function BackgroundPattern() {
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {/* Grid pattern SVG */}
-      <svg
-        className="absolute inset-0 w-full h-full opacity-[0.03] mix-blend-overlay"
-        xmlns="http://www.w3.org/2000/svg"
-        width="100%"
-        height="100%"
-        viewBox="0 0 100 100"
-        preserveAspectRatio="none"
-      >
-        <defs>
-          <pattern
-            id="grid-coming-soon"
-            width="10"
-            height="10"
-            patternUnits="userSpaceOnUse"
-          >
-            <path
-              d="M 10 0 L 0 0 0 10"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="0.5"
-              className="text-white"
-            />
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#grid-coming-soon)" />
-      </svg>
-      
-      {/* Hex pattern overlay */}
-      <svg
-        className="absolute inset-0 w-full h-full opacity-[0.02] mix-blend-soft-light"
-        xmlns="http://www.w3.org/2000/svg"
-        width="100%"
-        height="100%"
-        viewBox="0 0 100 100"
-        preserveAspectRatio="none"
-      >
-        <defs>
-          <pattern
-            id="hex-coming-soon"
-            width="20"
-            height="17.32"
-            patternUnits="userSpaceOnUse"
-            patternTransform="rotate(30)"
-          >
-            <polygon
-              points="10,0 20,5.77 20,17.32 10,23.09 0,17.32 0,5.77"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="0.3"
-              className="text-white"
-            />
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#hex-coming-soon)" />
-      </svg>
-    </div>
-  );
-}
 
-// Componente para partículas sutiles con parallax - optimizado para performance
-function FloatingParticles({ prefersReducedMotion }: { prefersReducedMotion: boolean }) {
-  if (prefersReducedMotion) return null;
-
-  // Reducir número de partículas para mejor performance
-  const particles = [
-    { id: 1, x: "15%", y: "25%", size: "4", delay: 0 },
-    { id: 2, x: "80%", y: "20%", size: "6", delay: 2 },
-    { id: 3, x: "20%", y: "75%", size: "3", delay: 4 },
-    { id: 4, x: "75%", y: "80%", size: "5", delay: 6 },
-  ];
-
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {particles.map((particle) => (
-        <motion.div
-          key={particle.id}
-          className="absolute rounded-full bg-gradient-to-r from-brand-violet/20 to-brand-aqua/20"
-          style={{
-            left: particle.x,
-            top: particle.y,
-            width: `${particle.size}px`,
-            height: `${particle.size}px`,
-          }}
-          initial={{ opacity: 0 }}
-          animate={{
-            opacity: [0, 0.4, 0],
-            y: [-5, 5],
-          }}
-          transition={{
-            duration: 6,
-            delay: particle.delay,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-      ))}
-    </div>
-  );
-}
 
 export function ComingSoonHero() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
@@ -218,10 +115,6 @@ export function ComingSoonHero() {
   return (
     <MotionConfig reducedMotion={prefersReducedMotion ? "user" : "never"}>
       <section className="relative min-h-[70vh] flex items-center overflow-hidden bg-transparent">
-        {/* Background patterns and particles */}
-        <BackgroundPattern />
-        <FloatingParticles prefersReducedMotion={prefersReducedMotion} />
-
         {/* Contenido principal */}
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center pt-20 pb-16 md:pb-24">
           <motion.div
