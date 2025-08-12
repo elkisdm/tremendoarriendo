@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getBaseUrl } from "@lib/site";
 import { LinkGrid } from "@components/linktree/LinkGrid";
+import { BioHeader } from "@components/bio/BioHeader";
 import { buildWaLink } from "@lib/whatsapp";
 
 const baseUrl = getBaseUrl();
@@ -32,17 +33,7 @@ export default function MiBioPage() {
 
       {/* Bio Section */}
       <section aria-labelledby="bio-heading" className="container mx-auto px-4 py-8 max-w-sm">
-        <h1 id="bio-heading" className="text-2xl font-bold mb-6">
-          Mi Bio
-        </h1>
-        <div className="space-y-4">
-          {/* TODO: Integrar componente de bio con foto y descripción */}
-          <div className="bg-card rounded-2xl p-6 shadow-sm">
-            <p className="text-muted-foreground">
-              [Placeholder: Descripción profesional y experiencia en el mercado inmobiliario]
-            </p>
-          </div>
-        </div>
+        <BioHeader />
       </section>
 
       {/* Destacadas Section */}
