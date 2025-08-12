@@ -32,7 +32,6 @@ function main() {
     })),
   };
 
-  // eslint-disable-next-line no-console
   console.log(JSON.stringify(summary, null, 2));
 }
 

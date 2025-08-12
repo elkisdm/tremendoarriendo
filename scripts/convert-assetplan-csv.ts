@@ -136,7 +136,6 @@ function mapRowsToBuildings(rows: CsvRow[]): AssetPlanCsvBuilding[] {
 async function main() {
   const arg = process.argv[2];
   if (!arg) {
-    // eslint-disable-next-line no-console
     console.error("Uso: ts-node scripts/convert-assetplan-csv.ts <ruta.csv | @URL>");
     process.exitCode = 1;
     return;
@@ -151,12 +150,10 @@ async function main() {
   const outPath = path.join(outDir, "assetplan-from-csv.json");
   await fs.writeFile(outPath, JSON.stringify(buildings, null, 2), "utf8");
 
-  // eslint-disable-next-line no-console
   console.log(`Escrito ${buildings.length} edificios a ${outPath}`);
 }
 
 main().catch((err) => {
-  // eslint-disable-next-line no-console
   console.error(err);
   process.exitCode = 1;
 });

@@ -248,9 +248,7 @@ async function readAssetPlanSources(): Promise<Building[] | null> {
 
   try {
     // Use eval to avoid bundlers trying to include Node built-ins in client chunks
-    // eslint-disable-next-line no-eval
     const pathMod = (await (0, eval)("import('node:path')")) as typeof import("node:path");
-    // eslint-disable-next-line no-eval
     const fs = (await (0, eval)("import('node:fs/promises')")) as typeof import("node:fs/promises");
 
     const sourcesDir = pathMod.join(process.cwd(), "data", "sources");

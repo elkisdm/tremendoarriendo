@@ -71,12 +71,10 @@ async function main() {
     try {
       // Validate remote URL returns CSV-like content (or direct download)
       await loadCsv(remoteUrl);
-      // eslint-disable-next-line no-console
       console.log("Remote CSV validated successfully");
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       if (message === "CSV expected") {
-        // eslint-disable-next-line no-console
         console.error(
           "CSV expected. Parece ser una página de confirmación de Google Drive. Instrucción: mover a Supabase Storage o usar link directo"
         );
@@ -134,7 +132,6 @@ async function main() {
       .select("id")
       .single();
     if (bErr || !bRow) {
-      // eslint-disable-next-line no-console
       console.error(`Building upsert failed for ${enriched.id}: ${bErr?.message ?? "unknown error"}`);
       continue;
     }
@@ -147,7 +144,6 @@ async function main() {
       .eq("provider", "assetplan")
       .eq("building_id", buildingId);
     if (exErr) {
-      // eslint-disable-next-line no-console
       console.error(`Failed to fetch existing units for building ${enriched.id}: ${exErr.message}`);
     }
     const existingBySource = new Map<string, { id: string }>();
@@ -197,7 +193,6 @@ async function main() {
         .from("units")
         .upsert(upsertPayload, { onConflict: "provider,source_unit_id" });
       if (upErr) {
-        // eslint-disable-next-line no-console
         console.error(`Units upsert failed for building ${enriched.id}: ${upErr.message}`);
       } else {
         counters.unitsUpserted += upsertPayload.length;
@@ -217,7 +212,6 @@ async function main() {
         .update({ disponible: false, status: "inactive", updated_at: new Date().toISOString() })
         .in("id", missingIds);
       if (delErr) {
-        // eslint-disable-next-line no-console
         console.error(`Soft-delete failed for building ${enriched.id}: ${delErr.message}`);
       } else {
         counters.unitsSoftDeleted += missingIds.length;
@@ -257,11 +251,9 @@ async function main() {
     })
     .eq("id", runId);
   if (finishErr) {
-    // eslint-disable-next-line no-console
     console.error(`Failed to finalize ingest_runs: ${finishErr.message}`);
   }
 
-  // eslint-disable-next-line no-console
   console.log(
     JSON.stringify(
       {
@@ -279,7 +271,6 @@ async function main() {
 }
 
 main().catch((err) => {
-  // eslint-disable-next-line no-console
   console.error(err);
   process.exitCode = 1;
 });

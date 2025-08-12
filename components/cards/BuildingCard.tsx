@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { Bed, Bath, Maximize2, MapPin, Heart } from "lucide-react";
 import { PromotionBadge } from "@components/ui/PromotionBadge";
@@ -22,7 +23,7 @@ export function BuildingCard({ building }: { building: BuildingSummary }){
   return (
     <motion.div layout whileHover={{ y: -4 }} className="group rounded-2xl bg-[var(--soft)]/90 ring-1 ring-white/10 overflow-hidden hover:ring-[var(--ring)]/60 transition-all">
       <div className="relative aspect-[16/10] overflow-hidden">
-        <img src={imageSrc} alt={`Portada ${building.name}`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+        <Image src={imageSrc} alt={`Portada ${building.name}`} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
         <div className="absolute top-3 left-3">
           <PromotionBadge label={building.badges?.[0]?.label} tag={building.badges?.[0]?.tag} />
         </div>

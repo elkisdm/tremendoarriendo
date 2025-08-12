@@ -55,7 +55,6 @@ export function ImageGallery({ images, media, coverImage }: ImageGalleryProps) {
             )}
             aria-label={`Ver imagen ${i + 1} de ${imageList.length}`}
             aria-pressed={i === active}
-            aria-selected={i === active}
           >
             <Image
               src={src}
