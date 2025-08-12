@@ -89,7 +89,7 @@ export function useFetchBuildings({ filters, sort }: FetchBuildingsParams) {
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
     refetchOnWindowFocus: false,
-    retry: (failureCount, error) => {
+    retry: (failureCount: number, error: Error) => {
       // Don't retry on 4xx errors
       if (error instanceof Error && error.message.includes("Error 4")) {
         return false;
