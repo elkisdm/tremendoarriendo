@@ -1,15 +1,28 @@
 # QA local (estática)
 
-Generated at: 2025-08-11T22:36:47.833Z
+Generated at: 2025-08-12T00:45:49.652Z
 
 ## Comandos ejecutados
 - npm run lint
 - npm run typecheck
-- (omitido) npm test -s
-- (omitido) NEXT_TELEMETRY_DISABLED=1 npm run build
+- npm test -s
+- NEXT_TELEMETRY_DISABLED=1 npm run build
 
 ## Resumen
-- Lint: exit 1, errors 0, warnings 0
+- Lint: exit 0, errors 0, warnings 0
 - Typecheck: exit 1, errors 5, warnings 0
-- Tests: exit 0, pass 0, fail 0
+- Tests: exit 1, pass 6, fail 6
 - Build: exit 0, errors 0, warnings 0
+
+## Estadísticas del proyecto
+- Rutas detectadas: 5
+- Componentes totales: 36
+- Componentes client: 19
+- Componentes server: 17
+
+## Top 5 Hallazgos
+- [media] lib/seo/jsonld.ts: dangerouslySetInnerHTML requiere sanitización
+- [media] lib/seo/jsonld.ts: dangerouslySetInnerHTML requiere sanitización
+- [media] reports/AUDIT/BIG_ROCKS.md: dangerouslySetInnerHTML requiere sanitización
+- [media] reports/AUDIT/BIG_ROCKS.md: dangerouslySetInnerHTML requiere sanitización
+- [media] reports/AUDIT/BIG_ROCKS.md: dangerouslySetInnerHTML requiere sanitización

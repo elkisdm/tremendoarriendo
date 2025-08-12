@@ -1,6 +1,6 @@
 # Auditoría del Proyecto
 
-Timestamp: 2025-08-11T22:36:47.217Z
+Timestamp: 2025-08-12T00:45:36.914Z
 
 Secciones:
 - REPO_TREE.md
@@ -21,19 +21,19 @@ Secciones:
 
 ---
 Verificación:
-- Archivos auditados: 214
+- Archivos auditados: 225
 - Rutas detectadas: 5
 - Lint errors/warnings: 0/0
 - Type errors/warnings: 5/0
-- Test pass/fail: 0/0
+- Test pass/fail: 6/6
 - Build errors/warnings: 0/0
 
 Top 5 hallazgos:
-- [media] app/(catalog)/property/[slug]/page.tsx: dangerouslySetInnerHTML requiere sanitización
-- [media] scripts/audit.mjs: dangerouslySetInnerHTML requiere sanitización
-- [media] scripts/audit.mjs: dangerouslySetInnerHTML requiere sanitización
-- [media] scripts/audit.mjs: dangerouslySetInnerHTML requiere sanitización
-- [media] scripts/audit.mjs: dangerouslySetInnerHTML requiere sanitización
+- [media] lib/seo/jsonld.ts: dangerouslySetInnerHTML requiere sanitización
+- [media] lib/seo/jsonld.ts: dangerouslySetInnerHTML requiere sanitización
+- [media] reports/AUDIT/BIG_ROCKS.md: dangerouslySetInnerHTML requiere sanitización
+- [media] reports/AUDIT/BIG_ROCKS.md: dangerouslySetInnerHTML requiere sanitización
+- [media] reports/AUDIT/BIG_ROCKS.md: dangerouslySetInnerHTML requiere sanitización
 
 Exec Summary: reports/AUDIT/EXEC_SUMMARY.md
-GO/NO-GO: GO
+GO/NO-GO: NO-GO

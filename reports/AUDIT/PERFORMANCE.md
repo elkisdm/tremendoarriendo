@@ -1,6 +1,6 @@
 # Performance (estática)
 
-Generated at: 2025-08-11T22:36:47.906Z
+Generated at: 2025-08-12T00:45:49.721Z
 
 ### Assets más pesados en public/
 | Archivo | Bytes |
@@ -26,8 +26,8 @@ Generated at: 2025-08-11T22:36:47.906Z
 | public/globe.svg | 1035 |
 | public/file.svg | 391 |
 
-next/image refs: 6
-raw <img>: 1
+next/image refs: 8
+raw <img>: 0
 dynamic import(): 7
-prefetch refs: 4
-next/font refs: 4
+prefetch refs: 5
+next/font refs: 5

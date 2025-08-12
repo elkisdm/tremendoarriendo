@@ -1,6 +1,6 @@
 # Repo Tree (3 niveles)
 
-Generated at: 2025-08-11T22:36:47.242Z
+Generated at: 2025-08-12T00:45:36.925Z
 
 ````
 /Users/macbookpro/Documents/hommie-0-commission-next
@@ -13,6 +13,7 @@ Generated at: 2025-08-11T22:36:47.242Z
       📁 landing
         📄 error.tsx
         📄 loading.tsx
+        📄 metadata.ts
         📄 page.tsx
       📁 landing 2
     📁 api
@@ -41,6 +42,7 @@ Generated at: 2025-08-11T22:36:47.242Z
     📄 page.tsx
     📁 propiedad
       📁 [id]
+        📄 metadata.ts
         📄 page.tsx
       📁 [id] 2
     📄 providers 2.tsx
@@ -107,7 +109,6 @@ Generated at: 2025-08-11T22:36:47.242Z
     📁 sources
       📄 assetplan-from-csv.json
       📄 assetplan-sample.json
-  📄 eslint.config.mjs
   📁 hooks
     📄 useFetchBuildings.ts
   📄 jest.config.ts
@@ -120,6 +121,10 @@ Generated at: 2025-08-11T22:36:47.242Z
     📄 db.mock.ts
     📄 derive.ts
     📄 flags.ts
+    📄 rate-limit.ts
+    📁 seo
+      📄 jsonld.ts
+    📄 site.ts
     📄 supabase.ts
     📄 theme.ts
     📄 utils.ts
@@ -158,17 +163,28 @@ Generated at: 2025-08-11T22:36:47.242Z
   📄 README.md
   📁 reports
     📁 AUDIT
+      📄 A11Y.md
+      📄 BIG_ROCKS.md
+      📄 COMING_SOON.md
       📄 COMPONENTS.md
+      📄 DATA.md
+      📄 EXEC_SUMMARY.md
       📁 logs
         📄 build.log
         📄 lint.log
         📄 test.log
         📄 typecheck.log
+      📄 PERFORMANCE.md
       📄 qa_local.json
       📄 QA_LOCAL.md
+      📄 QUICK_WINS.md
       📄 README.md
+      📄 RELEASE_READINESS.md
       📄 REPO_TREE.md
+      📄 RISK_MATRIX.md
       📄 ROUTES.md
+      📄 SECURITY.md
+      📄 SEO.md
     📄 COMING_SOON.md
     📄 qa_env.json
     📄 QA_ENV.md
