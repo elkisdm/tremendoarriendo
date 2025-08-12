@@ -20,6 +20,7 @@ export async function GET(request: Request) {
     // Verificar variables de entorno
     const USE_SUPABASE = process.env.USE_SUPABASE === "true";
     
+    // TODO(BLUEPRINT): mocks solo dev
     // Intentar consulta directa a Supabase
     const supabase = createSupabaseClient();
     const { data: buildingsData, error: buildingsError } = await supabase

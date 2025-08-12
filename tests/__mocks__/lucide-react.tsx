@@ -16,6 +16,17 @@ export const User = createIcon('User');
 export const CheckCircle = createIcon('CheckCircle');
 export const AlertCircle = createIcon('AlertCircle');
 export const Loader2 = createIcon('Loader2');
+export const ShieldCheck = createIcon('ShieldCheck');
+export const Sparkles = createIcon('Sparkles');
+export const Clock = createIcon('Clock');
+export const Building = createIcon('Building');
+export const Building2 = createIcon('Building2');
+export const MessageCircle = createIcon('MessageCircle');
+export const DollarSign = createIcon('DollarSign');
+export const Zap = createIcon('Zap');
+export const Smartphone = createIcon('Smartphone');
+export const Headphones = createIcon('Headphones');
+export const FileText = createIcon('FileText');
 
 export default {} as any;
 

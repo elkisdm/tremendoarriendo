@@ -1,11 +1,11 @@
 {
-  "timestamp": "2025-08-12T03:55:53.298Z",
+  "timestamp": "2025-08-12T12:34:01.541Z",
   "baseUrl": "http://localhost:3000",
   "sections": {
     "qaLocal": {
       "lint": {
-        "exitCode": 0,
-        "summary": "PASS",
+        "exitCode": 2,
+        "summary": "FAIL",
         "output": "\n> hommie-0-commission@1.0.0 lint\n> eslint . --ext .ts,.tsx,.js,.jsx,.mjs,.cjs --report-unused-disable-directives --max-warnings=0\n\n"
       },
       "types": {
@@ -16,26 +16,25 @@
       "tests": {
         "exitCode": 1,
         "summary": "FAIL",
-        "output": "ts-jest[config] (WARN) \n    The \"ts-jest\" config option \"isolatedModules\" is deprecated and will be removed in v30.0.0. Please use \"isolatedModules: true\" in /Users/macbookpro/Documents/hommie-0-commission-next/tsconfig.jest.json instead, see https://www.typescriptlang.org/tsconfig/#isolatedModules\n  \nPASS tests/unit/flags-override.test.ts\nPASS tests/unit/filters.test.ts\n  ● Console\n\n    console.log\n      🚀 Función readAll() iniciada\n\n      at readAll (lib/data.ts:140:11)\n\n    console.log\n     ..."
+        "output": "ts-jest[config] (WARN) \n    The \"ts-jest\" config option \"isolatedModules\" is deprecated and will be removed in v30.0.0. Please use \"isolatedModules: true\" in /Users/macbookpro/Documents/hommie-0-commission-next/tsconfig.jest.json instead, see https://www.typescriptlang.org/tsconfig/#isolatedModules\n  \nFAIL tests/unit/waitlistModal.test.tsx\n  ● Console\n\n    console.error\n      Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwa..."
       },
       "build": {
         "exitCode": 0,
         "summary": "PASS",
-        "output": "\n> hommie-0-commission@1.0.0 build\n> next build\n\n  ▲ Next.js 14.2.5\n  - Environments: .env.local\n\n   Creating an optimized production build ...\n ✓ Compiled successfully\n   Linting and checking validity of types ...\n   Collecting page data ...\n   Generating static pages (0/16) ...\n   Generating static pages (4/16) \r\n   Generating static pages (8/16) \r\n🚀 Función readAll() iniciada\n🔧 USE_SUPABASE: false\n📄 Usando datos mock como fallback\n📄 Retornando 5 edificios mock\n   Generating static pages (..."
+        "output": "\n> hommie-0-commission@1.0.0 build\n> next build\n\n  ▲ Next.js 14.2.5\n  - Environments: .env.local\n\n   Creating an optimized production build ...\n ✓ Compiled successfully\n   Linting and checking validity of types ...\n   Collecting page data ...\n   Generating static pages (0/16) ...\n   Generating static pages (4/16) \r\n🚀 Función readAll() iniciada\n🔧 USE_SUPABASE: false\n📄 Usando datos mock como fallback\n📄 Retornando 5 edificios mock\n   Generating static pages (8/16) \r\n   Generating static pages (..."
       }
     },
     "pageChecks": {
       "root": {
-        "statusCode": 307,
-        "isRedirect": true,
-        "location": "/coming-soon",
-        "summary": "PASS"
+        "statusCode": 500,
+        "isRedirect": false,
+        "summary": "FAIL"
       },
       "comingSoon": {
-        "statusCode": 200,
-        "hasTitle": true,
-        "hasNoIndex": true,
-        "summary": "PASS"
+        "statusCode": 500,
+        "hasTitle": false,
+        "hasNoIndex": false,
+        "summary": "FAIL"
       },
       "landing": {
         "statusCode": 200,
@@ -115,12 +114,12 @@
     }
   },
   "summary": {
-    "lint": "PASS",
+    "lint": "FAIL",
     "types": "PASS",
     "tests": "FAIL",
     "build": "PASS",
-    "rootCheck": "PASS",
+    "rootCheck": "FAIL",
     "seoRobot": "PASS"
   },
-  "decision": "GO"
+  "decision": "NO-GO"
 }

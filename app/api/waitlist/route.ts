@@ -14,6 +14,29 @@ function getClientIP(request: NextRequest): string {
          'unknown';
 }
 
+export async function GET() {
+  try {
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    
+    if (process.env.NODE_ENV === 'production') {
+      if (!supabaseUrl || !supabaseServiceKey) {
+        return NextResponse.json(
+          { ok: false, error: 'server_misconfigured' },
+          { status: 500 }
+        );
+      }
+    }
+    
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    return NextResponse.json(
+      { ok: false, error: 'health_check_failed' },
+      { status: 500 }
+    );
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     // Rate limiting
@@ -56,7 +79,19 @@ export async function POST(request: NextRequest) {
     const { email, phone } = parsed.data;
 
     // Crear cliente Supabase (real o mock)
-    const supabase = createSupabaseClient();
+    let supabase;
+    try {
+      supabase = createSupabaseClient();
+    } catch (error) {
+      if (error instanceof Error && error.message === 'server_misconfigured') {
+        console.error('❌ Supabase no configurado en producción');
+        return NextResponse.json(
+          { success: false, error: 'server_misconfigured' },
+          { status: 500 }
+        );
+      }
+      throw error;
+    }
 
     // Insertar en waitlist
     const { data, error } = await supabase

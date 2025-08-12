@@ -12,6 +12,8 @@ const config: Config = {
     '^@schemas/(.*)$': '<rootDir>/schemas/$1',
     '^@types/(.*)$': '<rootDir>/types/$1',
     '^lucide-react$': '<rootDir>/tests/__mocks__/lucide-react.tsx',
+    '^@lib/whatsapp$': '<rootDir>/tests/__mocks__/whatsapp.ts',
+    '^@lib/analytics$': '<rootDir>/tests/__mocks__/analytics.ts',
   },
   transform: {
     '^.+\\.(ts|tsx)$': [

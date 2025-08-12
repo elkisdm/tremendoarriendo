@@ -95,6 +95,7 @@ export async function GET(request: Request) {
       );
     }
 
+    // TODO(BLUEPRINT): mocks solo dev
     // Fetch data from the completeness view
     const supabaseAdmin = createSupabaseClient();
     const { data: buildings, error } = await supabaseAdmin

@@ -1,5 +1,33 @@
-import { render, screen } from '@testing-library/react';
-import { ComingSoonHero } from '../../components/marketing/ComingSoonHero';
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { ComingSoonHero } from '@components/marketing/ComingSoonHero';
+
+// Mock de módulos antes de importar el componente
+jest.mock('@lib/whatsapp', () => ({
+  buildWhatsAppUrl: jest.fn((params: any) => {
+    const baseUrl = 'https://wa.me/1234567890';
+    const message = params.message || 'Hola, me interesa';
+    const encodedMessage = encodeURIComponent(message);
+    return `${baseUrl}?text=${encodedMessage}`;
+  })
+}));
+
+jest.mock('@lib/analytics', () => ({
+  track: jest.fn()
+}));
+
+jest.mock('@components/marketing/PromoBadge', () => ({
+  PromoBadge: () => <div data-testid="promo-badge">Promo Badge</div>
+}));
+
+jest.mock('@components/ui/Modal', () => ({
+  Modal: ({ children, isOpen, onClose }: any) => 
+    isOpen ? <div data-testid="modal">{children}</div> : null
+}));
+
+jest.mock('@components/marketing/WaitlistForm', () => ({
+  WaitlistForm: () => <div data-testid="waitlist-form">Waitlist Form</div>
+}));
 
 // Mock lucide-react para evitar problemas en tests
 jest.mock('lucide-react', () => ({

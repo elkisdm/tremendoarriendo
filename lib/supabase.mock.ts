@@ -52,6 +52,15 @@ export function createSupabaseClient() {
   const supabaseUrl = process.env.SUPABASE_URL;
   const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   
+  // En producción, exigir configuración completa
+  if (process.env.NODE_ENV === 'production') {
+    if (!supabaseUrl || !supabaseServiceKey) {
+      throw new Error('server_misconfigured');
+    }
+    return createClient(supabaseUrl, supabaseServiceKey);
+  }
+  
+  // En desarrollo/testing, permitir mock si no hay configuración
   if (!supabaseUrl || !supabaseServiceKey) {
     console.log('⚠️  Supabase no configurado, usando mock para testing');
     return createMockSupabaseClient();

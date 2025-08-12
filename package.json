@@ -20,6 +20,7 @@
     "coming-soon:on": "node scripts/flags.mjs on",
     "coming-soon:off": "node scripts/flags.mjs off",
     "deploy:staging": "node scripts/deploy-staging.mjs",
+    "check:production": "node scripts/check-production-readiness.mjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
