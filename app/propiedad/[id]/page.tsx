@@ -9,7 +9,7 @@ import { CostTable } from "@components/cost/CostTable";
 import { BookingForm } from "@components/forms/BookingForm";
 import { currency } from "@lib/utils";
 import { track } from "@lib/analytics";
-import { buildWaLink } from "@lib/whatsapp";
+import { buildWhatsAppUrl } from "@lib/whatsapp";
 import type { Building, Unit } from "@schemas/models";
 import type { BuildingSummary } from "@hooks/useFetchBuildings";
 import { BuildingCard } from "@components/BuildingCard";
@@ -143,8 +143,8 @@ export default function PropertyPage({ params }: { params: { id: string } }){
             </div>
             {(() => {
               const message = `Hola, me interesa ${building?.name} en ${building?.comuna}`;
-              const href = building ? buildWaLink({ 
-                presetMessage: message, 
+              const href = building ? buildWhatsAppUrl({ 
+                                  message: message, 
                 url: typeof window !== "undefined" ? window.location.href : undefined 
               }) || "" : "";
               const canWhatsApp = Boolean(process.env.NEXT_PUBLIC_WHATSAPP_PHONE) && Boolean(href);

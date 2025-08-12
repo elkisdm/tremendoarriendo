@@ -3,9 +3,13 @@ import { z } from "zod";
 import { getAllBuildings } from "@lib/data";
 import type { Building, Unit, TypologySummary } from "@schemas/models";
 import { computeUnitTotalArea } from "@lib/derive";
+import { createRateLimiter } from "@lib/rate-limit";
 
 // Force dynamic rendering to avoid static generation issues
 export const dynamic = 'force-dynamic';
+
+// Rate limiter: 20 requests per minute per IP
+const rateLimiter = createRateLimiter({ windowMs: 60_000, max: 20 });
 
 const QuerySchema = z.object({
   comuna: z.string().min(1).optional(),
@@ -68,6 +72,25 @@ function summarizeTypologies(units: Unit[]): TypologySummary[] | undefined {
 
 export async function GET(request: Request) {
   try {
+    // Rate limiting check
+    const forwarded = request.headers.get("x-forwarded-for");
+    const ip = forwarded ? forwarded.split(",")[0] : "unknown";
+    const rateLimitResult = await rateLimiter.check(ip);
+    
+    if (!rateLimitResult.ok) {
+      return NextResponse.json(
+        { error: "Rate limit exceeded", retryAfter: rateLimitResult.retryAfter },
+        { 
+          status: 429,
+          headers: {
+            "Retry-After": rateLimitResult.retryAfter?.toString() || "60",
+            "X-RateLimit-Limit": "20",
+            "X-RateLimit-Window": "60"
+          }
+        }
+      );
+    }
+
     console.log("API /buildings called");
     
     const { searchParams } = new URL(request.url);

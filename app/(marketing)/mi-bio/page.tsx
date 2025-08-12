@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getBaseUrl } from "@lib/site";
 import { LinkGrid } from "@components/linktree/LinkGrid";
 import { BioHeader } from "@components/bio/BioHeader";
-import { buildWaLink } from "@lib/whatsapp";
+import { buildWhatsAppUrl } from "@lib/whatsapp";
 
 const baseUrl = getBaseUrl();
 
@@ -73,8 +73,8 @@ export default function MiBioPage() {
         </h2>
         <div className="space-y-4">
           {(() => {
-            const whatsAppLink = buildWaLink({ 
-              presetMessage: "Hola, me interesa conocer más sobre tus propiedades" 
+            const whatsAppLink = buildWhatsAppUrl({ 
+                              message: "Hola, me interesa conocer más sobre tus propiedades" 
             });
             
             const linkItems = [

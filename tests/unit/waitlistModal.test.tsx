@@ -26,7 +26,7 @@ jest.mock('@components/marketing/PromoBadge', () => ({
 }));
 
 jest.mock('@lib/whatsapp', () => ({
-  buildWaLink: jest.fn().mockReturnValue('https://wa.me/test'),
+      buildWhatsAppUrl: jest.fn().mockReturnValue('https://wa.me/test'),
 }));
 
 // Mock fetch

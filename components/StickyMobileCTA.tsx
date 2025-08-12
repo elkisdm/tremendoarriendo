@@ -1,7 +1,7 @@
 "use client";
 import { Calendar, MessageCircle } from "lucide-react";
 import { track } from "@lib/analytics";
-import { buildWaLink } from "@lib/whatsapp";
+import { buildWhatsAppUrl } from "@lib/whatsapp";
 
 export function StickyMobileCTA() {
   const handleBookingClick = () => {
@@ -16,7 +16,7 @@ export function StickyMobileCTA() {
   };
 
   const handleWhatsAppClick = () => {
-    const link = buildWaLink({ url: typeof window !== "undefined" ? window.location.href : undefined });
+    const link = buildWhatsAppUrl({ url: typeof window !== "undefined" ? window.location.href : undefined });
     track("cta_whatsapp_click", { context: "sticky_mobile" });
     if (link) {
       window.open(link, "_blank", "noopener,noreferrer");

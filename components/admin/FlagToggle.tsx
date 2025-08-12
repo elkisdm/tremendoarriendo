@@ -2,7 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { Switch } from '@headlessui/react';
-import { CheckIcon, XMarkIcon } from '@heroicons/react/24/outline';
+// TODO: Uncomment when heroicons is installed
+// import { CheckIcon, XMarkIcon } from '@heroicons/react/24/outline';
+
+// Mock temporal
+const CheckIcon = (props: any) => <div data-testid="check-icon" {...props} />;
+const XMarkIcon = (props: any) => <div data-testid="xmark-icon" {...props} />;
 import { track } from '@lib/analytics';
 
 interface FlagToggleProps {

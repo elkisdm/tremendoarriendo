@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Calendar, MessageSquare, Phone, Mail, User, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import { track } from "@lib/analytics";
-import { buildWaLink } from "@lib/whatsapp";
+import { buildWhatsAppUrl } from "@lib/whatsapp";
 
 type BookingFormProps = {
   buildingId: string;
@@ -320,8 +320,8 @@ export function BookingForm({ buildingId, buildingName, defaultUnitId }: Booking
       <div className="mt-4 pt-4 border-t border-white/10">
         {(() => {
           const message = `Hola, me interesa ${buildingName}`;
-          const href = buildWaLink({ 
-            presetMessage: message, 
+          const href = buildWhatsAppUrl({ 
+            message: message, 
             url: typeof window !== "undefined" ? window.location.href : undefined 
           }) || "";
           const canWhatsApp = Boolean(process.env.NEXT_PUBLIC_WHATSAPP_PHONE) && Boolean(href);

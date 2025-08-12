@@ -13,7 +13,7 @@ if (!(global as any).fetch) {
 jest.mock('@lib/whatsapp', () => ({
   buildWhatsAppUrl: jest.fn((params: any) => {
     const baseUrl = 'https://wa.me/1234567890';
-    const message = params.message || 'Hola, me interesa';
+    const message = params?.message || 'Hola, me interesa';
     const encodedMessage = encodeURIComponent(message);
     return `${baseUrl}?text=${encodedMessage}`;
   })
