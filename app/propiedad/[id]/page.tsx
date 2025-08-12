@@ -142,7 +142,11 @@ export default function PropertyPage({ params }: { params: { id: string } }){
               <div className="font-semibold truncate">{building ? building.name : ""} — {unit ? unit.tipologia : ""} · {unit ? unit.m2 : ""} m²</div>
             </div>
             {(() => {
-              const href = building ? buildWaLink({ propertyName: building.name, comuna: building.comuna, url: typeof window !== "undefined" ? window.location.href : undefined }) : "";
+              const message = `Hola, me interesa ${building?.name} en ${building?.comuna}`;
+              const href = building ? buildWaLink({ 
+                presetMessage: message, 
+                url: typeof window !== "undefined" ? window.location.href : undefined 
+              }) || "" : "";
               const canWhatsApp = Boolean(process.env.NEXT_PUBLIC_WHATSAPP_PHONE) && Boolean(href);
               return canWhatsApp ? (
                 <a

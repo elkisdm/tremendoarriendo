@@ -319,7 +319,11 @@ export function BookingForm({ buildingId, buildingName, defaultUnitId }: Booking
       {/* WhatsApp Link */}
       <div className="mt-4 pt-4 border-t border-white/10">
         {(() => {
-          const href = buildWaLink({ propertyName: buildingName, url: typeof window !== "undefined" ? window.location.href : undefined });
+          const message = `Hola, me interesa ${buildingName}`;
+          const href = buildWaLink({ 
+            presetMessage: message, 
+            url: typeof window !== "undefined" ? window.location.href : undefined 
+          }) || "";
           const canWhatsApp = Boolean(process.env.NEXT_PUBLIC_WHATSAPP_PHONE) && Boolean(href);
           return canWhatsApp ? (
             <a 
