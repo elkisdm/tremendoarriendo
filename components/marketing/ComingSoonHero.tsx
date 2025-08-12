@@ -17,7 +17,7 @@ import {
   FileText,
   Calendar
 } from "lucide-react";
-import { buildWaLink } from "@lib/whatsapp";
+import { buildWhatsAppUrl } from "@lib/whatsapp";
 import { PromoBadge } from "./PromoBadge";
 import { track } from "@lib/analytics";
 import { Modal } from "@components/ui/Modal";
@@ -156,17 +156,7 @@ export function ComingSoonHero() {
     setModalOpen(false);
   };
 
-  const handleWhatsAppClick = () => {
-    track('cta_whatsapp_click');
-    const waLink = buildWaLink({
-      propertyName: "la nueva experiencia de arriendo",
-      comuna: "Santiago",
-      url: "https://hommie.cl/coming-soon"
-    });
-    if (waLink) {
-      window.open(waLink, "_blank");
-    }
-  };
+
 
 
 
@@ -293,26 +283,31 @@ export function ComingSoonHero() {
               </motion.button>
 
               {/* Botón secundario "WhatsApp" */}
-              {process.env.NEXT_PUBLIC_WHATSAPP_PHONE ? (
-                <motion.a
-                  href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_PHONE}?text=Hola%20me%20interesa%20el%20lanzamiento`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => track('cta_whatsapp_click')}
-                  className="rounded-2xl px-6 py-3 font-semibold bg-green-600 hover:bg-green-700 text-white shadow-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-green-400/40 hover:shadow-xl transition-all duration-200 min-h-[44px] flex items-center justify-center"
-                  aria-label="Contactar por WhatsApp"
-                >
-                  WhatsApp
-                </motion.a>
-              ) : (
-                <motion.button
-                  aria-disabled="true"
-                  title="Configura NEXT_PUBLIC_WHATSAPP_PHONE"
-                  className="rounded-2xl px-6 py-3 font-semibold bg-gray-500 text-white shadow-lg cursor-not-allowed opacity-50 min-h-[44px] flex items-center justify-center"
-                >
-                  WhatsApp
-                </motion.button>
-              )}
+              {(() => {
+                const waUrl = buildWhatsAppUrl({
+                  message: "Hola, me interesa el lanzamiento"
+                });
+                return waUrl ? (
+                  <motion.a
+                    href={waUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => track('cta_whatsapp_click', { source: 'coming-soon' })}
+                    className="rounded-2xl px-6 py-3 font-semibold bg-green-600 hover:bg-green-700 text-white shadow-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-green-400/40 hover:shadow-xl transition-all duration-200 min-h-[44px] flex items-center justify-center"
+                    aria-label="Contactar por WhatsApp"
+                  >
+                    WhatsApp
+                  </motion.a>
+                ) : (
+                  <motion.button
+                    aria-disabled="true"
+                    title="Configura WhatsApp en Vercel"
+                    className="rounded-2xl px-6 py-3 font-semibold bg-gray-500 text-white shadow-lg cursor-not-allowed opacity-50 min-h-[44px] flex items-center justify-center"
+                  >
+                    WhatsApp
+                  </motion.button>
+                );
+              })()}
             </motion.div>
 
             {/* Subtítulo con mejor contraste */}
@@ -423,14 +418,33 @@ export function ComingSoonHero() {
               </motion.button>
 
               {/* CTA WhatsApp */}
-              <motion.button
-                onClick={handleWhatsAppClick}
-                className="inline-flex items-center px-8 py-4 text-lg font-semibold rounded-2xl bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-600/20 hover:shadow-xl hover:shadow-green-600/30 transition-all duration-200 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-green-400/40 min-h-[44px]"
-                aria-label="Hablá con nosotros por WhatsApp"
-              >
-                <MessageSquare className="w-5 h-5 mr-2" />
-                Hablá con nosotros
-              </motion.button>
+              {(() => {
+                const waUrl = buildWhatsAppUrl({
+                  message: "Hola, me interesa la nueva experiencia de arriendo"
+                });
+                return waUrl ? (
+                  <motion.a
+                    href={waUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => track('cta_whatsapp_click', { source: 'coming-soon' })}
+                    className="inline-flex items-center px-8 py-4 text-lg font-semibold rounded-2xl bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-600/20 hover:shadow-xl hover:shadow-green-600/30 transition-all duration-200 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-green-400/40 min-h-[44px]"
+                    aria-label="Hablá con nosotros por WhatsApp"
+                  >
+                    <MessageSquare className="w-5 h-5 mr-2" />
+                    Hablá con nosotros
+                  </motion.a>
+                ) : (
+                  <motion.button
+                    aria-disabled="true"
+                    title="Configura WhatsApp en Vercel"
+                    className="inline-flex items-center px-8 py-4 text-lg font-semibold rounded-2xl bg-gray-500 text-white shadow-lg cursor-not-allowed opacity-50 min-h-[44px]"
+                  >
+                    <MessageSquare className="w-5 h-5 mr-2" />
+                    Hablá con nosotros
+                  </motion.button>
+                );
+              })()}
             </motion.div>
 
             {/* Texto adicional con mejor contraste */}

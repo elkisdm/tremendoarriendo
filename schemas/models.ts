@@ -104,8 +104,7 @@ export const BookingRequestSchema = z.object({
 
 export const WaitlistRequestSchema = z.object({
   email: z.string().email(),
-  phone: z.string().min(5).optional(),
-  utm: z.record(z.string(), z.string()).optional(),
+  phone: z.string().max(32).optional(),
 });
 
 export type Unit = z.infer<typeof UnitSchema>;

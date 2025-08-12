@@ -1,6 +1,6 @@
 # Release Gate Report
 
-**Fecha:** 11-08-2025, 9:34:46 p. m.
+**Fecha:** 11-08-2025, 11:56:25 p. m.
 **Decisión:** 🟢 GO
 **Base URL:** http://localhost:3000
 
@@ -17,7 +17,7 @@
 |---------|--------|---------|
 | Lint | 🟢 OK | PASS |
 | TypeScript | 🟢 OK | PASS |
-| Tests | 🟢 OK | PASS |
+| Tests | 🔴 ALTA | FAIL |
 | Build | 🟢 OK | PASS |
 | Root Check | 🟢 OK | PASS |
 | SEO/Robots | 🟢 OK | PASS |
@@ -27,7 +27,7 @@
 ### QA Local
 - **lint**: 🟢 OK - PASS (exit: 0)
 - **types**: 🟢 OK - PASS (exit: 0)
-- **tests**: 🟢 OK - PASS (exit: 0)
+- **tests**: 🔴 ALTA - FAIL (exit: 1)
 - **build**: 🟢 OK - PASS (exit: 0)
 
 ### Page Checks
@@ -53,7 +53,7 @@
 |-------|-----------|--------|--------------|
 | Lint | OK | PASS | - |
 | TypeScript | OK | PASS | - |
-| Tests | OK | PASS | - |
+| Tests | ALTA | FAIL | Revisar configuración |
 | Build | OK | PASS | - |
 | Root Redirect | OK | PASS | - |
 | Robots.txt | OK | PASS | - |

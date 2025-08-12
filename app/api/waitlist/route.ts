@@ -1,45 +1,39 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { createClient } from '@supabase/supabase-js';
 import { WaitlistRequestSchema } from '@schemas/models';
+import { createRateLimiter } from '@lib/rate-limit';
+import { createSupabaseClient } from '@lib/supabase.mock';
 
-// Rate limiting in-memory (en producción usar Redis)
-const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
-
-const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minuto
-const RATE_LIMIT_MAX_REQUESTS = 3;
+// Rate limiter: 20 requests per 60 seconds
+const rateLimiter = createRateLimiter({ windowMs: 60_000, max: 20 });
 
 function getClientIP(request: NextRequest): string {
   return request.headers.get('x-forwarded-for')?.split(',')[0] || 
          request.headers.get('x-real-ip') || 
+         request.ip ||
          'unknown';
-}
-
-function checkRateLimit(ip: string): boolean {
-  const now = Date.now();
-  const record = rateLimitMap.get(ip);
-  
-  if (!record || now > record.resetTime) {
-    rateLimitMap.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
-    return true;
-  }
-  
-  if (record.count >= RATE_LIMIT_MAX_REQUESTS) {
-    return false;
-  }
-  
-  record.count++;
-  return true;
 }
 
 export async function POST(request: NextRequest) {
   try {
     // Rate limiting
     const clientIP = getClientIP(request);
-    if (!checkRateLimit(clientIP)) {
+    const rateLimitResult = await rateLimiter.check(clientIP);
+    
+    if (!rateLimitResult.ok) {
+      console.log(`Rate limit exceeded for IP: ${clientIP.substring(0, 8)}...`);
       return NextResponse.json(
-        { success: false, error: 'Demasiadas solicitudes. Intenta de nuevo en 1 minuto.' },
-        { status: 429 }
+        { 
+          success: false, 
+          error: 'Demasiados intentos, prueba en un minuto',
+          retryAfter: rateLimitResult.retryAfter 
+        },
+        { 
+          status: 429,
+          headers: {
+            'Retry-After': rateLimitResult.retryAfter?.toString() || '60'
+          }
+        }
       );
     }
 
@@ -48,46 +42,34 @@ export async function POST(request: NextRequest) {
     const parsed = WaitlistRequestSchema.safeParse(json);
     
     if (!parsed.success) {
+      console.log(`Validation failed for IP: ${clientIP.substring(0, 8)}...`);
       return NextResponse.json(
         { 
           success: false, 
-          error: 'Datos inválidos', 
-          details: parsed.error.flatten() 
+          error: 'Revisa el email',
+          issues: parsed.error.flatten() 
         },
         { status: 400 }
       );
     }
 
-    const { email, phone, utm } = parsed.data;
+    const { email, phone } = parsed.data;
 
-    // Crear cliente Supabase (usando service role key para bypass RLS)
-    const supabaseUrl = process.env.SUPABASE_URL;
-    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    
-    if (!supabaseUrl || !supabaseServiceKey) {
-      console.error('Missing Supabase environment variables');
-      return NextResponse.json(
-        { success: false, error: 'Error de configuración' },
-        { status: 500 }
-      );
-    }
-
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    // Crear cliente Supabase (real o mock)
+    const supabase = createSupabaseClient();
 
     // Insertar en waitlist
     const { data, error } = await supabase
       .from('waitlist')
       .insert({
         email,
-        phone,
-        utm: utm || {},
-        source: 'coming-soon'
+        phone: phone || null
       })
       .select()
       .single();
 
     if (error) {
-      console.error('Error inserting into waitlist:', error);
+      console.error(`DB insert failed for IP: ${clientIP.substring(0, 8)}..., code: ${error.code}`);
       
       // Si es un email duplicado, no es un error crítico
       if (error.code === '23505') { // unique_violation
@@ -98,20 +80,21 @@ export async function POST(request: NextRequest) {
       }
       
       return NextResponse.json(
-        { success: false, error: 'Error al guardar datos' },
+        { success: false, error: 'Tuvimos un problema, intenta de nuevo' },
         { status: 500 }
       );
     }
 
+    console.log(`Waitlist insert successful for IP: ${clientIP.substring(0, 8)}...`);
     return NextResponse.json(
       { success: true, message: '¡Te agregamos a la lista de espera!' },
       { status: 200 }
     );
 
   } catch (error) {
-    console.error('Unexpected error in waitlist API:', error);
+    console.error(`Unexpected error for IP: ${getClientIP(request).substring(0, 8)}..., error: ${error instanceof Error ? error.message : 'unknown'}`);
     return NextResponse.json(
-      { success: false, error: 'Error inesperado' },
+      { success: false, error: 'Tuvimos un problema, intenta de nuevo' },
       { status: 500 }
     );
   }

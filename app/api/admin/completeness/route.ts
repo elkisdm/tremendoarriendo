@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createRateLimiter } from "@lib/rate-limit";
-import { supabaseAdmin } from "@lib/supabase";
+import { createSupabaseClient } from "@lib/supabase.mock";
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -96,13 +96,7 @@ export async function GET(request: Request) {
     }
 
     // Fetch data from the completeness view
-    if (!supabaseAdmin) {
-      return NextResponse.json(
-        { error: "database_error", details: "Database not configured" },
-        { status: 500 }
-      );
-    }
-    
+    const supabaseAdmin = createSupabaseClient();
     const { data: buildings, error } = await supabaseAdmin
       .from('v_building_completeness')
       .select('*')

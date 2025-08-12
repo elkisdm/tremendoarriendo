@@ -38,7 +38,7 @@ export function WaitlistForm({ initialFocusRef }: WaitlistFormProps) {
     setIsLoading(true);
     
     // Trackear submit
-    track('waitlist_submit', { email, hasPhone: !!phone });
+    track('waitlist_submit', { source: 'coming-soon' });
 
     try {
       const response = await fetch('/api/waitlist', {
@@ -52,19 +52,26 @@ export function WaitlistForm({ initialFocusRef }: WaitlistFormProps) {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error('Error al enviar el formulario');
-      }
-
       const data = await response.json();
       
-      if (data.ok) {
+      if (response.ok && data.success) {
         setIsSuccess(true);
         setEmail('');
         setPhone('');
-        track('waitlist_success', { email });
+        track('waitlist_submitted', { source: 'coming-soon' });
       } else {
-        throw new Error(data.error || 'Error desconocido');
+        // Mapear errores específicos
+        let errorMessage = 'Tuvimos un problema, intenta de nuevo';
+        
+        if (response.status === 400) {
+          errorMessage = 'Revisa el email';
+        } else if (response.status === 429) {
+          errorMessage = 'Demasiados intentos, prueba en un minuto';
+        } else if (data.error) {
+          errorMessage = data.error;
+        }
+        
+        throw new Error(errorMessage);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al enviar el formulario');
@@ -190,10 +197,11 @@ export function WaitlistForm({ initialFocusRef }: WaitlistFormProps) {
         )}
       </button>
 
-      {/* Mensaje de estado */}
-      <div aria-live="polite" className="sr-only">
+      {/* Mensaje de estado accesible */}
+      <div aria-live="assertive" className="sr-only">
         {isLoading && 'Enviando formulario...'}
         {error && `Error: ${error}`}
+        {isSuccess && 'Formulario enviado exitosamente'}
       </div>
     </form>
   );

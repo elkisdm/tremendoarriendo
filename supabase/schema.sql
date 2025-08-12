@@ -103,3 +103,62 @@ CREATE POLICY "wl_insert" ON public.waitlist
 
 -- Índice para email en waitlist
 CREATE INDEX IF NOT EXISTS idx_waitlist_email ON public.waitlist (email);
+
+-- Vista para completitud de datos de edificios
+CREATE OR REPLACE VIEW public.v_building_completeness AS
+SELECT 
+    b.id,
+    b.slug,
+    b.name,
+    b.comuna,
+    b.address,
+    
+    -- Campos requeridos (7 total)
+    CASE WHEN b.id IS NOT NULL THEN 1 ELSE 0 END +
+    CASE WHEN b.slug IS NOT NULL THEN 1 ELSE 0 END +
+    CASE WHEN b.name IS NOT NULL THEN 1 ELSE 0 END +
+    CASE WHEN b.comuna IS NOT NULL THEN 1 ELSE 0 END +
+    CASE WHEN b.address IS NOT NULL THEN 1 ELSE 0 END +
+    CASE WHEN b.amenities IS NOT NULL AND array_length(b.amenities, 1) > 0 THEN 1 ELSE 0 END +
+    CASE WHEN b.gallery IS NOT NULL AND array_length(b.gallery, 1) >= 3 THEN 1 ELSE 0 END AS required_fields,
+    
+    -- Campos opcionales (3 total)
+    CASE WHEN b.cover_image IS NOT NULL THEN 1 ELSE 0 END +
+    CASE WHEN b.badges IS NOT NULL AND jsonb_array_length(b.badges) > 0 THEN 1 ELSE 0 END +
+    CASE WHEN b.service_level IS NOT NULL THEN 1 ELSE 0 END AS optional_fields,
+    
+    -- Total campos (10)
+    10 AS total_fields,
+    
+    -- Porcentaje de completitud (ponderado: 70% requeridos + 30% opcionales)
+    ROUND(
+        (
+            (CASE WHEN b.id IS NOT NULL THEN 1 ELSE 0 END +
+             CASE WHEN b.slug IS NOT NULL THEN 1 ELSE 0 END +
+             CASE WHEN b.name IS NOT NULL THEN 1 ELSE 0 END +
+             CASE WHEN b.comuna IS NOT NULL THEN 1 ELSE 0 END +
+             CASE WHEN b.address IS NOT NULL THEN 1 ELSE 0 END +
+             CASE WHEN b.amenities IS NOT NULL AND array_length(b.amenities, 1) > 0 THEN 1 ELSE 0 END +
+             CASE WHEN b.gallery IS NOT NULL AND array_length(b.gallery, 1) >= 3 THEN 1 ELSE 0 END) * 0.7 +
+            (CASE WHEN b.cover_image IS NOT NULL THEN 1 ELSE 0 END +
+             CASE WHEN b.badges IS NOT NULL AND jsonb_array_length(b.badges) > 0 THEN 1 ELSE 0 END +
+             CASE WHEN b.service_level IS NOT NULL THEN 1 ELSE 0 END) * 0.3
+        ) * 100, 1
+    ) AS completeness_percentage,
+    
+    -- Detalles por campo
+    CASE WHEN b.id IS NOT NULL THEN '✅' ELSE '❌' END AS id_status,
+    CASE WHEN b.slug IS NOT NULL THEN '✅' ELSE '❌' END AS slug_status,
+    CASE WHEN b.name IS NOT NULL THEN '✅' ELSE '❌' END AS name_status,
+    CASE WHEN b.comuna IS NOT NULL THEN '✅' ELSE '❌' END AS comuna_status,
+    CASE WHEN b.address IS NOT NULL THEN '✅' ELSE '❌' END AS address_status,
+    CASE WHEN b.amenities IS NOT NULL AND array_length(b.amenities, 1) > 0 THEN '✅' ELSE '❌' END AS amenities_status,
+    CASE WHEN b.gallery IS NOT NULL AND array_length(b.gallery, 1) >= 3 THEN '✅' ELSE '❌' END AS gallery_status,
+    CASE WHEN b.cover_image IS NOT NULL THEN '✅' ELSE '❌' END AS cover_image_status,
+    CASE WHEN b.badges IS NOT NULL AND jsonb_array_length(b.badges) > 0 THEN '✅' ELSE '❌' END AS badges_status,
+    CASE WHEN b.service_level IS NOT NULL THEN '✅' ELSE '❌' END AS service_level_status,
+    
+    b.created_at,
+    b.updated_at
+FROM public.buildings b
+ORDER BY completeness_percentage ASC, b.name;

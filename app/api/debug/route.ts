@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@lib/supabase";
+import { createSupabaseClient } from "@lib/supabase.mock";
 import { createRateLimiter } from "@lib/rate-limit";
 
 const limiter = createRateLimiter({ windowMs: 60_000, max: 20 });
@@ -21,6 +21,7 @@ export async function GET(request: Request) {
     const USE_SUPABASE = process.env.USE_SUPABASE === "true";
     
     // Intentar consulta directa a Supabase
+    const supabase = createSupabaseClient();
     const { data: buildingsData, error: buildingsError } = await supabase
       .from('buildings')
       .select(`
