@@ -1,0 +1,99 @@
+import type { Metadata } from "next";
+import { getBaseUrl } from "@lib/site";
+
+const baseUrl = getBaseUrl();
+
+export const metadata: Metadata = {
+  title: "Mi Bio - Hommie 0% Comisión",
+  description: "Conoce más sobre mi experiencia en el mercado inmobiliario y cómo puedo ayudarte a encontrar tu próximo hogar sin comisión.",
+  alternates: { canonical: `${baseUrl}/mi-bio` },
+};
+
+export default function MiBioPage() {
+  return (
+    <main id="main-content" role="main" className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="container mx-auto px-4 py-6 max-w-sm">
+        <nav aria-label="Navegación principal" className="mb-6">
+          {/* TODO: Integrar componente de navegación */}
+          <div className="flex items-center justify-between">
+            <a 
+              href="/" 
+              className="text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg px-2 py-1"
+            >
+              Hommie
+            </a>
+            {/* TODO: Menú de navegación */}
+          </div>
+        </nav>
+      </header>
+
+      {/* Bio Section */}
+      <section aria-labelledby="bio-heading" className="container mx-auto px-4 py-8 max-w-sm">
+        <h1 id="bio-heading" className="text-2xl font-bold mb-6">
+          Mi Bio
+        </h1>
+        <div className="space-y-4">
+          {/* TODO: Integrar componente de bio con foto y descripción */}
+          <div className="bg-card rounded-2xl p-6 shadow-sm">
+            <p className="text-muted-foreground">
+              [Placeholder: Descripción profesional y experiencia en el mercado inmobiliario]
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Destacadas Section */}
+      <section aria-labelledby="destacadas-heading" className="container mx-auto px-4 py-8 max-w-sm">
+        <h2 id="destacadas-heading" className="text-xl font-semibold mb-6">
+          Propiedades Destacadas
+        </h2>
+        <div className="space-y-4">
+          {/* TODO: Integrar componente de lista de propiedades destacadas */}
+          <div className="bg-card rounded-2xl p-6 shadow-sm">
+            <p className="text-muted-foreground">
+              [Placeholder: Lista de propiedades destacadas]
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonios Section */}
+      <section aria-labelledby="testimonios-heading" className="container mx-auto px-4 py-8 max-w-sm">
+        <h2 id="testimonios-heading" className="text-xl font-semibold mb-6">
+          Testimonios de Clientes
+        </h2>
+        <div className="space-y-4">
+          {/* TODO: Integrar componente de testimonios */}
+          <div className="bg-card rounded-2xl p-6 shadow-sm">
+            <p className="text-muted-foreground">
+              [Placeholder: Testimonios de clientes satisfechos]
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Redes Sociales Section */}
+      <section aria-labelledby="redes-heading" className="container mx-auto px-4 py-8 max-w-sm">
+        <h2 id="redes-heading" className="text-xl font-semibold mb-6">
+          Sígueme en Redes Sociales
+        </h2>
+        <div className="space-y-4">
+          {/* TODO: Integrar componente de redes sociales */}
+          <div className="bg-card rounded-2xl p-6 shadow-sm">
+            <p className="text-muted-foreground">
+              [Placeholder: Enlaces a redes sociales]
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="container mx-auto px-4 py-8 max-w-sm border-t">
+        <p className="text-sm text-muted-foreground text-center">
+          Beneficios según disponibilidad
+        </p>
+      </footer>
+    </main>
+  );
+}
