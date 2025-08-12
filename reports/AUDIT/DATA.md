@@ -1,6 +1,6 @@
 # Datos / Supabase (estático)
 
-Generated at: 2025-08-12T00:45:49.730Z
+Generated at: 2025-08-12T00:46:21.286Z
 
 lib/supabase.ts: present
 RLS hints en supabase.ts: absent
