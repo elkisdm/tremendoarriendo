@@ -68,7 +68,6 @@ async function httpGet(url, options = {}) {
     try {
       const fetchOptions = {
         method: 'GET',
-        timeout: 10000,
         ...options
       };
       
@@ -90,7 +89,7 @@ async function httpGet(url, options = {}) {
       log(`HTTP request failed (attempt ${attempt}/${maxRetries}): ${error.message}`, 'WARN');
       
       // Solo retry en errores 500 en dev
-      if (attempt < maxRetries && error.message.includes('500')) {
+      if (attempt < maxRetries && (error.message.includes('500') || error.message.includes('fetch failed'))) {
         log(`Retrying in ${retryDelay}ms...`, 'INFO');
         await new Promise(resolve => setTimeout(resolve, retryDelay));
         continue;
