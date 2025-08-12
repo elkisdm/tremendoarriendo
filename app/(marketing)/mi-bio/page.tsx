@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { getBaseUrl } from "@lib/site";
+import { LinkGrid } from "@components/linktree/LinkGrid";
+import { buildWaLink } from "@lib/whatsapp";
 
 const baseUrl = getBaseUrl();
 
@@ -73,18 +75,52 @@ export default function MiBioPage() {
         </div>
       </section>
 
-      {/* Redes Sociales Section */}
-      <section aria-labelledby="redes-heading" className="container mx-auto px-4 py-8 max-w-sm">
-        <h2 id="redes-heading" className="text-xl font-semibold mb-6">
-          Sígueme en Redes Sociales
+      {/* CTAs Linktree Section */}
+      <section aria-labelledby="ctas-heading" className="container mx-auto px-4 py-8 max-w-sm">
+        <h2 id="ctas-heading" className="text-xl font-semibold mb-6">
+          Conecta conmigo
         </h2>
         <div className="space-y-4">
-          {/* TODO: Integrar componente de redes sociales */}
-          <div className="bg-card rounded-2xl p-6 shadow-sm">
-            <p className="text-muted-foreground">
-              [Placeholder: Enlaces a redes sociales]
-            </p>
-          </div>
+          {(() => {
+            const whatsAppLink = buildWaLink({ 
+              presetMessage: "Hola, me interesa conocer más sobre tus propiedades" 
+            });
+            
+            const linkItems = [
+              // WhatsApp (siempre presente)
+              {
+                label: "WhatsApp",
+                href: whatsAppLink || "#",
+                aria: "Abrir chat de WhatsApp",
+                icon: "whatsapp" as const,
+                external: true
+              },
+              // Teléfono (solo si existe WA_PHONE_E164)
+              ...(process.env.WA_PHONE_E164 ? [{
+                label: "Llamar ahora",
+                href: `tel:${process.env.WA_PHONE_E164}`,
+                aria: `Llamar al ${process.env.WA_PHONE_E164}`,
+                icon: "phone" as const,
+                external: true
+              }] : []),
+              // Ver catálogo
+              {
+                label: "Ver catálogo",
+                href: "/catalogo",
+                aria: "Ver catálogo de propiedades",
+                icon: "catalog" as const
+              },
+              // Agendar
+              {
+                label: "Agendar visita",
+                href: "/agenda",
+                aria: "Agendar visita a propiedades",
+                icon: "calendar" as const
+              }
+            ];
+
+            return <LinkGrid items={linkItems} />;
+          })()}
         </div>
       </section>
 
