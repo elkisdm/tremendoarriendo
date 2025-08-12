@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getBuildingBySlug, getRelatedBuildings } from "@lib/data";
 import { PropertyClient } from "./PropertyClient";
+import { safeJsonLd } from "@lib/seo/jsonld";
 
 type PropertyPageProps = {
   params: { slug: string };
@@ -52,10 +53,9 @@ export default async function PropertyPage({ params, searchParams }: PropertyPag
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
-      />
+      <script type="application/ld+json">
+        {safeJsonLd(jsonLd)}
+      </script>
       <PropertyClient building={building} relatedBuildings={relatedBuildings} />
     </>
   );
