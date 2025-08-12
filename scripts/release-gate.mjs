@@ -276,9 +276,11 @@ async function pageChecks() {
   const checks = {};
   
   // Leer feature flags
-  const flagsPath = join(projectRoot, 'config', 'feature-flags.json');
-  const flags = JSON.parse(readFileSync(flagsPath, 'utf8'));
-  const comingSoon = flags.comingSoon;
+  const flagsPath = join(projectRoot, 'config', 'feature-flags.ts');
+  const flagsContent = readFileSync(flagsPath, 'utf8');
+  // Extraer el valor de comingSoon del archivo TypeScript
+  const comingSoonMatch = flagsContent.match(/comingSoon:\s*(true|false)/);
+  const comingSoon = comingSoonMatch ? comingSoonMatch[1] === 'true' : false;
   
   log(`Feature flag comingSoon: ${comingSoon}`);
   
@@ -473,9 +475,11 @@ async function seoAndRobotsCheck() {
   const checks = {};
   
   // Leer feature flags
-  const flagsPath = join(projectRoot, 'config', 'feature-flags.json');
-  const flags = JSON.parse(readFileSync(flagsPath, 'utf8'));
-  const comingSoon = flags.comingSoon;
+  const flagsPath = join(projectRoot, 'config', 'feature-flags.ts');
+  const flagsContent = readFileSync(flagsPath, 'utf8');
+  // Extraer el valor de comingSoon del archivo TypeScript
+  const comingSoonMatch = flagsContent.match(/comingSoon:\s*(true|false)/);
+  const comingSoon = comingSoonMatch ? comingSoonMatch[1] === 'true' : false;
   
   // GET /robots.txt con retry si da 500
   log('Checking robots.txt with retry on 500...');
