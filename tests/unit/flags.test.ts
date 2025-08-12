@@ -1,12 +1,14 @@
 import { COMING_SOON } from '../../lib/flags';
 
-// Mock del archivo JSON
-jest.mock('../../config/feature-flags.json', () => ({
-  comingSoon: true
+// Mock del archivo TypeScript
+jest.mock('../../config/feature-flags', () => ({
+  featureFlags: {
+    comingSoon: true
+  }
 }));
 
 describe('Flags System', () => {
-  it('debería usar el valor del archivo JSON', () => {
+  it('debería usar el valor del archivo TypeScript', () => {
     expect(COMING_SOON).toBe(true);
   });
 
@@ -18,25 +20,29 @@ describe('Flags System', () => {
 });
 
 // Test adicional con mock dinámico
-describe('Flags System - Dynamic JSON', () => {
+describe('Flags System - Dynamic TypeScript', () => {
   beforeEach(() => {
     jest.resetModules();
   });
 
-  it('debería usar comingSoon: false del archivo JSON', () => {
+  it('debería usar comingSoon: false del archivo TypeScript', () => {
     // Mock temporal con comingSoon: false
-    jest.doMock('../../config/feature-flags.json', () => ({
-      comingSoon: false
+    jest.doMock('../../config/feature-flags', () => ({
+      featureFlags: {
+        comingSoon: false
+      }
     }));
     
     const { COMING_SOON } = require('../../lib/flags');
     expect(COMING_SOON).toBe(false);
   });
 
-  it('debería usar comingSoon: true del archivo JSON', () => {
+  it('debería usar comingSoon: true del archivo TypeScript', () => {
     // Mock temporal con comingSoon: true
-    jest.doMock('../../config/feature-flags.json', () => ({
-      comingSoon: true
+    jest.doMock('../../config/feature-flags', () => ({
+      featureFlags: {
+        comingSoon: true
+      }
     }));
     
     const { COMING_SOON } = require('../../lib/flags');
