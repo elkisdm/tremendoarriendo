@@ -217,29 +217,13 @@ export function ComingSoonHero() {
 
   return (
     <MotionConfig reducedMotion={prefersReducedMotion ? "user" : "never"}>
-      <section className="relative min-h-[70vh] flex items-center overflow-hidden">
+      <section className="relative min-h-[70vh] flex items-center overflow-hidden bg-transparent">
         {/* Background patterns and particles */}
         <BackgroundPattern />
         <FloatingParticles prefersReducedMotion={prefersReducedMotion} />
-        
-        {/* Gradiente animado de fondo */}
-        <div 
-          className={`absolute inset-0 ${
-            prefersReducedMotion 
-              ? "bg-gradient-to-br from-violet-900/20 via-purple-900/10 to-cyan-900/20" 
-              : "animate-gradient"
-          }`}
-          style={{
-            background: prefersReducedMotion 
-              ? "linear-gradient(135deg, rgba(139, 108, 255, 0.1) 0%, rgba(0, 230, 179, 0.05) 50%, rgba(139, 108, 255, 0.1) 100%)"
-              : "linear-gradient(135deg, rgba(139, 108, 255, 0.15) 0%, rgba(0, 230, 179, 0.1) 25%, rgba(139, 108, 255, 0.05) 50%, rgba(0, 230, 179, 0.1) 75%, rgba(139, 108, 255, 0.15) 100%)",
-            backgroundSize: prefersReducedMotion ? "100% 100%" : "400% 400%",
-            animation: prefersReducedMotion ? "none" : "gradientShift 6s ease-in-out infinite",
-          }}
-        />
 
         {/* Contenido principal */}
-        <div className="relative z-10 mx-auto max-w-3xl px-4 text-center pt-20 pb-16 md:pb-24">
+        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center pt-20 pb-16 md:pb-24">
           <motion.div
             variants={containerVariants}
             initial="hidden"
@@ -249,7 +233,7 @@ export function ComingSoonHero() {
             {/* Título principal con gradiente violeta→aqua y tipografía headline */}
             <motion.h1 
               variants={itemVariants}
-              className="text-5xl md:text-6xl font-extrabold leading-tight tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-[--brand-violet,#7C3AED] via-fuchsia-400 to-[--brand-aqua,#22D3EE]"
+              className="text-5xl md:text-6xl font-extrabold leading-tight tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-[--brand-violet,#7C3AED] via-fuchsia-400 to-[--brand-aqua,#22D3EE] drop-shadow-sm"
             >
               Próximamente
             </motion.h1>
@@ -262,7 +246,7 @@ export function ComingSoonHero() {
             {/* Legal breve - mejorado contraste */}
             <motion.p 
               variants={itemVariants}
-              className="text-sm text-neutral-100/80 max-w-lg mx-auto leading-relaxed"
+              className="text-sm text-slate-300 max-w-lg mx-auto leading-relaxed"
             >
               Arriendos desde $210.000 pesos. Sin costos ocultos ni sorpresas.
             </motion.p>
@@ -313,7 +297,7 @@ export function ComingSoonHero() {
             {/* Subtítulo con mejor contraste */}
             <motion.p 
               variants={itemVariants}
-              className="text-lg md:text-xl text-neutral-100 max-w-2xl mx-auto leading-relaxed drop-shadow-sm"
+              className="text-lg md:text-xl text-slate-100 max-w-2xl mx-auto leading-relaxed drop-shadow-sm"
             >
               Estamos preparando la nueva experiencia de arriendo 0% comisión. Sin letra chica.
             </motion.p>
@@ -327,7 +311,7 @@ export function ComingSoonHero() {
               <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-200" />
               
               <div className="relative z-10">
-                <h2 className="text-xl md:text-2xl font-bold text-white mb-6 text-center">
+                <h2 className="text-xl md:text-2xl font-bold text-slate-100 mb-6 text-center">
                   🎉 ¡Ahorra hasta $500.000 en comisiones!
                 </h2>
                 
@@ -349,7 +333,7 @@ export function ComingSoonHero() {
                     >
                       <div className="flex flex-col items-center text-center space-y-3 h-full">
                         <Icon className="size-5 text-white/90" aria-hidden="true" />
-                        <span className="text-sm text-neutral-100 font-medium leading-tight">
+                        <span className="text-sm text-slate-100 font-medium leading-tight">
                           {text}
                         </span>
                       </div>
@@ -358,12 +342,12 @@ export function ComingSoonHero() {
                 </div>
 
                 <div className="mt-6 p-4 bg-gradient-to-r from-brand-violet/20 to-brand-aqua/20 rounded-2xl backdrop-blur-sm border border-white/10">
-                  <div className="flex items-center justify-center space-x-2 text-white font-semibold text-center">
+                  <div className="flex items-center justify-center space-x-2 text-slate-100 font-semibold text-center">
                     <DollarSign className="w-5 h-5" />
                     <span>Ejemplo: Arriendo $500.000 → Ahorras $297.500 en comisión (incluye IVA)</span>
                   </div>
                   <div className="mt-3 text-center">
-                    <span className="text-sm text-white/80">Precios desde: $210.000 pesos</span>
+                    <span className="text-sm text-slate-300">Precios desde: $210.000 pesos</span>
                   </div>
                 </div>
               </div>
@@ -392,7 +376,7 @@ export function ComingSoonHero() {
                       className="w-8 h-8 text-brand-violet mb-3" 
                       aria-hidden="true"
                     />
-                    <span className="text-sm text-neutral-100 font-medium text-center leading-tight">
+                    <span className="text-sm text-slate-100 font-medium text-center leading-tight">
                       {label}
                     </span>
                     {/* Glass effect overlay */}
@@ -450,7 +434,7 @@ export function ComingSoonHero() {
             {/* Texto adicional con mejor contraste */}
             <motion.p 
               variants={itemVariants}
-              className="text-sm text-neutral-100/80 max-w-md mx-auto drop-shadow-sm"
+              className="text-sm text-slate-300 max-w-md mx-auto drop-shadow-sm"
             >
               ¿Tenés dudas? Escribinos por WhatsApp y te respondemos al toque 🚀
             </motion.p>
@@ -459,21 +443,6 @@ export function ComingSoonHero() {
           </motion.div>
         </div>
 
-        {/* Estilos CSS para la animación del gradiente */}
-        <style jsx>{`
-          @keyframes gradientShift {
-            0%, 100% {
-              background-position: 0% 50%;
-            }
-            50% {
-              background-position: 100% 50%;
-            }
-          }
-          
-          .animate-gradient {
-            animation: gradientShift 6s ease-in-out infinite;
-          }
-        `}</style>
       </section>
 
       {/* Modal de Waitlist */}

@@ -1,6 +1,6 @@
 # Release Gate Report
 
-**Fecha:** 12-08-2025, 8:34:32 a. m.
+**Fecha:** 12-08-2025, 9:03:29 a. m.
 **Decisión:** 🔴 NO-GO
 **Base URL:** http://localhost:3000
 
@@ -33,7 +33,7 @@
 ### Page Checks
 - **root**: 🔴 ALTA - FAIL (status: 500)
 - **comingSoon**: 🔴 ALTA - FAIL (status: 500)
-- **landing**: 🔴 ALTA - FAIL (status: 200)
+- **landing**: 🔴 ALTA - FAIL (status: 500)
 - **property**: 🟡 NO APLICA - NO_APPLY (status: 500)
 
 ### JSON-LD Security

@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-08-12T12:34:01.541Z",
+  "timestamp": "2025-08-12T13:03:01.526Z",
   "baseUrl": "http://localhost:3000",
   "sections": {
     "qaLocal": {
@@ -37,8 +37,8 @@
         "summary": "FAIL"
       },
       "landing": {
-        "statusCode": 200,
-        "hasTitle": true,
+        "statusCode": 500,
+        "hasTitle": false,
         "hasOgTitle": false,
         "summary": "FAIL"
       },

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ComingSoonHero } from '@components/marketing/ComingSoonHero';
+import { BackgroundFX } from '@components/visual/BackgroundFX';
 
 export const metadata: Metadata = {
   title: "Próximamente - Hommie",
@@ -11,5 +12,10 @@ export const metadata: Metadata = {
 };
 
 export default function ComingSoonPage() {
-  return <ComingSoonHero />;
+  return (
+    <div className="relative">
+      <BackgroundFX />
+      <ComingSoonHero />
+    </div>
+  );
 }

@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint . --ext .ts,.tsx,.js,.jsx,.mjs,.cjs --report-unused-disable-directives --max-warnings=0",
+    "lint": "eslint .",
     "test": "jest --runInBand",
     "preview:assetplan": "ts-node --compiler-options '{\"module\":\"commonjs\",\"moduleResolution\":\"node\"}' -r tsconfig-paths/register scripts/preview-assetplan.ts",
     "smoke": "node scripts/smoke.mjs https://tudominio.com",

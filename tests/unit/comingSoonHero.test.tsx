@@ -3,14 +3,6 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { ComingSoonHero } from '@components/marketing/ComingSoonHero';
 
 // Mock de módulos antes de importar el componente
-jest.mock('@lib/whatsapp', () => ({
-  buildWhatsAppUrl: jest.fn((params: any) => {
-    const baseUrl = 'https://wa.me/1234567890';
-    const message = params.message || 'Hola, me interesa';
-    const encodedMessage = encodeURIComponent(message);
-    return `${baseUrl}?text=${encodedMessage}`;
-  })
-}));
 
 jest.mock('@lib/analytics', () => ({
   track: jest.fn()

@@ -76,3 +76,29 @@ textarea:focus-visible {
 .skip-link:focus{
   top: 0;
 }
+
+/* Aurora gradient animation */
+@keyframes aurora {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.bg-aurora {
+  background-image:
+    radial-gradient(1200px 600px at 0% 0%, rgba(124,58,237,.20), transparent 60%),
+    radial-gradient(900px 500px at 100% 0%, rgba(34,211,238,.18), transparent 60%),
+    radial-gradient(800px 500px at 50% 100%, rgba(168,85,247,.16), transparent 60%),
+    linear-gradient(180deg, rgba(2,6,23,1), rgba(2,6,23,.95) 25%, rgba(2,6,23,.92) 60%, rgba(2,6,23,1));
+  background-size: 200% 200%;
+}
+
+.animate-aurora { 
+  animation: aurora 30s ease-in-out infinite; 
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-aurora { 
+    animation: none; 
+  }
+}
