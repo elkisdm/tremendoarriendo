@@ -18,7 +18,9 @@
     "setup:supabase": "node scripts/setup-supabase.mjs",
     "verify": "node scripts/verify-setup.mjs",
     "coming-soon:on": "node scripts/flags.mjs on",
-    "coming-soon:off": "node scripts/flags.mjs off"
+    "coming-soon:off": "node scripts/flags.mjs off",
+    "deploy:staging": "node scripts/deploy-staging.mjs",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.54.0",

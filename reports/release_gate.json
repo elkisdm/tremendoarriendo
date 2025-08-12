@@ -1,0 +1,126 @@
+{
+  "timestamp": "2025-08-12T01:34:22.516Z",
+  "baseUrl": "http://localhost:3000",
+  "sections": {
+    "qaLocal": {
+      "lint": {
+        "exitCode": 0,
+        "summary": "PASS",
+        "output": "\n> hommie-0-commission@1.0.0 lint\n> eslint . --ext .ts,.tsx,.js,.jsx,.mjs,.cjs --report-unused-disable-directives --max-warnings=0\n\n"
+      },
+      "types": {
+        "exitCode": 0,
+        "summary": "PASS",
+        "output": ""
+      },
+      "tests": {
+        "exitCode": 0,
+        "summary": "PASS",
+        "output": ""
+      },
+      "build": {
+        "exitCode": 0,
+        "summary": "PASS",
+        "output": "\n> hommie-0-commission@1.0.0 build\n> next build\n\n  ▲ Next.js 14.2.5\n  - Environments: .env.local\n\n   Creating an optimized production build ...\n ✓ Compiled successfully\n   Linting and checking validity of types ...\n   Collecting page data ...\n   Generating static pages (0/14) ...\n   Generating static pages (3/14) \r\n🚀 Función readAll() iniciada\n🔧 USE_SUPABASE: false\n📄 Usando datos mock como fallback\n📄 Retornando 5 edificios mock\n   Generating static pages (6/14) \r\n   Generating static pages (..."
+      }
+    },
+    "pageChecks": {
+      "root": {
+        "statusCode": 307,
+        "isRedirect": true,
+        "location": "/coming-soon",
+        "summary": "PASS"
+      },
+      "comingSoon": {
+        "statusCode": 200,
+        "hasTitle": true,
+        "hasNoIndex": true,
+        "summary": "PASS"
+      },
+      "landing": {
+        "statusCode": 200,
+        "hasTitle": true,
+        "hasOgTitle": false,
+        "summary": "FAIL"
+      },
+      "property": {
+        "statusCode": 500,
+        "hasTitle": false,
+        "hasJsonLd": false,
+        "summary": "NO_APPLY"
+      }
+    },
+    "jsonLdSecurity": {
+      "propertyPage": {
+        "hasDangerouslySetInnerHTML": false,
+        "hasSafeJsonLd": true,
+        "hasScriptJsonLd": true,
+        "summary": "PASS"
+      },
+      "jsonLdUtil": {
+        "exists": true,
+        "hasSafeJsonLd": true,
+        "hasEscapeFunction": true,
+        "summary": "PASS"
+      }
+    },
+    "rateLimit": {
+      "rateLimit": {
+        "routesExist": true,
+        "targetRoute": "/api/test",
+        "responses": [
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          429,
+          429,
+          429,
+          429,
+          429
+        ],
+        "has429": true,
+        "summary": "PASS"
+      }
+    },
+    "seoAndRobots": {
+      "robots": {
+        "statusCode": 200,
+        "content": "User-Agent: *\nDisallow: /\n\n",
+        "hasDisallowAll": true,
+        "hasAllowRoot": false,
+        "summary": "PASS"
+      },
+      "canonical": {
+        "rootHasCanonical": false,
+        "landingHasCanonical": false,
+        "summary": "FAIL"
+      }
+    }
+  },
+  "summary": {
+    "lint": "PASS",
+    "types": "PASS",
+    "tests": "PASS",
+    "build": "PASS",
+    "rootCheck": "PASS",
+    "seoRobot": "PASS"
+  },
+  "decision": "GO"
+}
