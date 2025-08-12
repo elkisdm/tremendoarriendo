@@ -108,47 +108,79 @@ async function qaLocal() {
       '',
     ].join('\n'));
   }
+  
+  // Cargar variables de entorno del archivo .env.audit.local
+  const envContent = fs.readFileSync(envAuditPath, 'utf8');
+  const auditEnv = {};
+  envContent.split('\n').forEach(line => {
+    const trimmed = line.trim();
+    if (trimmed && !trimmed.startsWith('#')) {
+      const eqIdx = trimmed.indexOf('=');
+      if (eqIdx > 0) {
+        const key = trimmed.slice(0, eqIdx).trim();
+        const value = trimmed.slice(eqIdx + 1).trim();
+        auditEnv[key] = value;
+      }
+    }
+  });
+  
   const baseEnv = { ...process.env, ...{ NODE_ENV: 'production' } };
-  const env = { ...baseEnv, ...{} };
+  const env = { ...baseEnv, ...auditEnv };
 
   const results = {};
 
   const logsDir = path.join(auditDir, 'logs');
   ensureDirSync(logsDir);
+  
+  // Ejecutar comandos siempre (no omitir tests ni build)
   const lint = await runCommandCapture('npm', ['run', 'lint'], { env, logPath: path.join(logsDir, 'lint.log') });
   const typecheck = await runCommandCapture('npm', ['run', 'typecheck'], { env, logPath: path.join(logsDir, 'typecheck.log') });
-  let test = { code: 0, stdout: '', stderr: '' };
-  if (!process.env.AUDIT_SKIP_TESTS) {
-    test = await runCommandCapture('npm', ['test', '-s'], { env, logPath: path.join(logsDir, 'test.log') });
-  }
+  const test = await runCommandCapture('npm', ['test', '-s'], { env, logPath: path.join(logsDir, 'test.log') });
   const buildEnv = { ...env, NEXT_TELEMETRY_DISABLED: '1' };
-  let build = { code: 0, stdout: '', stderr: '' };
-  if (!process.env.AUDIT_SKIP_BUILD) {
-    build = await runCommandCapture('npm', ['run', 'build'], { env: buildEnv, logPath: path.join(logsDir, 'build.log') });
-  }
+  const build = await runCommandCapture('npm', ['run', 'build'], { env: buildEnv, logPath: path.join(logsDir, 'build.log') });
 
   results.lint = { code: lint.code, summary: summarizeCmdOutput(lint.stdout, lint.stderr) };
   results.typecheck = { code: typecheck.code, summary: summarizeCmdOutput(typecheck.stdout, typecheck.stderr) };
   results.test = { code: test.code, summary: summarizeCmdOutput(test.stdout, test.stderr) };
   results.build = { code: build.code, summary: summarizeCmdOutput(build.stdout, build.stderr) };
 
+  // Contar rutas y componentes
+  const appDir = extractAppDir(repoRoot);
+  const routes = fs.existsSync(appDir) ? scanNextAppRoutes(appDir) : [];
+  const compRoots = [path.join(repoRoot, 'components'), path.join(repoRoot, 'app')].filter(fs.existsSync);
+  const allComponents = compRoots.flatMap((r) => enumerateComponents(r));
+  const clientComponents = allComponents.filter(c => c.isClient).length;
+  const serverComponents = allComponents.filter(c => !c.isClient).length;
+
+  const componentStats = {
+    total: allComponents.length,
+    client: clientComponents,
+    server: serverComponents
+  };
+
   const qaMd = [
     '## Comandos ejecutados',
     '- npm run lint',
-    '- npm run typecheck',
-    process.env.AUDIT_SKIP_TESTS ? '- (omitido) npm test -s' : '- npm test -s',
-    process.env.AUDIT_SKIP_BUILD ? '- (omitido) NEXT_TELEMETRY_DISABLED=1 npm run build' : '- NEXT_TELEMETRY_DISABLED=1 npm run build',
+    '- npm run typecheck', 
+    '- npm test -s',
+    '- NEXT_TELEMETRY_DISABLED=1 npm run build',
     '',
     '## Resumen',
     `- Lint: exit ${results.lint.code}, errors ${results.lint.summary.errorCount}, warnings ${results.lint.summary.warningCount}`,
     `- Typecheck: exit ${results.typecheck.code}, errors ${results.typecheck.summary.errorCount}, warnings ${results.typecheck.summary.warningCount}`,
     `- Tests: exit ${results.test.code}, pass ${results.test.summary.passCount}, fail ${results.test.summary.failCount}`,
     `- Build: exit ${results.build.code}, errors ${results.build.summary.errorCount}, warnings ${results.build.summary.warningCount}`,
+    '',
+    '## Estadísticas del proyecto',
+    `- Rutas detectadas: ${routes.length}`,
+    `- Componentes totales: ${allComponents.length}`,
+    `- Componentes client: ${clientComponents}`,
+    `- Componentes server: ${serverComponents}`,
   ];
   writeMarkdown(path.join(auditDir, 'QA_LOCAL.md'), 'QA local (estática)', qaMd);
   writeJson(path.join(auditDir, 'qa_local.json'), results);
 
-  return results;
+  return { results, routes, componentStats };
 }
 
 function analyzeSecurity() {
@@ -323,7 +355,7 @@ function prioritizeFindings(security, qa) {
   return top5;
 }
 
-function execSummary(qa, routesCount, filesAudited, top5) {
+function execSummary(qa, routesCount, filesAudited, top5, componentStats = {}) {
   const grading = {
     arquitectura: 7,
     datos: 7,
@@ -342,6 +374,9 @@ function execSummary(qa, routesCount, filesAudited, top5) {
     '',
     `Rutas detectadas: ${routesCount}`,
     `Archivos auditados: ${filesAudited}`,
+    `Componentes totales: ${componentStats.total || 0}`,
+    `Componentes client: ${componentStats.client || 0}`,
+    `Componentes server: ${componentStats.server || 0}`,
     '',
     'Top 5 hallazgos:',
     ...(top5.length ? top5.map((t) => `- [${t.severity}] ${t.file}: ${t.reason}`) : ['(sin hallazgos críticos)'])
@@ -358,7 +393,7 @@ function execSummary(qa, routesCount, filesAudited, top5) {
     '- [ ] Build exitoso',
   ]);
 
-  return goNoGo;
+  return { goNoGo, componentStats };
 }
 
 async function main() {
@@ -366,7 +401,7 @@ async function main() {
   mapRepoTree();
   const routes = mapAppRoutes();
   inventoryComponents();
-  const qa = await qaLocal();
+  const qaData = await qaLocal();
   const security = analyzeSecurity();
   analyzeA11y();
   analyzePerformance();
@@ -375,8 +410,18 @@ async function main() {
   analyzeComingSoonDX();
 
   const filesAudited = listFilesRecursive(repoRoot, { maxDepth: 6 }).length;
-  const top5 = prioritizeFindings(security, qa);
-  const decision = execSummary(qa, routes.length, filesAudited, top5);
+  const top5 = prioritizeFindings(security, qaData.results);
+  const summaryData = execSummary(qaData.results, routes.length, filesAudited, top5, qaData.componentStats);
+
+  // Agregar Top 5 hallazgos al QA_LOCAL.md
+  const qaLocalPath = path.join(auditDir, 'QA_LOCAL.md');
+  const qaLocalContent = fs.readFileSync(qaLocalPath, 'utf8');
+  const top5Section = [
+    '',
+    '## Top 5 Hallazgos',
+    ...(top5.length ? top5.map((t) => `- [${t.severity}] ${t.file}: ${t.reason}`) : ['(sin hallazgos críticos)'])
+  ].join('\n');
+  fs.writeFileSync(qaLocalPath, qaLocalContent + top5Section + '\n');
 
   // Final verification snippet appended to README
   const summary = [
@@ -384,16 +429,16 @@ async function main() {
     'Verificación:',
     `- Archivos auditados: ${filesAudited}`,
     `- Rutas detectadas: ${routes.length}`,
-    `- Lint errors/warnings: ${qa.lint.summary.errorCount}/${qa.lint.summary.warningCount}`,
-    `- Type errors/warnings: ${qa.typecheck.summary.errorCount}/${qa.typecheck.summary.warningCount}`,
-    `- Test pass/fail: ${qa.test.summary.passCount}/${qa.test.summary.failCount}`,
-    `- Build errors/warnings: ${qa.build.summary.errorCount}/${qa.build.summary.warningCount}`,
+    `- Lint errors/warnings: ${qaData.results.lint.summary.errorCount}/${qaData.results.lint.summary.warningCount}`,
+    `- Type errors/warnings: ${qaData.results.typecheck.summary.errorCount}/${qaData.results.typecheck.summary.warningCount}`,
+    `- Test pass/fail: ${qaData.results.test.summary.passCount}/${qaData.results.test.summary.failCount}`,
+    `- Build errors/warnings: ${qaData.results.build.summary.errorCount}/${qaData.results.build.summary.warningCount}`,
     '',
     'Top 5 hallazgos:',
     ...(top5.length ? top5.map((t) => `- [${t.severity}] ${t.file}: ${t.reason}`) : ['(sin hallazgos críticos)']),
     '',
     `Exec Summary: reports/AUDIT/EXEC_SUMMARY.md`,
-    `GO/NO-GO: ${decision}`,
+    `GO/NO-GO: ${summaryData.goNoGo}`,
   ].join('\n');
   fs.appendFileSync(path.join(auditDir, 'README.md'), '\n' + summary + '\n');
 }
