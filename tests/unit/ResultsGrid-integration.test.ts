@@ -37,7 +37,13 @@ describe('BuildingSummary to Building Adapter', () => {
           minPrice: 500000,
           minM2: 45
         }
-      ]
+      ] as Array<{
+        key: string;
+        label: string;
+        count: number;
+        minPrice: number;
+        minM2: number;
+      }>
     };
 
     // Simulate the adapter logic
@@ -70,7 +76,13 @@ describe('BuildingSummary to Building Adapter', () => {
       comuna: 'Las Condes',
       address: 'Test Address',
       gallery: ['/images/test.jpg'],
-      typologySummary: []
+      typologySummary: [] as Array<{
+        key: string;
+        label: string;
+        count: number;
+        minPrice: number;
+        minM2: number;
+      }>
     };
 
     // Simulate the adapter logic
