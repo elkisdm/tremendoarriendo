@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import Providers from "../../providers";
 import { LandingClient } from "../../../components/LandingClient";
 import { BuildingCardSkeleton } from "../../../components/ui/BuildingCardSkeleton";
 
@@ -24,7 +25,9 @@ export default function LandingPage() {
   return (
     <main id="main-content" role="main">
       <Suspense fallback={<LoadingFallback />}>
-        <LandingClient />
+        <Providers>
+          <LandingClient />
+        </Providers>
       </Suspense>
 
       {/* Sin letra chica */}

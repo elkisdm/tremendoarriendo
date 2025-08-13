@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
 import { Bed, Bath, Maximize2, MapPin, Heart } from "lucide-react";
 import { PromotionBadge } from "@components/ui/PromotionBadge";
 import { currency, clx } from "@lib/utils";
@@ -13,7 +12,7 @@ import type { BuildingSummary } from "../../hooks/useFetchBuildings";
 export function BuildingCard({ building }: { building: BuildingSummary }){
   const minPrice = building.precioDesde;
   const imageSrc = building.coverImage ?? building.gallery?.[0] ?? "/images/nunoa-cover.jpg";
-  const href = `/propiedad/${building.slug ?? building.id}`;
+  const href = `/property/${building.slug ?? building.id}`;
   const handleClick = () => {
     track("property_view", {
       property_id: building.id,
@@ -21,7 +20,7 @@ export function BuildingCard({ building }: { building: BuildingSummary }){
     });
   };
   return (
-    <motion.div layout whileHover={{ y: -4 }} className="group rounded-2xl bg-[var(--soft)]/90 ring-1 ring-white/10 overflow-hidden hover:ring-[var(--ring)]/60 transition-all">
+    <div className="group rounded-2xl bg-[var(--soft)]/90 ring-1 ring-white/10 overflow-hidden hover:ring-[var(--ring)]/60 transition-all">
       <div className="relative aspect-[16/10] overflow-hidden">
         <Image src={imageSrc} alt={`Portada ${building.name}`} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
         <div className="absolute top-3 left-3">
@@ -63,6 +62,6 @@ export function BuildingCard({ building }: { building: BuildingSummary }){
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

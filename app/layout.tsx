@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Providers from "./providers";
 
 export const metadata: Metadata = {
   title: {
@@ -25,7 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="min-h-screen bg-gray-900 text-gray-100">
         <a href="#main-content" className="skip-link">Saltar al contenido principal</a>
-        <Providers>{children}</Providers>
+        {children}
       </body>
     </html>
   );
