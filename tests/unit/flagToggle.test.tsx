@@ -39,7 +39,7 @@ describe('FlagToggle', () => {
     );
 
     expect(screen.getByText('Override')).toBeInTheDocument();
-    expect(screen.getByText(/Expira en/)).toBeInTheDocument();
+    expect(screen.getByText(/Expira pronto/)).toBeInTheDocument();
   });
 
   it('handles successful toggle', async () => {

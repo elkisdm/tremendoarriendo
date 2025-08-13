@@ -3,9 +3,13 @@ import { z } from "zod";
 import { getAllBuildings } from "@lib/data";
 import type { Building, Unit, TypologySummary } from "@schemas/models";
 import { computeUnitTotalArea } from "@lib/derive";
+import { createRateLimiter } from "@lib/rate-limit";
 
 // Force dynamic rendering to avoid static generation issues
 export const dynamic = 'force-dynamic';
+
+// Rate limiter: 20 requests per minute per IP
+const rateLimiter = createRateLimiter({ windowMs: 60_000, max: 20 });
 
 const QuerySchema = z.object({
   comuna: z.string().min(1).optional(),
@@ -68,7 +72,26 @@ function summarizeTypologies(units: Unit[]): TypologySummary[] | undefined {
 
 export async function GET(request: Request) {
   try {
-    console.log("API /buildings called");
+    // Rate limiting check
+    const forwarded = request.headers.get("x-forwarded-for");
+    const ip = forwarded ? forwarded.split(",")[0] : "unknown";
+    const rateLimitResult = await rateLimiter.check(ip);
+    
+    if (!rateLimitResult.ok) {
+      return NextResponse.json(
+        { error: "Rate limit exceeded", retryAfter: rateLimitResult.retryAfter },
+        { 
+          status: 429,
+          headers: {
+            "Retry-After": rateLimitResult.retryAfter?.toString() || "60",
+            "X-RateLimit-Limit": "20",
+            "X-RateLimit-Window": "60"
+          }
+        }
+      );
+    }
+
+    // console.log("API /buildings called");
     
     const { searchParams } = new URL(request.url);
     // Simulate API failure to verify error boundaries and client retry behavior
@@ -83,7 +106,7 @@ export async function GET(request: Request) {
     });
 
     if (!parsed.success) {
-      console.error("Query validation failed:", parsed.error);
+      // console.error("Query validation failed:", parsed.error);
       return NextResponse.json(
         { error: "Parámetros inválidos", details: parsed.error.flatten() },
         { status: 400 }
@@ -91,10 +114,10 @@ export async function GET(request: Request) {
     }
 
     const filters = parsed.data;
-    console.log("Calling getAllBuildings with filters:", filters);
+    // console.log("Calling getAllBuildings with filters:", filters);
     
     const list = await getAllBuildings(filters);
-    console.log("Got buildings from getAllBuildings:", list.length);
+    // console.log("Got buildings from getAllBuildings:", list.length);
 
     const buildings: BuildingListItem[] = list.map((b) => {
       const available = b.units.filter((u) => u.disponible);
@@ -129,10 +152,10 @@ export async function GET(request: Request) {
       } satisfies BuildingListItem;
     });
 
-    console.log("Returning buildings:", buildings.length);
+    // console.log("Returning buildings:", buildings.length);
     return NextResponse.json({ buildings });
   } catch (error) {
-    console.error("API Error:", error);
+    // console.error("API Error:", error);
     return NextResponse.json(
       { 
         error: "Error inesperado", 

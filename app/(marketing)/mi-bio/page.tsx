@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import { getBaseUrl } from "@lib/site";
 import { LinkGrid } from "@components/linktree/LinkGrid";
 import { BioHeader } from "@components/bio/BioHeader";
-import { buildWaLink } from "@lib/whatsapp";
+import { buildWhatsAppUrl } from "@lib/whatsapp";
+import { MI_BIO_CONSTANTS } from "./constants";
 
 const baseUrl = getBaseUrl();
 
 export const metadata: Metadata = {
-  title: "Mi Bio - Hommie 0% Comisión",
-  description: "Conoce más sobre mi experiencia en el mercado inmobiliario y cómo puedo ayudarte a encontrar tu próximo hogar sin comisión.",
+  title: MI_BIO_CONSTANTS.METADATA.TITLE,
+  description: MI_BIO_CONSTANTS.METADATA.DESCRIPTION,
   alternates: { canonical: `${baseUrl}/mi-bio` },
 };
 
@@ -73,8 +74,8 @@ export default function MiBioPage() {
         </h2>
         <div className="space-y-4">
           {(() => {
-            const whatsAppLink = buildWaLink({ 
-              presetMessage: "Hola, me interesa conocer más sobre tus propiedades" 
+            const whatsAppLink = buildWhatsAppUrl({ 
+                              message: "Hola, me interesa conocer más sobre tus propiedades" 
             });
             
             const linkItems = [

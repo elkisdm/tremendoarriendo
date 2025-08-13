@@ -6,7 +6,7 @@
 export interface JsonLdSchema {
   "@context": string;
   "@type": string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 /**
@@ -14,13 +14,13 @@ export interface JsonLdSchema {
  * @param obj - Objeto a validar
  * @returns true si es válido, false en caso contrario
  */
-function validateJsonLdStructure(obj: any): obj is JsonLdSchema {
-  return (
+function validateJsonLdStructure(obj: unknown): obj is JsonLdSchema {
+  return Boolean(
     obj &&
     typeof obj === "object" &&
-    obj["@context"] === "https://schema.org" &&
-    typeof obj["@type"] === "string" &&
-    obj["@type"].length > 0
+    (obj as any)["@context"] === "https://schema.org" &&
+    typeof (obj as any)["@type"] === "string" &&
+    (obj as any)["@type"].length > 0
   );
 }
 
@@ -44,10 +44,10 @@ function escapeJsonString(jsonString: string): string {
  * @param obj - Objeto JSON-LD a serializar
  * @returns String JSON escapado de forma segura
  */
-export function safeJsonLd(obj: any): string {
+export function safeJsonLd(obj: unknown): string {
   // Validación básica de estructura
   if (!validateJsonLdStructure(obj)) {
-    console.warn("JSON-LD structure validation failed:", obj);
+    // console.warn("JSON-LD structure validation failed:", obj);
     // Retorna objeto vacío pero válido en caso de error
     return '{"@context":"https://schema.org","@type":"Thing"}';
   }
@@ -58,8 +58,8 @@ export function safeJsonLd(obj: any): string {
     
     // Escapa caracteres peligrosos
     return escapeJsonString(jsonString);
-  } catch (error) {
-    console.error("Error serializing JSON-LD:", error);
+  } catch (_error) {
+    // console.error("Error serializing JSON-LD:", _error);
     // Retorna objeto vacío pero válido en caso de error
     return '{"@context":"https://schema.org","@type":"Thing"}';
   }

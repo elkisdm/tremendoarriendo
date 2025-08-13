@@ -125,7 +125,7 @@ export function BuildingCard({ building, priority = false, showBadge = true }: C
           {/* Typology chips */}
           {hasAvailability && typologyChips.length > 0 && (
             <div className="flex flex-wrap gap-1.5 min-h-[24px]">
-              {typologyChips.slice(0, 3).map((chip, index) => (
+              {typologyChips.slice(0, 3).map((chip, _index) => (
                 <span 
                   key={chip.key}
                   className="inline-flex items-center px-2 py-1 rounded-md text-[11px] font-medium bg-[var(--soft)] text-[var(--text)] ring-1 ring-white/10"

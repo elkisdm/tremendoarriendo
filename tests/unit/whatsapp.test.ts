@@ -1,11 +1,16 @@
-import { buildWhatsAppUrl } from '@lib/whatsapp';
-
 // Mock process.env
 const originalEnv = process.env;
 
-beforeEach(() => {
+// Unmock the whatsapp module for this test
+jest.unmock('@lib/whatsapp');
+
+let buildWhatsAppUrl: any;
+
+beforeEach(async () => {
   jest.resetModules();
   process.env = { ...originalEnv };
+  const module = await import('@lib/whatsapp');
+  buildWhatsAppUrl = module.buildWhatsAppUrl;
 });
 
 afterAll(() => {

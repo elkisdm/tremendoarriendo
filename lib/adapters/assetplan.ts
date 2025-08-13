@@ -119,7 +119,7 @@ function toPromotionBadges(input?: (AssetPlanRawBadge | string)[]): PromotionBad
 // Map a single AssetPlan unit into our internal Unit
 export function mapUnit(raw: AssetPlanRawUnit): Unit {
   const id = coerceId(raw.id);
-  const tipologia = normalizeString(raw.tipologia) ?? "";
+  const tipologia = normalizeTypology(raw.tipologia) ?? "";
 
   const areaInterior = raw.area_interior_m2 ?? raw.m2;
   const areaTotal = areaInterior && raw.area_exterior_m2 ? areaInterior + raw.area_exterior_m2 : (raw.m2 ?? areaInterior ?? 0);
@@ -148,7 +148,7 @@ export function mapUnit(raw: AssetPlanRawUnit): Unit {
     bathrooms: typeof raw.bathrooms === "number" ? raw.bathrooms : undefined,
     area_interior_m2: typeof raw.area_interior_m2 === "number" ? raw.area_interior_m2 : undefined,
     area_exterior_m2: typeof raw.area_exterior_m2 === "number" ? raw.area_exterior_m2 : undefined,
-    orientacion: normalizeString(raw.orientacion),
+    orientacion: normalizeOrientation(raw.orientacion),
     piso: typeof raw.piso === "number" ? raw.piso : undefined,
     amoblado: typeof raw.amoblado === "boolean" ? raw.amoblado : undefined,
     petFriendly: typeof raw.petFriendly === "boolean" ? raw.petFriendly : undefined,
@@ -228,6 +228,421 @@ export function fromAssetPlan(raw: AssetPlanRawBuilding): Building {
 
   // Validate final shape
   return BuildingSchema.parse(candidate);
+}
+
+// =====================================================
+// TRANSFORMATION STUBS - mapping.v2.json implementation
+// =====================================================
+
+/**
+ * Normaliza orientación a dominio estricto
+ * Dominio: {N, NE, E, SE, S, SO, O, NO}
+ */
+export function normalizeOrientation(rawOrientation: string | undefined): 'N' | 'NE' | 'E' | 'SE' | 'S' | 'SO' | 'O' | 'NO' | undefined {
+  if (!rawOrientation) return undefined;
+  
+  const normalized = rawOrientation.trim().toUpperCase();
+  const validOrientations = ['N', 'NE', 'E', 'SE', 'S', 'SO', 'O', 'NO'] as const;
+  
+  return validOrientations.includes(normalized as any) ? normalized as 'N' | 'NE' | 'E' | 'SE' | 'S' | 'SO' | 'O' | 'NO' : undefined;
+}
+
+/**
+ * Determina si una unidad está disponible para publicación
+ * Formula: Estado ∈ {'RE - Acondicionamiento', 'Lista para arrendar'} AND Arriendo Total > 1
+ */
+export function isAvailableForPublishing(estado: string, arriendoTotal: number): boolean {
+  const estadosValidos = ['RE - Acondicionamiento', 'Lista para arrendar'];
+  return estadosValidos.includes(estado) && arriendoTotal > 1;
+}
+
+/**
+ * Valida cuotas de garantía en rango 1..12
+ */
+export function validateGuaranteeInstallments(installments: number | undefined): number | undefined {
+  if (typeof installments !== 'number') return undefined;
+  return installments >= 1 && installments <= 12 ? installments : undefined;
+}
+
+/**
+ * Valida meses de garantía en {0,1,2}
+ */
+export function validateGuaranteeMonths(months: number | undefined): number | undefined {
+  if (typeof months !== 'number') return undefined;
+  return [0, 1, 2].includes(months) ? months : undefined;
+}
+
+/**
+ * Calcula recargo por sin garantía (6%)
+ * Se aplica sobre rent + extras (parking/bodega) si suman al arriendo
+ */
+export function calculateNoGuaranteeSurcharge(
+  rentAmount: number, 
+  parkingAmount: number = 0, 
+  storageAmount: number = 0
+): number {
+  const totalAmount = rentAmount + parkingAmount + storageAmount;
+  return totalAmount * 0.06; // 6%
+}
+
+// =====================================================
+// NEW TRANSFORMATION FUNCTIONS - mapping.v2.json implementation
+// =====================================================
+
+/**
+ * Normaliza comuna eliminando códigos y duplicados
+ * Regex: /\b\d{3,}\b/ para quitar enteros
+ */
+export function normalizeComuna(rawComuna: string | undefined): string | undefined {
+  if (!rawComuna) return undefined;
+  
+  let normalized = rawComuna.trim();
+  
+  // Eliminar códigos de 3+ dígitos
+  normalized = normalized.replace(/\b\d{3,}\b/g, '');
+  
+  // Colapsar dobles espacios
+  normalized = normalized.replace(/\s+/g, ' ');
+  
+  // Separar por guiones y tomar tópico más largo
+  if (normalized.includes(' - ')) {
+    const parts = normalized.split(' - ');
+    normalized = parts.reduce((longest, part) => 
+      part.trim().length > longest.trim().length ? part.trim() : longest.trim()
+    );
+  }
+  
+  // Title Case
+  normalized = normalized.replace(/\w\S*/g, (txt) => 
+    txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+  );
+  
+  return normalized.trim() || undefined;
+}
+
+/**
+ * Normaliza tipología a formato canónico
+ * Canónico: Studio, 1D1B, 2D1B, 2D2B, 3D2B
+ */
+export function normalizeTypology(rawTypology: string | undefined): string | undefined {
+  if (!rawTypology) return undefined;
+  
+  const normalized = rawTypology
+    .replace(/[/\s]/g, '') // Eliminar separadores
+    .toUpperCase();
+  
+  // Mapeo de casos especiales
+  const specialCases: Record<string, string> = {
+    'STUDIO': 'Studio',
+    'MONOAMBIENTE': 'Studio',
+    '1D1B': '1D1B',
+    '2D1B': '2D1B',
+    '2D2B': '2D2B',
+    '3D2B': '3D2B'
+  };
+  
+  return specialCases[normalized] || normalized;
+}
+
+/**
+ * Corrige áreas de cm² a m²
+ * Dividir por 100 cuando > 1000
+ */
+export function correctArea(rawArea: number | undefined): number | undefined {
+  if (typeof rawArea !== 'number') return undefined;
+  
+  // Si el valor es muy grande, probablemente está en cm²
+  if (rawArea > 1000) {
+    return rawArea / 100;
+  }
+  
+  return rawArea;
+}
+
+/**
+ * Parsea identificadores separados por pipe
+ * Formato: "31|32" o "x" para opcional
+ */
+export function parse_ids_or_pipe(rawValue: string | undefined): { ids: string | null; has_optional: boolean } {
+  if (!rawValue) return { ids: null, has_optional: false };
+  
+  if (rawValue === 'x') {
+    return { ids: null, has_optional: true };
+  }
+  
+  // Validar formato: números separados por pipe
+  if (!/^(\d+\|)*\d+$/.test(rawValue)) {
+    return { ids: null, has_optional: false };
+  }
+  
+  return { ids: rawValue, has_optional: false };
+}
+
+/**
+ * Determina si un valor es opcional (x)
+ */
+export function isOptionalX(rawValue: string | undefined): boolean {
+  return rawValue === 'x';
+}
+
+/**
+ * Determina si tiene valor y no es opcional
+ */
+export function notEmptyAndNotX(rawValue: string | undefined): boolean {
+  return Boolean(rawValue && rawValue !== 'x');
+}
+
+/**
+ * Determina modo de garantía
+ * MF fijo excepto OP en lista (VISD,SNMD,LIAD,MRSD); Retail variable
+ */
+export function determineGCMode(rawMode: string | undefined, buildingId: string): 'MF' | 'variable' {
+  const opExcepciones = ['VISD', 'SNMD', 'LIAD', 'MRSD'];
+  
+  // Si es OP excepción, retornar variable
+  if (opExcepciones.includes(buildingId)) {
+    return 'variable';
+  }
+  
+  // Si es Retail, siempre variable
+  if (rawMode?.toLowerCase() === 'retail') {
+    return 'variable';
+  }
+  
+  // Por defecto MF fijo
+  return 'MF';
+}
+
+/**
+ * Valida link de listing con número de unidad
+ * Si no contiene número de unidad → marcar para revisión
+ */
+export function validateLinkListing(link: string | undefined): string | null {
+  if (!link) return null;
+  
+  // Validar que sea URL válida
+  if (!/^https?:\/\//.test(link)) {
+    return null;
+  }
+  
+  // Validar que contenga número de unidad
+  if (!/\d/.test(link)) {
+    // Marcar para revisión (retornar null por ahora)
+    return null;
+  }
+  
+  return link;
+}
+
+/**
+ * Convierte CLP a entero
+ */
+export function clpToInt(value: string | number | undefined): number {
+  if (typeof value === 'number') return Math.round(value);
+  if (typeof value === 'string') {
+    const cleaned = value.replace(/[^\d.-]/g, '');
+    const parsed = parseFloat(cleaned);
+    return isNaN(parsed) ? 0 : Math.round(parsed);
+  }
+  return 0;
+}
+
+/**
+ * Convierte CLP a entero o null
+ */
+export function clpToIntNull(value: string | number | undefined): number | null {
+  if (typeof value === 'number') return Math.round(value);
+  if (typeof value === 'string') {
+    const cleaned = value.replace(/[^\d.-]/g, '');
+    const parsed = parseFloat(cleaned);
+    return isNaN(parsed) ? null : Math.round(parsed);
+  }
+  return null;
+}
+
+/**
+ * Convierte a entero o null
+ */
+export function toIntNull(value: string | number | undefined): number | null {
+  if (typeof value === 'number') return Math.round(value);
+  if (typeof value === 'string') {
+    const parsed = parseInt(value, 10);
+    return isNaN(parsed) ? null : parsed;
+  }
+  return null;
+}
+
+/**
+ * Convierte a float o null
+ */
+export function toFloatNull(value: string | number | undefined): number | null {
+  if (typeof value === 'number') return value;
+  if (typeof value === 'string') {
+    const parsed = parseFloat(value);
+    return isNaN(parsed) ? null : parsed;
+  }
+  return null;
+}
+
+/**
+ * Convierte porcentaje a entero 0-100
+ */
+export function percentToInt0100(value: string | number | undefined): number {
+  if (typeof value === 'number') return Math.round(value);
+  if (typeof value === 'string') {
+    const cleaned = value.replace(/[^\d.-]/g, '');
+    const parsed = parseFloat(cleaned);
+    return isNaN(parsed) ? 0 : Math.round(parsed);
+  }
+  return 0;
+}
+
+/**
+ * Convierte a booleano genérico
+ */
+export function toBoolGeneric(value: string | boolean | undefined): boolean {
+  if (typeof value === 'boolean') return value;
+  if (typeof value === 'string') {
+    const lower = value.toLowerCase().trim();
+    return ['true', '1', 'yes', 'si', 'sí'].includes(lower);
+  }
+  return false;
+}
+
+/**
+ * Valida rango o retorna null
+ */
+export function rangeOrNull(value: number | undefined, min: number, max: number): number | null {
+  if (typeof value !== 'number') return null;
+  return value >= min && value <= max ? value : null;
+}
+
+/**
+ * Valida URL o retorna null
+ */
+export function validUrlOrNull(value: string | undefined): string | null {
+  if (!value) return null;
+  try {
+    new URL(value);
+    return value;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Suma si ambos valores existen
+ */
+export function sumIfBoth(value1: number | undefined, value2: number | undefined): number | undefined {
+  if (typeof value1 === 'number' && typeof value2 === 'number') {
+    return value1 + value2;
+  }
+  return typeof value1 === 'number' ? value1 : typeof value2 === 'number' ? value2 : undefined;
+}
+
+/**
+ * Calcula renta mínima requerida sumable
+ */
+export function rentMinRequiredSumable(arriendoTotal: number, rentasNecesarias: number): number {
+  return arriendoTotal * rentasNecesarias;
+}
+
+/**
+ * Mapea índice de contrato UF/IPC
+ */
+export function mapContractIndexUFIPC(value: string | undefined): string | undefined {
+  if (!value) return undefined;
+  const lower = value.toLowerCase().trim();
+  if (lower.includes('uf')) return 'UF';
+  if (lower.includes('ipc')) return 'IPC';
+  return undefined;
+}
+
+/**
+ * Normaliza tipología interna
+ */
+export function normalizeTypologyInternal(rawTypology: string | undefined): string | undefined {
+  return normalizeTypology(rawTypology);
+}
+
+/**
+ * Mapea tipología pública
+ */
+export function mapTypologyPublic(rawTypology: string | undefined): string | undefined {
+  const internal = normalizeTypology(rawTypology);
+  if (!internal) return undefined;
+  
+  const publicMap: Record<string, string> = {
+    'Studio': 'estudio',
+    '1D1B': '1d',
+    '2D1B': '2d',
+    '2D2B': '2d',
+    '3D2B': '3d'
+  };
+  
+  return publicMap[internal] || internal.toLowerCase();
+}
+
+/**
+ * Normaliza comuna extendida
+ */
+export function normalizeCommuneExtended(rawComuna: string | undefined): string | undefined {
+  return normalizeComuna(rawComuna);
+}
+
+/**
+ * Enumera MF o Retail
+ */
+export function enumMFOrRetail(value: string | undefined): 'MF' | 'Retail' | undefined {
+  if (!value) return undefined;
+  const lower = value.toLowerCase().trim();
+  if (lower === 'mf') return 'MF';
+  if (lower === 'retail') return 'Retail';
+  return undefined;
+}
+
+/**
+ * Title case y trim
+ */
+export function titlecaseTrim(value: string | undefined): string | undefined {
+  if (!value) return undefined;
+  return value.trim().replace(/\w\S*/g, (txt) => 
+    txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+  );
+}
+
+/**
+ * Hash SHA1 join
+ */
+export function hashSha1Join(values: (string | undefined)[], separator: string = '|'): string {
+  const filtered = values.filter((v): v is string => Boolean(v));
+  const joined = filtered.join(separator);
+  
+  // Simple hash implementation (in production, use crypto)
+  let hash = 0;
+  for (let i = 0; i < joined.length; i++) {
+    const char = joined.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32-bit integer
+  }
+  return Math.abs(hash).toString(36);
+}
+
+/**
+ * Upper trim
+ */
+export function upperTrim(value: string | undefined): string | undefined {
+  if (!value) return undefined;
+  return value.trim().toUpperCase();
+}
+
+/**
+ * Strict enum validation
+ */
+export function strictEnum(value: string | undefined, allowed: string[]): string | undefined {
+  if (!value) return undefined;
+  const normalized = value.trim().toUpperCase();
+  return allowed.includes(normalized) ? normalized : undefined;
 }
 
 

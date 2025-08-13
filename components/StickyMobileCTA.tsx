@@ -1,7 +1,7 @@
 "use client";
 import { Calendar, MessageCircle } from "lucide-react";
 import { track } from "@lib/analytics";
-import { buildWaLink } from "@lib/whatsapp";
+import { buildWhatsAppUrl } from "@lib/whatsapp";
 
 export function StickyMobileCTA() {
   const handleBookingClick = () => {
@@ -16,7 +16,7 @@ export function StickyMobileCTA() {
   };
 
   const handleWhatsAppClick = () => {
-    const link = buildWaLink({ url: typeof window !== "undefined" ? window.location.href : undefined });
+    const link = buildWhatsAppUrl({ url: typeof window !== "undefined" ? window.location.href : undefined });
     track("cta_whatsapp_click", { context: "sticky_mobile" });
     if (link) {
       window.open(link, "_blank", "noopener,noreferrer");
@@ -45,9 +45,9 @@ export function StickyMobileCTA() {
             onClick={handleWhatsAppClick}
             className="flex items-center justify-center gap-2 px-4 py-3 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-[var(--bg)] transition-colors motion-reduce:transition-none disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="Contactar por WhatsApp"
-            aria-disabled={!Boolean(process.env.NEXT_PUBLIC_WHATSAPP_PHONE)}
-            disabled={!Boolean(process.env.NEXT_PUBLIC_WHATSAPP_PHONE)}
-            title={!Boolean(process.env.NEXT_PUBLIC_WHATSAPP_PHONE) ? "Pronto disponible" : undefined}
+            aria-disabled={!process.env.NEXT_PUBLIC_WHATSAPP_PHONE}
+            disabled={!process.env.NEXT_PUBLIC_WHATSAPP_PHONE}
+            title={!process.env.NEXT_PUBLIC_WHATSAPP_PHONE ? "Pronto disponible" : undefined}
           >
             <MessageCircle className="w-4 h-4" aria-hidden="true" />
             <span className="sr-only">WhatsApp</span>

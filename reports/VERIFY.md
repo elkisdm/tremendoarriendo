@@ -1,25 +1,25 @@
 # Smoke Test
 
-- Fecha: 2025-08-11T20:32:53.178Z
-- Sitio: https://elkisrealtor.cl
+- Fecha: 2025-08-12T17:18:12.840Z
+- Sitio: https://tudominio.com
 
 ### Resumen
-- **site**: https://elkisrealtor.cl
-- **estado**: 16/20 PASS
-- **home**: 1º=200, 2º=200, cache=MISS
-- **canonical home**: https://elkisrealtor.cl
-- **sitemap**: urls=82, propiedades=81
-- **muestra propiedad**: https://elkisrealtor.cl/property/edificio-abate-molina
+- **site**: https://tudominio.com
+- **estado**: 7/16 PASS
+- **home**: 1º=200, 2º=200, cache=no header
+- **canonical home**: not found
+- **sitemap**: urls=0, propiedades=0
+- **muestra propiedad**: n/a
 - **robots Allow /**: sí
 - **coming soon redirect**: no
-- **coming soon content**: sí
-- **coming soon noindex**: sí
-- **robots Disallow /**: no
+- **coming soon content**: no
+- **coming soon noindex**: no
+- **robots Disallow /**: sí
 
 ### Detalles
 ```json
 {
-  "site": "https://elkisrealtor.cl",
+  "site": "https://tudominio.com",
   "checks": [
     {
       "name": "home-200-first",
@@ -33,18 +33,18 @@
     },
     {
       "name": "home-cache-header",
-      "pass": true,
-      "detail": "MISS"
+      "pass": false,
+      "detail": "no header"
     },
     {
       "name": "home-cache-hit",
       "pass": false,
-      "detail": "MISS o sin header"
+      "detail": "no header"
     },
     {
       "name": "home-canonical",
-      "pass": true,
-      "detail": "https://elkisrealtor.cl"
+      "pass": false,
+      "detail": "not found"
     },
     {
       "name": "coming-soon-redirect",
@@ -59,13 +59,12 @@
     },
     {
       "name": "coming-soon-content",
-      "pass": true,
-      "detail": "contains coming soon text"
+      "pass": false,
+      "detail": "missing coming soon text"
     },
     {
       "name": "coming-soon-noindex",
-      "pass": true,
-      "detail": "noindex, nofollow"
+      "detail": "no robots meta"
     },
     {
       "name": "sitemap-200",
@@ -74,39 +73,18 @@
     },
     {
       "name": "sitemap-has-home",
-      "pass": true,
-      "count": 82
+      "pass": false,
+      "count": 0
     },
     {
       "name": "sitemap-has-property",
-      "pass": true,
-      "count": 81
-    },
-    {
-      "name": "property-200",
-      "pass": true,
-      "status": 200,
-      "url": "https://elkisrealtor.cl/property/edificio-abate-molina"
-    },
-    {
-      "name": "property-og-title",
-      "pass": true,
-      "detail": "Abate Molina - 0% Comisión"
-    },
-    {
-      "name": "property-og-image",
-      "pass": true,
-      "detail": "https://elkisrealtor.cl/images/lascondes-cover.jpg"
-    },
-    {
-      "name": "property-canonical",
-      "pass": true,
-      "detail": "https://elkisrealtor.cl/property/edificio-abate-molina"
-    },
-    {
-      "name": "property-whatsapp",
       "pass": false,
-      "detail": "no encontrado (posible dinámico)"
+      "count": 0
+    },
+    {
+      "name": "property-sample-skipped",
+      "pass": false,
+      "detail": "No hay URLs /property/ en sitemap"
     },
     {
       "name": "robots-200",
@@ -120,17 +98,10 @@
     },
     {
       "name": "robots-disallow-root",
-      "pass": false,
-      "detail": "No Disallow: /"
+      "pass": true,
+      "detail": "Disallow: /"
     }
   ],
-  "propertySample": {
-    "url": "https://elkisrealtor.cl/property/edificio-abate-molina",
-    "status": 200,
-    "ogTitle": "Abate Molina - 0% Comisión",
-    "ogImage": "https://elkisrealtor.cl/images/lascondes-cover.jpg",
-    "canonical": "https://elkisrealtor.cl/property/edificio-abate-molina",
-    "whatsapp": null
-  }
+  "propertySample": {}
 }
 ```

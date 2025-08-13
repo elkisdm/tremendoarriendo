@@ -25,7 +25,7 @@ describe('Flags System - Dynamic TypeScript', () => {
     jest.resetModules();
   });
 
-  it('debería usar comingSoon: false del archivo TypeScript', () => {
+  it('debería usar comingSoon: false del archivo TypeScript', async () => {
     // Mock temporal con comingSoon: false
     jest.doMock('../../config/feature-flags', () => ({
       featureFlags: {
@@ -33,11 +33,11 @@ describe('Flags System - Dynamic TypeScript', () => {
       }
     }));
     
-    const { COMING_SOON } = require('../../lib/flags');
+    const { COMING_SOON } = await import('../../lib/flags');
     expect(COMING_SOON).toBe(false);
   });
 
-  it('debería usar comingSoon: true del archivo TypeScript', () => {
+  it('debería usar comingSoon: true del archivo TypeScript', async () => {
     // Mock temporal con comingSoon: true
     jest.doMock('../../config/feature-flags', () => ({
       featureFlags: {
@@ -45,7 +45,7 @@ describe('Flags System - Dynamic TypeScript', () => {
       }
     }));
     
-    const { COMING_SOON } = require('../../lib/flags');
+    const { COMING_SOON } = await import('../../lib/flags');
     expect(COMING_SOON).toBe(true);
   });
 });

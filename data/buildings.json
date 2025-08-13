@@ -5,7 +5,12 @@
     "name": "Edificio Vista Las Condes",
     "comuna": "Las Condes",
     "address": "Av. Apoquindo 4500",
-    "amenities": ["Piscina", "Gimnasio", "Quinchos", "Cowork"],
+    "amenities": [
+      "Piscina",
+      "Gimnasio",
+      "Quinchos",
+      "Cowork"
+    ],
     "gallery": [
       "/images/lascondes-hero.jpg",
       "/images/lascondes-cover.jpg",
@@ -14,9 +19,33 @@
       "/images/lascondes-3.jpg"
     ],
     "units": [
-      {"id": "lc-101", "tipologia": "1D/1B", "m2": 38, "price": 460000, "estacionamiento": false, "bodega": false, "disponible": true},
-      {"id": "lc-1203", "tipologia": "2D/2B", "m2": 62, "price": 780000, "estacionamiento": true, "bodega": true, "disponible": true},
-      {"id": "lc-705", "tipologia": "1D/1B", "m2": 40, "price": 495000, "estacionamiento": false, "bodega": false, "disponible": false}
+      {
+        "id": "lc-101",
+        "tipologia": "1D1B",
+        "m2": 38,
+        "price": 460000,
+        "estacionamiento": false,
+        "bodega": false,
+        "disponible": true
+      },
+      {
+        "id": "lc-1203",
+        "tipologia": "2D2B",
+        "m2": 62,
+        "price": 780000,
+        "estacionamiento": true,
+        "bodega": true,
+        "disponible": true
+      },
+      {
+        "id": "lc-705",
+        "tipologia": "1D1B",
+        "m2": 40,
+        "price": 495000,
+        "estacionamiento": false,
+        "bodega": false,
+        "disponible": false
+      }
     ]
   },
   {
@@ -25,7 +54,11 @@
     "name": "Condominio Parque Ñuñoa",
     "comuna": "Ñuñoa",
     "address": "Av. Irarrázaval 2800",
-    "amenities": ["Piscina", "Sala de eventos", "Lavandería"],
+    "amenities": [
+      "Piscina",
+      "Sala de eventos",
+      "Lavandería"
+    ],
     "gallery": [
       "/images/nunoa-hero.jpg",
       "/images/nunoa-cover.jpg",
@@ -34,8 +67,24 @@
       "/images/nunoa-3.jpg"
     ],
     "units": [
-      {"id": "nu-302", "tipologia": "Studio", "m2": 28, "price": 350000, "estacionamiento": false, "bodega": false, "disponible": true},
-      {"id": "nu-804", "tipologia": "1D/1B", "m2": 36, "price": 420000, "estacionamiento": false, "bodega": true, "disponible": true}
+      {
+        "id": "nu-302",
+        "tipologia": "Studio",
+        "m2": 28,
+        "price": 350000,
+        "estacionamiento": false,
+        "bodega": false,
+        "disponible": true
+      },
+      {
+        "id": "nu-804",
+        "tipologia": "1D1B",
+        "m2": 36,
+        "price": 420000,
+        "estacionamiento": false,
+        "bodega": true,
+        "disponible": true
+      }
     ]
   },
   {
@@ -44,7 +93,11 @@
     "name": "Torre Central Providencia",
     "comuna": "Providencia",
     "address": "Av. Providencia 1555",
-    "amenities": ["Gimnasio", "Bicicleteros", "Conserjería 24/7"],
+    "amenities": [
+      "Gimnasio",
+      "Bicicleteros",
+      "Conserjería 24/7"
+    ],
     "gallery": [
       "/images/mirador-hero.jpg",
       "/images/mirador-cover.jpg",
@@ -53,8 +106,24 @@
       "/images/mirador-3.jpg"
     ],
     "units": [
-      {"id": "pr-903", "tipologia": "1D/1B", "m2": 34, "price": 460000, "estacionamiento": false, "bodega": false, "disponible": true},
-      {"id": "pr-1101", "tipologia": "2D/2B", "m2": 60, "price": 820000, "estacionamiento": true, "bodega": true, "disponible": false}
+      {
+        "id": "pr-903",
+        "tipologia": "1D1B",
+        "m2": 34,
+        "price": 460000,
+        "estacionamiento": false,
+        "bodega": false,
+        "disponible": true
+      },
+      {
+        "id": "pr-1101",
+        "tipologia": "2D2B",
+        "m2": 60,
+        "price": 820000,
+        "estacionamiento": true,
+        "bodega": true,
+        "disponible": false
+      }
     ]
   },
   {
@@ -63,7 +132,11 @@
     "name": "Altos de Santiago Centro",
     "comuna": "Santiago",
     "address": "Huérfanos 1200",
-    "amenities": ["Piscina", "Gimnasio", "Sala multiuso"],
+    "amenities": [
+      "Piscina",
+      "Gimnasio",
+      "Sala multiuso"
+    ],
     "gallery": [
       "/images/mirador-4.jpg",
       "/images/lascondes-4.jpg",
@@ -71,9 +144,33 @@
       "/images/nunoa-1.jpg"
     ],
     "units": [
-      {"id": "sc-214", "tipologia": "Studio", "m2": 25, "price": 300000, "estacionamiento": false, "bodega": false, "disponible": true},
-      {"id": "sc-1210", "tipologia": "1D/1B", "m2": 33, "price": 380000, "estacionamiento": false, "bodega": false, "disponible": true},
-      {"id": "sc-1505", "tipologia": "2D/1B", "m2": 55, "price": 600000, "estacionamiento": true, "bodega": false, "disponible": false}
+      {
+        "id": "sc-214",
+        "tipologia": "Studio",
+        "m2": 25,
+        "price": 300000,
+        "estacionamiento": false,
+        "bodega": false,
+        "disponible": true
+      },
+      {
+        "id": "sc-1210",
+        "tipologia": "1D1B",
+        "m2": 33,
+        "price": 380000,
+        "estacionamiento": false,
+        "bodega": false,
+        "disponible": true
+      },
+      {
+        "id": "sc-1505",
+        "tipologia": "2D1B",
+        "m2": 55,
+        "price": 600000,
+        "estacionamiento": true,
+        "bodega": false,
+        "disponible": false
+      }
     ]
   },
   {
@@ -82,17 +179,35 @@
     "name": "Parque Sur Macul",
     "comuna": "Macul",
     "address": "Av. Macul 3500",
-    "amenities": ["Áreas verdes", "Quinchos", "Juegos infantiles"],
+    "amenities": [
+      "Áreas verdes",
+      "Quinchos",
+      "Juegos infantiles"
+    ],
     "gallery": [
       "/images/mirador-2.jpg",
       "/images/lascondes-2.jpg",
       "/images/nunoa-3.jpg"
     ],
     "units": [
-      {"id": "ma-401", "tipologia": "1D/1B", "m2": 32, "price": 370000, "estacionamiento": false, "bodega": false, "disponible": false},
-      {"id": "ma-709", "tipologia": "2D/1B", "m2": 52, "price": 520000, "estacionamiento": true, "bodega": false, "disponible": true}
+      {
+        "id": "ma-401",
+        "tipologia": "1D1B",
+        "m2": 32,
+        "price": 370000,
+        "estacionamiento": false,
+        "bodega": false,
+        "disponible": false
+      },
+      {
+        "id": "ma-709",
+        "tipologia": "2D1B",
+        "m2": 52,
+        "price": 520000,
+        "estacionamiento": true,
+        "bodega": false,
+        "disponible": true
+      }
     ]
   }
 ]
-
-

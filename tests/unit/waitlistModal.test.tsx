@@ -10,6 +10,7 @@ jest.mock('framer-motion', () => ({
     button: ({ children, ...props }: any) => <button {...props}>{children}</button>,
     h1: ({ children, ...props }: any) => <h1 {...props}>{children}</h1>,
     p: ({ children, ...props }: any) => <p {...props}>{children}</p>,
+    a: ({ children, ...props }: any) => <a {...props}>{children}</a>,
   },
   MotionConfig: ({ children }: any) => <div>{children}</div>,
   useReducedMotion: () => false,
@@ -26,7 +27,7 @@ jest.mock('@components/marketing/PromoBadge', () => ({
 }));
 
 jest.mock('@lib/whatsapp', () => ({
-  buildWaLink: jest.fn().mockReturnValue('https://wa.me/test'),
+      buildWhatsAppUrl: jest.fn().mockReturnValue('https://wa.me/test'),
 }));
 
 // Mock fetch
@@ -183,7 +184,7 @@ describe('WaitlistForm Component', () => {
   it('submits form successfully', async () => {
     (fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
-      json: async () => ({ ok: true }),
+      json: async () => ({ success: true }),
     });
 
     render(<WaitlistForm />);

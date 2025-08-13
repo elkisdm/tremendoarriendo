@@ -1,0 +1,18 @@
+---
+description: UI/Componentes (Next 14, TS estricto, Tailwind, Framer Motion)
+globs:
+  - components/**/*.{ts,tsx}
+  - app/**/*.{tsx,ts}
+alwaysApply: false
+---
+
+- Server Components por defecto; client solo si hay estado/efectos.
+- A11y: focus visible, labels, roles/aria, targets ≥44px, alt en imágenes.
+- Perf/SEO: next/image, metadatos/OG, revalidate sensato.
+- Añade tests (render + interacción básica) si creas un componente nuevo.
+- UI: Tailwind, dark theme, rounded-2xl, focus-ring.
+- A11y y perf tienen misma prioridad que diseño.
+- Respetar prefers-reduced-motion para animaciones.
+- Componentes reutilizables con props tipadas.
+- Manejo de estados de carga y error.
+- Responsive design mobile-first.

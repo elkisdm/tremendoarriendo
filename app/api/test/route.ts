@@ -15,11 +15,11 @@ export async function GET(request: Request) {
     );
   }
   try {
-    console.log("🧪 Endpoint de prueba llamado");
+    // console.log("🧪 Endpoint de prueba llamado");
     
     const buildings = await readAll();
     
-    console.log(`📊 Total edificios obtenidos: ${buildings.length}`);
+    // console.log(`📊 Total edificios obtenidos: ${buildings.length}`);
     
     return NextResponse.json({ 
       success: true, 
@@ -27,7 +27,7 @@ export async function GET(request: Request) {
       sample: buildings.slice(0, 3).map(b => ({ name: b.name, comuna: b.comuna }))
     });
   } catch (error) {
-    console.error("❌ Error en endpoint de prueba:", error);
+    // console.error("❌ Error en endpoint de prueba:", error);
     return NextResponse.json({ 
       success: false, 
       error: error instanceof Error ? error.message : "Unknown error" 

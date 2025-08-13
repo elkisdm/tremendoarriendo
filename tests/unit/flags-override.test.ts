@@ -2,6 +2,7 @@ import {
   applyOverride, 
   getFlagsStatus, 
   cleanupExpiredOverrides,
+  clearAllOverrides,
   getFlagValue,
   type FlagOverride 
 } from '@lib/flags';
@@ -13,13 +14,13 @@ jest.mock('../../config/feature-flags', () => ({
 
 describe('Flags Override System', () => {
   beforeEach(() => {
-    // Limpiar overrides antes de cada test
-    cleanupExpiredOverrides();
+    // Limpiar TODOS los overrides antes de cada test
+    clearAllOverrides();
   });
 
   afterEach(() => {
-    // Limpiar overrides después de cada test
-    cleanupExpiredOverrides();
+    // Limpiar TODOS los overrides después de cada test
+    clearAllOverrides();
   });
 
   // Test simple para verificar que el sistema funciona
@@ -93,8 +94,8 @@ describe('Flags Override System', () => {
 
   describe('getFlagsStatus', () => {
     it('should return overridden status when override is active', () => {
-      // Limpiar overrides previos
-      cleanupExpiredOverrides();
+      // Limpiar TODOS los overrides previos
+      clearAllOverrides();
       
       // Aplicar override
       const override: FlagOverride = {
@@ -111,9 +112,9 @@ describe('Flags Override System', () => {
       expect(status.comingSoon.expiresAt).toBeDefined();
     });
 
-    it.skip('should return default status when no overrides', () => {
-      // Limpiar overrides previos
-      cleanupExpiredOverrides();
+    it('should return default status when no overrides', () => {
+      // Limpiar TODOS los overrides previos
+      clearAllOverrides();
       
       // Verificar que el estado inicial es correcto
       const status = getFlagsStatus();
@@ -125,6 +126,9 @@ describe('Flags Override System', () => {
     });
 
     it('should return overridden status when override is active', () => {
+      // Limpiar TODOS los overrides previos
+      clearAllOverrides();
+      
       // Aplicar override
       const override: FlagOverride = {
         flag: 'comingSoon',
@@ -195,19 +199,19 @@ describe('Flags Override System', () => {
   });
 
   describe('COMING_SOON export', () => {
-    it('should return default value when no override', () => {
+    it('should return default value when no override', async () => {
       // Limpiar cualquier override previo
       cleanupExpiredOverrides();
       
       // Re-importar para obtener el valor limpio
       jest.resetModules();
-      const { COMING_SOON } = require('@lib/flags');
+      const { COMING_SOON } = await import('@lib/flags');
       expect(COMING_SOON).toBe(true);
     });
 
     it('should return overridden value when override is active', () => {
-      // Limpiar overrides previos
-      cleanupExpiredOverrides();
+      // Limpiar TODOS los overrides previos
+      clearAllOverrides();
       
       // Aplicar override
       const override: FlagOverride = {

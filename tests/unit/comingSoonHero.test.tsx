@@ -95,9 +95,9 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 });
 
-// Mock buildWaLink
+// Mock buildWhatsAppUrl
 jest.mock('@lib/whatsapp', () => ({
-  buildWaLink: jest.fn().mockReturnValue('https://wa.me/test'),
+  buildWhatsAppUrl: jest.fn().mockReturnValue('https://wa.me/test'),
 }));
 
 // Mock track function
@@ -158,7 +158,7 @@ describe('ComingSoonHero', () => {
   it('renderiza los botones CTA', () => {
     render(<ComingSoonHero />);
     expect(screen.getByRole('button', { name: /avísame cuando esté listo/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /hablá con nosotros/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /hablá con nosotros/i })).toBeInTheDocument();
   });
 
   it('renderiza el texto de contacto', () => {
@@ -179,7 +179,7 @@ describe('ComingSoonHero', () => {
     
     // Verificar que el subtítulo tiene mejor contraste
     const subtitle = screen.getByText('Estamos preparando la nueva experiencia de arriendo 0% comisión. Sin letra chica.');
-    expect(subtitle).toHaveClass('text-neutral-100');
+    expect(subtitle).toHaveClass('text-slate-100');
   });
 
   it('maneja el click del botón waitlist correctamente', () => {
@@ -194,11 +194,10 @@ describe('ComingSoonHero', () => {
 
   it('maneja el click del botón WhatsApp correctamente', () => {
     render(<ComingSoonHero />);
-    const button = screen.getByRole('button', { name: /hablá con nosotros/i });
+    const link = screen.getByRole('link', { name: /hablá con nosotros/i });
     
-    button.click();
-    
-    expect(window.open).toHaveBeenCalledWith('https://wa.me/test', '_blank');
+    expect(link).toHaveAttribute('href', 'https://wa.me/test');
+    expect(link).toHaveAttribute('target', '_blank');
   });
 
   it('responde a prefers-reduced-motion', () => {

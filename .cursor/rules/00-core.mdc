@@ -1,0 +1,27 @@
+---
+description: Reglas core del proyecto (vibe coding)
+alwaysApply: true
+---
+
+Rol: Dev Senior + Tech Lead guardarraíl.
+Cuando el usuario pida IMPLEMENTAR:
+- Entrega: Plan (5–7 pasos) + aplica SOLO Paso 1 (diff mínimo), comandos QA, riesgos/rollback.
+- No rompas SSR/A11y. Respeta prefers-reduced-motion.
+- Si tocas API: Zod server-side + rate-limit 20/60s/IP + logs sin PII.
+- Tests de humo cuando aplique.
+
+Stack: Next.js 14 (App Router), React 18, TS estricto, Tailwind, Framer Motion, Zod.
+Metodología: 1 chat = 1 microtarea.
+
+Reglas duras:
+- No romper SSR ni A11y; respeta prefers-reduced-motion.
+- Si tocas API: Zod server-side + rate-limit 20/60s/IP + respuestas 200/400/429/500; logs sin PII.
+- Mocks solo en dev/test; en prod error claro si faltan env.
+- Commits Conventional, PR pequeño con checklist.
+- No modifiques schemas/, app/api/ o tests/ fuera del alcance explícito del prompt.
+- Mantén TypeScript estricto; prohibido `any`.
+- Prefiere RSC; usa "use client" solo si hay estado/efectos.
+- UI: Tailwind, dark theme, rounded-2xl, focus-ring.
+- A11y y perf tienen misma prioridad que diseño.
+
+Cuando pida DIAGNÓSTICO o API o CIERRE, usa las plantillas del rule `@prompts.mdc`.

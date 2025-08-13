@@ -14,6 +14,9 @@ const config: Config = {
     '^lucide-react$': '<rootDir>/tests/__mocks__/lucide-react.tsx',
     '^@lib/whatsapp$': '<rootDir>/tests/__mocks__/whatsapp.ts',
     '^@lib/analytics$': '<rootDir>/tests/__mocks__/analytics.ts',
+    '^server-only$': '<rootDir>/tests/__mocks__/server-only.ts',
+    '^framer-motion$': '<rootDir>/tests/__mocks__/framer-motion.tsx',
+    '^@heroicons/react/24/outline$': '<rootDir>/tests/__mocks__/heroicons.tsx',
   },
   transform: {
     '^.+\\.(ts|tsx)$': [

@@ -10,7 +10,7 @@ import {
   MessageSquare,
   DollarSign,
   Zap,
-  CheckCircle,
+  // CheckCircle,
   Smartphone,
   Headphones,
   FileText,

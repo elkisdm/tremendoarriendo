@@ -15,8 +15,6 @@ export async function GET(request: Request) {
     );
   }
   try {
-    console.log("🔍 Endpoint de debug admin llamado");
-    
     // TODO(BLUEPRINT): mocks solo dev
     // Intentar consulta con cliente admin
     const supabaseAdmin = createSupabaseClient();
@@ -41,7 +39,6 @@ export async function GET(request: Request) {
       })) || []
     });
   } catch (error) {
-    console.error("❌ Error en endpoint de debug admin:", error);
     return NextResponse.json({ 
       success: false, 
       error: error instanceof Error ? error.message : "Unknown error" 

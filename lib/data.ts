@@ -1,4 +1,4 @@
-import { BookingRequestSchema, BuildingSchema, UnitSchema } from "@schemas/models";
+import { BookingRequestSchema, BuildingSchema } from "@schemas/models";
 import type { BookingRequest, Building, Unit } from "@schemas/models";
 import { fromAssetPlan } from "@lib/adapters/assetplan";
 
@@ -26,7 +26,7 @@ function validateBuilding(raw: unknown): Building {
 // Nueva función para leer desde Supabase
 async function readFromSupabase(): Promise<Building[] | null> {
   try {
-    console.log('🔍 Intentando leer desde Supabase...');
+    // console.log('🔍 Intentando leer desde Supabase...');
     
     // Importar Supabase dinámicamente solo cuando se necesita
     const { supabase, supabaseAdmin } = await import("@lib/supabase");
@@ -35,7 +35,7 @@ async function readFromSupabase(): Promise<Building[] | null> {
     const client = supabaseAdmin || supabase;
     
     if (!client) {
-      console.error('No Supabase client available');
+      // console.error('No Supabase client available');
       return null;
     }
     
@@ -64,16 +64,16 @@ async function readFromSupabase(): Promise<Building[] | null> {
       .limit(100); // Aumentar el límite para obtener más edificios
 
     if (buildingsError) {
-      console.error('Error fetching buildings from Supabase:', buildingsError);
+      // console.error('Error fetching buildings from Supabase:', buildingsError);
       return null;
     }
 
     if (!buildingsData || buildingsData.length === 0) {
-      console.log('No buildings found in Supabase');
+      // console.log('No buildings found in Supabase');
       return null;
     }
 
-    console.log(`✅ Encontrados ${buildingsData.length} edificios en Supabase`);
+    // console.log(`✅ Encontrados ${buildingsData.length} edificios en Supabase`);
 
     // Filtrar solo edificios que tienen unidades disponibles
     const buildingsWithAvailableUnits = buildingsData.filter(building => {
@@ -81,77 +81,83 @@ async function readFromSupabase(): Promise<Building[] | null> {
       return availableUnits.length > 0;
     });
 
-    console.log(`✅ ${buildingsWithAvailableUnits.length} edificios tienen unidades disponibles`);
+    // console.log(`✅ ${buildingsWithAvailableUnits.length} edificios tienen unidades disponibles`);
 
     // Transformar los datos al formato esperado
-    const buildings: Building[] = buildingsWithAvailableUnits.map((building: any) => ({
-      id: building.id,
-      slug: building.slug || `edificio-${building.id}`,
-      name: building.nombre,
-      comuna: building.comuna,
-      address: building.direccion || 'Dirección no disponible',
-      amenities: ['Piscina', 'Gimnasio'], // Valores por defecto para cumplir el esquema
-      gallery: [
-        '/images/lascondes-cover.jpg',
-        '/images/lascondes-1.jpg', 
-        '/images/lascondes-2.jpg'
-      ], // Valores por defecto para cumplir el esquema
-      coverImage: '/images/lascondes-cover.jpg',
-      badges: [],
-      serviceLevel: undefined,
-      units: (building.units || []).map((unit: any) => ({
-        id: unit.id,
-        tipologia: unit.tipologia || 'No especificada',
-        m2: unit.area_m2 || 50, // Valor por defecto para cumplir el esquema
-        price: unit.precio || 500000, // Valor por defecto para cumplir el esquema
-        estacionamiento: false,
-        bodega: false,
-        disponible: unit.disponible || false,
-        bedrooms: unit.bedrooms || 1,
-        bathrooms: unit.bathrooms || 1
-      }))
-    }));
+    const buildings: Building[] = buildingsWithAvailableUnits.map((building: unknown) => {
+      const b = building as any;
+      return {
+        id: b.id,
+        slug: b.slug || `edificio-${b.id}`,
+        name: b.nombre,
+        comuna: b.comuna,
+        address: b.direccion || 'Dirección no disponible',
+        amenities: ['Piscina', 'Gimnasio'], // Valores por defecto para cumplir el esquema
+        gallery: [
+          '/images/lascondes-cover.jpg',
+          '/images/lascondes-1.jpg', 
+          '/images/lascondes-2.jpg'
+        ], // Valores por defecto para cumplir el esquema
+        coverImage: '/images/lascondes-cover.jpg',
+        badges: [],
+        serviceLevel: undefined,
+        units: (b.units || []).map((unit: unknown) => {
+          const u = unit as any;
+          return {
+            id: u.id,
+            tipologia: u.tipologia || 'No especificada',
+            m2: u.area_m2 || 50, // Valor por defecto para cumplir el esquema
+            price: u.precio || 500000, // Valor por defecto para cumplir el esquema
+            estacionamiento: false,
+            bodega: false,
+            disponible: u.disponible || false,
+            bedrooms: u.bedrooms || 1,
+            bathrooms: u.bathrooms || 1
+          };
+        })
+      };
+    });
 
-    console.log(`✅ Transformados ${buildings.length} edificios al formato esperado`);
+    // console.log(`✅ Transformados ${buildings.length} edificios al formato esperado`);
     
     // Validar los edificios uno por uno para identificar cuáles fallan
-    console.log('🔍 Validando edificios...');
+    // console.log('🔍 Validando edificios...');
     const validatedBuildings: Building[] = [];
     
     for (let i = 0; i < buildings.length; i++) {
       try {
         const validated = validateBuilding(buildings[i]);
         validatedBuildings.push(validated);
-      } catch (error) {
-        console.error(`❌ Error validando edificio ${i + 1} (${buildings[i].name}):`, error);
+      } catch (_error) {
+        // console.error(`❌ Error validando edificio ${i + 1} (${buildings[i].name}):`, _error);
       }
     }
     
-    console.log(`✅ ${validatedBuildings.length} edificios validados exitosamente`);
+    // console.log(`✅ ${validatedBuildings.length} edificios validados exitosamente`);
     
     return validatedBuildings;
-  } catch (error) {
-    console.error('Error reading from Supabase:', error);
+  } catch (_error) {
+    // console.error('Error reading from Supabase:', _error);
     return null;
   }
 }
 
 export async function readAll(): Promise<Building[]> {
-  console.log('🚀 Función readAll() iniciada');
+  // console.log('🚀 Función readAll() iniciada');
   
   // Si la variable de entorno está habilitada, intentar leer desde Supabase
   const USE_SUPABASE = process.env.USE_SUPABASE === "true";
   
-  console.log(`🔧 USE_SUPABASE: ${USE_SUPABASE}`);
+  // console.log(`🔧 USE_SUPABASE: ${USE_SUPABASE}`);
   
   if (USE_SUPABASE) {
-    console.log('🔄 Llamando a readFromSupabase()...');
+    // console.log('🔄 Llamando a readFromSupabase()...');
     const fromSupabase = await readFromSupabase();
     if (fromSupabase && fromSupabase.length > 0) {
-      console.log(`✅ Usando ${fromSupabase.length} edificios desde Supabase`);
+      // console.log(`✅ Usando ${fromSupabase.length} edificios desde Supabase`);
       return fromSupabase;
     } else {
-      console.log('⚠️ No se pudieron obtener datos de Supabase, usando fallback');
+      // console.log('⚠️ No se pudieron obtener datos de Supabase, usando fallback');
     }
   }
 
@@ -169,10 +175,10 @@ export async function readAll(): Promise<Building[]> {
   }
 
   // Fallback a mock JSON bundled with the app (works on client and server)
-  console.log('📄 Usando datos mock como fallback');
+  // console.log('📄 Usando datos mock como fallback');
   const raw = (await import("@data/buildings.json")).default as unknown;
   const arr = (raw as unknown[]).map(validateBuilding);
-  console.log(`📄 Retornando ${arr.length} edificios mock`);
+  // console.log(`📄 Retornando ${arr.length} edificios mock`);
   return arr;
 }
 
@@ -230,7 +236,7 @@ export async function getRelatedBuildings(slug: string, n = 3): Promise<(Buildin
 }
 
 export async function createBooking(payload: BookingRequest): Promise<{ id: string }>{
-  const data = BookingRequestSchema.parse(payload);
+  BookingRequestSchema.parse(payload);
   if (simulateLatency) {
     await delay(200 + Math.floor(Math.random() * 200));
   }

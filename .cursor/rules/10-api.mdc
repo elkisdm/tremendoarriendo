@@ -1,0 +1,15 @@
+---
+description: Estándares de endpoints
+globs:
+  - app/api/**/*
+alwaysApply: false
+---
+
+- Validar payload/query con Zod (server).
+- Rate limit: 20/60s por IP. Respuestas: 200/400/429/500 con mensajes limpios.
+- Nada de secretos en cliente. Sin PII en logs.
+- Añade test curl en la entrega del Paso 1.
+- Usar lib/rate-limit.ts para implementar rate limiting.
+- Logs estructurados sin información personal identificable.
+- Validación de entrada con schemas de Zod.
+- Manejo de errores consistente con códigos HTTP apropiados.

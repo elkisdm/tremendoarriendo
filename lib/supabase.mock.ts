@@ -3,17 +3,17 @@ import { createClient } from '@supabase/supabase-js';
 // Mock Supabase client para testing local
 export function createMockSupabaseClient() {
   return {
-    from: (table: string) => ({
-      insert: (data: any) => ({
+    from: (_table: string) => ({
+      insert: (data: unknown) => ({
         select: () => ({
           single: () => Promise.resolve({
-            data: { id: 'mock-id', ...data },
+            data: { id: 'mock-id', ...(data as any) },
             error: null
           })
         })
       }),
-      select: (query?: string) => ({
-        limit: (count: number) => Promise.resolve({
+      select: (_query?: string) => ({
+        limit: (_count: number) => Promise.resolve({
           data: [
             {
               id: 'mock-building-1',
@@ -26,7 +26,7 @@ export function createMockSupabaseClient() {
           ],
           error: null
         }),
-        order: (column: string, options?: any) => Promise.resolve({
+        order: (_column: string, _options?: unknown) => Promise.resolve({
           data: [
             {
               id: 'mock-building-1',
@@ -62,7 +62,7 @@ export function createSupabaseClient() {
   
   // En desarrollo/testing, permitir mock si no hay configuración
   if (!supabaseUrl || !supabaseServiceKey) {
-    console.log('⚠️  Supabase no configurado, usando mock para testing');
+    // console.log('⚠️  Supabase no configurado, usando mock para testing');
     return createMockSupabaseClient();
   }
   

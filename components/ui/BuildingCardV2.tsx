@@ -1,0 +1,211 @@
+"use client";
+import Image from "next/image";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { PromotionBadge } from "@components/ui/PromotionBadge";
+import { formatPrice } from "@lib/utils";
+import { track } from "@lib/analytics";
+import type { Building } from "@types";
+// import type { PromotionBadge as PromotionBadgeType } from "@schemas/models";
+import { PromotionType } from "@schemas/models";
+
+type BuildingCardV2Props = {
+  building: Building;
+  priority?: boolean;
+  showBadge?: boolean;
+  className?: string;
+};
+
+const DEFAULT_BLUR =
+  "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTYnIGhlaWdodD0nMTAnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zyc+PHJlY3Qgd2lkdGg9JzE2JyBoZWlnaHQ9JzEwJyBmaWxsPSIjMjIyMjIyIi8+PC9zdmc+";
+
+// Helper function to get the primary badge with priority
+// function getPrimaryBadge(badges?: PromotionBadgeType[]): PromotionBadgeType | null {
+//   if (!badges || badges.length === 0) return null;
+//   
+//   // Priority: FREE_COMMISSION first, then DISCOUNT_PERCENT, then others
+//   const freeCommission = badges.find(b => b.type === PromotionType.FREE_COMMISSION);
+//   if (freeCommission) return freeCommission;
+//   
+//   const discount = badges.find(b => b.type === PromotionType.DISCOUNT_PERCENT);
+//   if (discount) return discount;
+//   
+//   // Return first available badge
+//   return badges[0];
+// }
+
+// Helper function to calculate building stats
+function calculateBuildingStats(building: Building) {
+  const availableUnits = building.units.filter(unit => unit.disponible);
+  const totalUnits = building.units.length;
+  
+  // Calculate price range
+  const prices = availableUnits.map(unit => unit.price);
+  const minPrice = Math.min(...prices);
+  const maxPrice = Math.max(...prices);
+  
+  // Calculate m2 range
+  const m2s = availableUnits.map(unit => unit.m2);
+  const minM2 = Math.min(...m2s);
+  const maxM2 = Math.max(...m2s);
+  
+  // Group by tipologia
+  const tipologiaGroups = availableUnits.reduce((acc, unit) => {
+    if (!acc[unit.tipologia]) {
+      acc[unit.tipologia] = [];
+    }
+    acc[unit.tipologia].push(unit);
+    return acc;
+  }, {} as Record<string, typeof availableUnits>);
+  
+  const tipologiaSummary = Object.entries(tipologiaGroups).map(([tipologia, units]) => ({
+    key: tipologia,
+    label: tipologia,
+    count: units.length,
+    minPrice: Math.min(...units.map(u => u.price)),
+    minM2: Math.min(...units.map(u => u.m2)),
+  }));
+  
+  return {
+    hasAvailability: availableUnits.length > 0,
+    availableCount: availableUnits.length,
+    totalCount: totalUnits,
+    precioDesde: minPrice,
+    precioHasta: maxPrice,
+    m2Desde: minM2,
+    m2Hasta: maxM2,
+    tipologiaSummary,
+  };
+}
+
+// Helper function to format typology display
+function formatTypologyChip(summary: { key: string; label: string; count: number; minPrice?: number; minM2?: number }): string {
+  const displayLabel = summary.label;
+  const count = summary.count;
+  
+  if (count === 1) {
+    return `${displayLabel} — 1 disp`;
+  }
+  return `${displayLabel} — +${count} disp`;
+}
+
+export function BuildingCardV2({ 
+  building, 
+  priority = false, 
+  showBadge = true,
+  className = ""
+}: BuildingCardV2Props) {
+  const cover = building.cover;
+  const href = `/propiedad/${building.id}`;
+  const stats = calculateBuildingStats(building);
+  
+  const handleClick = () => {
+    track("property_view", {
+      property_id: building.id,
+      property_name: building.name,
+    });
+  };
+  
+  const primaryBadge = building.promo ? {
+    type: PromotionType.FREE_COMMISSION,
+    label: building.promo.label,
+    tag: building.promo.tag || "Promoción"
+  } : null;
+  
+  const hasAvailability = stats.hasAvailability;
+  const typologyChips = stats.tipologiaSummary;
+
+  // Enhanced aria-label with availability info
+  const ariaLabel = hasAvailability 
+    ? `Ver propiedad ${building.name} en ${building.comuna}, ${typologyChips.length > 0 ? `${typologyChips.length} tipologías disponibles` : 'unidades disponibles'}`
+    : `Ver propiedad ${building.name} en ${building.comuna}, sin disponibilidad`;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className={className}
+    >
+      <Link
+        href={href}
+        onClick={handleClick}
+        aria-label={ariaLabel}
+        className="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)] rounded-2xl"
+      >
+        <article className="rounded-2xl bg-[var(--soft)]/90 ring-1 ring-white/10 overflow-hidden transition-all group-hover:ring-[var(--ring)]/60 group-hover:shadow-lg">
+          <div className="relative aspect-[16/10]">
+            <Image
+              src={cover}
+              alt={`Portada ${building.name}`}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width: 1536px) 25vw, 25vw"
+              className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+              placeholder="blur"
+              blurDataURL={DEFAULT_BLUR}
+              priority={priority}
+            />
+            {showBadge && primaryBadge && (
+              <div className="absolute top-3 left-3">
+                <PromotionBadge 
+                  label={primaryBadge.label} 
+                  tag={primaryBadge.tag}
+                />
+              </div>
+            )}
+          </div>
+          <div className="p-4">
+            <div className="flex items-start justify-between gap-3 mb-3">
+              <div className="min-w-0 flex-1">
+                <h3 className="font-semibold leading-tight truncate" title={building.name}>
+                  {building.name}
+                </h3>
+                <p className="text-[13px] text-[var(--subtext)] truncate">{building.comuna}</p>
+              </div>
+              <div className="text-right shrink-0">
+                {hasAvailability ? (
+                  <>
+                    <div className="font-bold">{formatPrice(stats.precioDesde)}</div>
+                    <div className="text-[12px] text-[var(--subtext)]">Desde</div>
+                  </>
+                ) : (
+                  <>
+                    <div className="text-[13px] text-[var(--subtext)]">Sin disponibilidad</div>
+                    <div className="sr-only">No hay unidades disponibles</div>
+                  </>
+                )}
+              </div>
+            </div>
+            
+            {/* Typology chips */}
+            {hasAvailability && typologyChips.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 min-h-[24px]">
+                {typologyChips.slice(0, 3).map((chip, _index) => (
+                  <span 
+                    key={chip.key}
+                    className="inline-flex items-center px-2 py-1 rounded-md text-[11px] font-medium bg-[var(--soft)] text-[var(--text)] ring-1 ring-white/10"
+                    title={chip.label}
+                  >
+                    {formatTypologyChip(chip)}
+                  </span>
+                ))}
+                {typologyChips.length > 3 && (
+                  <span className="inline-flex items-center px-2 py-1 rounded-md text-[11px] font-medium bg-[var(--soft)] text-[var(--subtext)] ring-1 ring-white/10">
+                    +{typologyChips.length - 3} más
+                  </span>
+                )}
+              </div>
+            )}
+            
+            {/* Empty state for no availability with subtle visual indication */}
+            {!hasAvailability && (
+              <div className="flex items-center justify-center min-h-[24px] opacity-50">
+                <span className="text-[11px] text-[var(--subtext)]">•</span>
+              </div>
+            )}
+          </div>
+        </article>
+      </Link>
+    </motion.div>
+  );
+}

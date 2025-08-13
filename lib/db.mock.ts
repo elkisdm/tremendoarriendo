@@ -18,13 +18,13 @@ export async function listBuildings({ comuna, minPrice, maxPrice, tipologia, sor
   }
 
   items = items.map((b) => {
-    const avail = b.units.filter((u) => u.disponible);
-    const minPriceAvail = avail.length ? Math.min(...avail.map((u) => u.price)) : Math.min(...b.units.map((u) => u.price));
+    // const avail = b.units.filter((u) => u.disponible);
+    // const _minPriceAvail = avail.length ? Math.min(...avail.map((u) => u.price)) : Math.min(...b.units.map((u) => u.price));
     return { ...b, cover: b.cover, promo: b.promo, amenities: b.amenities, gallery: b.gallery, units: b.units, } as Building & { minPrice?: number };
-  }).map((b:any) => ({ ...b, minPrice: Math.min(...b.units.filter((u:any)=>u.disponible).map((u:any)=>u.price)) }));
+  }).map((b: unknown) => ({ ...(b as any), minPrice: Math.min(...(b as Building).units.filter((u: unknown) => (u as { disponible: boolean; price: number }).disponible).map((u: unknown) => (u as { price: number }).price)) }));
 
-  if (sort === "price-asc") items.sort((a:any, b:any) => (a as any).minPrice - (b as any).minPrice);
-  if (sort === "price-desc") items.sort((a:any, b:any) => (b as any).minPrice - (a as any).minPrice);
+  if (sort === "price-asc") items.sort((a: unknown, b: unknown) => (a as { minPrice: number }).minPrice - (b as { minPrice: number }).minPrice);
+  if (sort === "price-desc") items.sort((a: unknown, b: unknown) => (b as { minPrice: number }).minPrice - (a as { minPrice: number }).minPrice);
   if (sort === "comuna") items.sort((a, b) => a.comuna.localeCompare(b.comuna, "es"));
 
   return items;

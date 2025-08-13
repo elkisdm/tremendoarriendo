@@ -45,9 +45,17 @@ export const TypologySummarySchema = z.object({
   minM2: z.number().positive().optional(),
 });
 
+// New schemas for v2 validations
+export const ParkingStorageSchema = z.object({
+  ids: z.string().nullable(),
+  has_optional: z.boolean(),
+});
+
 export const UnitSchema = z.object({
   id: z.string().min(1),
-  tipologia: z.string().min(1),
+  tipologia: z.string().min(1).regex(/^(Studio|1D1B|2D1B|2D2B|3D2B)$/, {
+    message: "Tipología debe estar en formato canónico: Studio, 1D1B, 2D1B, 2D2B, 3D2B"
+  }),
   m2: z.number().positive(),
   price: z.number().int().positive(),
   estacionamiento: z.boolean(),
@@ -57,9 +65,13 @@ export const UnitSchema = z.object({
   codigoInterno: z.string().min(1).optional(),
   bedrooms: z.number().int().positive().optional(),
   bathrooms: z.number().int().positive().optional(),
-  area_interior_m2: z.number().positive().optional(),
-  area_exterior_m2: z.number().nonnegative().optional(),
-  orientacion: z.string().min(1).optional(),
+  area_interior_m2: z.number().positive().max(200, {
+    message: "Área interior debe estar entre 20-200 m²"
+  }).optional(),
+  area_exterior_m2: z.number().nonnegative().max(50, {
+    message: "Área exterior debe estar entre 0-50 m²"
+  }).optional(),
+  orientacion: z.enum(['N', 'NE', 'E', 'SE', 'S', 'SO', 'O', 'NO']).optional(),
   piso: z.number().int().nonnegative().optional(),
   amoblado: z.boolean().optional(),
   petFriendly: z.boolean().optional(),
@@ -67,13 +79,29 @@ export const UnitSchema = z.object({
   storageOptions: z.array(z.string().min(1)).optional(),
   status: z.enum(["available", "reserved", "rented"]).optional(),
   promotions: z.array(PromotionBadgeSchema).optional(),
+  // New v2 fields
+  parking_ids: z.string().nullable().optional(),
+  storage_ids: z.string().nullable().optional(),
+  parking_opcional: z.boolean().optional(),
+  storage_opcional: z.boolean().optional(),
+  guarantee_installments: z.number().int().min(1).max(12, {
+    message: "Cuotas de garantía deben estar entre 1-12"
+  }).optional(),
+  guarantee_months: z.number().int().min(0).max(2, {
+    message: "Meses de garantía deben ser 0, 1 o 2"
+  }).optional(),
+  rentas_necesarias: z.number().positive().optional(),
+  link_listing: z.string().url().optional(),
+  renta_minima: z.number().positive().optional(),
 });
 
 export const BuildingSchema = z.object({
   id: z.string().min(1),
   slug: z.string().min(1),
   name: z.string().min(1),
-  comuna: z.string().min(1),
+  comuna: z.string().min(1).refine((val) => !/\d/.test(val), {
+    message: "Comuna no debe contener dígitos"
+  }),
   address: z.string().min(1),
   amenities: z.array(z.string().min(1)).min(1),
   gallery: z.array(z.string().min(1)).min(3),
@@ -90,6 +118,11 @@ export const BuildingSchema = z.object({
     .refine((v) => v.max >= v.min, { message: "max must be >= min" })
     .optional(),
   typologySummary: z.array(TypologySummarySchema).optional(),
+  // New v2 fields
+  gc_mode: z.enum(['MF', 'variable']).optional(),
+  precio_desde: z.number().int().positive().optional(),
+  precio_hasta: z.number().int().positive().optional(),
+  featured: z.boolean().optional(),
 });
 
 export const BookingRequestSchema = z.object({
@@ -114,5 +147,26 @@ export type WaitlistRequest = z.infer<typeof WaitlistRequestSchema>;
 export type PromotionBadge = z.infer<typeof PromotionBadgeSchema>;
 export type TypologySummary = z.infer<typeof TypologySummarySchema>;
 export type Media = z.infer<typeof MediaSchema>;
+export type ParkingStorage = z.infer<typeof ParkingStorageSchema>;
+
+// Extended types for v2 compatibility
+export type UnitV2 = Unit & {
+  parking_ids?: string | null;
+  storage_ids?: string | null;
+  parking_opcional?: boolean;
+  storage_opcional?: boolean;
+  guarantee_installments?: number;
+  guarantee_months?: number;
+  rentas_necesarias?: number;
+  link_listing?: string;
+  renta_minima?: number;
+};
+
+export type BuildingV2 = Building & {
+  gc_mode?: 'MF' | 'variable';
+  precio_desde?: number;
+  precio_hasta?: number;
+  featured?: boolean;
+};
 
 

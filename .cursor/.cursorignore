@@ -1,0 +1,76 @@
+# Archivos de build y cache
+.next/
+node_modules/
+dist/
+build/
+coverage/
+.nyc_output/
+
+# Logs y reportes
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+playwright-report/
+test-results/
+
+# Archivos de entorno
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Archivos de testing
+.jest/
+.nyc_output/
+
+# Archivos de deployment
+.vercel/
+.netlify/
+
+# Archivos de backup
+*.bak
+*.backup
+
+# Archivos temporales
+*.tmp
+*.temp
+
+# Archivos de lock (ya están en git)
+# package-lock.json
+# pnpm-lock.yaml
+# yarn.lock
+
+# Archivos de TypeScript build info
+*.tsbuildinfo
+
+# Archivos de coverage
+coverage/
+*.lcov
+
+# Archivos de performance
+.next/analyze/
+.next/server/
+.next/static/
+
+# Archivos de debug
+debug/
+debug-*.log
+
+# Archivos de auditoría
+audit/
+reports/AUDIT/logs/

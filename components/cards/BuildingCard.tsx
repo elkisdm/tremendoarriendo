@@ -3,8 +3,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { Bed, Bath, Maximize2, MapPin, Heart } from "lucide-react";
 import { PromotionBadge } from "@components/ui/PromotionBadge";
-import { currency, clx } from "@lib/utils";
-import type { Building } from "@schemas/models";
+import { currency } from "@lib/utils";
+// import type { Building } from "@schemas/models";
 import { track } from "@lib/analytics";
 
 import type { BuildingSummary } from "../../hooks/useFetchBuildings";
