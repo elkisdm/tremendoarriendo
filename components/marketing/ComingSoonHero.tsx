@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
-import { motion, MotionConfig } from "framer-motion";
 import { 
   ShieldCheck, 
   Sparkles, 
@@ -23,13 +22,27 @@ import { track } from "@lib/analytics";
 import { Modal } from "@components/ui/Modal";
 import { WaitlistForm } from "./WaitlistForm";
 
+let Motion: typeof import("framer-motion") | null = null;
+let motion: any = null;
+let MotionConfig: any = null;
 
+async function ensureMotion() {
+  if (!Motion) {
+    Motion = await import("framer-motion");
+    motion = Motion.motion;
+    MotionConfig = Motion.MotionConfig;
+  }
+}
 
 export function ComingSoonHero() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const triggerButtonRef = useRef<HTMLButtonElement>(null);
   const emailInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    ensureMotion();
+  }, []);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -53,10 +66,6 @@ export function ComingSoonHero() {
     setModalOpen(false);
   };
 
-
-
-
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -66,7 +75,7 @@ export function ComingSoonHero() {
         delayChildren: 0.1,
       },
     },
-  };
+  } as const;
 
   const itemVariants = {
     hidden: { opacity: 0, y: 10 },
@@ -78,7 +87,7 @@ export function ComingSoonHero() {
         ease: "easeOut",
       },
     },
-  };
+  } as const;
 
   const iconVariants = {
     hidden: { opacity: 0 },
@@ -89,7 +98,7 @@ export function ComingSoonHero() {
         ease: "easeOut",
       },
     },
-  };
+  } as const;
 
   const benefitCardVariants = {
     hidden: { opacity: 0, y: 10 },
@@ -102,7 +111,7 @@ export function ComingSoonHero() {
         ease: "easeOut",
       },
     }),
-  };
+  } as const;
 
   const icons = [
     { Icon: ShieldCheck, label: "Seguridad garantizada" },
@@ -113,10 +122,10 @@ export function ComingSoonHero() {
   ];
 
   return (
-    <MotionConfig reducedMotion={prefersReducedMotion ? "user" : "never"}>
-      <section className="relative min-h-[70vh] flex items-center overflow-hidden bg-transparent">
-        {/* Contenido principal */}
-        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center pt-20 pb-16 md:pb-24">
+    <div className="relative min-h-[70vh] flex items-center overflow-hidden bg-transparent">
+      {/* Contenido principal */}
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center pt-20 pb-16 md:pb-24">
+        {motion && MotionConfig ? (
           <motion.div
             variants={containerVariants}
             initial="hidden"
@@ -144,12 +153,11 @@ export function ComingSoonHero() {
               Arriendos desde $210.000 pesos. Sin costos ocultos ni sorpresas.
             </motion.p>
 
-            {/* CTAs debajo del legal */}
+            {/* CTAs */}
             <motion.div 
               variants={itemVariants}
               className="flex flex-col sm:flex-row justify-center gap-3 md:gap-4 mt-6"
             >
-              {/* Botón primario "Notificarme" */}
               <motion.button
                 ref={triggerButtonRef}
                 onClick={handleWaitlistClick}
@@ -159,7 +167,6 @@ export function ComingSoonHero() {
                 Notificarme
               </motion.button>
 
-              {/* Botón secundario "WhatsApp" */}
               {(() => {
                 const waUrl = buildWhatsAppUrl({
                   message: "Hola, me interesa el lanzamiento"
@@ -187,7 +194,7 @@ export function ComingSoonHero() {
               })()}
             </motion.div>
 
-            {/* Subtítulo con mejor contraste */}
+            {/* Subtítulo */}
             <motion.p 
               variants={itemVariants}
               className="text-lg md:text-xl text-slate-100 max-w-2xl mx-auto leading-relaxed drop-shadow-sm"
@@ -195,19 +202,12 @@ export function ComingSoonHero() {
               Estamos preparando la nueva experiencia de arriendo 0% comisión. Sin letra chica.
             </motion.p>
 
-            {/* Sección de beneficios de la promoción con tarjetas glass */}
-            <motion.div 
-              variants={itemVariants}
-              className="relative bg-white/5 backdrop-blur-sm rounded-3xl p-6 md:p-8 border border-white/10 hover:bg-white/8 transition-colors duration-200"
-            >
-              {/* Glass effect overlay */}
-              <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-200" />
-              
+            {/* Beneficios */}
+            <div className="relative bg-white/5 backdrop-blur-sm rounded-3xl p-6 md:p-8 border border-white/10 hover:bg-white/8 transition-colors duration-200">
               <div className="relative z-10">
                 <h2 className="text-xl md:text-2xl font-bold text-slate-100 mb-6 text-center">
                   🎉 ¡Ahorra hasta $500.000 en comisiones!
                 </h2>
-                
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {[
                     { icon: ShieldCheck, text: "0% comisión de corretaje" },
@@ -239,115 +239,28 @@ export function ComingSoonHero() {
                     <DollarSign className="w-5 h-5" />
                     <span>Ejemplo: Arriendo $500.000 → Ahorras $297.500 en comisión (incluye IVA)</span>
                   </div>
-                  <div className="mt-3 text-center">
-                    <span className="text-sm text-slate-300">Precios desde: $210.000 pesos</span>
-                  </div>
                 </div>
               </div>
-            </motion.div>
-
-            {/* Grid de iconos con dimensiones uniformes y centrado */}
-            <motion.div 
-              variants={itemVariants}
-              className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 max-w-2xl mx-auto"
-            >
-              {icons.map(({ Icon, label }, index) => (
-                <motion.div
-                  key={index}
-                  variants={iconVariants}
-                  whileHover={{ 
-                    y: prefersReducedMotion ? 0 : -2,
-                  }}
-                  transition={{ duration: 0.15 }}
-                  className="group relative"
-                  tabIndex={0}
-                  role="button"
-                  aria-label={label}
-                >
-                  <div className="relative p-6 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/8 transition-colors duration-200 h-full min-h-[120px] flex flex-col items-center justify-center focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-violet-400/40">
-                    <Icon 
-                      className="w-8 h-8 text-brand-violet mb-3" 
-                      aria-hidden="true"
-                    />
-                    <span className="text-sm text-slate-100 font-medium text-center leading-tight">
-                      {label}
-                    </span>
-                    {/* Glass effect overlay */}
-                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
-
-            {/* CTAs con sombras mejoradas */}
-            <motion.div 
-              variants={itemVariants}
-              className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-            >
-              {/* CTA principal */}
-              <motion.button
-                onClick={handleWaitlistClick}
-                className="inline-flex items-center px-8 py-4 text-lg font-semibold rounded-2xl bg-gradient-to-r from-brand-violet to-brand-aqua text-white shadow-lg shadow-violet-500/20 hover:shadow-xl hover:shadow-violet-500/30 transition-all duration-200 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-violet-400/40 min-h-[44px]"
-                aria-label="Avísame cuando esté listo"
-              >
-                <Zap className="w-5 h-5 mr-2" />
-                Avísame cuando esté listo
-              </motion.button>
-
-              {/* CTA WhatsApp */}
-              {(() => {
-                const waUrl = buildWhatsAppUrl({
-                  message: "Hola, me interesa la nueva experiencia de arriendo"
-                });
-                return waUrl ? (
-                  <motion.a
-                    href={waUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => track('cta_whatsapp_click', { source: 'coming-soon' })}
-                    className="inline-flex items-center px-8 py-4 text-lg font-semibold rounded-2xl bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-600/20 hover:shadow-xl hover:shadow-green-600/30 transition-all duration-200 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-green-400/40 min-h-[44px]"
-                    aria-label="Hablá con nosotros por WhatsApp"
-                  >
-                    <MessageSquare className="w-5 h-5 mr-2" />
-                    Hablá con nosotros
-                  </motion.a>
-                ) : (
-                  <motion.button
-                    aria-disabled="true"
-                    title="Configura WhatsApp en Vercel"
-                    className="inline-flex items-center px-8 py-4 text-lg font-semibold rounded-2xl bg-gray-500 text-white shadow-lg cursor-not-allowed opacity-50 min-h-[44px]"
-                  >
-                    <MessageSquare className="w-5 h-5 mr-2" />
-                    Hablá con nosotros
-                  </motion.button>
-                );
-              })()}
-            </motion.div>
-
-            {/* Texto adicional con mejor contraste */}
-            <motion.p 
-              variants={itemVariants}
-              className="text-sm text-slate-300 max-w-md mx-auto drop-shadow-sm"
-            >
-              ¿Tenés dudas? Escribinos por WhatsApp y te respondemos al toque 🚀
-            </motion.p>
-
-
+            </div>
           </motion.div>
-        </div>
+        ) : (
+          // Static fallback while motion loads
+          <div className="space-y-8">
+            <h1 className="text-5xl md:text-6xl font-extrabold leading-tight tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-[--brand-violet,#7C3AED] via-fuchsia-400 to-[--brand-aqua,#22D3EE] drop-shadow-sm">
+              Próximamente
+            </h1>
+            <PromoBadge />
+            <p className="text-sm text-slate-300 max-w-lg mx-auto leading-relaxed">
+              Arriendos desde $210.000 pesos. Sin costos ocultos ni sorpresas.
+            </p>
+          </div>
+        )}
+      </div>
 
-      </section>
-
-      {/* Modal de Waitlist */}
-      <Modal
-        open={modalOpen}
-        onClose={handleModalClose}
-        title="Únete a la lista de espera"
-        description="Te avisamos cuando lancemos la nueva experiencia de arriendo 0% comisión."
-        initialFocusRef={emailInputRef}
-      >
+      {/* Modal */}
+      <Modal open={modalOpen} onClose={handleModalClose} title="Notificarme cuando esté listo">
         <WaitlistForm initialFocusRef={emailInputRef} />
       </Modal>
-    </MotionConfig>
+    </div>
   );
 }

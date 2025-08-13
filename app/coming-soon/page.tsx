@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
-import { ComingSoonHero } from '@components/marketing/ComingSoonHero';
+import dynamic from "next/dynamic";
 import { BackgroundFX } from '@components/visual/BackgroundFX';
+
+const ComingSoonHero = dynamic(() => import('@components/marketing/ComingSoonHero').then(m => m.ComingSoonHero), { ssr: false });
 
 export const metadata: Metadata = {
   title: "Próximamente - Hommie",

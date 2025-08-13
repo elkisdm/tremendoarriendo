@@ -45,7 +45,7 @@ function formatTypologyChip(summary: { key: string; label: string; count: number
 
 export function BuildingCard({ building, priority = false, showBadge = true }: CardProps) {
   const cover = building.coverImage ?? building.gallery?.[1] ?? building.gallery?.[0] ?? "/images/nunoa-cover.jpg";
-  const href = `/propiedad/${building.slug}`;
+  const href = `/property/${building.slug}`;
   const handleClick = () => {
     track("property_view", {
       property_id: building.id,

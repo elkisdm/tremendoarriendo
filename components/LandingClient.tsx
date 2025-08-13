@@ -1,10 +1,12 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
+import dynamic from "next/dynamic";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FilterBar, type FilterValues } from "./filters/FilterBar";
 import { ResultsGrid } from "./lists/ResultsGrid";
-import { HeroPromo } from "./marketing/HeroPromo";
 import { track } from "@lib/analytics";
+
+const HeroPromo = dynamic(() => import("./marketing/HeroPromo").then(m => m.HeroPromo), { ssr: false });
 
 const DEFAULT_FILTERS: FilterValues = {
   comuna: "Todas",
