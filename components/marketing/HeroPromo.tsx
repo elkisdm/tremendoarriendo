@@ -1,7 +1,19 @@
 "use client";
 import { useEffect, useState } from "react";
-import { motion, MotionConfig } from "framer-motion";
 import { PromotionBadge } from "../PromotionBadge";
+
+// Lazy holders for framer-motion APIs
+let Motion: typeof import("framer-motion");
+let motion: any;
+let MotionConfig: any;
+
+async function ensureMotion() {
+  if (!Motion) {
+    Motion = await import("framer-motion");
+    motion = Motion.motion;
+    MotionConfig = Motion.MotionConfig;
+  }
+}
 
 // Componente para el background SVG pattern
 function BackgroundPattern() {
@@ -82,6 +94,8 @@ function FloatingParticles({ prefersReducedMotion }: { prefersReducedMotion: boo
     { id: 8, x: "90%", y: "60%", size: "4", delay: 3.5 },
   ];
 
+  if (!motion) return null;
+
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       {particles.map((particle) => (
@@ -114,6 +128,8 @@ function FloatingParticles({ prefersReducedMotion }: { prefersReducedMotion: boo
 
 // Componente para icon grid con efectos glass
 function IconGrid() {
+  if (!motion) return null;
+
   const icons = [
     { icon: "🏠", label: "Sin comisión" },
     { icon: "📅", label: "Agenda fácil" },
@@ -151,6 +167,10 @@ export function HeroPromo() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   useEffect(() => {
+    ensureMotion();
+  }, []);
+
+  useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     setPrefersReducedMotion(mediaQuery.matches);
 
@@ -180,7 +200,7 @@ export function HeroPromo() {
         delayChildren: 0.1,
       },
     },
-  };
+  } as const;
 
   const itemVariants = {
     hidden: { opacity: 0, y: 8 },
@@ -192,7 +212,7 @@ export function HeroPromo() {
         ease: [0.22, 1, 0.36, 1],
       },
     },
-  };
+  } as const;
 
   const badgeVariants = {
     hidden: { opacity: 0, y: 8 },
@@ -202,89 +222,72 @@ export function HeroPromo() {
       transition: {
         duration: 0.45,
         ease: [0.22, 1, 0.36, 1],
-        delay: 0.05,
       },
     },
-  };
-
-  const titleVariants = {
-    hidden: { opacity: 0, y: 8 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.45,
-        ease: [0.22, 1, 0.36, 1],
-        delay: 0.1,
-      },
-    },
-  };
-
-  const ctaVariants = {
-    hidden: { opacity: 0, y: 8 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.45,
-        ease: [0.22, 1, 0.36, 1],
-        delay: 0.15,
-      },
-    },
-  };
+  } as const;
 
   return (
-    <MotionConfig reducedMotion={prefersReducedMotion ? "user" : "never"}>
-      <section className="relative max-w-4xl mx-auto px-4 text-center py-12 md:py-16 overflow-hidden">
-        {/* Background patterns and particles */}
-        <BackgroundPattern />
-        <FloatingParticles prefersReducedMotion={prefersReducedMotion} />
-        
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="relative z-10 space-y-6"
-        >
-          {/* Badge "Sin letra chica" */}
-          <motion.div variants={badgeVariants}>
-            <PromotionBadge 
-              label="Sin letra chica" 
-              variant="hero"
-            />
-          </motion.div>
+    <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-6 md:p-10">
+      <BackgroundPattern />
+      {motion && MotionConfig ? (
+        <MotionConfig reducedMotion={prefersReducedMotion ? "user" : "never"}>
+          <div className="relative z-10">
+            <div className="flex flex-col gap-6">
+              <div>
+                <div className="inline-flex items-center gap-2">
+                  <PromotionBadge />
+                </div>
+                <h1 className="mt-3 text-3xl md:text-5xl font-extrabold tracking-tight">
+                  Arrienda con 0% de comisión
+                </h1>
+                <p className="mt-2 text-[var(--subtext)] max-w-xl">
+                  Compara, filtra y agenda visitas sin costo. Transparente, rápido y 100% digital.
+                </p>
+              </div>
 
-          {/* Título principal con gradiente y sombra suave */}
-          <motion.h1 
-            variants={titleVariants}
-            className="text-4xl md:text-6xl font-extrabold leading-tight bg-gradient-to-r from-brand-violet to-brand-aqua text-transparent bg-clip-text drop-shadow-[0_2px_4px_rgba(162,139,255,0.2)]"
-          >
-            Arriendo 0% comisión
-          </motion.h1>
+              <div className="flex gap-3">
+                <button
+                  onClick={handleExploreClick}
+                  className="rounded-xl px-4 py-2 text-sm font-medium text-white shadow bg-[radial-gradient(120%_120%_at_30%_10%,#8B6CFF_0%,#6D4AFF_40%,#5233D3_100%)] ring-1 ring-[var(--ring)] hover:brightness-110"
+                >
+                  Explorar propiedades
+                </button>
+              </div>
+            </div>
+          </div>
 
-          {/* Subtítulo con mejor contraste */}
-          <motion.p 
-            variants={itemVariants}
-            className="text-lg md:text-xl text-neutral-100 max-w-2xl mx-auto drop-shadow-sm"
-          >
-            Encuentra tu próximo hogar sin pagar comisión de corretaje
-          </motion.p>
+          <FloatingParticles prefersReducedMotion={prefersReducedMotion} />
+          <div className="mt-8">
+            <IconGrid />
+          </div>
+        </MotionConfig>
+      ) : (
+        // Static fallback while motion is loading
+        <div className="relative z-10">
+          <div className="flex flex-col gap-6">
+            <div>
+              <div className="inline-flex items-center gap-2">
+                <PromotionBadge />
+              </div>
+              <h1 className="mt-3 text-3xl md:text-5xl font-extrabold tracking-tight">
+                Arrienda con 0% de comisión
+              </h1>
+              <p className="mt-2 text-[var(--subtext)] max-w-xl">
+                Compara, filtra y agenda visitas sin costo. Transparente, rápido y 100% digital.
+              </p>
+            </div>
 
-          {/* Icon grid con efectos glass */}
-          <IconGrid />
-
-          {/* CTA principal con sombra mejorada */}
-          <motion.button
-            variants={ctaVariants}
-            onClick={handleExploreClick}
-            className="inline-flex items-center px-8 py-4 text-lg font-semibold rounded-2xl bg-gradient-to-r from-brand-violet to-brand-aqua text-white shadow-lg shadow-violet-500/20 hover:shadow-xl hover:shadow-violet-500/30 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-violet-500/30 focus:ring-offset-2 focus:ring-offset-[var(--bg)]"
-            aria-label="Explorar edificios"
-            data-analytics="cta_explore"
-          >
-            Explorar edificios
-          </motion.button>
-        </motion.div>
-      </section>
-    </MotionConfig>
+            <div className="flex gap-3">
+              <button
+                onClick={handleExploreClick}
+                className="rounded-xl px-4 py-2 text-sm font-medium text-white shadow bg-[radial-gradient(120%_120%_at_30%_10%,#8B6CFF_0%,#6D4AFF_40%,#5233D3_100%)] ring-1 ring-[var(--ring)] hover:brightness-110"
+              >
+                Explorar propiedades
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
