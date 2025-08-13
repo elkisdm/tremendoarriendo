@@ -216,6 +216,6 @@ describe('BuildingCardV2', () => {
     
     expect(screen.getByText('1D1B — +2 disp')).toBeInTheDocument();
     expect(screen.getByText('2D1B — 1 disp')).toBeInTheDocument();
-    expect(screen.getByText('+1 más')).toBeInTheDocument(); // 3D2B chips are hidden
+    expect(screen.getByText('3D2B — +2 disp')).toBeInTheDocument();
   });
 });

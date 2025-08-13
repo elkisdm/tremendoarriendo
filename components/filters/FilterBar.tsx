@@ -3,13 +3,10 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Filter, X, Search } from "lucide-react";
 import { SortSelect } from "./SortSelect";
+import type { FilterValues } from "../../types/filters";
 
-export interface FilterValues {
-  comuna: string;
-  tipologia: string;
-  minPrice: number | null;
-  maxPrice: number | null;
-}
+// Re-export for backward compatibility
+export type { FilterValues };
 
 interface FilterBarProps {
   value: FilterValues;

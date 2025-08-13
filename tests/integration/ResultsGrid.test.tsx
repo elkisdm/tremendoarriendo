@@ -1,13 +1,44 @@
+// Mocks deben ir antes de las importaciones
+jest.doMock('../../lib/flags', () => {
+  const mockFlags = {
+    CARD_V2: false,
+    VIRTUAL_GRID: false,
+    PAGINATION: false,
+    COMING_SOON: false,
+  };
+
+  return {
+    ...jest.requireActual('../../lib/flags'),
+    get CARD_V2() { return mockFlags.CARD_V2; },
+    get VIRTUAL_GRID() { return mockFlags.VIRTUAL_GRID; },
+    get PAGINATION() { return mockFlags.PAGINATION; },
+    get COMING_SOON() { return mockFlags.COMING_SOON; },
+    __setMockFlag: (flag: string, value: boolean) => {
+      mockFlags[flag as keyof typeof mockFlags] = value;
+    },
+    __resetMockFlags: () => {
+      mockFlags.CARD_V2 = false;
+      mockFlags.VIRTUAL_GRID = false;
+      mockFlags.PAGINATION = false;
+      mockFlags.COMING_SOON = false;
+    },
+  };
+});
+
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ResultsGrid } from '../../components/lists/ResultsGrid';
 import { BuildingSummary } from '../../hooks/useFetchBuildings';
 import { PromotionType } from '../../schemas/models';
+import { applyOverride, CARD_V2 } from '../../lib/flags';
 
 // Mock the hooks and components
 jest.mock('../../hooks/useFetchBuildings', () => ({
   useFetchBuildings: jest.fn()
 }));
+
+const mockUseFetchBuildings = require('../../hooks/useFetchBuildings').useFetchBuildings;
 
 jest.mock('../../components/BuildingCard', () => ({
   BuildingCard: ({ building }: { building: any }) => (
@@ -31,10 +62,25 @@ jest.mock('../../components/ui/BuildingCardSkeleton', () => ({
   BuildingCardSkeleton: () => <div data-testid="building-card-skeleton">Loading...</div>
 }));
 
-// Mock the flags module
-jest.mock('../../lib/flags', () => ({
-  CARD_V2: false
-}));
+
+
+// Test wrapper with QueryClient
+function createWrapper() {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+        gcTime: 0,
+      },
+    },
+  });
+  
+  return ({ children }: { children: React.ReactNode }) => (
+    <QueryClientProvider client={queryClient}>
+      {children}
+    </QueryClientProvider>
+  );
+}
 
 const mockBuildingSummary: BuildingSummary = {
   id: 'test-1',
@@ -73,17 +119,21 @@ const mockBuildingSummary: BuildingSummary = {
   ]
 };
 
+import { useFetchBuildings } from '../../hooks/useFetchBuildings';
+import * as flags from '../../lib/flags';
+
 describe('ResultsGrid Integration', () => {
-  const mockUseFetchBuildings = require('../../hooks/useFetchBuildings').useFetchBuildings;
+  const mockUseFetchBuildings = useFetchBuildings as jest.MockedFunction<typeof useFetchBuildings>;
 
   beforeEach(() => {
     jest.clearAllMocks();
+    (flags as any).__resetMockFlags();
   });
 
   it('should render BuildingCardV2 when CARD_V2 flag is enabled', () => {
     // Mock the flag to be enabled
-    const flags = require('../../lib/flags');
-    flags.CARD_V2 = true;
+    applyOverride({ flag: 'CARD_V2', value: true, duration: 60 });
+    console.log('CARD_V2 flag value:', CARD_V2);
     
     // Mock the hook to return data
     mockUseFetchBuildings.mockReturnValue({
@@ -91,14 +141,15 @@ describe('ResultsGrid Integration', () => {
       isLoading: false,
       isFetching: false,
       error: null
-    });
+    } as any);
 
     render(
       <ResultsGrid
         filters={{ comuna: 'Todas', tipologia: 'Todas', minPrice: null, maxPrice: null }}
         sort="default"
         onResultsChange={jest.fn()}
-      />
+      />,
+      { wrapper: createWrapper() }
     );
 
     // Should render BuildingCardV2
@@ -109,8 +160,7 @@ describe('ResultsGrid Integration', () => {
 
   it('should render BuildingCard when CARD_V2 flag is disabled', () => {
     // Mock the flag to be disabled
-    const flags = require('../../lib/flags');
-    flags.CARD_V2 = false;
+    applyOverride({ flag: 'CARD_V2', value: false, duration: 60 });
     
     // Mock the hook to return data
     mockUseFetchBuildings.mockReturnValue({
@@ -118,14 +168,15 @@ describe('ResultsGrid Integration', () => {
       isLoading: false,
       isFetching: false,
       error: null
-    });
+    } as any);
 
     render(
       <ResultsGrid
         filters={{ comuna: 'Todas', tipologia: 'Todas', minPrice: null, maxPrice: null }}
         sort="default"
         onResultsChange={jest.fn()}
-      />
+      />,
+      { wrapper: createWrapper() }
     );
 
     // Should render BuildingCard (v1)
@@ -141,14 +192,15 @@ describe('ResultsGrid Integration', () => {
       isLoading: true,
       isFetching: false,
       error: null
-    });
+    } as any);
 
     render(
       <ResultsGrid
         filters={{ comuna: 'Todas', tipologia: 'Todas', minPrice: null, maxPrice: null }}
         sort="default"
         onResultsChange={jest.fn()}
-      />
+      />,
+      { wrapper: createWrapper() }
     );
 
     // Should show skeletons
@@ -162,14 +214,15 @@ describe('ResultsGrid Integration', () => {
       isLoading: false,
       isFetching: false,
       error: null
-    });
+    } as any);
 
     render(
       <ResultsGrid
         filters={{ comuna: 'Todas', tipologia: 'Todas', minPrice: null, maxPrice: null }}
         sort="default"
         onResultsChange={jest.fn()}
-      />
+      />,
+      { wrapper: createWrapper() }
     );
 
     // Should show empty state

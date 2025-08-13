@@ -15,7 +15,7 @@ export async function GET(request: Request) {
     );
   }
   try {
-    console.log("🔍 Endpoint de debug llamado");
+    // console.log("🔍 Endpoint de debug llamado");
     
     // Verificar variables de entorno
     const USE_SUPABASE = process.env.USE_SUPABASE === "true";
@@ -64,7 +64,7 @@ export async function GET(request: Request) {
       }))
     });
   } catch (error) {
-    console.error("❌ Error en endpoint de debug:", error);
+    // console.error("❌ Error en endpoint de debug:", error);
     return NextResponse.json({ 
       success: false, 
       error: error instanceof Error ? error.message : "Unknown error" 

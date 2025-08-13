@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { FlagToggle } from '@components/admin/FlagToggle';
-import { track } from '@lib/analytics';
+// import { track } from '@lib/analytics';
 
 interface FlagsStatus {
   comingSoon: {
@@ -35,24 +35,24 @@ export function FlagsAdminClient() {
       } else {
         setError('Error al cargar flags');
       }
-    } catch (err) {
+    } catch {
       setError('Error de conexión');
-      console.error('Error fetching flags status:', err);
+      // console.error('Error fetching flags status');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleFlagChange = () => {
-    // Refetch status after flag change
-    fetchFlagsStatus();
+  // const _handleFlagChange = () => {
+  //   // Refetch status after flag change
+  //   fetchFlagsStatus();
     
-    // Track admin action
-    track('admin_flag_changed', {
-      page: 'admin_flags',
-      action: 'flag_toggle'
-    });
-  };
+  //   // Track admin action
+  //   track('admin_flag_changed', {
+  //     page: 'admin_flags',
+  //     action: 'flag_toggle'
+  //   });
+  // };
 
   if (loading) {
     return (

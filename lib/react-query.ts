@@ -7,9 +7,9 @@ export const queryClientConfig = {
     queries: {
       staleTime: 5 * 60 * 1000, // 5 minutos para datos estables
       gcTime: 10 * 60 * 1000, // 10 minutos en cache
-      retry: (failureCount: number, error: any) => {
+      retry: (failureCount: number, error: unknown) => {
         // No reintentar errores 4xx
-        if (error?.status >= 400 && error?.status < 500) {
+        if ((error as any)?.status >= 400 && (error as any)?.status < 500) {
           return false;
         }
         return failureCount < 2;
@@ -81,12 +81,12 @@ export const invalidateQueries = {
 
 // Configuración específica para infinite queries
 export const infiniteQueryConfig = {
-  getNextPageParam: (lastPage: any) => {
-    const { pagination } = lastPage;
+  getNextPageParam: (lastPage: unknown) => {
+    const { pagination } = lastPage as any;
     return pagination.hasNextPage ? pagination.currentPage + 1 : undefined;
   },
-  getPreviousPageParam: (firstPage: any) => {
-    const { pagination } = firstPage;
+  getPreviousPageParam: (firstPage: unknown) => {
+    const { pagination } = firstPage as any;
     return pagination.hasPrevPage ? pagination.currentPage - 1 : undefined;
   },
   initialPageParam: 1,

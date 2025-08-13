@@ -109,6 +109,11 @@ export function cleanupExpiredOverrides(): void {
   }
 }
 
+// Función para limpiar TODOS los overrides (útil para tests)
+export function clearAllOverrides(): void {
+  overrideStore.clear();
+}
+
 // Exportar flags individuales (mantener compatibilidad)
 export const COMING_SOON = getFlagValue('comingSoon');
 export const CARD_V2 = getFlagValue('CARD_V2');

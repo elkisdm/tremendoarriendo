@@ -27,6 +27,12 @@ export const Zap = createIcon('Zap');
 export const Smartphone = createIcon('Smartphone');
 export const Headphones = createIcon('Headphones');
 export const FileText = createIcon('FileText');
+export const BadgePercent = createIcon('BadgePercent');
+export const Search = createIcon('Search');
+export const X = createIcon('X');
+export const Filter = createIcon('Filter');
+export const ChevronUp = createIcon('ChevronUp');
+export const ChevronDown = createIcon('ChevronDown');
 
 export default {} as any;
 

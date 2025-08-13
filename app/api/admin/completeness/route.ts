@@ -25,7 +25,7 @@ interface CompletenessStats {
   }>;
 }
 
-function calculateCompletenessStats(buildings: any[]): CompletenessStats {
+function calculateCompletenessStats(buildings: unknown[]): CompletenessStats {
   if (!buildings || buildings.length === 0) {
     return {
       totalBuildings: 0,
@@ -37,12 +37,12 @@ function calculateCompletenessStats(buildings: any[]): CompletenessStats {
   }
 
   const totalBuildings = buildings.length;
-  const averageCompleteness = buildings.reduce((sum, b) => sum + b.completeness_percentage, 0) / totalBuildings;
+  const averageCompleteness = buildings.reduce((sum: number, b: unknown) => sum + (b as { completeness_percentage: number }).completeness_percentage, 0) / totalBuildings;
   
-  const buildingsWithIssues = buildings.filter(b => b.completeness_percentage < 100).length;
+  const buildingsWithIssues = buildings.filter((b: unknown) => (b as { completeness_percentage: number }).completeness_percentage < 100).length;
   
-  const distribution = buildings.reduce((acc, b) => {
-    const percentage = b.completeness_percentage;
+  const distribution = buildings.reduce((acc: { excellent: number; good: number; fair: number; poor: number }, b: unknown) => {
+    const percentage = (b as { completeness_percentage: number }).completeness_percentage;
     if (percentage >= 90) acc.excellent++;
     else if (percentage >= 70) acc.good++;
     else if (percentage >= 50) acc.fair++;
@@ -52,11 +52,11 @@ function calculateCompletenessStats(buildings: any[]): CompletenessStats {
 
   // Calculate top issues
   const fieldIssues = {
-    'cover_image': buildings.filter(b => b.cover_image_status === '❌').length,
-    'badges': buildings.filter(b => b.badges_status === '❌').length,
-    'service_level': buildings.filter(b => b.service_level_status === '❌').length,
-    'amenities': buildings.filter(b => b.amenities_status === '❌').length,
-    'gallery': buildings.filter(b => b.gallery_status === '❌').length,
+    'cover_image': buildings.filter((b: unknown) => (b as { cover_image_status: string }).cover_image_status === '❌').length,
+    'badges': buildings.filter((b: unknown) => (b as { badges_status: string }).badges_status === '❌').length,
+    'service_level': buildings.filter((b: unknown) => (b as { service_level_status: string }).service_level_status === '❌').length,
+    'amenities': buildings.filter((b: unknown) => (b as { amenities_status: string }).amenities_status === '❌').length,
+    'gallery': buildings.filter((b: unknown) => (b as { gallery_status: string }).gallery_status === '❌').length,
   };
 
   const topIssues = Object.entries(fieldIssues)
@@ -80,7 +80,7 @@ function calculateCompletenessStats(buildings: any[]): CompletenessStats {
 
 export async function GET(request: Request) {
   try {
-    console.log("🔍 Admin completeness endpoint called");
+    // console.log("🔍 Admin completeness endpoint called");
 
     // Rate limiting
     const ipHeader = request.headers.get("x-forwarded-for");
@@ -88,7 +88,7 @@ export async function GET(request: Request) {
     
     const rateLimitResult = await limiter.check(ip);
     if (!rateLimitResult.ok) {
-      console.warn(`Rate limit exceeded for IP: ${ip}`);
+      // console.warn(`Rate limit exceeded for IP: ${ip}`);
       return NextResponse.json(
         { error: "rate_limited" },
         { status: 429, headers: { "Retry-After": String(rateLimitResult.retryAfter ?? 60) } }
@@ -104,7 +104,7 @@ export async function GET(request: Request) {
       .order('completeness_percentage', { ascending: true });
 
     if (error) {
-      console.error('Error fetching completeness data:', error);
+      // console.error('Error fetching completeness data:', error);
       return NextResponse.json(
         { error: "database_error", details: error.message },
         { status: 500 }
@@ -114,7 +114,7 @@ export async function GET(request: Request) {
     // Calculate statistics
     const stats = calculateCompletenessStats(buildings);
 
-    console.log(`📊 Completeness data fetched: ${buildings?.length || 0} buildings`);
+    // console.log(`📊 Completeness data fetched: ${buildings?.length || 0} buildings`);
 
     return NextResponse.json({
       success: true,
@@ -123,8 +123,8 @@ export async function GET(request: Request) {
       timestamp: new Date().toISOString()
     });
 
-  } catch (error) {
-    console.error("API Error:", error);
+  } catch {
+    // console.error("API Error");
     return NextResponse.json(
       { error: "internal_error", message: "Error interno del servidor" },
       { status: 500 }

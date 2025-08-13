@@ -4,10 +4,10 @@ import { BuildingCard } from "../BuildingCard";
 import { BuildingCardV2 } from "../ui/BuildingCardV2";
 import { BuildingCardSkeleton } from "../ui/BuildingCardSkeleton";
 import { VirtualResultsGrid } from "./VirtualResultsGrid";
-import { PaginationControls } from "./PaginationControls";
+import { PaginationControls, InfiniteScrollControls, AutoInfiniteScroll } from "./PaginationControls";
 import { useFetchBuildings, type FilterValues, type BuildingSummary } from "../../hooks/useFetchBuildings";
-import { useBuildingsPagination } from "../../hooks/useBuildingsPagination";
-import { CARD_V2, VIRTUAL_GRID, PAGINATION } from "@lib/flags";
+import { useBuildingsPagination, useBuildingsInfinite } from "../../hooks/useBuildingsPagination";
+import { CARD_V2, VIRTUAL_GRID, PAGINATION, getFlagValue } from "@lib/flags";
 import { Building } from "@types";
 import type { BuildingFilters } from "../../types/buildings";
 
@@ -15,6 +15,7 @@ interface ResultsGridProps {
   filters: FilterValues;
   sort: string;
   onResultsChange: (count: number) => void;
+  paginationMode?: 'traditional' | 'infinite' | 'auto-infinite';
 }
 
 // Adapter function to convert FilterValues to BuildingFilters for pagination
@@ -57,7 +58,12 @@ function adaptBuildingSummaryToBuilding(buildingSummary: BuildingSummary): Build
   };
 }
 
-export function ResultsGrid({ filters, sort, onResultsChange }: ResultsGridProps) {
+export function ResultsGrid({ 
+  filters, 
+  sort, 
+  onResultsChange, 
+  paginationMode = 'traditional' 
+}: ResultsGridProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 12;
 
@@ -77,6 +83,11 @@ export function ResultsGrid({ filters, sort, onResultsChange }: ResultsGridProps
 
   // New pagination system
   const buildingFilters = adaptFilterValuesToBuildingFilters(filters);
+  
+  // Use appropriate pagination hook based on mode
+  const isInfiniteMode = paginationMode === 'infinite' || paginationMode === 'auto-infinite';
+  
+  // Traditional pagination
   const {
     buildings: paginatedBuildings,
     pagination,
@@ -90,41 +101,78 @@ export function ResultsGrid({ filters, sort, onResultsChange }: ResultsGridProps
     filters: buildingFilters,
     page: currentPage,
     limit: pageSize,
-    enabled: usePagination,
+    enabled: usePagination && !isInfiniteMode,
+  });
+
+  // Infinite scroll pagination
+  const {
+    buildings: infiniteBuildings,
+    pagination: infinitePagination,
+    isLoading: infiniteLoading,
+    isError: infiniteError,
+    error: infiniteErrorDetails,
+    fetchNextPage,
+    isFetchingNextPage,
+    hasNextPage,
+  } = useBuildingsInfinite({
+    filters: buildingFilters,
+    limit: pageSize,
+    enabled: usePagination && isInfiniteMode,
   });
 
   // Use appropriate data source with type casting for compatibility
   const buildings: BuildingSummary[] = usePagination ? 
-    (paginatedBuildings as any[]) : // Cast to bypass type mismatch - they have compatible interfaces
+    (isInfiniteMode ? infiniteBuildings : paginatedBuildings) as unknown as BuildingSummary[] : // Cast to bypass type mismatch
     legacyBuildings;
-  const isLoading = usePagination ? paginationLoading : legacyLoading;
-  const isFetching = usePagination ? false : legacyFetching; // Pagination handles its own loading
-  const error = usePagination ? (paginationError ? paginationErrorDetails : null) : legacyError;
+  
+  const isLoading = usePagination ? 
+    (isInfiniteMode ? infiniteLoading : paginationLoading) : 
+    legacyLoading;
+  
+  const isFetching = usePagination ? 
+    (isInfiniteMode ? isFetchingNextPage : false) : 
+    legacyFetching;
+  
+  const error = usePagination ? 
+    (isInfiniteMode ? 
+      (infiniteError ? infiniteErrorDetails : null) : 
+      (paginationError ? paginationErrorDetails : null)
+    ) : 
+    legacyError;
+
+  // Get pagination info for current mode
+  const currentPagination = usePagination ? 
+    (isInfiniteMode ? infinitePagination : pagination) : 
+    null;
 
   // Notify parent component of results count changes
   useMemo(() => {
     if (!isLoading && !isFetching) {
-      const totalCount = usePagination ? (pagination?.totalCount || 0) : buildings.length;
+      const totalCount = usePagination ? (currentPagination?.totalCount || 0) : buildings.length;
       onResultsChange(totalCount);
     }
-  }, [buildings.length, isLoading, isFetching, onResultsChange, usePagination, pagination?.totalCount]);
+  }, [buildings.length, isLoading, isFetching, onResultsChange, usePagination, currentPagination?.totalCount]);
 
-  // Handle page changes
+  // Handle page changes for traditional pagination
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     goToPage(page);
   };
 
   const handleNextPage = () => {
-    if (pagination?.hasNextPage) {
-      const newPage = currentPage + 1;
-      setCurrentPage(newPage);
-      nextPage();
+    if (currentPagination?.hasNextPage) {
+      if (isInfiniteMode) {
+        fetchNextPage();
+      } else {
+        const newPage = currentPage + 1;
+        setCurrentPage(newPage);
+        nextPage();
+      }
     }
   };
 
   const handlePrevPage = () => {
-    if (pagination?.hasPrevPage) {
+    if (currentPagination?.hasPrevPage && !isInfiniteMode) {
       const newPage = currentPage - 1;
       setCurrentPage(newPage);
       prevPage();
@@ -177,7 +225,7 @@ export function ResultsGrid({ filters, sort, onResultsChange }: ResultsGridProps
     <div className="space-y-8">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
         {buildings.map((building: BuildingSummary, idx: number) => {
-          if (CARD_V2) {
+          if (getFlagValue('CARD_V2')) {
             // Use BuildingCardV2 when flag is enabled
             const adaptedBuilding = adaptBuildingSummaryToBuilding(building);
             return (
@@ -202,14 +250,40 @@ export function ResultsGrid({ filters, sort, onResultsChange }: ResultsGridProps
       </div>
 
       {/* Pagination controls when pagination is enabled */}
-      {usePagination && pagination && pagination.totalPages > 1 && (
-        <PaginationControls
-          pagination={pagination}
-          onPageChange={handlePageChange}
-          onNextPage={handleNextPage}
-          onPrevPage={handlePrevPage}
-          isLoading={isLoading}
-        />
+      {usePagination && currentPagination && (
+        <>
+          {/* Traditional pagination controls */}
+          {!isInfiniteMode && currentPagination.totalPages > 1 && (
+            <PaginationControls
+              pagination={currentPagination}
+              onPageChange={handlePageChange}
+              onNextPage={handleNextPage}
+              onPrevPage={handlePrevPage}
+              isLoading={isLoading}
+            />
+          )}
+
+          {/* Infinite scroll controls */}
+          {isInfiniteMode && (
+            paginationMode === 'infinite' ? (
+              <InfiniteScrollControls
+                hasNextPage={Boolean(hasNextPage)}
+                isFetchingNextPage={isFetchingNextPage}
+                onLoadMore={fetchNextPage}
+                totalCount={currentPagination.totalCount}
+                loadedCount={buildings.length}
+              />
+            ) : (
+              <AutoInfiniteScroll
+                hasNextPage={Boolean(hasNextPage)}
+                isFetchingNextPage={isFetchingNextPage}
+                onLoadMore={fetchNextPage}
+                totalCount={currentPagination.totalCount}
+                loadedCount={buildings.length}
+              />
+            )
+          )}
+        </>
       )}
     </div>
   );

@@ -1,9 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
-import { MapPin, Phone } from "lucide-react";
+import { MapPin } from "lucide-react";
 import { PromotionBadge } from "@components/ui/PromotionBadge";
 import { AmenityList } from "@components/ui/AmenityList";
-import { PrimaryButton } from "@components/ui/PrimaryButton";
+// import { PrimaryButton } from "@components/ui/PrimaryButton";
 import { ImageGallery } from "@components/gallery/ImageGallery";
 import { CostTable } from "@components/cost/CostTable";
 import { BookingForm } from "@components/forms/BookingForm";
@@ -15,17 +15,27 @@ import type { BuildingSummary } from "@hooks/useFetchBuildings";
 import { BuildingCard } from "@components/BuildingCard";
 import Link from "next/link";
 
-export default function PropertyPage({ params }: { params: { id: string } }){
+export default function PropertyPage({ params }: { params: Promise<{ id: string }> }){
   const [loading, setLoading] = useState(true);
   const [building, setBuilding] = useState<(Building & { precioDesde: number | null }) | null>(null);
   const [related, setRelated] = useState<BuildingSummary[]>([]);
   const [unit, setUnit] = useState<Unit | null>(null);
+  const [id, setId] = useState<string | null>(null);
 
   useEffect(() => {
+    // Resolve params promise
+    params.then(({ id: resolvedId }) => {
+      setId(resolvedId);
+    });
+  }, [params]);
+
+  useEffect(() => {
+    if (!id) return;
+    
     let mounted = true;
     (async () => {
       setLoading(true);
-      const res = await fetch(`/api/buildings/${params.id}`);
+      const res = await fetch(`/api/buildings/${id}`);
       const json = await res.json();
       const data = json?.building as (Building & { precioDesde: number | null }) | null;
       if (!mounted) return;
@@ -36,10 +46,10 @@ export default function PropertyPage({ params }: { params: { id: string } }){
       if (data) {
         const listRes = await fetch(`/api/buildings?comuna=${encodeURIComponent(data.comuna)}`);
         const listJson = await listRes.json();
-        const items = (listJson?.buildings ?? []) as Array<any>;
+        const items = (listJson?.buildings ?? []) as Array<unknown>;
         summaries = items
-          .filter((b: any) => b.slug !== data.slug)
-          .slice(0, 6);
+          .filter((b: unknown) => (b as { slug: string }).slug !== data.slug)
+          .slice(0, 6) as BuildingSummary[];
       }
       if (!mounted) return;
       setRelated(summaries);
@@ -47,7 +57,7 @@ export default function PropertyPage({ params }: { params: { id: string } }){
       window.scrollTo({ top: 0, behavior: "smooth" });
     })();
     return () => { mounted = false; };
-  }, [params.id]);
+  }, [id]);
 
   if (loading){
     return (
@@ -116,12 +126,15 @@ export default function PropertyPage({ params }: { params: { id: string } }){
               <div className="font-semibold">Selecciona unidad</div>
             </div>
             <div className="mt-3 grid grid-cols-1 gap-2">
-              {building?.units.map((u:any) => (
-                <button key={u.id} onClick={() => setUnit(u)} className={`text-left rounded-xl p-3 ring-1 ${unit?.id === u.id ? "bg-[var(--soft)] ring-[var(--ring)]" : "bg-white/5 ring-white/10 hover:bg-white/[.08]"}`}>
-                  <div className="font-medium">{u.tipologia} · {u.m2} m²</div>
-                  <div className="text-[13px] text-[var(--subtext)]">{currency(u.price)} / mes</div>
-                </button>
-              ))}
+              {building?.units.map((u: unknown) => {
+                const unitData = u as { id: string; tipologia: string; m2: number; price: number };
+                return (
+                  <button key={unitData.id} onClick={() => setUnit(u as any)} className={`text-left rounded-xl p-3 ring-1 ${unit?.id === unitData.id ? "bg-[var(--soft)] ring-[var(--ring)]" : "bg-white/5 ring-white/10 hover:bg-white/[.08]"}`}>
+                    <div className="font-medium">{unitData.tipologia} · {unitData.m2} m²</div>
+                    <div className="text-[13px] text-[var(--subtext)]">{currency(unitData.price)} / mes</div>
+                  </button>
+                );
+              })}
             </div>
           </div>
           {building && (

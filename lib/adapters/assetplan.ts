@@ -328,7 +328,7 @@ export function normalizeTypology(rawTypology: string | undefined): string | und
   if (!rawTypology) return undefined;
   
   const normalized = rawTypology
-    .replace(/[\/\s]/g, '') // Eliminar separadores
+    .replace(/[/\s]/g, '') // Eliminar separadores
     .toUpperCase();
   
   // Mapeo de casos especiales

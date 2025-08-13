@@ -179,7 +179,7 @@ describe('ComingSoonHero', () => {
     
     // Verificar que el subtítulo tiene mejor contraste
     const subtitle = screen.getByText('Estamos preparando la nueva experiencia de arriendo 0% comisión. Sin letra chica.');
-    expect(subtitle).toHaveClass('text-neutral-100');
+    expect(subtitle).toHaveClass('text-slate-100');
   });
 
   it('maneja el click del botón waitlist correctamente', () => {

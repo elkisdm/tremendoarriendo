@@ -1,6 +1,6 @@
 import { BuildingCardV2 } from '@components/ui/BuildingCardV2';
 import { Building } from '@types';
-import { PromotionType } from '@schemas/models';
+// import { PromotionType } from '@schemas/models';
 
 const demoBuildings: Building[] = [
   {

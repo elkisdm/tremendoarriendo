@@ -15,7 +15,7 @@ const DEFAULT_BLUR =
   "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTYnIGhlaWdodD0nMTAnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zyc+PHJlY3Qgd2lkdGg9JzE2JyBoZWlnaHQ9JzEwJyBmaWxsPSIjMjIyMjIyIi8+PC9zdmc+";
 
 export function BuildingCard({ 
-  id, 
+  id: _id, 
   title, 
   area, 
   tipology, 

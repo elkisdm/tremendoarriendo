@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { FlagsAdminClient } from "./FlagsAdminClient";
+import { ADMIN_FLAGS_CONSTANTS } from "./constants";
 
 export const metadata: Metadata = {
-  title: "Admin - Feature Flags",
-  description: "Panel de administración para feature flags",
+  title: ADMIN_FLAGS_CONSTANTS.METADATA.TITLE,
+  description: ADMIN_FLAGS_CONSTANTS.METADATA.DESCRIPTION,
   robots: {
     index: false,
     follow: false,
@@ -15,11 +16,11 @@ function LoadingFallback() {
   return (
     <div className="container mx-auto px-4 md:px-6 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Feature Flags</h1>
-        <p className="text-[var(--subtext)]">Cargando configuración...</p>
+        <h1 className="text-3xl font-bold mb-2">{ADMIN_FLAGS_CONSTANTS.LOADING.TITLE}</h1>
+        <p className="text-[var(--subtext)]">{ADMIN_FLAGS_CONSTANTS.LOADING.SUBTITLE}</p>
       </div>
       <div className="space-y-4">
-        {Array.from({ length: 2 }).map((_, idx) => (
+        {Array.from({ length: ADMIN_FLAGS_CONSTANTS.LOADING.SKELETON_COUNT }).map((_, idx) => (
           <div key={idx} className="rounded-2xl bg-[var(--soft)]/90 ring-1 ring-white/10 p-6 animate-pulse">
             <div className="flex items-start justify-between">
               <div className="flex-1">

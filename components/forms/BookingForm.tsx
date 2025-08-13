@@ -53,12 +53,14 @@ export function BookingForm({ buildingId, buildingName, defaultUnitId }: Booking
     switch (field) {
       case "name":
         return value.trim().length < 2 ? "El nombre debe tener al menos 2 caracteres" : null;
-      case "email":
+      case "email": {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return !emailRegex.test(value) ? "Ingresa un email válido" : null;
-      case "phone":
+      }
+      case "phone": {
         const phoneRegex = /^[+]?[\d\s-()]{8,}$/;
         return !phoneRegex.test(value.replace(/\s/g, "")) ? "Ingresa un teléfono válido" : null;
+      }
       default:
         return null;
     }
@@ -123,8 +125,8 @@ export function BookingForm({ buildingId, buildingName, defaultUnitId }: Booking
         contacto_metodo: "form",
       });
       setFormData({ name: "", email: "", phone: "", message: "", preferredDate: "" });
-    } catch (error) {
-      console.error("Booking error:", error);
+    } catch (_error) {
+      // console.error("Booking error:", _error);
       setFormState("error");
     }
   };

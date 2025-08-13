@@ -9,6 +9,35 @@ if (!(global as any).fetch) {
   (global as any).fetch = jest.fn();
 }
 
+// Mock matchMedia for components that use it
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: jest.fn().mockImplementation(query => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: jest.fn(), // deprecated
+    removeListener: jest.fn(), // deprecated
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+  })),
+});
+
+// Mock ResizeObserver
+global.ResizeObserver = jest.fn().mockImplementation(() => ({
+  observe: jest.fn(),
+  unobserve: jest.fn(),
+  disconnect: jest.fn(),
+}));
+
+// Mock IntersectionObserver
+global.IntersectionObserver = jest.fn().mockImplementation(() => ({
+  observe: jest.fn(),
+  unobserve: jest.fn(),
+  disconnect: jest.fn(),
+}));
+
 // Mock WhatsApp module globally
 jest.mock('@lib/whatsapp', () => ({
   buildWhatsAppUrl: jest.fn((params: any) => {

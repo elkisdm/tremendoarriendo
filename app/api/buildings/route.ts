@@ -91,7 +91,7 @@ export async function GET(request: Request) {
       );
     }
 
-    console.log("API /buildings called");
+    // console.log("API /buildings called");
     
     const { searchParams } = new URL(request.url);
     // Simulate API failure to verify error boundaries and client retry behavior
@@ -106,7 +106,7 @@ export async function GET(request: Request) {
     });
 
     if (!parsed.success) {
-      console.error("Query validation failed:", parsed.error);
+      // console.error("Query validation failed:", parsed.error);
       return NextResponse.json(
         { error: "Parámetros inválidos", details: parsed.error.flatten() },
         { status: 400 }
@@ -114,10 +114,10 @@ export async function GET(request: Request) {
     }
 
     const filters = parsed.data;
-    console.log("Calling getAllBuildings with filters:", filters);
+    // console.log("Calling getAllBuildings with filters:", filters);
     
     const list = await getAllBuildings(filters);
-    console.log("Got buildings from getAllBuildings:", list.length);
+    // console.log("Got buildings from getAllBuildings:", list.length);
 
     const buildings: BuildingListItem[] = list.map((b) => {
       const available = b.units.filter((u) => u.disponible);
@@ -152,10 +152,10 @@ export async function GET(request: Request) {
       } satisfies BuildingListItem;
     });
 
-    console.log("Returning buildings:", buildings.length);
+    // console.log("Returning buildings:", buildings.length);
     return NextResponse.json({ buildings });
   } catch (error) {
-    console.error("API Error:", error);
+    // console.error("API Error:", error);
     return NextResponse.json(
       { 
         error: "Error inesperado", 

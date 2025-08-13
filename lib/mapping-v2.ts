@@ -3,44 +3,44 @@ import {
   hashSha1Join,
   titlecaseTrim,
   normalizeCommuneExtended,
-  enumMFOrRetail,
-  validUrlOrNull,
-  upperTrim,
+  // _enumMFOrRetail,
+  // _validUrlOrNull,
+  // _upperTrim,
   normalizeTypologyInternal,
-  mapTypologyPublic,
+  // _mapTypologyPublic,
   toIntNull,
   sumIfBoth,
   strictEnum,
   parse_ids_or_pipe,
-  isOptionalX,
+  // _isOptionalX,
   notEmptyAndNotX,
   clpToInt,
-  clpToIntNull,
+  // clpToIntNull,
   determineGCMode,
   toFloatNull,
   rentMinRequiredSumable,
-  mapContractIndexUFIPC,
-  toIntNull as toIntNull2,
+  // _mapContractIndexUFIPC,
+  // toIntNull as _toIntNull2,
   percentToInt0100,
   toBoolGeneric,
   rangeOrNull,
   validateGuaranteeMonths,
   validateGuaranteeInstallments,
-  toBoolGeneric as toBoolGeneric2
+  // toBoolGeneric as _toBoolGeneric2
 } from "./adapters/assetplan";
 import {
-  calculatePriceFrom,
-  calculatePriceTo,
-  hasAvailability,
-  calculateRentaMinima,
-  calculateFeaturedFlag,
+  // _calculatePriceFrom,
+  // _calculatePriceTo,
+  // _hasAvailability,
+  // _calculateRentaMinima,
+  // _calculateFeaturedFlag,
   isAvailableForPublishing,
   calculateNoGuaranteeSurcharge,
-  calculateBuildingAggregations,
-  calculatePricePercentile,
-  calculateFeaturedFlagWithPercentile,
-  calculateRentaMinimaSumable,
-  validatePetRestrictions as validatePetRestrictionsDerive
+  // _calculateBuildingAggregations,
+  // _calculatePricePercentile,
+  // _calculateFeaturedFlagWithPercentile,
+  // _calculateRentaMinimaSumable,
+  // validatePetRestrictions as _validatePetRestrictionsDerive
 } from "./derive";
 
 // Types for the mapping configuration
@@ -54,11 +54,11 @@ export interface MappingConfig {
     publishable_states: string[];
     min_rent_exclusive: number;
   };
-  building: Record<string, any>;
-  unit: Record<string, any>;
-  pricing: Record<string, any>;
-  promotion: Record<string, any>;
-  aggregations: Record<string, any>;
+  building: Record<string, unknown>;
+  unit: Record<string, unknown>;
+  pricing: Record<string, unknown>;
+  promotion: Record<string, unknown>;
+  aggregations: Record<string, unknown>;
 }
 
 // Raw data types based on the mapping
@@ -126,7 +126,7 @@ export class MappingV2Transformer {
   /**
    * Transforma datos de unidad raw a formato canónico
    */
-  transformUnit(raw: RawUnitData, buildingId: string): Partial<Unit> {
+  transformUnit(raw: RawUnitData, _buildingId: string): Partial<Unit> {
     const unitId = raw.OP?.trim();
     
     // Parse parking and storage
@@ -140,7 +140,7 @@ export class MappingV2Transformer {
     
     // Calculate pricing
     const rentAmount = clpToInt(raw["Arriendo Total"]);
-    const gcTotal = clpToIntNull(raw["GC Total"]);
+    // const _gcTotal = clpToIntNull(raw["GC Total"]);
     const rentasNecesarias = toFloatNull(raw["Rentas Necesarias"]);
     const rentaMinima = rentasNecesarias ? rentMinRequiredSumable(rentAmount, rentasNecesarias) : undefined;
     

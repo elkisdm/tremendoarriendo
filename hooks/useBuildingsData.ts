@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 import { useBuildingsStore } from '../stores/buildingsStore';
 import { Building } from '../types';
 import { BuildingFilters, SortOption } from '../types/buildings';
@@ -120,17 +120,49 @@ const sortBuildings = (buildings: Building[], sort: SortOption): Building[] => {
 
 // Hook principal para manejar datos de buildings
 export function useBuildingsData() {
-  const store = useBuildingsStore();
+  const {
+    buildings,
+    filteredBuildings,
+    loading,
+    error,
+    filters,
+    sort,
+    setBuildings,
+    setFilteredBuildings,
+    setLoading,
+    setError,
+    setFilters,
+    setSort,
+    clearFilters,
+    reset
+  } = useBuildingsStore();
+
+  // Usar refs para evitar dependencias en useCallback
+  const filtersRef = useRef(filters);
+  const sortRef = useRef(sort);
   
+  // Actualizar refs cuando cambien los valores
+  useEffect(() => {
+    filtersRef.current = filters;
+  }, [filters]);
+  
+  useEffect(() => {
+    sortRef.current = sort;
+  }, [sort]);
+
   // Función para cargar datos desde la API
   const fetchBuildings = useCallback(async () => {
     try {
-      store.setLoading(true);
-      store.setError(null);
+      setLoading(true);
+      setError(null);
+
+      // Usar valores actuales de los refs
+      const currentFilters = filtersRef.current;
+      const currentSort = sortRef.current;
 
       // Convertir filtros y sort para la API
-      const apiFilters = convertFiltersToAPI(store.filters);
-      const apiSort = convertSortToAPI(store.sort);
+      const apiFilters = convertFiltersToAPI(currentFilters);
+      const apiSort = convertSortToAPI(currentSort);
 
       // Construir URL con parámetros
       const params = new URLSearchParams();
@@ -159,93 +191,93 @@ export function useBuildingsData() {
       }
 
       const data = await response.json();
-      const buildings: Building[] = data.buildings || [];
+      const buildingsData: Building[] = data.buildings || [];
 
       // Actualizar store con datos
-      store.setBuildings(buildings);
+      setBuildings(buildingsData);
       
       // Aplicar filtros y ordenamiento local
-      const filtered = filterBuildings(buildings, store.filters);
-      const sorted = sortBuildings(filtered, store.sort);
-      store.setFilteredBuildings(sorted);
+      const filtered = filterBuildings(buildingsData, currentFilters);
+      const sorted = sortBuildings(filtered, currentSort);
+      setFilteredBuildings(sorted);
 
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-      store.setError(errorMessage);
-      console.error('Error fetching buildings:', error);
+      setError(errorMessage);
+      // console.error('Error fetching buildings:', error);
     } finally {
-      store.setLoading(false);
+      setLoading(false);
     }
-  }, [store]);
+  }, [setBuildings, setError, setFilteredBuildings, setLoading]); // Dependencias mínimas
 
   // Función para actualizar filtros
   const updateFilters = useCallback((newFilters: Partial<BuildingFilters>) => {
-    store.setFilters(newFilters);
+    setFilters(newFilters);
     
     // Re-aplicar filtros y ordenamiento a los datos existentes
-    const filtered = filterBuildings(store.buildings, { ...store.filters, ...newFilters });
-    const sorted = sortBuildings(filtered, store.sort);
-    store.setFilteredBuildings(sorted);
-  }, [store]);
+    const filtered = filterBuildings(buildings, { ...filters, ...newFilters });
+    const sorted = sortBuildings(filtered, sort);
+    setFilteredBuildings(sorted);
+  }, [setFilters, setFilteredBuildings, buildings, filters, sort]);
 
   // Función para actualizar ordenamiento
   const updateSort = useCallback((newSort: SortOption) => {
-    store.setSort(newSort);
+    setSort(newSort);
     
     // Re-aplicar ordenamiento a los datos filtrados existentes
-    const sorted = sortBuildings(store.filteredBuildings, newSort);
-    store.setFilteredBuildings(sorted);
-  }, [store]);
+    const sorted = sortBuildings(filteredBuildings, newSort);
+    setFilteredBuildings(sorted);
+  }, [setSort, setFilteredBuildings, filteredBuildings]);
 
   // Función para limpiar filtros
-  const clearFilters = useCallback(() => {
-    store.clearFilters();
-    store.setFilteredBuildings(store.buildings);
-  }, [store]);
+  const clearFiltersAction = useCallback(() => {
+    clearFilters();
+    setFilteredBuildings(buildings);
+  }, [clearFilters, setFilteredBuildings, buildings]);
 
   // Función para recargar datos
   const refresh = useCallback(() => {
     fetchBuildings();
   }, [fetchBuildings]);
 
-  // Cargar datos iniciales al montar el componente
+  // Cargar datos iniciales al montar el componente (solo una vez)
   useEffect(() => {
-    if (store.buildings.length === 0 && !store.loading) {
+    if (buildings.length === 0 && !loading) {
       fetchBuildings();
     }
-  }, [fetchBuildings, store.buildings.length, store.loading]);
+  }, []); // Sin dependencias para evitar bucle infinito
 
   // Re-aplicar filtros cuando cambien los datos base
   useEffect(() => {
-    if (store.buildings.length > 0) {
-      const filtered = filterBuildings(store.buildings, store.filters);
-      const sorted = sortBuildings(filtered, store.sort);
-      store.setFilteredBuildings(sorted);
+    if (buildings.length > 0) {
+      const filtered = filterBuildings(buildings, filters);
+      const sorted = sortBuildings(filtered, sort);
+      setFilteredBuildings(sorted);
     }
-  }, [store.buildings, store.filters, store.sort, store]);
+  }, [buildings, filters, sort, setFilteredBuildings]); // Dependencias completas
 
   return {
     // Datos
-    buildings: store.buildings,
-    filteredBuildings: store.filteredBuildings,
+    buildings,
+    filteredBuildings,
     
     // Estado
-    loading: store.loading,
-    error: store.error,
+    loading,
+    error,
     
     // Filtros y ordenamiento
-    filters: store.filters,
-    sort: store.sort,
+    filters,
+    sort,
     
     // Acciones
     fetchBuildings,
     updateFilters,
     updateSort,
-    clearFilters,
+    clearFilters: clearFiltersAction,
     refresh,
     
     // Utilidades
-    reset: store.reset,
+    reset,
   };
 }
 

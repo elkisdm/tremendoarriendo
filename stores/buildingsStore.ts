@@ -17,6 +17,9 @@ const initialState = {
   totalCount: 0,
   paginationMode: 'traditional' as 'traditional' | 'infinite',
   infinitePages: [] as Building[][],
+  // Nuevos campos para integración con React Query
+  useReactQuery: true,
+  queryKey: null as string | null,
 };
 
 // Store de buildings con Zustand
@@ -47,7 +50,7 @@ export const useBuildingsStore = create<BuildingsStore>()(
       setFilters: (newFilters: Partial<BuildingFilters>) => {
         const currentFilters = get().filters;
         const filters = { ...currentFilters, ...newFilters };
-        set({ filters }, false, 'setFilters');
+        set({ filters, page: 1 }, false, 'setFilters'); // Reset page when filters change
       },
 
       setSort: (sort: SortOption) => {
@@ -55,7 +58,7 @@ export const useBuildingsStore = create<BuildingsStore>()(
       },
 
       clearFilters: () => {
-        set({ filters: {} }, false, 'clearFilters');
+        set({ filters: {}, page: 1 }, false, 'clearFilters'); // Reset page when clearing filters
       },
 
       // Acciones de paginación tradicional
@@ -64,7 +67,7 @@ export const useBuildingsStore = create<BuildingsStore>()(
       },
 
       setPageSize: (pageSize: number) => {
-        set({ pageSize }, false, 'setPageSize');
+        set({ pageSize, page: 1 }, false, 'setPageSize'); // Reset page when changing page size
       },
 
       setTotalPages: (totalPages: number) => {
@@ -88,6 +91,37 @@ export const useBuildingsStore = create<BuildingsStore>()(
 
       clearInfinitePages: () => {
         set({ infinitePages: [] }, false, 'clearInfinitePages');
+      },
+
+      // Nuevas acciones para integración con React Query
+      setUseReactQuery: (useReactQuery: boolean) => {
+        set({ useReactQuery }, false, 'setUseReactQuery');
+      },
+
+      setQueryKey: (queryKey: string | null) => {
+        set({ queryKey }, false, 'setQueryKey');
+      },
+
+      // Sincronizar datos de React Query
+      syncFromReactQuery: (data: {
+        buildings: Building[];
+        pagination: {
+          currentPage: number;
+          totalPages: number;
+          totalCount: number;
+          hasNextPage: boolean;
+          hasPrevPage: boolean;
+          limit: number;
+        };
+      }) => {
+        set({
+          buildings: data.buildings,
+          filteredBuildings: data.buildings,
+          page: data.pagination.currentPage,
+          totalPages: data.pagination.totalPages,
+          totalCount: data.pagination.totalCount,
+          pageSize: data.pagination.limit,
+        }, false, 'syncFromReactQuery');
       },
 
       // Utilidades
@@ -119,5 +153,11 @@ export const useBuildingsPagination = () => useBuildingsStore((state) => ({
 }));
 
 export const useBuildingsInfinitePages = () => useBuildingsStore((state) => state.infinitePages);
+
+// Nuevos selectores para React Query
+export const useBuildingsReactQuery = () => useBuildingsStore((state) => ({
+  useReactQuery: state.useReactQuery,
+  queryKey: state.queryKey,
+}));
 
 

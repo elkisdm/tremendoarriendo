@@ -1,7 +1,8 @@
 import { useQuery, useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useEffect } from "react";
 import type { BuildingFilters } from "../types/buildings";
 import { queryKeys, type PaginatedResponse } from "../lib/react-query";
+import { useBuildingsStore } from "../stores/buildingsStore";
 
 // Tipos para el hook
 interface BuildingListItem {
@@ -31,6 +32,7 @@ interface UseBuildingsPaginationOptions {
   page?: number;
   limit?: number;
   enabled?: boolean;
+  useStore?: boolean; // Nuevo: integrar con Zustand store
 }
 
 interface UseBuildingsPaginationReturn {
@@ -109,8 +111,20 @@ export function useBuildingsPagination({
   page = 1,
   limit = 12,
   enabled = true,
+  useStore = true, // Por defecto integrar con store
 }: UseBuildingsPaginationOptions = {}): UseBuildingsPaginationReturn {
   const queryClient = useQueryClient();
+  
+  // Integración con Zustand store
+  const {
+    setLoading,
+    setError,
+    syncFromReactQuery,
+    setPage,
+    // setFilters: _setFilters,
+    // setTotalPages: _setTotalPages,
+    // setTotalCount: _setTotalCount,
+  } = useBuildingsStore();
   
   // Query con React Query
   const {
@@ -129,6 +143,39 @@ export function useBuildingsPagination({
     gcTime: 5 * 60 * 1000, // 5 minutos
   });
   
+  // Sincronizar con Zustand store
+  useEffect(() => {
+    if (useStore && data) {
+      setLoading(false);
+      setError(null);
+      // Convertir BuildingListItem a Building para el store
+      const buildings = data.data.map(item => ({
+        id: item.id,
+        name: item.name,
+        comuna: item.comuna,
+        address: item.address,
+        cover: item.coverImage,
+        hero: item.gallery?.[0] || item.coverImage,
+        gallery: item.gallery,
+        units: [], // Placeholder - se puede expandir si es necesario
+        amenities: [], // Placeholder - se puede expandir si es necesario
+      }));
+      
+      syncFromReactQuery({
+        buildings,
+        pagination: data.pagination,
+      });
+    }
+  }, [data, useStore, setLoading, setError, syncFromReactQuery]);
+  
+  // Sincronizar estados de carga
+  useEffect(() => {
+    if (useStore) {
+      setLoading(isLoading);
+      setError(isError ? error?.message || 'Error desconocido' : null);
+    }
+  }, [isLoading, isError, error, useStore, setLoading, setError]);
+  
   // Memoizar resultados
   const buildings = useMemo(() => data?.data || [], [data?.data]);
   const pagination = useMemo(() => data?.pagination || null, [data?.pagination]);
@@ -136,12 +183,15 @@ export function useBuildingsPagination({
   // Acciones de navegación
   const goToPage = useCallback((newPage: number) => {
     if (pagination && newPage >= 1 && newPage <= pagination.totalPages) {
+      if (useStore) {
+        setPage(newPage);
+      }
       // React Query manejará el cambio automáticamente cuando cambien las queryKey
       queryClient.invalidateQueries({
         queryKey: queryKeys.buildingsPaginated.list(filters, newPage, limit)
       });
     }
-  }, [queryClient, filters, limit, pagination]);
+  }, [queryClient, filters, limit, pagination, useStore, setPage]);
   
   const nextPage = useCallback(() => {
     if (pagination?.hasNextPage) {
@@ -189,8 +239,17 @@ export function useBuildingsInfinite({
   filters = {},
   limit = 12,
   enabled = true,
+  useStore = true,
 }: Omit<UseBuildingsPaginationOptions, 'page'> = {}) {
   const queryClient = useQueryClient();
+  
+  // Integración con Zustand store
+  const {
+    setLoading,
+    setError,
+    addInfinitePage,
+    clearInfinitePages,
+  } = useBuildingsStore();
   
   const {
     data,
@@ -225,6 +284,38 @@ export function useBuildingsInfinite({
     staleTime: 60 * 1000,
     gcTime: 5 * 60 * 1000,
   });
+  
+  // Sincronizar con Zustand store
+  useEffect(() => {
+    if (useStore && data) {
+      setLoading(false);
+      setError(null);
+      clearInfinitePages();
+      data.pages.forEach(page => {
+        // Convertir BuildingListItem a Building para el store
+        const buildings = page.data.map(item => ({
+          id: item.id,
+          name: item.name,
+          comuna: item.comuna,
+          address: item.address,
+          cover: item.coverImage,
+          hero: item.gallery?.[0] || item.coverImage,
+          gallery: item.gallery,
+          units: [], // Placeholder
+          amenities: [], // Placeholder
+        }));
+        addInfinitePage(buildings);
+      });
+    }
+  }, [data, useStore, setLoading, setError, addInfinitePage, clearInfinitePages]);
+  
+  // Sincronizar estados de carga
+  useEffect(() => {
+    if (useStore) {
+      setLoading(isLoading);
+      setError(isError ? error?.message || 'Error desconocido' : null);
+    }
+  }, [isLoading, isError, error, useStore, setLoading, setError]);
   
   // Combinar todas las páginas
   const buildings = useMemo(() => {

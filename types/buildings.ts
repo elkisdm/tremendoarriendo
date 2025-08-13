@@ -35,6 +35,10 @@ export interface BuildingsState {
   totalCount: number;
   paginationMode: 'traditional' | 'infinite';
   infinitePages: Building[][];
+  
+  // Integración con React Query
+  useReactQuery: boolean;
+  queryKey: string | null;
 }
 
 // Acciones del store
@@ -62,6 +66,21 @@ export interface BuildingsActions {
   setPaginationMode: (mode: 'traditional' | 'infinite') => void;
   addInfinitePage: (buildings: Building[]) => void;
   clearInfinitePages: () => void;
+  
+  // Integración con React Query
+  setUseReactQuery: (useReactQuery: boolean) => void;
+  setQueryKey: (queryKey: string | null) => void;
+  syncFromReactQuery: (data: {
+    buildings: Building[];
+    pagination: {
+      currentPage: number;
+      totalPages: number;
+      totalCount: number;
+      hasNextPage: boolean;
+      hasPrevPage: boolean;
+      limit: number;
+    };
+  }) => void;
   
   // Utilidades
   reset: () => void;

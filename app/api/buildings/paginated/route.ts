@@ -107,7 +107,7 @@ export async function GET(request: Request) {
       );
     }
 
-    console.log("API /buildings/paginated called");
+    // console.log("API /buildings/paginated called");
     
     const { searchParams } = new URL(request.url);
     const parsed = PaginatedQuerySchema.safeParse({
@@ -121,15 +121,15 @@ export async function GET(request: Request) {
     });
 
     if (!parsed.success) {
-      console.error("Query validation failed:", parsed.error);
+      // console.error("Query validation failed:", parsed.error);
       return NextResponse.json(
         { error: "Parámetros inválidos", details: parsed.error.flatten() },
         { status: 400 }
       );
     }
 
-    const { page, limit, cursor, ...filters } = parsed.data;
-    console.log("Calling getAllBuildings with filters:", filters, "page:", page, "limit:", limit);
+    const { page, limit, ...filters } = parsed.data;
+    // console.log("Calling getAllBuildings with filters:", filters, "page:", page, "limit:", limit);
     
     // Obtener todos los buildings y aplicar filtros
     const allBuildings = await getAllBuildings(filters);
@@ -186,10 +186,10 @@ export async function GET(request: Request) {
       },
     };
 
-    console.log("Returning paginated buildings:", paginatedBuildings.length, "of", totalCount);
+    // console.log("Returning paginated buildings:", paginatedBuildings.length, "of", totalCount);
     return NextResponse.json(response);
   } catch (error) {
-    console.error("API Error:", error);
+    // console.error("API Error:", error);
     return NextResponse.json(
       { 
         error: "Error inesperado", 

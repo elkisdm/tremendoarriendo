@@ -2,40 +2,43 @@ import { notFound } from "next/navigation";
 import { getBuildingBySlug, getRelatedBuildings } from "@lib/data";
 import { PropertyClient } from "./PropertyClient";
 import { safeJsonLd } from "@lib/seo/jsonld";
+import { PROPERTY_PAGE_CONSTANTS } from "./constants";
 
 type PropertyPageProps = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
-export const revalidate = 3600;
+export const revalidate = 3600; // 1 hour
 
-export default async function PropertyPage({ params, searchParams }: PropertyPageProps & { searchParams?: { fail?: string } }) {
+export default async function PropertyPage({ params, searchParams }: PropertyPageProps & { searchParams?: Promise<{ fail?: string }> }) {
+  const { slug } = await params;
+  const resolvedSearchParams = await searchParams;
   // Simulate a failure to verify error.tsx boundary
-  if (searchParams?.fail === "1") {
+  if (resolvedSearchParams?.fail === "1") {
     throw new Error("Falló carga de propiedad (simulada)");
   }
-  const building = await getBuildingBySlug(params.slug);
+  const building = await getBuildingBySlug(slug);
   
   if (!building) {
     notFound();
   }
 
-  const relatedBuildings = await getRelatedBuildings(params.slug, 3);
+  const relatedBuildings = await getRelatedBuildings(slug, PROPERTY_PAGE_CONSTANTS.RELATED_BUILDINGS_LIMIT);
 
   // Build JSON-LD (Schema.org) for this property
   const baseUrl =
     process.env.NEXT_PUBLIC_SITE_URL || process.env.SITE_URL || "http://localhost:3000";
-  const canonicalUrl = `${baseUrl}/property/${params.slug}`;
+  const canonicalUrl = `${baseUrl}/property/${slug}`;
   const primaryImage =
     building.media?.images?.[0] ||
     building.coverImage ||
     building.gallery?.[0] ||
-    "/images/lascondes-cover.jpg";
+    PROPERTY_PAGE_CONSTANTS.DEFAULT_IMAGE;
   const toAbsoluteUrl = (url: string) => (url.startsWith("http") ? url : `${baseUrl}${url}`);
 
   const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "ApartmentComplex",
+    "@context": PROPERTY_PAGE_CONSTANTS.JSON_LD_CONTEXT,
+    "@type": PROPERTY_PAGE_CONSTANTS.JSON_LD_TYPE,
     name: building.name,
     address: {
       "@type": "PostalAddress",
@@ -46,8 +49,8 @@ export default async function PropertyPage({ params, searchParams }: PropertyPag
     offers: building.units.map((unit) => ({
       "@type": "Offer",
       price: unit.price,
-      priceCurrency: "CLP",
-      ...(unit.disponible ? { availability: "https://schema.org/InStock" } : {}),
+      priceCurrency: PROPERTY_PAGE_CONSTANTS.PRICE_CURRENCY,
+      ...(unit.disponible ? { availability: PROPERTY_PAGE_CONSTANTS.AVAILABILITY_IN_STOCK } : {}),
     })),
   } as const;
 
@@ -62,7 +65,8 @@ export default async function PropertyPage({ params, searchParams }: PropertyPag
 }
 
 export async function generateMetadata({ params }: PropertyPageProps) {
-  const building = await getBuildingBySlug(params.slug);
+  const { slug } = await params;
+  const building = await getBuildingBySlug(slug);
   
   if (!building) {
     return {
@@ -73,19 +77,19 @@ export async function generateMetadata({ params }: PropertyPageProps) {
   return {
     title: `${building.name} - 0% Comisión | Hommie`,
     description: `Arrienda ${building.name} en ${building.comuna} sin comisión de corretaje. ${building.amenities.join(", ")}.`,
-    alternates: { canonical: `/property/${params.slug}` },
+    alternates: { canonical: `/property/${slug}` },
     openGraph: {
       title: `${building.name} - 0% Comisión`.
         replace(/\s+/g, " "),
       description: `Arrienda ${building.name} en ${building.comuna} sin comisión de corretaje.`,
       type: "website",
-      images: [building.coverImage ?? building.gallery?.[0] ?? "/images/lascondes-cover.jpg"],
+      images: [building.coverImage ?? building.gallery?.[0] ?? PROPERTY_PAGE_CONSTANTS.DEFAULT_IMAGE],
     },
     twitter: {
       card: "summary_large_image",
       title: `${building.name} - 0% Comisión`.
         replace(/\s+/g, " "),
-      images: [building.coverImage ?? building.gallery?.[0] ?? "/images/lascondes-cover.jpg"],
+      images: [building.coverImage ?? building.gallery?.[0] ?? PROPERTY_PAGE_CONSTANTS.DEFAULT_IMAGE],
     },
   };
 }

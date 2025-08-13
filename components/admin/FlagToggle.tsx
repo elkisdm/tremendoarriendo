@@ -83,9 +83,9 @@ export function FlagToggle({
       } else {
         setError(result.error || 'Error al aplicar override');
       }
-    } catch (err) {
+    } catch (_err) {
       setError('Error de conexión');
-      console.error('Flag toggle error:', err);
+      // console.error('Flag toggle error:', _err);
     } finally {
       setLoading(false);
     }

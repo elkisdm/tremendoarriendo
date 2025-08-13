@@ -2,9 +2,9 @@ import type { Config } from 'jest';
 
 const config: Config = {
   preset: 'ts-jest',
-  testEnvironment: 'node',
+  testEnvironment: 'jsdom',
   roots: ['<rootDir>/tests'],
-  setupFilesAfterEnv: [],
+  setupFilesAfterEnv: ['<rootDir>/tests/setupTests.ts'],
   moduleNameMapper: {
     '^@components/(.*)$': '<rootDir>/components/$1',
     '^@lib/(.*)$': '<rootDir>/lib/$1',

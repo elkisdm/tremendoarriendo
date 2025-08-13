@@ -2,11 +2,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { PromotionBadge } from "@components/PromotionBadge";
+import { PromotionBadge } from "@components/ui/PromotionBadge";
 import { formatPrice } from "@lib/utils";
 import { track } from "@lib/analytics";
 import type { Building } from "@types";
-import type { PromotionBadge as PromotionBadgeType } from "@schemas/models";
+// import type { PromotionBadge as PromotionBadgeType } from "@schemas/models";
 import { PromotionType } from "@schemas/models";
 
 type BuildingCardV2Props = {
@@ -20,19 +20,19 @@ const DEFAULT_BLUR =
   "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTYnIGhlaWdodD0nMTAnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zyc+PHJlY3Qgd2lkdGg9JzE2JyBoZWlnaHQ9JzEwJyBmaWxsPSIjMjIyMjIyIi8+PC9zdmc+";
 
 // Helper function to get the primary badge with priority
-function getPrimaryBadge(badges?: PromotionBadgeType[]): PromotionBadgeType | null {
-  if (!badges || badges.length === 0) return null;
-  
-  // Priority: FREE_COMMISSION first, then DISCOUNT_PERCENT, then others
-  const freeCommission = badges.find(b => b.type === PromotionType.FREE_COMMISSION);
-  if (freeCommission) return freeCommission;
-  
-  const discount = badges.find(b => b.type === PromotionType.DISCOUNT_PERCENT);
-  if (discount) return discount;
-  
-  // Return first available badge
-  return badges[0];
-}
+// function getPrimaryBadge(badges?: PromotionBadgeType[]): PromotionBadgeType | null {
+//   if (!badges || badges.length === 0) return null;
+//   
+//   // Priority: FREE_COMMISSION first, then DISCOUNT_PERCENT, then others
+//   const freeCommission = badges.find(b => b.type === PromotionType.FREE_COMMISSION);
+//   if (freeCommission) return freeCommission;
+//   
+//   const discount = badges.find(b => b.type === PromotionType.DISCOUNT_PERCENT);
+//   if (discount) return discount;
+//   
+//   // Return first available badge
+//   return badges[0];
+// }
 
 // Helper function to calculate building stats
 function calculateBuildingStats(building: Building) {
@@ -180,7 +180,7 @@ export function BuildingCardV2({
             {/* Typology chips */}
             {hasAvailability && typologyChips.length > 0 && (
               <div className="flex flex-wrap gap-1.5 min-h-[24px]">
-                {typologyChips.slice(0, 3).map((chip, index) => (
+                {typologyChips.slice(0, 3).map((chip, _index) => (
                   <span 
                     key={chip.key}
                     className="inline-flex items-center px-2 py-1 rounded-md text-[11px] font-medium bg-[var(--soft)] text-[var(--text)] ring-1 ring-white/10"

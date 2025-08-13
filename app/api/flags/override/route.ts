@@ -71,8 +71,8 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(result, { status: 200 });
 
-  } catch (error) {
-    console.error('Error en override API:', error);
+  } catch {
+    // console.error('Error en override API');
     return NextResponse.json(
       { success: false, error: 'Error inesperado' },
       { status: 500 }
@@ -92,8 +92,8 @@ export async function GET() {
       },
       { status: 200 }
     );
-  } catch (error) {
-    console.error('Error obteniendo flags:', error);
+  } catch {
+    // console.error('Error obteniendo flags');
     return NextResponse.json(
       { success: false, error: 'Error inesperado' },
       { status: 500 }
