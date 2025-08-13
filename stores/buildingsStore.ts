@@ -14,6 +14,9 @@ const initialState = {
   page: 1,
   pageSize: 12,
   totalPages: 1,
+  totalCount: 0,
+  paginationMode: 'traditional' as 'traditional' | 'infinite',
+  infinitePages: [] as Building[][],
 };
 
 // Store de buildings con Zustand
@@ -55,13 +58,36 @@ export const useBuildingsStore = create<BuildingsStore>()(
         set({ filters: {} }, false, 'clearFilters');
       },
 
-      // Acciones de paginación
+      // Acciones de paginación tradicional
       setPage: (page: number) => {
         set({ page }, false, 'setPage');
       },
 
       setPageSize: (pageSize: number) => {
         set({ pageSize }, false, 'setPageSize');
+      },
+
+      setTotalPages: (totalPages: number) => {
+        set({ totalPages }, false, 'setTotalPages');
+      },
+
+      setTotalCount: (totalCount: number) => {
+        set({ totalCount }, false, 'setTotalCount');
+      },
+
+      // Acciones de paginación infinita
+      setPaginationMode: (paginationMode: 'traditional' | 'infinite') => {
+        set({ paginationMode }, false, 'setPaginationMode');
+      },
+
+      addInfinitePage: (buildings: Building[]) => {
+        const state = get();
+        const newInfinitePages = [...state.infinitePages, buildings];
+        set({ infinitePages: newInfinitePages }, false, 'addInfinitePage');
+      },
+
+      clearInfinitePages: () => {
+        set({ infinitePages: [] }, false, 'clearInfinitePages');
       },
 
       // Utilidades
@@ -82,5 +108,16 @@ export const useBuildingsLoading = () => useBuildingsStore((state) => state.load
 export const useBuildingsError = () => useBuildingsStore((state) => state.error);
 export const useBuildingsFilters = () => useBuildingsStore((state) => state.filters);
 export const useBuildingsSort = () => useBuildingsStore((state) => state.sort);
+
+// Selectores de paginación
+export const useBuildingsPagination = () => useBuildingsStore((state) => ({
+  page: state.page,
+  pageSize: state.pageSize,
+  totalPages: state.totalPages,
+  totalCount: state.totalCount,
+  paginationMode: state.paginationMode,
+}));
+
+export const useBuildingsInfinitePages = () => useBuildingsStore((state) => state.infinitePages);
 
 

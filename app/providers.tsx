@@ -13,6 +13,11 @@ export default function Providers({ children }: ProvidersProps) {
       queries: {
         staleTime: 60 * 1000, // 1 minuto
         retry: 1,
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
+      },
+      mutations: {
+        retry: 0,
       },
     },
   }));

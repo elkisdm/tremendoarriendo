@@ -1,3 +1,5 @@
 {
-  "comingSoon": false
+  "comingSoon": false,
+  "virtualGrid": false,
+  "pagination": false
 }

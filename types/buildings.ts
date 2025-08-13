@@ -28,10 +28,13 @@ export interface BuildingsState {
   filters: BuildingFilters;
   sort: SortOption;
   
-  // Paginación (futuro)
+  // Paginación
   page: number;
   pageSize: number;
   totalPages: number;
+  totalCount: number;
+  paginationMode: 'traditional' | 'infinite';
+  infinitePages: Building[][];
 }
 
 // Acciones del store
@@ -49,9 +52,16 @@ export interface BuildingsActions {
   setSort: (sort: SortOption) => void;
   clearFilters: () => void;
   
-  // Paginación
+  // Paginación tradicional
   setPage: (page: number) => void;
   setPageSize: (pageSize: number) => void;
+  setTotalPages: (totalPages: number) => void;
+  setTotalCount: (totalCount: number) => void;
+  
+  // Paginación infinita
+  setPaginationMode: (mode: 'traditional' | 'infinite') => void;
+  addInfinitePage: (buildings: Building[]) => void;
+  clearInfinitePages: () => void;
   
   // Utilidades
   reset: () => void;

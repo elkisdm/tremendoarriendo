@@ -4,7 +4,7 @@ import { featureFlags } from '../config/feature-flags';
 const overrideStore = new Map<string, { value: boolean; expiresAt: number }>();
 
 // Tipos para flags soportados
-export type SupportedFlag = 'comingSoon' | 'CARD_V2' | 'VIRTUAL_GRID';
+export type SupportedFlag = 'comingSoon' | 'CARD_V2' | 'VIRTUAL_GRID' | 'pagination';
 
 // Interface para override
 export interface FlagOverride {
@@ -35,6 +35,8 @@ export function getFlagValue(flag: SupportedFlag): boolean {
       return process.env.NEXT_PUBLIC_FLAG_CARD_V2 === "1";
     case 'VIRTUAL_GRID':
       return process.env.NEXT_PUBLIC_FLAG_VIRTUAL_GRID === "1";
+    case 'pagination':
+      return Boolean(featureFlags.pagination);
     default:
       return false;
   }
@@ -45,7 +47,7 @@ export function applyOverride(override: FlagOverride): { success: boolean; messa
   const { flag, value, duration } = override;
   
   // Validar flag soportado
-  if (!['comingSoon', 'CARD_V2', 'VIRTUAL_GRID'].includes(flag)) {
+  if (!['comingSoon', 'CARD_V2', 'VIRTUAL_GRID', 'pagination'].includes(flag)) {
     throw new Error(`Flag no soportado: ${flag}`);
   }
   
@@ -75,6 +77,10 @@ export function getFlagsStatus(): Record<SupportedFlag, { value: boolean; overri
     },
     VIRTUAL_GRID: {
       value: getFlagValue('VIRTUAL_GRID'),
+      overridden: false
+    },
+    pagination: {
+      value: getFlagValue('pagination'),
       overridden: false
     }
   };
@@ -107,6 +113,7 @@ export function cleanupExpiredOverrides(): void {
 export const COMING_SOON = getFlagValue('comingSoon');
 export const CARD_V2 = getFlagValue('CARD_V2');
 export const VIRTUAL_GRID = getFlagValue('VIRTUAL_GRID');
+export const PAGINATION = getFlagValue('pagination');
 
 // Limpiar overrides expirados al importar el módulo
 cleanupExpiredOverrides();

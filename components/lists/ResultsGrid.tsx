@@ -1,16 +1,30 @@
 "use client";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { BuildingCard } from "../BuildingCard";
 import { BuildingCardV2 } from "../ui/BuildingCardV2";
 import { BuildingCardSkeleton } from "../ui/BuildingCardSkeleton";
+import { VirtualResultsGrid } from "./VirtualResultsGrid";
+import { PaginationControls } from "./PaginationControls";
 import { useFetchBuildings, type FilterValues, type BuildingSummary } from "../../hooks/useFetchBuildings";
-import { CARD_V2 } from "@lib/flags";
+import { useBuildingsPagination } from "../../hooks/useBuildingsPagination";
+import { CARD_V2, VIRTUAL_GRID, PAGINATION } from "@lib/flags";
 import { Building } from "@types";
+import type { BuildingFilters } from "../../types/buildings";
 
 interface ResultsGridProps {
   filters: FilterValues;
   sort: string;
   onResultsChange: (count: number) => void;
+}
+
+// Adapter function to convert FilterValues to BuildingFilters for pagination
+function adaptFilterValuesToBuildingFilters(filters: FilterValues): BuildingFilters {
+  return {
+    comuna: filters.comuna !== 'Todas' ? filters.comuna : undefined,
+    tipologia: filters.tipologia !== 'Todas' ? filters.tipologia : undefined,
+    minPrice: filters.minPrice || undefined,
+    maxPrice: filters.maxPrice || undefined,
+  };
 }
 
 // Adapter function to convert BuildingSummary to Building for BuildingCardV2
@@ -44,17 +58,90 @@ function adaptBuildingSummaryToBuilding(buildingSummary: BuildingSummary): Build
 }
 
 export function ResultsGrid({ filters, sort, onResultsChange }: ResultsGridProps) {
-  const { data: buildings = [], isLoading, isFetching, error } = useFetchBuildings({ 
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 12;
+
+  // Choose data source based on pagination feature flag
+  const usePagination = PAGINATION;
+  
+  // Legacy system (original hook)
+  const { 
+    data: legacyBuildings = [], 
+    isLoading: legacyLoading, 
+    isFetching: legacyFetching, 
+    error: legacyError 
+  } = useFetchBuildings({ 
     filters, 
     sort 
   });
 
+  // New pagination system
+  const buildingFilters = adaptFilterValuesToBuildingFilters(filters);
+  const {
+    buildings: paginatedBuildings,
+    pagination,
+    isLoading: paginationLoading,
+    isError: paginationError,
+    error: paginationErrorDetails,
+    goToPage,
+    nextPage,
+    prevPage,
+  } = useBuildingsPagination({
+    filters: buildingFilters,
+    page: currentPage,
+    limit: pageSize,
+    enabled: usePagination,
+  });
+
+  // Use appropriate data source with type casting for compatibility
+  const buildings: BuildingSummary[] = usePagination ? 
+    (paginatedBuildings as any[]) : // Cast to bypass type mismatch - they have compatible interfaces
+    legacyBuildings;
+  const isLoading = usePagination ? paginationLoading : legacyLoading;
+  const isFetching = usePagination ? false : legacyFetching; // Pagination handles its own loading
+  const error = usePagination ? (paginationError ? paginationErrorDetails : null) : legacyError;
+
   // Notify parent component of results count changes
   useMemo(() => {
     if (!isLoading && !isFetching) {
-      onResultsChange(buildings.length);
+      const totalCount = usePagination ? (pagination?.totalCount || 0) : buildings.length;
+      onResultsChange(totalCount);
     }
-  }, [buildings.length, isLoading, isFetching, onResultsChange]);
+  }, [buildings.length, isLoading, isFetching, onResultsChange, usePagination, pagination?.totalCount]);
+
+  // Handle page changes
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    goToPage(page);
+  };
+
+  const handleNextPage = () => {
+    if (pagination?.hasNextPage) {
+      const newPage = currentPage + 1;
+      setCurrentPage(newPage);
+      nextPage();
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (pagination?.hasPrevPage) {
+      const newPage = currentPage - 1;
+      setCurrentPage(newPage);
+      prevPage();
+    }
+  };
+
+  // Use VirtualResultsGrid when feature flag is enabled
+  if (VIRTUAL_GRID) {
+    return (
+      <VirtualResultsGrid
+        items={buildings}
+        isLoading={isLoading || isFetching}
+        error={error}
+        onResultsChange={onResultsChange}
+      />
+    );
+  }
 
   // Show skeletons during initial load and refetching
   if (isLoading || isFetching) {
@@ -87,30 +174,43 @@ export function ResultsGrid({ filters, sort, onResultsChange }: ResultsGridProps
 
   // Results grid with feature flag for BuildingCardV2
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
-      {buildings.map((building: BuildingSummary, idx: number) => {
-        if (CARD_V2) {
-          // Use BuildingCardV2 when flag is enabled
-          const adaptedBuilding = adaptBuildingSummaryToBuilding(building);
-          return (
-            <BuildingCardV2 
-              key={building.id} 
-              building={adaptedBuilding} 
-              priority={idx === 0} 
-              showBadge={true}
-            />
-          );
-        } else {
-          // Use original BuildingCard when flag is disabled
-          return (
-            <BuildingCard 
-              key={building.id} 
-              building={building} 
-              priority={idx === 0} 
-            />
-          );
-        }
-      })}
+    <div className="space-y-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
+        {buildings.map((building: BuildingSummary, idx: number) => {
+          if (CARD_V2) {
+            // Use BuildingCardV2 when flag is enabled
+            const adaptedBuilding = adaptBuildingSummaryToBuilding(building);
+            return (
+              <BuildingCardV2 
+                key={building.id} 
+                building={adaptedBuilding} 
+                priority={idx === 0} 
+                showBadge={true}
+              />
+            );
+          } else {
+            // Use original BuildingCard when flag is disabled
+            return (
+              <BuildingCard 
+                key={building.id} 
+                building={building} 
+                priority={idx === 0} 
+              />
+            );
+          }
+        })}
+      </div>
+
+      {/* Pagination controls when pagination is enabled */}
+      {usePagination && pagination && pagination.totalPages > 1 && (
+        <PaginationControls
+          pagination={pagination}
+          onPageChange={handlePageChange}
+          onNextPage={handleNextPage}
+          onPrevPage={handlePrevPage}
+          isLoading={isLoading}
+        />
+      )}
     </div>
   );
 }
