@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { ComingSoonHero } from '@components/marketing/ComingSoonHero';
 
 // Mock de módulos antes de importar el componente
@@ -148,30 +148,36 @@ describe('ComingSoonHero', () => {
 
   it('renderiza los iconos de características', () => {
     render(<ComingSoonHero />);
-    expect(screen.getByText('Seguridad garantizada')).toBeInTheDocument();
-    expect(screen.getByText('Experiencia premium')).toBeInTheDocument();
-    expect(screen.getByText('Proceso rápido')).toBeInTheDocument();
-    expect(screen.getByText('Edificios exclusivos')).toBeInTheDocument();
-    expect(screen.getByText('Soporte 24/7')).toBeInTheDocument();
+    expect(screen.getByText('0% comisión de corretaje')).toBeInTheDocument();
+    expect(screen.getByText('Proceso 100% digital')).toBeInTheDocument();
+    expect(screen.getByText('Edificios premium verificados')).toBeInTheDocument();
+    expect(screen.getByText('Soporte personalizado 24/7')).toBeInTheDocument();
+    expect(screen.getByText('Sin letra chica ni sorpresas')).toBeInTheDocument();
+    expect(screen.getByText('Reserva sin compromiso')).toBeInTheDocument();
   });
 
   it('renderiza los botones CTA', () => {
     render(<ComingSoonHero />);
-    expect(screen.getByRole('button', { name: /avísame cuando esté listo/i })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /hablá con nosotros/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /notificarme cuando esté listo/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /contactar por whatsapp/i })).toBeInTheDocument();
   });
 
-  it('renderiza el texto de contacto', () => {
+  it('renderiza el texto descriptivo', () => {
     render(<ComingSoonHero />);
-    expect(screen.getByText('¿Tenés dudas? Escribinos por WhatsApp y te respondemos al toque 🚀')).toBeInTheDocument();
+    expect(screen.getByText('Estamos preparando la nueva experiencia de arriendo 0% comisión. Sin letra chica.')).toBeInTheDocument();
   });
 
   it('tiene las clases CSS correctas para efectos visuales', () => {
     render(<ComingSoonHero />);
     
     // Verificar que el contenedor principal tiene las clases para overflow y posicionamiento
-    const section = screen.getByText('Próximamente').closest('section');
-    expect(section).toHaveClass('relative', 'min-h-[70vh]', 'overflow-hidden');
+    const titleElement = screen.getByText('Próximamente');
+    const closestDiv = titleElement.closest('div');
+    const parentElement = closestDiv?.parentElement;
+    const container = parentElement?.parentElement;
+    
+    expect(container).toBeTruthy();
+    expect(container).toHaveClass('relative', 'min-h-[70vh]', 'overflow-hidden');
     
     // Verificar que el título tiene las clases de gradiente y sombra
     const title = screen.getByText('Próximamente');
@@ -184,20 +190,23 @@ describe('ComingSoonHero', () => {
 
   it('maneja el click del botón waitlist correctamente', () => {
     render(<ComingSoonHero />);
-    const button = screen.getByRole('button', { name: /avísame cuando esté listo/i });
+    const button = screen.getByRole('button', { name: /notificarme cuando esté listo/i });
     
-    button.click();
-    
-    // Verificar que el modal se abre (esto se puede verificar de otras maneras)
+    // Verificar que el botón es clickeable
     expect(button).toBeInTheDocument();
+    expect(button).not.toBeDisabled();
+    
+    // Verificar que el click funciona sin error
+    expect(() => button.click()).not.toThrow();
   });
 
   it('maneja el click del botón WhatsApp correctamente', () => {
     render(<ComingSoonHero />);
-    const link = screen.getByRole('link', { name: /hablá con nosotros/i });
+    const link = screen.getByRole('link', { name: /contactar por whatsapp/i });
     
     expect(link).toHaveAttribute('href', 'https://wa.me/test');
     expect(link).toHaveAttribute('target', '_blank');
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer');
   });
 
   it('responde a prefers-reduced-motion', () => {

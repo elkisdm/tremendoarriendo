@@ -5,8 +5,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 
-// Importar el componente usando require
-const { SearchInput } = require('../../components/filters/SearchInput');
+import { SearchInput } from '../../components/filters/SearchInput';
 
 // Mock framer-motion
 jest.mock('framer-motion', () => ({
