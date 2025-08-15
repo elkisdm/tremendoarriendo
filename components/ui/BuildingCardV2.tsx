@@ -5,12 +5,13 @@ import { motion } from "framer-motion";
 import { PromotionBadge } from "@components/ui/PromotionBadge";
 import { formatPrice } from "@lib/utils";
 import { track } from "@lib/analytics";
-import type { Building } from "@types";
+import type { Building, Unit } from "@types";
+import type { BuildingSummary } from "../../hooks/useFetchBuildings";
 // import type { PromotionBadge as PromotionBadgeType } from "@schemas/models";
 import { PromotionType } from "@schemas/models";
 
 type BuildingCardV2Props = {
-  building: Building;
+  building: Building | BuildingSummary;
   priority?: boolean;
   showBadge?: boolean;
   className?: string;
@@ -18,6 +19,54 @@ type BuildingCardV2Props = {
 
 const DEFAULT_BLUR =
   "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTYnIGhlaWdodD0nMTAnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zyc+PHJlY3Qgd2lkdGg9JzE2JyBoZWlnaHQ9JzEwJyBmaWxsPSIjMjIyMjIyIi8+PC9zdmc+";
+
+// Helper functions to work with both Building and BuildingSummary types
+function getCoverImage(building: Building | BuildingSummary): string {
+  if ('cover' in building) return building.cover;
+  if ('coverImage' in building && building.coverImage) return building.coverImage;
+  if ('gallery' in building && building.gallery.length > 0) return building.gallery[0];
+  return '';
+}
+
+function getUnitsInfo(building: Building | BuildingSummary) {
+  if ('units' in building) {
+    const available = building.units.filter((unit: Unit) => unit.disponible);
+    return { available: available.length, total: building.units.length };
+  }
+  // For BuildingSummary, use hasAvailability flag
+  if ('hasAvailability' in building) {
+    return { available: building.hasAvailability ? 1 : 0, total: 1 };
+  }
+  return { available: 0, total: 0 };
+}
+
+function getPromoInfo(building: Building | BuildingSummary) {
+  if ('promo' in building && building.promo) {
+    return {
+      label: building.promo.label,
+      tag: building.promo.tag || "Promoción"
+    };
+  }
+  if ('badges' in building && building.badges && building.badges.length > 0) {
+    const firstBadge = building.badges[0];
+    return {
+      label: firstBadge.label,
+      tag: firstBadge.tag || "Promoción"
+    };
+  }
+  return null;
+}
+
+function getPrice(building: Building | BuildingSummary): number {
+  if ('precioDesde' in building) return building.precioDesde;
+  if ('units' in building && building.units.length > 0) {
+    const availableUnits = building.units.filter((unit: Unit) => unit.disponible);
+    if (availableUnits.length > 0) {
+      return Math.min(...availableUnits.map((unit: Unit) => unit.price));
+    }
+  }
+  return 0;
+}
 
 // Helper function to get the primary badge with priority
 // function getPrimaryBadge(badges?: PromotionBadgeType[]): PromotionBadgeType | null {
@@ -95,9 +144,10 @@ export function BuildingCardV2({
   showBadge = true,
   className = ""
 }: BuildingCardV2Props) {
-  const cover = building.cover;
+  const cover = getCoverImage(building);
   const href = `/propiedad/${building.id}`;
-  const stats = calculateBuildingStats(building);
+  const unitsInfo = getUnitsInfo(building);
+  const price = getPrice(building);
   
   const handleClick = () => {
     track("property_view", {
@@ -106,14 +156,19 @@ export function BuildingCardV2({
     });
   };
   
-  const primaryBadge = building.promo ? {
+  const promoInfo = getPromoInfo(building);
+  const primaryBadge = promoInfo ? {
     type: PromotionType.FREE_COMMISSION,
-    label: building.promo.label,
-    tag: building.promo.tag || "Promoción"
+    label: promoInfo.label,
+    tag: promoInfo.tag
   } : null;
   
-  const hasAvailability = stats.hasAvailability;
-  const typologyChips = stats.tipologiaSummary;
+  const hasAvailability = unitsInfo.available > 0;
+  let typologyChips: { key: string; label: string; count: number }[] = [];
+  if ('units' in building && hasAvailability) {
+    typologyChips = calculateBuildingStats(building as Building).tipologiaSummary
+      .sort((a, b) => a.key.localeCompare(b.key));
+  }
 
   // Enhanced aria-label with availability info
   const ariaLabel = hasAvailability 
@@ -165,7 +220,7 @@ export function BuildingCardV2({
               <div className="text-right shrink-0">
                 {hasAvailability ? (
                   <>
-                    <div className="font-bold">{formatPrice(stats.precioDesde)}</div>
+                    <div className="font-bold">{formatPrice(price)}</div>
                     <div className="text-[12px] text-[var(--subtext)]">Desde</div>
                   </>
                 ) : (

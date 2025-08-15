@@ -222,7 +222,6 @@ export function ComingSoonHero() {
                       variants={benefitCardVariants}
                       custom={index}
                       className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur p-4 transition-all duration-200 will-change-transform hover:-translate-y-[1px] hover:bg-white/8"
-                      whileHover={prefersReducedMotion ? {} : { y: -2 }}
                     >
                       <div className="flex flex-col items-center text-center space-y-3 h-full">
                         <Icon className="size-5 text-white/90" aria-hidden="true" />
@@ -253,6 +252,44 @@ export function ComingSoonHero() {
             <p className="text-sm text-slate-300 max-w-lg mx-auto leading-relaxed">
               Arriendos desde $210.000 pesos. Sin costos ocultos ni sorpresas.
             </p>
+            
+            {/* CTAs - Static version */}
+            <div className="flex flex-col sm:flex-row justify-center gap-3 md:gap-4 mt-6">
+              <button
+                ref={triggerButtonRef}
+                onClick={handleWaitlistClick}
+                className="rounded-2xl px-6 py-3 font-semibold bg-gradient-to-r from-[--brand-violet,#7C3AED] to-[--brand-aqua,#22D3EE] text-white shadow-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-violet-400/40 hover:shadow-xl transition-all duration-200 min-h-[44px] flex items-center justify-center"
+                aria-label="Notificarme cuando esté listo"
+              >
+                Notificarme
+              </button>
+
+              {(() => {
+                const waUrl = buildWhatsAppUrl({
+                  message: "Hola, me interesa el lanzamiento"
+                });
+                return waUrl ? (
+                  <a
+                    href={waUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => track('cta_whatsapp_click', { source: 'coming-soon' })}
+                    className="rounded-2xl px-6 py-3 font-semibold bg-green-600 hover:bg-green-700 text-white shadow-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-green-400/40 hover:shadow-xl transition-all duration-200 min-h-[44px] flex items-center justify-center"
+                    aria-label="Contactar por WhatsApp"
+                  >
+                    WhatsApp
+                  </a>
+                ) : (
+                  <button
+                    aria-disabled="true"
+                    title="Configura WhatsApp en Vercel"
+                    className="rounded-2xl px-6 py-3 font-semibold bg-gray-500 text-white shadow-lg cursor-not-allowed opacity-50 min-h-[44px] flex items-center justify-center"
+                  >
+                    WhatsApp
+                  </button>
+                );
+              })()}
+            </div>
           </div>
         )}
       </div>

@@ -121,8 +121,11 @@ export function mapUnit(raw: AssetPlanRawUnit): Unit {
   const id = coerceId(raw.id);
   const tipologia = normalizeTypology(raw.tipologia) ?? "";
 
-  const areaInterior = raw.area_interior_m2 ?? raw.m2;
-  const areaTotal = areaInterior && raw.area_exterior_m2 ? areaInterior + raw.area_exterior_m2 : (raw.m2 ?? areaInterior ?? 0);
+  // Prefer explicit m2 when provided; otherwise sum interior + exterior
+  const explicitM2 = typeof raw.m2 === 'number' ? raw.m2 : undefined;
+  const areaInterior = typeof raw.area_interior_m2 === 'number' ? raw.area_interior_m2 : undefined;
+  const areaExterior = typeof raw.area_exterior_m2 === 'number' ? raw.area_exterior_m2 : undefined;
+  const areaTotal = explicitM2 ?? ((areaInterior ?? 0) + (areaExterior ?? 0));
   const m2 = Number(areaTotal ?? 0);
 
   const price = Number(raw.price ?? 0);
@@ -191,8 +194,10 @@ export function fromAssetPlan(raw: AssetPlanRawBuilding): Building {
   const serviceLevel = ((): Building["serviceLevel"] => {
     const explicit = normalizeString(typeof raw.serviceLevel === "string" ? raw.serviceLevel : undefined)?.toLowerCase();
     if (explicit === "pro" || explicit === "standard") return explicit as "pro" | "standard";
-    const hasServicePro = (badges ?? []).some((b) => b.type === PromotionType.SERVICE_PRO);
-    return hasServicePro ? "pro" : undefined;
+    // Infer from badges or from root label properties
+    const buildingHasServiceProBadge = (badges ?? []).some((b) => b.type === PromotionType.SERVICE_PRO);
+    const rootHasServiceProLabel = Array.isArray((raw as any).badges) && (raw as any).badges.includes('Servicio Pro');
+    return (buildingHasServiceProBadge || rootHasServiceProLabel) ? "pro" : undefined;
   })();
 
   const nearestTransit = raw.nearestTransit && typeof raw.nearestTransit.name === "string" && typeof raw.nearestTransit.distanceMin === "number"
@@ -214,13 +219,17 @@ export function fromAssetPlan(raw: AssetPlanRawBuilding): Building {
   };
 
   if (coverImage) candidate.coverImage = coverImage;
-  if (images.length) {
+  // Always include media object if any media-related field is present in raw
+  const mediaTour = normalizeString((raw as any).tour360) ?? normalizeString(raw.media?.tour360);
+  const mediaVideo = normalizeString((raw as any).video) ?? normalizeString(raw.media?.video);
+  const hasAnyMedia = images.length > 0 || Boolean(mediaTour) || Boolean(mediaVideo) || (raw.media?.lat != null && raw.media?.lng != null);
+  if (hasAnyMedia) {
     candidate.media = {
-      images,
-      tour360: normalizeString(raw.media?.tour360),
-      video: normalizeString(raw.media?.video),
+      images: images.length ? images : undefined,
+      tour360: mediaTour,
+      video: mediaVideo,
       map: raw.media?.lat != null && raw.media?.lng != null ? { lat: raw.media.lat, lng: raw.media.lng } : undefined,
-    };
+    } as any;
   }
   if (badges) candidate.badges = badges;
   if (serviceLevel) candidate.serviceLevel = serviceLevel;

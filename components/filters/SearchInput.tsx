@@ -35,6 +35,8 @@ export function SearchInput({
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isFocused, setIsFocused] = useState(false);
+  const [dismissedByEscape, setDismissedByEscape] = useState(false);
 
   // Debounced change handler
   const debouncedOnChange = useCallback((newValue: string) => {
@@ -51,6 +53,7 @@ export function SearchInput({
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setLocalValue(newValue);
+    setDismissedByEscape(false);
     debouncedOnChange(newValue);
   }, [debouncedOnChange]);
 
@@ -88,6 +91,7 @@ export function SearchInput({
     } else if (e.key === "Escape") {
       setShowSuggestions(false);
       setSelectedSuggestionIndex(-1);
+      setDismissedByEscape(true);
       handleClear();
     } else if (e.key === "ArrowDown") {
       e.preventDefault();
@@ -102,6 +106,8 @@ export function SearchInput({
 
   // Handle focus
   const handleFocus = useCallback(() => {
+    setIsFocused(true);
+    setDismissedByEscape(false);
     if (suggestions.length > 0 && localValue.trim() !== "") {
       setShowSuggestions(true);
     }
@@ -109,11 +115,12 @@ export function SearchInput({
 
   // Handle blur
   const handleBlur = useCallback(() => {
-    // Delay hiding suggestions to allow for suggestion clicks
+    // Small delay to allow potential click events to register
     setTimeout(() => {
       setShowSuggestions(false);
       setSelectedSuggestionIndex(-1);
-    }, 200);
+      setIsFocused(false);
+    }, 50);
   }, []);
 
   // Handle suggestion click
@@ -135,13 +142,14 @@ export function SearchInput({
 
   // Show suggestions when typing
   useEffect(() => {
-    if (localValue.trim() !== "" && suggestions.length > 0) {
+    if (isFocused && !dismissedByEscape && localValue.trim() !== "" && suggestions.length > 0) {
       setShowSuggestions(true);
-    } else {
+    }
+    if (localValue.trim() === "" || suggestions.length === 0) {
       setShowSuggestions(false);
     }
     setSelectedSuggestionIndex(-1);
-  }, [localValue, suggestions.length]);
+  }, [isFocused, dismissedByEscape, localValue, suggestions.length]);
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -238,21 +246,23 @@ export function SearchInput({
             <div className="absolute top-full left-0 right-0 mt-1 bg-gray-800 border border-gray-600 rounded-xl shadow-lg z-50">
               <ul role="listbox" className="py-2">
                 {filteredSuggestions.map((suggestion, index) => (
-                  <li
-                    key={suggestion}
-                    id={`suggestion-${index}`}
-                    role="option"
-                    aria-selected={index === selectedSuggestionIndex}
-                    className={`
-                      px-4 py-2 cursor-pointer transition-colors
-                      ${index === selectedSuggestionIndex 
-                        ? 'bg-blue-600 text-white' 
-                        : 'text-gray-200 hover:bg-gray-700'
-                      }
-                    `}
-                    onClick={() => handleSuggestionClick(suggestion)}
-                  >
-                    {suggestion}
+                  <li key={suggestion} className="">
+                    <button
+                      type="button"
+                      id={`suggestion-${index}`}
+                      role="option"
+                      aria-selected={index === selectedSuggestionIndex}
+                      className={`
+                        w-full text-left px-4 py-2 cursor-pointer transition-colors
+                        ${index === selectedSuggestionIndex 
+                          ? 'bg-blue-600 text-white' 
+                          : 'text-gray-200 hover:bg-gray-700'
+                        }
+                      `}
+                      onClick={() => handleSuggestionClick(suggestion)}
+                    >
+                      {suggestion}
+                    </button>
                   </li>
                 ))}
               </ul>
