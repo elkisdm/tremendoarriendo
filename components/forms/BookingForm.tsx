@@ -326,7 +326,7 @@ export function BookingForm({ buildingId, buildingName, defaultUnitId }: Booking
             message: message, 
             url: typeof window !== "undefined" ? window.location.href : undefined 
           }) || "";
-          const canWhatsApp = Boolean(process.env.NEXT_PUBLIC_WHATSAPP_PHONE) && Boolean(href);
+          const canWhatsApp = Boolean(href);
           return canWhatsApp ? (
             <a 
               href={href}

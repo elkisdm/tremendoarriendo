@@ -9,7 +9,7 @@ const RATE_LIMIT_MAX_REQUESTS = 5;
 
 // Schema para validación
 const OverrideRequestSchema = z.object({
-  flag: z.enum(['comingSoon']),
+  flag: z.enum(['comingSoon', 'CARD_V2', 'VIRTUAL_GRID', 'pagination']),
   value: z.boolean(),
   duration: z.number().int().min(300).max(3600).optional(), // 5min - 1h en segundos
 });
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
     const { flag, value, duration = 1800 } = parsed.data; // 30min por defecto
 
     // Aplicar override usando la función del lib
-    const override: FlagOverride = { flag, value, duration };
+    const override: FlagOverride = { flag: flag as any, value, duration };
     const result = applyOverride(override);
 
     return NextResponse.json(result, { status: 200 });
