@@ -11,6 +11,8 @@ const config: Config = {
     '^@data/(.*)$': '<rootDir>/data/$1',
     '^@schemas/(.*)$': '<rootDir>/schemas/$1',
     '^@types/(.*)$': '<rootDir>/types/$1',
+    '^@types$': '<rootDir>/types/index.ts',
+    '^@hooks/(.*)$': '<rootDir>/hooks/$1',
     '^lucide-react$': '<rootDir>/tests/__mocks__/lucide-react.tsx',
     '^@lib/whatsapp$': '<rootDir>/tests/__mocks__/whatsapp.ts',
     '^@lib/analytics$': '<rootDir>/tests/__mocks__/analytics.ts',

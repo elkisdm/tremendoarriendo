@@ -23,6 +23,9 @@ export function StickyMobileCTA() {
     }
   };
 
+  // Determinar disponibilidad de WhatsApp a partir de la configuración efectiva
+  const waLinkAvailable = Boolean(buildWhatsAppUrl({ url: typeof window !== "undefined" ? window.location.href : undefined }));
+
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden">
       <div 
@@ -45,9 +48,9 @@ export function StickyMobileCTA() {
             onClick={handleWhatsAppClick}
             className="flex items-center justify-center gap-2 px-4 py-3 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-[var(--bg)] transition-colors motion-reduce:transition-none disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="Contactar por WhatsApp"
-            aria-disabled={!process.env.NEXT_PUBLIC_WHATSAPP_PHONE}
-            disabled={!process.env.NEXT_PUBLIC_WHATSAPP_PHONE}
-            title={!process.env.NEXT_PUBLIC_WHATSAPP_PHONE ? "Pronto disponible" : undefined}
+            aria-disabled={!waLinkAvailable}
+            disabled={!waLinkAvailable}
+            title={!waLinkAvailable ? "Pronto disponible" : undefined}
           >
             <MessageCircle className="w-4 h-4" aria-hidden="true" />
             <span className="sr-only">WhatsApp</span>
