@@ -1,13 +1,12 @@
 # QA Local
 
-- Fecha: 2025-08-10T21:42:59.581Z
+- Fecha: 2025-08-14T03:27:51.062Z
 
 ### Resultados
 
 | Check | Estado | Tiempo(ms) | Detalle |
 |-------|--------|------------|---------|
-| typecheck | PASS | 3205 |  |
-| lint | FAIL | 442 |  |
+| typecheck | FAIL | 5073 |  |
 
 - Warnings totales: 0
 

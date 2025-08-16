@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { BuildingCard } from "../BuildingCard";
 import { BuildingCardV2 } from "../ui/BuildingCardV2";
 import { BuildingCardSkeleton } from "../ui/BuildingCardSkeleton";
@@ -120,10 +120,15 @@ export function ResultsGrid({
     enabled: usePagination && isInfiniteMode,
   });
 
-  // Use appropriate data source with type casting for compatibility
-  const buildings: BuildingSummary[] = usePagination ? 
-    (isInfiniteMode ? infiniteBuildings : paginatedBuildings) as unknown as BuildingSummary[] : // Cast to bypass type mismatch
+  // Use appropriate data source - force type with explicit casting
+  const buildingsData = usePagination ? 
+    (isInfiniteMode 
+      ? (infiniteBuildings || [])  // BuildingListItem[]
+      : (paginatedBuildings || [])  // BuildingListItem[]
+    ) :
     legacyBuildings;
+  
+  const buildings = buildingsData as unknown as BuildingSummary[];
   
   const isLoading = usePagination ? 
     (isInfiniteMode ? infiniteLoading : paginationLoading) : 
@@ -146,7 +151,7 @@ export function ResultsGrid({
     null;
 
   // Notify parent component of results count changes
-  useMemo(() => {
+  useEffect(() => {
     if (!isLoading && !isFetching) {
       const totalCount = usePagination ? (currentPagination?.totalCount || 0) : buildings.length;
       onResultsChange(totalCount);

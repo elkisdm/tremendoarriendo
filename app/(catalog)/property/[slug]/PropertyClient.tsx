@@ -7,6 +7,7 @@ import { AmenityList } from "@components/ui/AmenityList";
 import { BookingForm } from "@components/forms/BookingForm";
 import { RelatedList } from "@components/lists/RelatedList";
 import { StickyMobileCTA } from "@components/StickyMobileCTA";
+import { PropertyQuotationPanel } from "@components/quotation/PropertyQuotationPanel";
 import type { Unit, Building } from "@schemas/models";
 
 type PropertyClientProps = {
@@ -67,6 +68,15 @@ export function PropertyClient({ building, relatedBuildings }: PropertyClientPro
             {/* Cost Table */}
             <section aria-label="Detalles de costos">
               <CostTable unit={selectedUnit} promoLabel="$0" />
+            </section>
+
+            {/* Quotation Panel */}
+            <section aria-label="Cotizador profesional">
+              <PropertyQuotationPanel 
+                building={building} 
+                selectedUnit={selectedUnit}
+                isAdmin={false}
+              />
             </section>
 
             {/* Booking Form */}

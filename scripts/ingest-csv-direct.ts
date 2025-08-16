@@ -29,6 +29,21 @@ function toNumber(value: string | undefined): number | undefined {
   return Number.isFinite(n) ? n : undefined;
 }
 
+function toAreaM2(value: string | undefined): number | undefined {
+  const n = toNumber(value);
+  if (typeof n !== "number") return undefined;
+  
+  // Auto-detect if value is in cm² and convert to m²
+  // Typical apartment areas: 20-200 m² (2000-20000 cm²)
+  // If value > 300, likely in cm², so divide by 100
+  if (n > 300) {
+    return Math.round(n / 100 * 100) / 100; // Convert cm² to m² with 2 decimals
+  }
+  
+  // Value is likely already in m²
+  return n;
+}
+
 function getEnvOrThrow(name: string): string {
   const value = process.env[name];
   if (!value) throw new Error(`Missing required environment variable: ${name}`);
@@ -89,8 +104,8 @@ async function upsertUnit(
   const tipologia = (row["Tipologia"] || row["Tipología"] || "").trim() || null;
   const bedrooms = toNumber(row["Dormitorios"] as string) ?? undefined;
   const bathrooms = toNumber(row["Baños"] as string) ?? undefined;
-  const areaDepto = toNumber((row["m2 Depto"] || row["M2 Depto"]) as string);
-  const areaTerraza = toNumber((row["m2 Terraza"] || row["M2 Terraza"]) as string);
+  const areaDepto = toAreaM2((row["m2 Depto"] || row["M2 Depto"]) as string);
+  const areaTerraza = toAreaM2((row["m2 Terraza"] || row["M2 Terraza"]) as string);
   const orientacion = (row["Orientacion"] || row["Orientación"] || "").trim() || null;
   const aceptaMascotas = (row["Acepta Mascotas?"] || row["Acepta Mascotas"] || "").toLowerCase();
   const petFriendly = aceptaMascotas === "si" || aceptaMascotas === "sí" || aceptaMascotas === "si.";

@@ -22,7 +22,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body className="min-h-screen bg-gray-900 text-gray-100">
+      <body 
+        className="min-h-screen bg-gray-900 text-gray-100"
+        suppressHydrationWarning={true}
+      >
         <a href="#main-content" className="skip-link">Saltar al contenido principal</a>
         {children}
       </body>

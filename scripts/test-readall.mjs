@@ -53,13 +53,11 @@ async function testReadAll() {
 
       if (buildingsError) {
         console.error('❌ Error fetching buildings from Supabase:', buildingsError);
-        console.log('📄 Usando datos mock como fallback');
         return;
       }
 
       if (!buildingsData || buildingsData.length === 0) {
         console.log('❌ No buildings found in Supabase');
-        console.log('📄 Usando datos mock como fallback');
         return;
       }
 
@@ -75,7 +73,6 @@ async function testReadAll() {
 
       if (buildingsWithAvailableUnits.length === 0) {
         console.log('❌ No hay edificios con unidades disponibles');
-        console.log('📄 Usando datos mock como fallback');
         return;
       }
 
@@ -122,12 +119,11 @@ async function testReadAll() {
       });
       
     } else {
-      console.log('📄 USE_SUPABASE no está habilitado, usando datos mock');
+      console.log('📄 USE_SUPABASE no está habilitado');
     }
     
   } catch (error) {
     console.error('❌ Error durante la simulación:', error);
-    console.log('📄 Usando datos mock como fallback');
   }
 }
 

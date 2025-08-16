@@ -18,6 +18,11 @@ const QuerySchema = z.object({
     .preprocess((v) => (typeof v === "string" && v.trim() !== "" ? Number(v) : undefined), z.number().int().nonnegative().optional()),
   maxPrice: z
     .preprocess((v) => (typeof v === "string" && v.trim() !== "" ? Number(v) : undefined), z.number().int().nonnegative().optional()),
+  search: z.string().optional(),
+  page: z
+    .preprocess((v) => (typeof v === "string" && v.trim() !== "" ? Number(v) : 1), z.number().int().positive().default(1)),
+  limit: z
+    .preprocess((v) => (typeof v === "string" && v.trim() !== "" ? Number(v) : 12), z.number().int().positive().max(50).default(12)),
 });
 
 type BuildingListItem = Pick<Building, "id" | "slug" | "name" | "comuna" | "address" | "gallery" | "coverImage" | "badges" | "serviceLevel"> & {
@@ -103,6 +108,9 @@ export async function GET(request: Request) {
       tipologia: searchParams.get("tipologia") ?? undefined,
       minPrice: searchParams.get("minPrice") ?? undefined,
       maxPrice: searchParams.get("maxPrice") ?? undefined,
+      search: searchParams.get("search") ?? undefined,
+      page: searchParams.get("page") ?? undefined,
+      limit: searchParams.get("limit") ?? undefined,
     });
 
     if (!parsed.success) {
@@ -113,13 +121,35 @@ export async function GET(request: Request) {
       );
     }
 
-    const filters = parsed.data;
-    // console.log("Calling getAllBuildings with filters:", filters);
+    const { search, page, limit, ...filters } = parsed.data;
+    // console.log("Calling getAllBuildings with filters:", filters, "search:", search, "page:", page, "limit:", limit);
     
-    const list = await getAllBuildings(filters);
+    const list = await getAllBuildings(filters, search);
     // console.log("Got buildings from getAllBuildings:", list.length);
 
-    const buildings: BuildingListItem[] = list.map((b) => {
+    // Aplicar búsqueda por texto si está presente
+    let filteredList = list;
+    if (search && search.trim() !== "") {
+      const searchTerm = search.toLowerCase().trim();
+      filteredList = list.filter((building) => {
+        const searchableText = [
+          building.name,
+          building.comuna,
+          building.address,
+          ...(building.units.map(u => u.tipologia) || [])
+        ].join(" ").toLowerCase();
+        
+        return searchableText.includes(searchTerm);
+      });
+    }
+
+    // Aplicar paginación
+    const totalCount = filteredList.length;
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    const paginatedList = filteredList.slice(startIndex, endIndex);
+
+    const buildings: BuildingListItem[] = paginatedList.map((b) => {
       const available = b.units.filter((u) => u.disponible);
       const hasAvailability = available.length > 0;
       const priceCandidates = (hasAvailability ? available : b.units)
@@ -152,8 +182,29 @@ export async function GET(request: Request) {
       } satisfies BuildingListItem;
     });
 
-    // console.log("Returning buildings:", buildings.length);
-    return NextResponse.json({ buildings });
+    // Información de paginación
+    const hasNextPage = endIndex < totalCount;
+    const hasPrevPage = page > 1;
+    
+    const pagination = {
+      page,
+      limit,
+      totalCount,
+      totalPages: Math.ceil(totalCount / limit),
+      hasNextPage,
+      hasPrevPage,
+      count: buildings.length
+    };
+
+    // console.log("Returning buildings:", buildings.length, "pagination:", pagination);
+    return NextResponse.json({ 
+      buildings, 
+      pagination,
+      meta: {
+        searchTerm: search || null,
+        filtersApplied: Object.keys(filters).length > 0
+      }
+    });
   } catch (error) {
     // console.error("API Error:", error);
     return NextResponse.json(

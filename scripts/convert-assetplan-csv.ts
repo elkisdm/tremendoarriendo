@@ -28,6 +28,21 @@ function toNumber(value: string): number | undefined {
   return Number.isFinite(n) ? n : undefined;
 }
 
+function toAreaM2(value: string): number | undefined {
+  const n = toNumber(value);
+  if (typeof n !== "number") return undefined;
+  
+  // Auto-detect if value is in cm² and convert to m²
+  // Typical apartment areas: 20-200 m² (2000-20000 cm²)
+  // If value > 300, likely in cm², so divide by 100
+  if (n > 300) {
+    return Math.round(n / 100 * 100) / 100; // Convert cm² to m² with 2 decimals
+  }
+  
+  // Value is likely already in m²
+  return n;
+}
+
 function slugify(input: string): string {
   return input
     .toLowerCase()
@@ -92,8 +107,8 @@ function mapRowsToBuildings(rows: CsvRow[]): AssetPlanCsvBuilding[] {
     const unidad = (r["Unidad"] || r["Unidad "] || r["Depto"] || r["Departamento"] || "").trim();
     const tipologia = (r["Tipologia"] || r["Tipología"] || "").trim();
     const orientacion = (r["Orientacion"] || r["Orientación"] || "").trim();
-    const m2Depto = toNumber(r["m2 Depto"] || r["m2 depto"] || r["M2 Depto"] || "");
-    const m2Terraza = toNumber(r["m2 Terraza"] || r["m2 terraza"] || r["M2 Terraza"] || "");
+    const m2Depto = toAreaM2(r["m2 Depto"] || r["m2 depto"] || r["M2 Depto"] || "");
+    const m2Terraza = toAreaM2(r["m2 Terraza"] || r["m2 terraza"] || r["M2 Terraza"] || "");
     const price = toNumber(r["Arriendo Total"] || r["Arriendo total"] || r["Arriendo"] || "");
     const aceptaMascotas = (r["Acepta Mascotas?"] || r["Acepta Mascotas"] || "").toLowerCase();
     const estado = (r["Estado"] || r["Estatus"] || r["Status"] || "").toLowerCase();

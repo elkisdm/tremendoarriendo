@@ -12,11 +12,11 @@
 
 ### Detalles Smoke
 - **site**: https://tudominio.com
-- **estado**: 5/11 PASS
+- **estado**: 7/16 PASS
 - **home**: 1º=200, 2º=200, cache=no header
 - **canonical home**: not found
 - **sitemap**: urls=0, propiedades=0
 - **muestra propiedad**: n/a
 - **robots Allow /**: sí
-
-### Detalles
+- **coming soon redirect**: no
+- **coming soon content**: no

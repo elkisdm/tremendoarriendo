@@ -222,30 +222,33 @@ describe('ComingSoonHero with Modal Integration', () => {
     jest.clearAllMocks();
   });
 
-  it('opens modal when waitlist button is clicked', () => {
+  it('opens modal when waitlist button is clicked', async () => {
     render(<ComingSoonHero />);
 
-    const waitlistButton = screen.getByRole('button', { name: /notificarme/i });
+    // Esperar a que las animaciones se carguen y el botón aparezca
+    const waitlistButton = await screen.findByRole('button', { name: /notificarme/i });
     fireEvent.click(waitlistButton);
 
-    expect(screen.getByText('Únete a la lista de espera')).toBeInTheDocument();
+    expect(screen.getByText('Notificarme cuando esté listo')).toBeInTheDocument();
+    expect(screen.getByLabelText('Email *')).toBeInTheDocument();
   });
 
   it('closes modal when close is triggered', async () => {
     render(<ComingSoonHero />);
 
-    const waitlistButton = screen.getByRole('button', { name: /notificarme/i });
+    // Esperar a que las animaciones se carguen y el botón aparezca  
+    const waitlistButton = await screen.findByRole('button', { name: /notificarme/i });
     fireEvent.click(waitlistButton);
 
     // Modal should be open
-    expect(screen.getByText('Únete a la lista de espera')).toBeInTheDocument();
+    expect(screen.getByText('Notificarme cuando esté listo')).toBeInTheDocument();
 
     // Close modal by pressing ESC
     fireEvent.keyDown(document, { key: 'Escape' });
 
     // Modal should be closed
     await waitFor(() => {
-      expect(screen.queryByText('Únete a la lista de espera')).not.toBeInTheDocument();
+      expect(screen.queryByText('Notificarme cuando esté listo')).not.toBeInTheDocument();
     });
   });
 });

@@ -26,7 +26,7 @@ function validateBuilding(raw: unknown): Building {
 // Nueva función para leer desde Supabase
 async function readFromSupabase(): Promise<Building[] | null> {
   try {
-    // console.log('🔍 Intentando leer desde Supabase...');
+    console.log('🔍 Intentando leer desde Supabase...');
     
     // Importar Supabase dinámicamente solo cuando se necesita
     const { supabase, supabaseAdmin } = await import("@lib/supabase");
@@ -35,7 +35,7 @@ async function readFromSupabase(): Promise<Building[] | null> {
     const client = supabaseAdmin || supabase;
     
     if (!client) {
-      // console.error('No Supabase client available');
+      console.error('No Supabase client available');
       return null;
     }
     
@@ -49,17 +49,25 @@ async function readFromSupabase(): Promise<Building[] | null> {
         comuna,
         direccion,
         precio_desde,
+        precio_hasta,
         has_availability,
         units (
           id,
           tipologia,
           area_m2,
+          area_interior_m2,
+          area_exterior_m2,
           precio,
           disponible,
           bedrooms,
-          bathrooms
+          bathrooms,
+          orientacion,
+          pet_friendly,
+          gastos_comunes,
+          status
         )
       `)
+      .eq('provider', 'assetplan') // Filtrar solo edificios de AssetPlan
       .order('nombre')
       .limit(100); // Aumentar el límite para obtener más edificios
 
@@ -75,44 +83,69 @@ async function readFromSupabase(): Promise<Building[] | null> {
 
     // console.log(`✅ Encontrados ${buildingsData.length} edificios en Supabase`);
 
-    // Filtrar solo edificios que tienen unidades disponibles
-    const buildingsWithAvailableUnits = buildingsData.filter(building => {
-      const availableUnits = building.units?.filter(unit => unit.disponible) || [];
-      return availableUnits.length > 0;
+    // Mantener edificios que al menos tengan unidades (aunque no estén disponibles)
+    const buildingsWithUnits = buildingsData.filter((building) => {
+      const units = building.units || [];
+      return units.length > 0;
     });
 
-    // console.log(`✅ ${buildingsWithAvailableUnits.length} edificios tienen unidades disponibles`);
+    // console.log(`✅ ${buildingsWithUnits.length} edificios con unidades (pueden estar no disponibles)`);
 
     // Transformar los datos al formato esperado
-    const buildings: Building[] = buildingsWithAvailableUnits.map((building: unknown) => {
+    const buildings: Building[] = buildingsWithUnits.map((building: unknown) => {
       const b = building as any;
       return {
         id: b.id,
         slug: b.slug || `edificio-${b.id}`,
-        name: b.nombre,
+        name: b.nombre, // Mapear nombre -> name
         comuna: b.comuna,
-        address: b.direccion || 'Dirección no disponible',
-        amenities: ['Piscina', 'Gimnasio'], // Valores por defecto para cumplir el esquema
-        gallery: [
-          '/images/lascondes-cover.jpg',
-          '/images/lascondes-1.jpg', 
-          '/images/lascondes-2.jpg'
-        ], // Valores por defecto para cumplir el esquema
-        coverImage: '/images/lascondes-cover.jpg',
+        address: b.direccion || 'Dirección no disponible', // Mapear direccion -> address
+        // Fallbacks amigables mientras se cargan datos reales en DB
+        amenities: Array.isArray(b.amenities) && b.amenities.length > 0
+          ? b.amenities
+          : ['Piscina', 'Gimnasio'],
+        gallery: Array.isArray(b.gallery) && b.gallery.length > 0
+          ? b.gallery
+          : [
+              '/images/lascondes-cover.jpg',
+              '/images/lascondes-1.jpg', 
+              '/images/lascondes-2.jpg'
+            ],
+        coverImage: b.cover_image || b.coverImage || (Array.isArray(b.gallery) && b.gallery.length > 0 ? b.gallery[0] : '/images/lascondes-cover.jpg'),
         badges: [],
         serviceLevel: undefined,
+        // Campos v2 del esquema real
+        precio_desde: b.precio_desde,
+        precio_hasta: b.precio_hasta,
+        gc_mode: b.gc_mode,
+        featured: b.featured,
         units: (b.units || []).map((unit: unknown) => {
           const u = unit as any;
           return {
             id: u.id,
             tipologia: u.tipologia || 'No especificada',
-            m2: u.area_m2 || 50, // Valor por defecto para cumplir el esquema
-            price: u.precio || 500000, // Valor por defecto para cumplir el esquema
-            estacionamiento: false,
-            bodega: false,
+            m2: u.area_m2 || u.area_interior_m2 || 50,
+            price: u.precio || u.price || 500000,
+            estacionamiento: Boolean(u.parking_ids && u.parking_ids !== 'x'),
+            bodega: Boolean(u.storage_ids && u.storage_ids !== 'x'),
             disponible: u.disponible || false,
             bedrooms: u.bedrooms || 1,
-            bathrooms: u.bathrooms || 1
+            bathrooms: u.bathrooms || 1,
+            // Campos extendidos v2
+            area_interior_m2: u.area_interior_m2,
+            area_exterior_m2: u.area_exterior_m2,
+            orientacion: u.orientacion,
+            piso: u.piso,
+            amoblado: u.amoblado,
+            petFriendly: u.pet_friendly,
+            parking_ids: u.parking_ids,
+            storage_ids: u.storage_ids,
+            parking_opcional: u.parking_opcional,
+            storage_opcional: u.storage_opcional,
+            guarantee_installments: u.guarantee_installments,
+            guarantee_months: u.guarantee_months,
+            rentas_necesarias: u.rentas_necesarias,
+            renta_minima: u.renta_minima
           };
         })
       };
@@ -143,46 +176,43 @@ async function readFromSupabase(): Promise<Building[] | null> {
 }
 
 export async function readAll(): Promise<Building[]> {
-  // console.log('🚀 Función readAll() iniciada');
+  console.log('🚀 Función readAll() iniciada');
   
   // Si la variable de entorno está habilitada, intentar leer desde Supabase
   const USE_SUPABASE = process.env.USE_SUPABASE === "true";
   
-  // console.log(`🔧 USE_SUPABASE: ${USE_SUPABASE}`);
+  console.log(`🔧 USE_SUPABASE: ${USE_SUPABASE}`);
   
   if (USE_SUPABASE) {
-    // console.log('🔄 Llamando a readFromSupabase()...');
+    console.log('🔄 Llamando a readFromSupabase()...');
     const fromSupabase = await readFromSupabase();
     if (fromSupabase && fromSupabase.length > 0) {
-      // console.log(`✅ Usando ${fromSupabase.length} edificios desde Supabase`);
+      console.log(`✅ Usando ${fromSupabase.length} edificios desde Supabase (datos reales)`);
       return fromSupabase;
     } else {
       // console.log('⚠️ No se pudieron obtener datos de Supabase, usando fallback');
     }
   }
 
-  // Si flag está habilitado, intentar leer archivos AssetPlan
+  // Fallback: Intentar leer archivos AssetPlan solo si Supabase falla
+  const fromAssetPlanFiles = await readAssetPlanSources();
+  if (fromAssetPlanFiles && fromAssetPlanFiles.length > 0) {
+    console.log(`✅ Usando ${fromAssetPlanFiles.length} edificios desde archivos AssetPlan (fallback)`);
+    return fromAssetPlanFiles;
+  }
+
+  // Si no hay datos AssetPlan, check flag
   const USE_ASSETPLAN_SOURCE =
     typeof process !== "undefined" && typeof process.env !== "undefined"
       ? process.env.USE_ASSETPLAN_SOURCE === "true"
       : false;
 
-  if (USE_ASSETPLAN_SOURCE) {
-    const fromAssetPlanFiles = await readAssetPlanSources();
-    if (fromAssetPlanFiles && fromAssetPlanFiles.length > 0) {
-      return fromAssetPlanFiles;
-    }
-  }
-
-  // Fallback a mock JSON bundled with the app (works on client and server)
-  // console.log('📄 Usando datos mock como fallback');
-  const raw = (await import("@data/buildings.json")).default as unknown;
-  const arr = (raw as unknown[]).map(validateBuilding);
-  // console.log(`📄 Retornando ${arr.length} edificios mock`);
-  return arr;
+  // No hay datos disponibles - esto no debería pasar en producción
+  console.error('❌ No se pudieron obtener datos de ninguna fuente');
+  return [];
 }
 
-export async function getAllBuildings(filters?: ListFilters): Promise<(Building & { precioDesde: number | null })[]> {
+export async function getAllBuildings(filters?: ListFilters, searchTerm?: string): Promise<(Building & { precioDesde: number | null })[]> {
   if (simulateLatency) {
     await delay(200 + Math.floor(Math.random() * 200));
   }
@@ -302,4 +332,20 @@ async function readAssetPlanSources(): Promise<Building[] | null> {
   }
 }
 
+export async function getUnitWithBuilding(unitId: string): Promise<{ unit: Unit; building: Building } | null> {
+  try {
+    const buildings = await readAll();
+    if (!buildings) return null;
 
+    for (const building of buildings) {
+      const unit = building.units?.find((u: Unit) => u.id === unitId);
+      if (unit) {
+        return { unit, building };
+      }
+    }
+    return null;
+  } catch (error) {
+    console.error('Error getting unit with building:', error);
+    throw error;
+  }
+}
