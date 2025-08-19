@@ -6,82 +6,67 @@ import dotenv from 'dotenv';
 // Cargar variables de entorno
 dotenv.config({ path: '.env.local' });
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-if (!supabaseUrl || !supabaseServiceKey) {
-  console.error('❌ Faltan credenciales de Supabase');
+if (!supabaseUrl || !supabaseKey) {
+  console.error('❌ Variables de entorno de Supabase no encontradas');
   process.exit(1);
 }
 
-// Crear cliente con service role
-const supabase = createClient(supabaseUrl, supabaseServiceKey);
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 async function checkTableStructure() {
   try {
-    console.log('🔍 Verificando estructura de las tablas...');
+    console.log('🔍 Verificando estructura de la tabla buildings...\n');
     
-    // Verificar estructura de buildings
-    console.log('\n📋 Estructura de la tabla buildings:');
-    const { data: buildingsSample, error: buildingsError } = await supabase
+    // Obtener una muestra de edificios para ver las columnas
+    const { data: buildings, error } = await supabase
       .from('buildings')
       .select('*')
-      .limit(1);
+      .limit(5);
+
+    if (error) {
+      console.error('❌ Error al obtener datos:', error);
+      return;
+    }
+
+    console.log(`📊 Muestra de edificios (${buildings.length}):`);
+    console.log('=' .repeat(80));
     
-    if (buildingsError) {
-      console.error('❌ Error accediendo a buildings:', buildingsError.message);
-    } else {
-      console.log('✅ Tabla buildings accesible');
-      if (buildingsSample && buildingsSample.length > 0) {
-        console.log('📊 Columnas disponibles:', Object.keys(buildingsSample[0]));
+    buildings.forEach((building, index) => {
+      console.log(`\n🏢 Edificio ${index + 1}:`);
+      console.log('Columnas disponibles:');
+      Object.keys(building).forEach(key => {
+        console.log(`   • ${key}: ${building[key]}`);
+      });
+    });
+
+    // Intentar obtener condominios con diferentes nombres de columna
+    const possibleColumns = ['condominio', 'Condominio', 'CONDOMINIO', 'condominio_name', 'condominio_id'];
+    
+    console.log('\n🔍 Probando diferentes nombres de columna para condominios:');
+    console.log('=' .repeat(80));
+    
+    for (const column of possibleColumns) {
+      try {
+        const { data, error } = await supabase
+          .from('buildings')
+          .select(column)
+          .limit(1);
+        
+        if (!error && data && data.length > 0) {
+          console.log(`✅ Columna "${column}" existe`);
+        } else {
+          console.log(`❌ Columna "${column}" no existe`);
+        }
+      } catch (e) {
+        console.log(`❌ Error con columna "${column}":`, e.message);
       }
     }
-    
-    // Verificar estructura de units
-    console.log('\n📋 Estructura de la tabla units:');
-    const { data: unitsSample, error: unitsError } = await supabase
-      .from('units')
-      .select('*')
-      .limit(1);
-    
-    if (unitsError) {
-      console.error('❌ Error accediendo a units:', unitsError.message);
-    } else {
-      console.log('✅ Tabla units accesible');
-      if (unitsSample && unitsSample.length > 0) {
-        console.log('📊 Columnas disponibles:', Object.keys(unitsSample[0]));
-      }
-    }
-    
-    // Intentar insertar un registro de prueba para ver qué columnas son requeridas
-    console.log('\n🧪 Probando inserción de prueba...');
-    
-    const testBuilding = {
-      id: 'test-building-1',
-      slug: 'test-building-1',
-      nombre: 'Test Building',
-      comuna: 'Test Comuna',
-      direccion: 'Test Address',
-      precio_desde: 500000,
-      has_availability: true
-    };
-    
-    const { error: insertError } = await supabase
-      .from('buildings')
-      .insert(testBuilding);
-    
-    if (insertError) {
-      console.error('❌ Error en inserción de prueba:', insertError.message);
-      console.log('💡 Columnas requeridas que faltan o son incorrectas');
-    } else {
-      console.log('✅ Inserción de prueba exitosa');
-      
-      // Limpiar el registro de prueba
-      await supabase.from('buildings').delete().eq('id', 'test-building-1');
-    }
-    
+
   } catch (error) {
-    console.error('❌ Error durante la verificación:', error.message);
+    console.error('❌ Error fatal:', error);
   }
 }
 

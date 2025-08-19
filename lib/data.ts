@@ -349,3 +349,146 @@ export async function getUnitWithBuilding(unitId: string): Promise<{ unit: Unit;
     throw error;
   }
 }
+
+/**
+ * Obtiene edificios que tienen unidades con promociones reales
+ * Esta función filtra edificios que realmente tienen promociones en Supabase
+ */
+export async function getBuildingsWithRealPromotions(): Promise<Building[]> {
+  try {
+    console.log('🔍 Buscando edificios con promociones reales...');
+    
+    // Importar Supabase dinámicamente
+    const { supabase, supabaseAdmin } = await import("@lib/supabase");
+    const client = supabaseAdmin || supabase;
+    
+    if (!client) {
+      console.error('No Supabase client available');
+      return [];
+    }
+    
+    // Obtener edificios que tienen unidades con promociones no vacías
+    const { data: buildingsWithPromotions, error } = await client
+      .from('buildings')
+      .select(`
+        id,
+        slug,
+        nombre,
+        comuna,
+        direccion,
+        precio_desde,
+        precio_hasta,
+        has_availability,
+        units!inner(
+          id,
+          tipologia,
+          area_m2,
+          area_interior_m2,
+          area_exterior_m2,
+          precio,
+          disponible,
+          bedrooms,
+          bathrooms,
+          orientacion,
+          pet_friendly,
+          gastos_comunes,
+          status,
+          promotions
+        )
+      `)
+      .eq('provider', 'assetplan')
+      .not('units.promotions', 'is', null)
+      .not('units.promotions', 'eq', '[]')
+      .order('nombre')
+      .limit(20);
+
+    if (error) {
+      console.error('Error fetching buildings with promotions:', error);
+      return [];
+    }
+
+    if (!buildingsWithPromotions || buildingsWithPromotions.length === 0) {
+      console.log('⚠️ No se encontraron edificios con promociones reales');
+      return [];
+    }
+
+    console.log(`✅ Encontrados ${buildingsWithPromotions.length} edificios con promociones reales`);
+
+    // Transformar los datos al formato esperado
+    const buildings: Building[] = buildingsWithPromotions.map((building: unknown) => {
+      const b = building as any;
+      return {
+        id: b.id,
+        slug: b.slug || `edificio-${b.id}`,
+        name: b.nombre,
+        comuna: b.comuna,
+        address: b.direccion || 'Dirección no disponible',
+        amenities: Array.isArray(b.amenities) && b.amenities.length > 0
+          ? b.amenities
+          : ['Piscina', 'Gimnasio'],
+        gallery: Array.isArray(b.gallery) && b.gallery.length > 0
+          ? b.gallery
+          : [
+              '/images/lascondes-cover.jpg',
+              '/images/lascondes-1.jpg', 
+              '/images/lascondes-2.jpg'
+            ],
+        coverImage: b.cover_image || b.coverImage || (Array.isArray(b.gallery) && b.gallery.length > 0 ? b.gallery[0] : '/images/lascondes-cover.jpg'),
+        badges: [], // Las promociones vienen de las unidades
+        serviceLevel: undefined,
+        precio_desde: b.precio_desde,
+        precio_hasta: b.precio_hasta,
+        gc_mode: b.gc_mode,
+        featured: b.featured,
+        units: (b.units || []).map((unit: unknown) => {
+          const u = unit as any;
+          return {
+            id: u.id,
+            tipologia: u.tipologia || 'No especificada',
+            m2: u.area_m2 || u.area_interior_m2 || 50,
+            price: u.precio || u.price || 500000,
+            estacionamiento: Boolean(u.parking_ids && u.parking_ids !== 'x'),
+            bodega: Boolean(u.storage_ids && u.storage_ids !== 'x'),
+            disponible: u.disponible || false,
+            bedrooms: u.bedrooms || 1,
+            bathrooms: u.bathrooms || 1,
+            area_interior_m2: u.area_interior_m2,
+            area_exterior_m2: u.area_exterior_m2,
+            orientacion: u.orientacion,
+            piso: u.piso,
+            amoblado: u.amoblado,
+            petFriendly: u.pet_friendly,
+            parking_ids: u.parking_ids,
+            storage_ids: u.storage_ids,
+            parking_opcional: u.parking_opcional,
+            storage_opcional: u.storage_opcional,
+            guarantee_installments: u.guarantee_installments,
+            guarantee_months: u.guarantee_months,
+            rentas_necesarias: u.rentas_necesarias,
+            renta_minima: u.renta_minima,
+            // Incluir promociones reales de la unidad
+            promotions: u.promotions ? JSON.parse(u.promotions) : []
+          };
+        })
+      };
+    });
+
+    // Validar los edificios
+    const validatedBuildings: Building[] = [];
+    for (let i = 0; i < buildings.length; i++) {
+      try {
+        const validated = validateBuilding(buildings[i]);
+        validatedBuildings.push(validated);
+      } catch (_error) {
+        // console.error(`❌ Error validando edificio ${i + 1} (${buildings[i].name}):`, _error);
+      }
+    }
+
+    console.log(`✅ ${validatedBuildings.length} edificios con promociones reales validados`);
+    return validatedBuildings;
+    
+  } catch (error) {
+    console.error('Error getting buildings with real promotions:', error);
+    return [];
+  }
+}

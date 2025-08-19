@@ -1,217 +1,49 @@
-import { NextResponse } from "next/server";
-import { z } from "zod";
-import { getAllBuildings } from "@lib/data";
-import type { Building, Unit, TypologySummary } from "@schemas/models";
-import { computeUnitTotalArea } from "@lib/derive";
-import { createRateLimiter } from "@lib/rate-limit";
+import { NextRequest, NextResponse } from 'next/server';
+import { getSupabaseProcessor } from '@/lib/supabase-data-processor';
 
-// Force dynamic rendering to avoid static generation issues
-export const dynamic = 'force-dynamic';
-
-// Rate limiter: 20 requests per minute per IP
-const rateLimiter = createRateLimiter({ windowMs: 60_000, max: 20 });
-
-const QuerySchema = z.object({
-  comuna: z.string().min(1).optional(),
-  tipologia: z.string().min(1).optional(),
-  minPrice: z
-    .preprocess((v) => (typeof v === "string" && v.trim() !== "" ? Number(v) : undefined), z.number().int().nonnegative().optional()),
-  maxPrice: z
-    .preprocess((v) => (typeof v === "string" && v.trim() !== "" ? Number(v) : undefined), z.number().int().nonnegative().optional()),
-  search: z.string().optional(),
-  page: z
-    .preprocess((v) => (typeof v === "string" && v.trim() !== "" ? Number(v) : 1), z.number().int().positive().default(1)),
-  limit: z
-    .preprocess((v) => (typeof v === "string" && v.trim() !== "" ? Number(v) : 12), z.number().int().positive().max(50).default(12)),
-});
-
-type BuildingListItem = Pick<Building, "id" | "slug" | "name" | "comuna" | "address" | "gallery" | "coverImage" | "badges" | "serviceLevel"> & {
-  precioDesde: number;
-  precioRango?: { min: number; max: number };
-  hasAvailability: boolean;
-  typologySummary?: TypologySummary[];
-};
-
-function summarizeTypologies(units: Unit[]): TypologySummary[] | undefined {
-  if (!Array.isArray(units) || units.length === 0) return undefined;
-  const map = new Map<string, Unit[]>();
-  for (const unit of units) {
-    const key = (unit.tipologia ?? "").trim();
-    if (!key) continue;
-    if (!map.has(key)) map.set(key, []);
-    map.get(key)!.push(unit);
-  }
-  const items: TypologySummary[] = [];
-  for (const [key, group] of map.entries()) {
-    if (group.length === 0) continue;
-    const prices = group.map((u) => u.price).filter((n) => Number.isFinite(n) && n > 0) as number[];
-    const areas = group
-      .map((u) => computeUnitTotalArea(u))
-      .filter((n) => Number.isFinite(n) && n > 0) as number[];
-    
-    // Generate label based on bedrooms if available, fallback to tipologia
-    const bedroomValues = group.map((u) => u.bedrooms).filter((v): v is number => typeof v === "number");
-    const uniformBedrooms = bedroomValues.length > 0 && bedroomValues.every((v) => v === bedroomValues[0]) ? bedroomValues[0] : undefined;
-    
-    let label = key; // fallback to tipologia code
-    if (uniformBedrooms !== undefined) {
-      if (uniformBedrooms === 0) {
-        label = "Studio";
-      } else if (uniformBedrooms === 1) {
-        label = "1 Dormitorio";
-      } else {
-        label = `${uniformBedrooms} Dormitorios`;
-      }
-    }
-    
-    items.push({
-      key,
-      label,
-      count: group.length,
-      minPrice: prices.length ? Math.min(...prices) : undefined,
-      minM2: areas.length ? Math.min(...areas) : undefined,
-    });
-  }
-  return items.length ? items : undefined;
-}
-
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
-    // Rate limiting check
-    const forwarded = request.headers.get("x-forwarded-for");
-    const ip = forwarded ? forwarded.split(",")[0] : "unknown";
-    const rateLimitResult = await rateLimiter.check(ip);
-    
-    if (!rateLimitResult.ok) {
-      return NextResponse.json(
-        { error: "Rate limit exceeded", retryAfter: rateLimitResult.retryAfter },
-        { 
-          status: 429,
-          headers: {
-            "Retry-After": rateLimitResult.retryAfter?.toString() || "60",
-            "X-RateLimit-Limit": "20",
-            "X-RateLimit-Window": "60"
-          }
-        }
-      );
-    }
-
-    // console.log("API /buildings called");
-    
     const { searchParams } = new URL(request.url);
-    // Simulate API failure to verify error boundaries and client retry behavior
-    if (searchParams.get("fail") === "1") {
-      return NextResponse.json({ error: "Fallo simulado" }, { status: 500 });
-    }
-    const parsed = QuerySchema.safeParse({
-      comuna: searchParams.get("comuna") ?? undefined,
-      tipologia: searchParams.get("tipologia") ?? undefined,
-      minPrice: searchParams.get("minPrice") ?? undefined,
-      maxPrice: searchParams.get("maxPrice") ?? undefined,
-      search: searchParams.get("search") ?? undefined,
-      page: searchParams.get("page") ?? undefined,
-      limit: searchParams.get("limit") ?? undefined,
-    });
-
-    if (!parsed.success) {
-      // console.error("Query validation failed:", parsed.error);
-      return NextResponse.json(
-        { error: "Parámetros inválidos", details: parsed.error.flatten() },
-        { status: 400 }
-      );
-    }
-
-    const { search, page, limit, ...filters } = parsed.data;
-    // console.log("Calling getAllBuildings with filters:", filters, "search:", search, "page:", page, "limit:", limit);
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '12');
     
-    const list = await getAllBuildings(filters, search);
-    // console.log("Got buildings from getAllBuildings:", list.length);
-
-    // Aplicar búsqueda por texto si está presente
-    let filteredList = list;
-    if (search && search.trim() !== "") {
-      const searchTerm = search.toLowerCase().trim();
-      filteredList = list.filter((building) => {
-        const searchableText = [
-          building.name,
-          building.comuna,
-          building.address,
-          ...(building.units.map(u => u.tipologia) || [])
-        ].join(" ").toLowerCase();
-        
-        return searchableText.includes(searchTerm);
-      });
-    }
-
-    // Aplicar paginación
-    const totalCount = filteredList.length;
-    const startIndex = (page - 1) * limit;
-    const endIndex = startIndex + limit;
-    const paginatedList = filteredList.slice(startIndex, endIndex);
-
-    const buildings: BuildingListItem[] = paginatedList.map((b) => {
-      const available = b.units.filter((u) => u.disponible);
-      const hasAvailability = available.length > 0;
-      const priceCandidates = (hasAvailability ? available : b.units)
-        .map((u) => u.price)
-        .filter((n) => Number.isFinite(n) && n > 0) as number[];
-      
-      // Fix: Ensure precioDesde is always a valid number for buildings with units
-      const precioDesde = priceCandidates.length ? Math.min(...priceCandidates) : 999999999;
-      
-      const preciosDisponibles = available.map((u) => u.price).filter((n) => Number.isFinite(n) && n > 0) as number[];
-      const precioRango = preciosDisponibles.length
-        ? { min: Math.min(...preciosDisponibles), max: Math.max(...preciosDisponibles) }
-        : undefined;
-      const typologySummary = summarizeTypologies(available);
-
-      return {
-        id: b.id,
-        slug: b.slug,
-        name: b.name,
-        comuna: b.comuna,
-        address: b.address,
-        gallery: b.gallery,
-        coverImage: b.coverImage,
-        badges: b.badges,
-        serviceLevel: b.serviceLevel,
-        precioDesde,
-        precioRango,
-        hasAvailability,
-        typologySummary,
-      } satisfies BuildingListItem;
-    });
-
-    // Información de paginación
-    const hasNextPage = endIndex < totalCount;
-    const hasPrevPage = page > 1;
+    const offset = (page - 1) * limit;
     
-    const pagination = {
+    const processor = await getSupabaseProcessor();
+    const result = await processor.getLandingBuildings(limit, offset);
+    
+    // Convertir LandingBuilding a BuildingSummary
+    const buildings = result.buildings.map(building => ({
+      id: building.id,
+      slug: building.slug,
+      name: building.name,
+      comuna: building.comuna,
+      address: building.address,
+      coverImage: building.coverImage,
+      gallery: building.gallery,
+      precioDesde: building.precioDesde,
+      hasAvailability: building.hasAvailability,
+      badges: building.badges.map(badge => ({
+        type: badge.type as any,
+        label: badge.label,
+        description: badge.description,
+      })),
+      amenities: building.amenities,
+      typologySummary: building.typologySummary,
+    }));
+
+    return NextResponse.json({
+      buildings,
+      total: result.total,
+      hasMore: result.hasMore,
       page,
-      limit,
-      totalCount,
-      totalPages: Math.ceil(totalCount / limit),
-      hasNextPage,
-      hasPrevPage,
-      count: buildings.length
-    };
-
-    // console.log("Returning buildings:", buildings.length, "pagination:", pagination);
-    return NextResponse.json({ 
-      buildings, 
-      pagination,
-      meta: {
-        searchTerm: search || null,
-        filtersApplied: Object.keys(filters).length > 0
-      }
+      limit
     });
+    
   } catch (error) {
-    // console.error("API Error:", error);
+    console.error('Error en API buildings:', error);
     return NextResponse.json(
-      { 
-        error: "Error inesperado", 
-        details: error instanceof Error ? error.message : "Unknown error" 
-      }, 
+      { error: 'Error interno del servidor' },
       { status: 500 }
     );
   }
