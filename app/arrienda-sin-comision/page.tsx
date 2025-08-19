@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { COMING_SOON } from '@lib/flags';
+import { Header } from "@/components/marketing/Header";
 import ArriendaSinComisionHero from "@/components/marketing/ArriendaSinComisionHero";
 import ArriendaSinComisionGrid from "@/components/marketing/ArriendaSinComisionGrid";
 import ArriendaSinComisionStats from "@/components/marketing/ArriendaSinComisionStats";
@@ -15,6 +16,7 @@ export default function ArriendaSinComisionPage() {
   return (
     <>
       <main className="min-h-screen bg-background text-foreground">
+        <Header />
         <ArriendaSinComisionHero />
         <ArriendaSinComisionStats />
         <ArriendaSinComisionGrid />
