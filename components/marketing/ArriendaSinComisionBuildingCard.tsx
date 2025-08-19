@@ -139,7 +139,7 @@ export default function ArriendaSinComisionBuildingCard({ building }: ArriendaSi
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="group relative bg-white dark:bg-gray-900 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-800 w-full max-w-sm mx-auto"
+      className="group relative bg-white dark:bg-gray-900 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-800 w-full max-w-sm"
       role="article"
       aria-labelledby={`building-${building.id}-title`}
     >
