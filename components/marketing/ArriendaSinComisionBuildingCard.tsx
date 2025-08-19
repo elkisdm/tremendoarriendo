@@ -139,7 +139,7 @@ export default function ArriendaSinComisionBuildingCard({ building }: ArriendaSi
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="group relative bg-white dark:bg-gray-900 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-800 w-full max-w-sm flex flex-col h-[700px]"
+      className="group relative bg-white dark:bg-gray-900 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-800 w-full max-w-sm flex flex-col h-[750px]"
       role="article"
       aria-labelledby={`building-${building.id}-title`}
     >
@@ -301,76 +301,78 @@ export default function ArriendaSinComisionBuildingCard({ building }: ArriendaSi
       </div>
 
       {/* Contenido - se expande para llenar el espacio restante */}
-      <div className="p-5 space-y-4 flex-1 flex flex-col">
-        {/* Nombre del edificio */}
-        <motion.h3 
-          id={`building-${building.id}-title`}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.1 }}
-          className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors"
-        >
-          <Link href={`/arrienda-sin-comision/${building.slug}`} className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-            {building.name}
-          </Link>
-        </motion.h3>
+      <div className="p-5 flex-1 flex flex-col justify-between">
+        {/* Contenido principal */}
+        <div className="space-y-4">
+          {/* Nombre del edificio */}
+          <motion.h3 
+            id={`building-${building.id}-title`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.1 }}
+            className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors"
+          >
+            <Link href={`/arrienda-sin-comision/${building.slug}`} className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+              {building.name}
+            </Link>
+          </motion.h3>
 
-        {/* Dirección */}
-        <motion.p 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.15 }}
-          className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-1"
-        >
-          <span role="img" aria-label="ubicación">📍</span> {building.address}, {building.comuna}
-        </motion.p>
+          {/* Dirección */}
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.15 }}
+            className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-1"
+          >
+            <span role="img" aria-label="ubicación">📍</span> {building.address}, {building.comuna}
+          </motion.p>
 
-        {/* Badges principales con colores modernos */}
-        {otherBadges.length > 0 && (
+          {/* Badges principales con colores modernos */}
+          {otherBadges.length > 0 && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="flex flex-wrap gap-1.5"
+              role="list"
+              aria-label="Promociones disponibles"
+            >
+              {otherBadges.map((badge, index) => (
+                <div
+                  key={index}
+                  className={`${getBadgeColor(badge.label)} px-2.5 py-1 text-xs font-semibold rounded-full shadow-md flex items-center gap-1.5`}
+                  role="listitem"
+                >
+                  {getBadgeIcon(badge.label)}
+                  <span>{badge.label}</span>
+                </div>
+              ))}
+            </motion.div>
+          )}
+
+          {/* Precio */}
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="flex flex-wrap gap-1.5"
-            role="list"
-            aria-label="Promociones disponibles"
+            transition={{ delay: 0.25 }}
+            className="space-y-1"
           >
-            {otherBadges.map((badge, index) => (
-              <div
-                key={index}
-                className={`${getBadgeColor(badge.label)} px-2.5 py-1 text-xs font-semibold rounded-full shadow-md flex items-center gap-1.5`}
-                role="listitem"
-              >
-                {getBadgeIcon(badge.label)}
-                <span>{badge.label}</span>
-              </div>
-            ))}
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Arriendo mensual desde:
+            </p>
+            <p className="text-xl font-bold text-gray-900 dark:text-white">
+              ${minPrice.toLocaleString('es-CL')} - ${maxPrice.toLocaleString('es-CL')}
+            </p>
           </motion.div>
-        )}
 
-        {/* Precio */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.25 }}
-          className="space-y-1"
-        >
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            Arriendo mensual desde:
-          </p>
-          <p className="text-xl font-bold text-gray-900 dark:text-white">
-            ${minPrice.toLocaleString('es-CL')} - ${maxPrice.toLocaleString('es-CL')}
-          </p>
-        </motion.div>
-
-        {/* Tipologías disponibles - altura fija */}
-        {sortedTypologies.length > 0 && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="space-y-3 flex-1"
-          >
+          {/* Tipologías disponibles */}
+          {sortedTypologies.length > 0 && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="space-y-3"
+            >
             <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Tipologías disponibles:
             </p>
@@ -402,6 +404,7 @@ export default function ArriendaSinComisionBuildingCard({ building }: ArriendaSi
             </div>
           </motion.div>
         )}
+        </div>
 
         {/* CTA - posición fija al final */}
         <motion.div 
