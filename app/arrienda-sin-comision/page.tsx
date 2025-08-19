@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { redirect } from "next/navigation";
 import { COMING_SOON } from '@lib/flags';
 import { Header } from "@/components/marketing/Header";
 import ArriendaSinComisionHero from "@/components/marketing/ArriendaSinComisionHero";
@@ -20,11 +19,29 @@ export default function ArriendaSinComisionPage() {
     setIsClient(true);
   }, []);
 
+  // Renderizar contenido básico mientras se hidrata
   if (!isClient) {
-    return null; // Evitar hidratación
+    return (
+      <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500 mx-auto mb-4"></div>
+          <p className="text-lg text-muted-foreground">Cargando...</p>
+        </div>
+      </div>
+    );
   }
 
-  if (COMING_SOON) redirect('/coming-soon');
+  // Verificar flag de coming soon
+  if (COMING_SOON) {
+    return (
+      <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold mb-4">Próximamente</h1>
+          <p className="text-lg text-muted-foreground">Estamos preparando algo increíble</p>
+        </div>
+      </div>
+    );
+  }
   
   return (
     <>
