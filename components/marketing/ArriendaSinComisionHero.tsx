@@ -2,11 +2,7 @@
 
 import MotionWrapper from "@/components/ui/MotionWrapper";
 
-interface ArriendaSinComisionHeroProps {
-  onContactClick?: () => void;
-}
-
-export default function ArriendaSinComisionHero({ onContactClick }: ArriendaSinComisionHeroProps) {
+export default function ArriendaSinComisionHero() {
   return (
     <section className="relative isolate overflow-hidden px-6 py-24 sm:py-32 lg:px-8">
       {/* Background gradient */}
@@ -72,7 +68,7 @@ export default function ArriendaSinComisionHero({ onContactClick }: ArriendaSinC
             </a>
             
             <button
-              onClick={onContactClick}
+              onClick={() => window.dispatchEvent(new CustomEvent('openContactModal'))}
               className="inline-flex items-center gap-2 rounded-2xl border border-border/50 bg-background/80 dark:bg-background/60 px-6 py-3 text-sm font-medium text-foreground backdrop-blur-sm transition-colors hover:bg-muted/50 dark:hover:bg-muted/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-amber-500 sm:px-8 sm:py-4 sm:text-base"
             >
               Quiero ser contactado

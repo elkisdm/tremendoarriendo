@@ -3,11 +3,7 @@
 import { useState, useEffect } from "react";
 import MotionWrapper from "@/components/ui/MotionWrapper";
 
-interface StickyMobileCTAProps {
-  onContactClick?: () => void;
-}
-
-export default function StickyMobileCTA({ onContactClick }: StickyMobileCTAProps) {
+export default function StickyMobileCTA() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -46,7 +42,7 @@ export default function StickyMobileCTA({ onContactClick }: StickyMobileCTAProps
           </div>
           
           <button
-            onClick={onContactClick}
+            onClick={() => window.dispatchEvent(new CustomEvent('openContactModal'))}
             className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 px-4 py-2 text-sm font-semibold text-white shadow-lg transition-all duration-200 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-amber-500"
           >
             Contacto
