@@ -94,14 +94,14 @@ export default function ArriendaSinComisionBuildingCard({ building }: ArriendaSi
     const maxPrice = getMaxPrice(building.typologySummary);
     const totalUnits = building.typologySummary?.reduce((sum, t) => sum + t.count, 0) || 0;
     
-    // Encontrar el badge de "Sin comisión" para el principal
+    // Encontrar el badge de "Comisión gratis" para el principal
     const sinComisionBadge = building.badges?.find(badge => 
-      badge.label.includes('Sin comisión') || badge.label.includes('Comisión gratis')
+      badge.label.includes('Comisión gratis') || badge.label.includes('0% Comisión')
     );
     
     // Resto de badges para mostrar debajo (hasta 5 badges)
     const otherBadges = building.badges?.filter(badge => 
-      !badge.label.includes('Sin comisión') && !badge.label.includes('Comisión gratis')
+      !badge.label.includes('Comisión gratis') && !badge.label.includes('0% Comisión')
     ).slice(0, 5) || [];
 
     // Ordenar tipologías de la más pequeña a la más grande
@@ -139,12 +139,12 @@ export default function ArriendaSinComisionBuildingCard({ building }: ArriendaSi
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="group relative bg-white dark:bg-gray-900 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-800 w-full max-w-sm"
+      className="group relative bg-white dark:bg-gray-900 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-800 w-full max-w-sm flex flex-col h-[700px]"
       role="article"
       aria-labelledby={`building-${building.id}-title`}
     >
-      {/* Imagen principal con carrusel */}
-      <div className="relative h-64 overflow-hidden" role="region" aria-label="Galería de imágenes del edificio">
+      {/* Imagen principal con carrusel - altura fija */}
+      <div className="relative h-64 overflow-hidden flex-shrink-0" role="region" aria-label="Galería de imágenes del edificio">
         <div
           className="w-full h-full bg-cover bg-center transition-all duration-150"
           style={{ backgroundImage: `url(${allImages[currentImageIndex]})` }}
@@ -152,7 +152,7 @@ export default function ArriendaSinComisionBuildingCard({ building }: ArriendaSi
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
         
-        {/* Badge principal: Sin comisión */}
+        {/* Badge principal: Comisión gratis */}
         {sinComisionBadge && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -266,7 +266,7 @@ export default function ArriendaSinComisionBuildingCard({ building }: ArriendaSi
                   className="absolute top-0 left-0 w-2 h-1 bg-gradient-to-r from-gray-400/30 to-transparent rounded-full blur-sm"
                 />
               </div>
-              <span className="drop-shadow-sm">Sin comisión</span>
+              <span className="drop-shadow-sm">{sinComisionBadge.label}</span>
             </div>
           </motion.div>
         )}
@@ -300,8 +300,8 @@ export default function ArriendaSinComisionBuildingCard({ building }: ArriendaSi
         )}
       </div>
 
-      {/* Contenido */}
-      <div className="p-5 space-y-4">
+      {/* Contenido - se expande para llenar el espacio restante */}
+      <div className="p-5 space-y-4 flex-1 flex flex-col">
         {/* Nombre del edificio */}
         <motion.h3 
           id={`building-${building.id}-title`}
@@ -363,13 +363,13 @@ export default function ArriendaSinComisionBuildingCard({ building }: ArriendaSi
           </p>
         </motion.div>
 
-        {/* Tipologías disponibles */}
+        {/* Tipologías disponibles - altura fija */}
         {sortedTypologies.length > 0 && (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="space-y-3"
+            className="space-y-3 flex-1"
           >
             <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Tipologías disponibles:
@@ -403,12 +403,12 @@ export default function ArriendaSinComisionBuildingCard({ building }: ArriendaSi
           </motion.div>
         )}
 
-        {/* CTA */}
+        {/* CTA - posición fija al final */}
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="pt-2"
+          className="pt-4 pb-2 flex-shrink-0"
         >
           <Link href={`/arrienda-sin-comision/${building.slug}`}>
             <button 

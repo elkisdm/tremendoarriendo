@@ -98,7 +98,7 @@ export default function ArriendaSinComisionGrid({ initialBuildings }: ArriendaSi
   const total = buildings.length;
 
   return (
-    <section className="py-16 bg-gradient-to-b from-background to-muted/20">
+    <section className="py-16 bg-gradient-to-b from-background to-muted/20" id="buildings-grid">
       <div className="container mx-auto px-4">
         {/* Header con información */}
         <motion.div 
@@ -107,13 +107,10 @@ export default function ArriendaSinComisionGrid({ initialBuildings }: ArriendaSi
           className="text-center mb-12"
         >
           <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-            {total === 1 ? "Edificio Destacado" : "Edificios Disponibles"}
+            Departamentos que inspiran
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            {total === 1 
-              ? "Descubre este increíble edificio con 0% de comisión y las mejores amenidades"
-              : `Encuentra ${total} edificios con 0% de comisión y las mejores amenidades`
-            }
+            Cada espacio está diseñado para que te sientas como en casa desde el primer día
           </p>
           
           {/* Badge destacado */}
@@ -121,10 +118,10 @@ export default function ArriendaSinComisionGrid({ initialBuildings }: ArriendaSi
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-4 py-2 rounded-full text-sm font-semibold mt-4"
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold mt-4"
           >
             <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
-            ⚡ {total === 1 ? "1 oportunidad" : `${total} oportunidades`} disponible{total === 1 ? '' : 's'}
+            ✨ {total === 1 ? "1 departamento" : `${total} departamentos`} listos para ti
           </motion.div>
         </motion.div>
 

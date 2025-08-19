@@ -18,11 +18,19 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
-    // Solo ejecutar en el cliente
+    // Solo ejecutar en el cliente después de la hidratación
     try {
       const savedTheme = localStorage.getItem('theme') as Theme;
       if (savedTheme === 'dark' || savedTheme === 'light') {
         setThemeState(savedTheme);
+      } else {
+        // Si no hay tema guardado, usar el que ya está aplicado en el DOM
+        const html = document.documentElement;
+        if (html.classList.contains('dark')) {
+          setThemeState('dark');
+        } else {
+          setThemeState('light');
+        }
       }
     } catch (error) {
       console.warn('Error reading theme from localStorage:', error);
@@ -35,11 +43,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     
     const root = window.document.documentElement;
     
-    if (theme === 'dark') {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
+    // Remover todas las clases de tema existentes
+    root.classList.remove('dark', 'light');
+    
+    // Aplicar la clase del tema actual
+    root.classList.add(theme);
     
     try {
       localStorage.setItem('theme', theme);

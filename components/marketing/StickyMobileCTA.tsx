@@ -34,18 +34,18 @@ export default function StickyMobileCTA() {
         <div className="flex items-center justify-between gap-3">
           <div className="flex-1">
             <p className="text-sm font-semibold text-foreground">
-              ¿Listo para invertir?
+              Tu próximo hogar te espera
             </p>
             <p className="text-xs text-muted-foreground">
-              0% comisión garantizada
+              Sin comisión • Sin aval • Pet friendly
             </p>
           </div>
           
           <a
-            href="/coming-soon"
-            className="inline-flex items-center gap-2 rounded-xl bg-primary hover:bg-primary/90 px-4 py-2 text-sm font-semibold text-primary-foreground shadow-lg transition-all duration-200 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
+            href="#buildings-grid"
+            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 px-4 py-2 text-sm font-semibold text-white shadow-lg transition-all duration-200 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-amber-500"
           >
-            Contactar
+            Explorar
             <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
             </svg>

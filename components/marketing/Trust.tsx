@@ -1,67 +1,92 @@
+"use client";
+
+import { motion } from "framer-motion";
+import { useInView } from "framer-motion";
+import { useRef } from "react";
+
 export default function Trust() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
+
   const stats = [
     {
-      number: "1.2M+",
-      label: "UF en proyectos",
-      description: "Volumen total en nuestra plataforma",
+      number: "12+",
+      label: "años en el mercado",
+      description: "Construyendo confianza desde 2012",
     },
     {
-      number: "98%",
-      label: "Clientes satisfechos",
-      description: "Proceso sin complicaciones",
+      number: "100K+",
+      label: "arrendatarios felices",
+      description: "Familias que encontraron su hogar",
     },
     {
-      number: "15+",
-      label: "Proyectos activos",
-      description: "Disponibilidad verificada",
+      number: "100%",
+      label: "proceso digital",
+      description: "Sin papeles, sin complicaciones",
     },
   ];
 
-  const partners = [
+  const testimonials = [
     {
-      name: "Inmobiliaria Verificada",
-      logo: "📋",
-      description: "Socios certificados",
+      name: "Carla + Bruno 🐕",
+      location: "Ñuñoa",
+      story: "disfrutan de su terraza soleada en Ñuñoa.",
+      image: "🏠"
     },
     {
-      name: "Proceso Seguro",
-      logo: "🔒",
-      description: "Transacciones protegidas",
+      name: "Ignacio",
+      location: "Providencia", 
+      story: "eligió Providencia y se olvidó de la incertidumbre: precio fijo 12 meses.",
+      image: "🏢"
     },
     {
-      name: "Soporte 24/7",
-      logo: "💬",
-      description: "Atención personalizada",
-    },
-    {
-      name: "Documentación Legal",
-      logo: "📄",
-      description: "Todo en regla",
-    },
+      name: "María + Tomás",
+      location: "Las Condes",
+      story: "encontraron su hogar ideal sin aval y con su mascota incluida.",
+      image: "🏡"
+    }
   ];
 
   return (
-    <section aria-labelledby="trust-heading" className="px-6 py-16 lg:px-8 lg:py-24">
+    <section aria-labelledby="trust-heading" className="px-6 py-16 lg:px-8 lg:py-24 bg-gradient-to-b from-muted/20 to-background">
       <div className="mx-auto max-w-6xl">
         {/* Header */}
-        <div className="text-center">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center"
+        >
           <h2 id="trust-heading" className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            Confían en nosotros
+            Más que arriendos, construimos confianza
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Respaldados por resultados y transparencia
+            Cada número cuenta una historia de libertad y tranquilidad
           </p>
-        </div>
+        </motion.div>
 
         {/* Stats section */}
-        <div className="mt-16">
+        <div className="mt-16" ref={ref}>
           <div className="grid gap-8 sm:grid-cols-3">
             {stats.map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="rounded-3xl border border-border bg-gradient-to-br from-card to-muted/20 p-8">
-                  <div className="text-4xl font-bold text-primary lg:text-5xl">
+              <motion.div 
+                key={index} 
+                className="text-center"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+              >
+                <div className="rounded-3xl border border-border bg-gradient-to-br from-card to-muted/20 p-8 hover:shadow-lg hover:shadow-amber-500/5 transition-all duration-300">
+                  <motion.div 
+                    className="text-4xl font-bold bg-gradient-to-r from-amber-500 to-orange-600 bg-clip-text text-transparent lg:text-5xl"
+                    initial={{ scale: 0 }}
+                    animate={isInView ? { scale: 1 } : { scale: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                  >
                     {stat.number}
-                  </div>
+                  </motion.div>
                   <div className="mt-2 text-lg font-semibold text-foreground">
                     {stat.label}
                   </div>
@@ -69,84 +94,75 @@ export default function Trust() {
                     {stat.description}
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
 
-        {/* Partners section */}
+        {/* Testimonials section */}
         <div className="mt-20">
-          <div className="text-center">
-            <h3 className="text-xl font-semibold text-foreground">
-              Garantías y soporte
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
+            <h3 className="text-2xl font-semibold text-foreground">
+              Historias que inspiran
             </h3>
             <p className="mt-2 text-muted-foreground">
-              Todo lo que necesitas para invertir con confianza
+              Cada hogar tiene una historia, cada historia tiene un final feliz
             </p>
-          </div>
+          </motion.div>
           
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {partners.map((partner, index) => (
-              <div
+          <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-3">
+            {testimonials.map((testimonial, index) => (
+              <motion.div
                 key={index}
-                className="group rounded-2xl border border-border bg-card p-6 text-center transition-all duration-200 hover:shadow-lg hover:shadow-primary/5"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className="group rounded-2xl border border-border bg-gradient-to-br from-card to-muted/20 p-6 text-center transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/5"
               >
-                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-primary/10 to-primary/5 text-3xl">
-                  {partner.logo}
+                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-amber-500/10 to-orange-500/5 text-3xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                  {testimonial.image}
                 </div>
-                <h4 className="mt-4 font-semibold text-foreground">
-                  {partner.name}
-                </h4>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {partner.description}
-                </p>
-              </div>
+                <blockquote className="text-lg font-medium text-foreground mb-4">
+                  "{testimonial.name} {testimonial.story}"
+                </blockquote>
+                <div className="text-sm text-muted-foreground">
+                  {testimonial.location}
+                </div>
+              </motion.div>
             ))}
-          </div>
-        </div>
-
-        {/* Testimonial */}
-        <div className="mt-20">
-          <div className="rounded-3xl border border-border bg-gradient-to-br from-muted/30 to-muted/10 p-8 lg:p-12">
-            <div className="text-center">
-              <blockquote className="text-xl font-medium italic text-foreground lg:text-2xl">
-                "La experiencia más transparente que he tenido invirtiendo en arriendo. 
-                Sin comisiones ocultas y con soporte en cada paso."
-              </blockquote>
-              <footer className="mt-6">
-                <div className="flex items-center justify-center space-x-3">
-                  <div className="h-12 w-12 rounded-full bg-gradient-to-br from-primary to-secondary" />
-                  <div className="text-left">
-                    <cite className="font-semibold text-foreground not-italic">
-                      María González
-                    </cite>
-                    <div className="text-sm text-muted-foreground">
-                      Inversionista - Las Condes
-                    </div>
-                  </div>
-                </div>
-              </footer>
-            </div>
           </div>
         </div>
 
         {/* Final CTA */}
-        <div className="mt-16 text-center">
-          <p className="text-lg text-muted-foreground">
-            ¿Listo para unirte a nuestra comunidad de inversionistas?
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="mt-16 text-center"
+        >
+          <p className="text-lg text-muted-foreground mb-6">
+            Tu próximo hogar ya está disponible. Elige hoy y vive sin complicaciones.
           </p>
           <div className="mt-6">
             <a
-              href="/coming-soon"
-              className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-primary to-primary/90 px-8 py-4 text-base font-semibold text-primary-foreground shadow-lg transition-all duration-200 hover:shadow-xl hover:shadow-primary/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
+              href="#buildings-grid"
+              className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 px-8 py-4 text-base font-semibold text-white shadow-lg transition-all duration-200 hover:shadow-xl hover:shadow-amber-500/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-amber-500"
             >
-              Comenzar ahora
+              Ver departamentos disponibles
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
               </svg>
             </a>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

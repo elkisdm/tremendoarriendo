@@ -5,7 +5,30 @@ import { Sun, Moon } from 'lucide-react';
 import { clx } from '@lib/utils';
 
 export function ThemeToggle({ className }: { className?: string }) {
-  const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme, isHydrated } = useTheme();
+
+  // No renderizar hasta que esté hidratado para evitar problemas de SSR
+  if (!isHydrated) {
+    return (
+      <button
+        className={clx(
+          "relative inline-flex items-center justify-center w-10 h-10 rounded-2xl",
+          "bg-surface border border-soft/50",
+          "text-subtext transition-all duration-200",
+          "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-bg",
+          "motion-reduce:transition-none",
+          className
+        )}
+        aria-label="Cambiar tema"
+        title="Cambiar tema"
+        disabled
+      >
+        <div className="relative w-5 h-5">
+          <Sun className="absolute inset-0 w-5 h-5 opacity-50" aria-hidden="true" />
+        </div>
+      </button>
+    );
+  }
 
   return (
     <button

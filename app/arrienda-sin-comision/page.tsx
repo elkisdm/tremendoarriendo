@@ -3,7 +3,7 @@ import { COMING_SOON } from '@lib/flags';
 import { Header } from "@/components/marketing/Header";
 import ArriendaSinComisionHero from "@/components/marketing/ArriendaSinComisionHero";
 import ArriendaSinComisionGrid from "@/components/marketing/ArriendaSinComisionGrid";
-import ArriendaSinComisionStats from "@/components/marketing/ArriendaSinComisionStats";
+import Benefits from "@/components/marketing/Benefits";
 import HowItWorks from "@/components/marketing/HowItWorks";
 import Trust from "@/components/marketing/Trust";
 import StickyMobileCTA from "@/components/marketing/StickyMobileCTA";
@@ -19,7 +19,7 @@ export default function ArriendaSinComisionPage() {
       <main className="min-h-screen bg-background text-foreground">
         <Header />
         <ArriendaSinComisionHero />
-        <ArriendaSinComisionStats />
+        <Benefits />
         <ArriendaSinComisionGrid />
         <HowItWorks />
         <Trust />

@@ -9,31 +9,51 @@ import { type BuildingSummary } from '../hooks/useFetchBuildings';
 import { PromotionType } from '../schemas/models';
 
 // Definir el tipo para la página de detalle
-interface BuildingForArriendaSinComision extends BuildingSummary {
+interface BuildingForArriendaSinComision {
+  id: string;
+  slug: string;
+  name: string;
+  comuna: string;
+  address: string;
+  coverImage: string;
+  gallery: string[];
+  precioDesde: number;
+  precioHasta: number;
+  precioPromedio: number;
+  hasAvailability: boolean;
+  totalUnidades: number;
+  unidadesDisponibles: number;
+  badges: Array<{ label: string; tag?: string; type: string }>;
   amenities: string[];
-  description: string;
-  linkListing: string;
   tipologias: string[];
   unidades: Array<{
-    id: string;
-    typology: string;
-    floor: string;
-    number: string;
-    price: number;
-    area: number;
-    bedrooms: number;
-    bathrooms: number;
-    available: boolean;
+    op: string;
+    unidad: string;
+    tipologia: string;
+    precio: number;
+    m2: number;
+    orientacion: string;
+    estacionamiento: number;
+    bodega: number;
+    gc: number;
+    aceptaMascotas: boolean;
+    estado: string;
+    especial: boolean;
+    tremendaPromo: boolean;
+    descuento: number;
+    mesesDescuento: number;
+    linkListing: string;
   }>;
+  selectedTypology?: string | null;
 }
 
 // Mock específico para Home Amengual
 export const HOME_AMENGUAL_MOCK: BuildingSummary = {
   id: "home-amengual",
   slug: "home-amengual",
-  name: "Home Amengual",
+  name: "Home Inclusive Ecuador",
   comuna: "Estación Central",
-  address: "Av. Libertador Bernardo O'Higgins 1234, Estación Central",
+  address: "Gral. Amengual 0148, Estación Central",
   coverImage: "/images/edificio/original_79516B40-7BA9-4F4E-4F7D-7BA4C0A2A938-mg0578.jpg",
   gallery: [
     "/images/edificio/original_79516B40-7BA9-4F4E-4F7D-7BA4C0A2A938-mg0578.jpg",
@@ -47,165 +67,373 @@ export const HOME_AMENGUAL_MOCK: BuildingSummary = {
     "/images/edificio/original_07050B6E-BC69-04EB-9619-584F161455C6-mg0659pano.jpg",
     "/images/edificio/original_62CDE25C-4152-E1A0-3ABC-BCAF57A614EB-mg0397pano.jpg"
   ],
-  precioDesde: 450000,
+  precioDesde: 272000, // Precio mínimo real
   hasAvailability: true,
   badges: [
     {
       type: PromotionType.FREE_COMMISSION,
-      label: "Sin comisión",
-      tag: "0% Comisión"
+      label: "Comisión gratis",
+      tag: "Exclusivo"
+    },
+    {
+      type: PromotionType.NO_AVAL,
+      label: "Garantía en cuotas",
+      tag: "Flexible"
+    },
+    {
+      type: PromotionType.NO_GUARANTEE,
+      label: "Precio fijo 12 meses",
+      tag: "Estable"
+    },
+    {
+      type: PromotionType.FREE_COMMISSION,
+      label: "50% OFF",
+      tag: "Primer mes"
     },
     {
       type: PromotionType.NO_AVAL,
       label: "Opción sin aval",
       tag: "Sin aval"
-    },
-    {
-      type: PromotionType.NO_GUARANTEE,
-      label: "Opción sin garantía",
-      tag: "Sin garantía"
-    },
-    {
-      type: PromotionType.FREE_COMMISSION,
-      label: "Comisión gratis",
-      tag: "Exclusivo"
     }
   ],
   typologySummary: [
     {
-      key: "Estudio",
-      label: "Estudio",
-      count: 2,
+      key: "1D",
+      label: "1 dormitorio",
+      count: 6,
+      minPrice: 272000
+    },
+    {
+      key: "2D",
+      label: "2 dormitorios",
+      count: 1,
       minPrice: 450000
     },
     {
-      key: "1D1B",
-      label: "1 Dorm, 1 Baño",
+      key: "4D",
+      label: "4 dormitorios",
       count: 2,
-      minPrice: 520000
+      minPrice: 650000
     },
     {
-      key: "2D1B",
-      label: "2 Dorm, 1 Baño",
+      key: "Estudio",
+      label: "Estudio",
       count: 2,
-      minPrice: 580000
-    },
-    {
-      key: "2D2B",
-      label: "2 Dorm, 2 Baños",
-      count: 2,
-      minPrice: 620000
+      minPrice: 220000
     }
   ]
 };
 
-// Solo usar Home Amengual para la landing
-export const LANDING_BUILDINGS_MOCK = [HOME_AMENGUAL_MOCK];
+// Mock para edificio adicional 1
+export const EDIFICIO_NUNOA_MOCK: BuildingSummary = {
+  id: "edificio-nunoa",
+  slug: "edificio-nunoa",
+  name: "Residencial Ñuñoa Central",
+  comuna: "Ñuñoa",
+  address: "Av. Grecia 1234, Ñuñoa",
+  coverImage: "/images/nunoa-cover.jpg",
+  gallery: [
+    "/images/nunoa-1.jpg",
+    "/images/nunoa-2.jpg",
+    "/images/nunoa-3.jpg"
+  ],
+  precioDesde: 380000,
+  hasAvailability: true,
+  badges: [
+    {
+      type: PromotionType.FREE_COMMISSION,
+      label: "30% OFF",
+      tag: "Primer mes"
+    },
+    {
+      type: PromotionType.NO_AVAL,
+      label: "Sin aval",
+      tag: "Directo"
+    },
+    {
+      type: PromotionType.NO_GUARANTEE,
+      label: "Pet friendly",
+      tag: "Incluido"
+    }
+  ],
+  typologySummary: [
+    {
+      key: "1D",
+      label: "1 dormitorio",
+      count: 4,
+      minPrice: 380000
+    },
+    {
+      key: "2D",
+      label: "2 dormitorios",
+      count: 3,
+      minPrice: 520000
+    },
+    {
+      key: "3D",
+      label: "3 dormitorios",
+      count: 1,
+      minPrice: 680000
+    }
+  ]
+};
+
+// Mock para edificio adicional 2
+export const EDIFICIO_LASCONDES_MOCK: BuildingSummary = {
+  id: "edificio-lascondes",
+  slug: "edificio-lascondes",
+  name: "Las Condes Premium",
+  comuna: "Las Condes",
+  address: "Av. Apoquindo 5678, Las Condes",
+  coverImage: "/images/lascondes-cover.jpg",
+  gallery: [
+    "/images/lascondes-1.jpg",
+    "/images/lascondes-2.jpg",
+    "/images/lascondes-3.jpg",
+    "/images/lascondes-4.jpg"
+  ],
+  precioDesde: 650000,
+  hasAvailability: true,
+  badges: [
+    {
+      type: PromotionType.FREE_COMMISSION,
+      label: "0% Comisión",
+      tag: "Exclusivo"
+    },
+    {
+      type: PromotionType.NO_AVAL,
+      label: "Garantía en cuotas",
+      tag: "Flexible"
+    },
+    {
+      type: PromotionType.NO_GUARANTEE,
+      label: "Precio fijo 6 meses",
+      tag: "Estable"
+    }
+  ],
+  typologySummary: [
+    {
+      key: "1D",
+      label: "1 dormitorio",
+      count: 2,
+      minPrice: 650000
+    },
+    {
+      key: "2D",
+      label: "2 dormitorios",
+      count: 4,
+      minPrice: 850000
+    },
+    {
+      key: "3D",
+      label: "3 dormitorios",
+      count: 2,
+      minPrice: 1200000
+    }
+  ]
+};
+
+// Grid de 3 edificios para mostrar el layout correcto
+export const LANDING_BUILDINGS_MOCK = [
+  HOME_AMENGUAL_MOCK,
+  EDIFICIO_NUNOA_MOCK,
+  EDIFICIO_LASCONDES_MOCK
+];
 
 // Mock extendido para la página de detalle
 export const HOME_AMENGUAL_EXTENDED: BuildingForArriendaSinComision = {
-  ...HOME_AMENGUAL_MOCK,
-  amenities: [
-    "Piscina",
-    "Gimnasio",
-    "Sala de eventos",
-    "Terraza",
-    "Estacionamiento",
-    "Seguridad 24/7",
-    "Ascensor",
-    "Jardín"
+  id: "home-amengual",
+  slug: "home-amengual",
+  name: "Home Inclusive Ecuador",
+  comuna: "Estación Central",
+  address: "Gral. Amengual 0148, Estación Central",
+  coverImage: "/images/edificio/original_79516B40-7BA9-4F4E-4F7D-7BA4C0A2A938-mg0578.jpg",
+  gallery: [
+    "/images/edificio/original_79516B40-7BA9-4F4E-4F7D-7BA4C0A2A938-mg0578.jpg",
+    "/images/edificio/original_05CC1BCB-6719-A6F3-4299-F6078DC02E05-mg0345.jpg",
+    "/images/edificio/original_311AE0D8-2A11-2E32-04F0-829F5F46775F-mg0348.jpg",
+    "/images/edificio/original_58D0B1B6-BDBF-2FEB-A92F-82493157ADA7-mg0731.jpg",
+    "/images/edificio/original_87F94E6E-7B88-8EDF-4AE9-481F4458226B-mg0608.jpg",
+    "/images/edificio/original_9E2C7938-6514-1B1E-EB7D-90B7D9CC4386-mg0300.jpg",
+    "/images/edificio/original_E83F6CA9-97BD-EE6D-9AF3-29C004963C07-mg0309.jpg",
+    "/images/edificio/original_D02A4F27-BD68-D47B-14B1-185BE67CE479-mg0626.jpg",
+    "/images/edificio/original_07050B6E-BC69-04EB-9619-584F161455C6-mg0659pano.jpg",
+    "/images/edificio/original_62CDE25C-4152-E1A0-3ABC-BCAF57A614EB-mg0397pano.jpg"
   ],
-  description: "Home Amengual es un edificio premium ubicado en el corazón de Estación Central, diseñado para ofrecer el máximo confort y modernidad. Con 4 tipologías disponibles y las mejores amenidades, es la opción ideal para quienes buscan calidad de vida sin comprometer la ubicación estratégica.",
-  linkListing: "https://maps.app.goo.gl/nLMtyQSTvepMAb1FA?g_st=ipc",
-  tipologias: ["Estudio", "1D1B", "2D1B", "2D2B"],
+  precioDesde: 272000,
+  precioHasta: 700000,
+  precioPromedio: 435000,
+  hasAvailability: true,
+  totalUnidades: 11,
+  unidadesDisponibles: 7,
+  badges: [
+    {
+      type: "FREE_COMMISSION",
+      label: "50% OFF",
+      tag: "Primer mes"
+    },
+    {
+      type: "NO_AVAL",
+      label: "Garantía en cuotas",
+      tag: "Flexible"
+    },
+    {
+      type: "NO_GUARANTEE",
+      label: "Precio fijo 12 meses",
+      tag: "Estable"
+    },
+    {
+      type: "FREE_COMMISSION",
+      label: "Comisión gratis",
+      tag: "Exclusivo"
+    },
+    {
+      type: "NO_AVAL",
+      label: "Opción sin aval",
+      tag: "Sin aval"
+    }
+  ],
+  amenities: [
+    "Accesos controlados",
+    "Citéfono",
+    "Gimnasio",
+    "Bicicletero",
+    "Lavandería",
+    "Sala de internet",
+    "Quincho",
+    "Sala gourmet / eventos",
+    "Seguridad",
+    "Terraza panorámica",
+    "Salón lounge",
+    "Transporte cercano"
+  ],
+  tipologias: ["1 dormitorio", "2 dormitorios", "4 dormitorios", "Estudio"],
   unidades: [
     {
-      id: "1",
-      typology: "Estudio",
-      floor: "1",
-      number: "101",
-      price: 450000,
-      area: 35,
-      bedrooms: 0,
-      bathrooms: 1,
-      available: true
+      op: "207",
+      unidad: "207",
+      tipologia: "1 dormitorio",
+      precio: 145000, // Con promo 50% OFF primer mes
+      m2: 45,
+      orientacion: "Sur",
+      estacionamiento: 1,
+      bodega: 0,
+      gc: 62000,
+      aceptaMascotas: true,
+      estado: "disponible",
+      especial: false,
+      tremendaPromo: false,
+      descuento: 0,
+      mesesDescuento: 0,
+      linkListing: "https://maps.app.goo.gl/nLMtyQSTvepMAb1FA?g_st=ipc"
     },
     {
-      id: "2",
-      typology: "Estudio",
-      floor: "1",
-      number: "102",
-      price: 480000,
-      area: 38,
-      bedrooms: 0,
-      bathrooms: 1,
-      available: true
+      op: "301",
+      unidad: "301",
+      tipologia: "1 dormitorio",
+      precio: 180000,
+      m2: 48,
+      orientacion: "Norte",
+      estacionamiento: 1,
+      bodega: 0,
+      gc: 65000,
+      aceptaMascotas: false,
+      estado: "disponible",
+      especial: false,
+      tremendaPromo: false,
+      descuento: 0,
+      mesesDescuento: 0,
+      linkListing: "https://maps.app.goo.gl/nLMtyQSTvepMAb1FA?g_st=ipc"
     },
     {
-      id: "3",
-      typology: "1D1B",
-      floor: "2",
-      number: "201",
-      price: 520000,
-      area: 45,
-      bedrooms: 1,
-      bathrooms: 1,
-      available: true
+      op: "401",
+      unidad: "401",
+      tipologia: "2 dormitorios",
+      precio: 450000,
+      m2: 65,
+      orientacion: "Este",
+      estacionamiento: 1,
+      bodega: 0,
+      gc: 85000,
+      aceptaMascotas: true,
+      estado: "disponible",
+      especial: false,
+      tremendaPromo: false,
+      descuento: 0,
+      mesesDescuento: 0,
+      linkListing: "https://maps.app.goo.gl/nLMtyQSTvepMAb1FA?g_st=ipc"
     },
     {
-      id: "4",
-      typology: "1D1B",
-      floor: "2",
-      number: "202",
-      price: 550000,
-      area: 48,
-      bedrooms: 1,
-      bathrooms: 1,
-      available: true
+      op: "501",
+      unidad: "501",
+      tipologia: "4 dormitorios",
+      precio: 650000,
+      m2: 95,
+      orientacion: "Oeste",
+      estacionamiento: 2,
+      bodega: 0,
+      gc: 120000,
+      aceptaMascotas: false,
+      estado: "disponible",
+      especial: false,
+      tremendaPromo: false,
+      descuento: 0,
+      mesesDescuento: 0,
+      linkListing: "https://maps.app.goo.gl/nLMtyQSTvepMAb1FA?g_st=ipc"
     },
     {
-      id: "5",
-      typology: "2D1B",
-      floor: "3",
-      number: "301",
-      price: 580000,
-      area: 55,
-      bedrooms: 2,
-      bathrooms: 1,
-      available: true
+      op: "502",
+      unidad: "502",
+      tipologia: "4 dormitorios",
+      precio: 700000,
+      m2: 100,
+      orientacion: "Sur",
+      estacionamiento: 2,
+      bodega: 0,
+      gc: 125000,
+      aceptaMascotas: true,
+      estado: "disponible",
+      especial: false,
+      tremendaPromo: false,
+      descuento: 0,
+      mesesDescuento: 0,
+      linkListing: "https://maps.app.goo.gl/nLMtyQSTvepMAb1FA?g_st=ipc"
     },
     {
-      id: "6",
-      typology: "2D1B",
-      floor: "3",
-      number: "302",
-      price: 610000,
-      area: 58,
-      bedrooms: 2,
-      bathrooms: 1,
-      available: true
+      op: "101",
+      unidad: "101",
+      tipologia: "Estudio",
+      precio: 220000,
+      m2: 35,
+      orientacion: "Este",
+      estacionamiento: 1,
+      bodega: 0,
+      gc: 45000,
+      aceptaMascotas: true,
+      estado: "disponible",
+      especial: false,
+      tremendaPromo: false,
+      descuento: 0,
+      mesesDescuento: 0,
+      linkListing: "https://maps.app.goo.gl/nLMtyQSTvepMAb1FA?g_st=ipc"
     },
     {
-      id: "7",
-      typology: "2D2B",
-      floor: "4",
-      number: "401",
-      price: 620000,
-      area: 65,
-      bedrooms: 2,
-      bathrooms: 2,
-      available: true
-    },
-    {
-      id: "8",
-      typology: "2D2B",
-      floor: "4",
-      number: "402",
-      price: 650000,
-      area: 68,
-      bedrooms: 2,
-      bathrooms: 2,
-      available: true
+      op: "102",
+      unidad: "102",
+      tipologia: "Estudio",
+      precio: 240000,
+      m2: 38,
+      orientacion: "Oeste",
+      estacionamiento: 1,
+      bodega: 0,
+      gc: 48000,
+      aceptaMascotas: false,
+      estado: "disponible",
+      especial: false,
+      tremendaPromo: false,
+      descuento: 0,
+      mesesDescuento: 0,
+      linkListing: "https://maps.app.goo.gl/nLMtyQSTvepMAb1FA?g_st=ipc"
     }
   ]
 };

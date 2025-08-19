@@ -30,42 +30,11 @@ export function LazyBuildingsGrid({ initialBuildings, hasMore, total }: LazyBuil
     }
   }, [loading, hasMore]);
 
-  // Si solo hay un edificio, centrarlo
-  if (total === 1) {
-    return (
-      <div className="max-w-2xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <ArriendaSinComisionBuildingCard building={buildings[0]} />
-        </motion.div>
-        
-        {/* Mensaje especial para un solo edificio */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="text-center mt-8 p-6 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 rounded-2xl border border-blue-200 dark:border-blue-800"
-        >
-          <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-2">
-            🎯 Edificio Destacado
-          </h3>
-          <p className="text-blue-700 dark:text-blue-300 text-sm">
-            Este es nuestro edificio más popular con las mejores promociones. 
-            ¡No te pierdas esta oportunidad única!
-          </p>
-        </motion.div>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-8">
-      {/* Grid de edificios */}
+      {/* Grid de edificios - siempre 3 columnas con altura uniforme */}
       <motion.div 
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
@@ -76,6 +45,7 @@ export function LazyBuildingsGrid({ initialBuildings, hasMore, total }: LazyBuil
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
+            className="h-full"
           >
             <ArriendaSinComisionBuildingCard building={building} />
           </motion.div>
@@ -88,7 +58,7 @@ export function LazyBuildingsGrid({ initialBuildings, hasMore, total }: LazyBuil
           <button
             onClick={loadMore}
             disabled={loading}
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white px-8 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? (
               <>
@@ -97,9 +67,9 @@ export function LazyBuildingsGrid({ initialBuildings, hasMore, total }: LazyBuil
               </>
             ) : (
               <>
-                Cargar más edificios
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                Cargar más departamentos
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
                 </svg>
               </>
             )}
@@ -108,14 +78,19 @@ export function LazyBuildingsGrid({ initialBuildings, hasMore, total }: LazyBuil
       )}
 
       {/* Mensaje cuando no hay más edificios */}
-      {!hasMore && total > 1 && (
+      {!hasMore && total > 0 && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="text-center py-8"
+          transition={{ delay: 0.3 }}
+          className="text-center p-6 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 rounded-2xl border border-amber-200 dark:border-amber-800"
         >
-          <p className="text-muted-foreground">
-            Has visto todos los {total} edificios disponibles
+          <h3 className="text-lg font-semibold text-amber-900 dark:text-amber-100 mb-2">
+            ✨ Departamentos destacados
+          </h3>
+          <p className="text-amber-700 dark:text-amber-300 text-sm">
+            Estos son nuestros mejores departamentos con las promociones más atractivas. 
+            ¡Encuentra tu próximo hogar aquí!
           </p>
         </motion.div>
       )}
