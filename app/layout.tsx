@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@lib/theme-context";
 
 export const metadata: Metadata = {
   title: {
@@ -18,16 +19,18 @@ const inter = Inter({
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className={`dark ${inter.className}`}>
+    <html lang="es" className={inter.className}>
       <head>
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body 
-        className="min-h-screen bg-gray-900 text-gray-100"
+        className="min-h-screen bg-bg text-text"
         suppressHydrationWarning={true}
       >
-        <a href="#main-content" className="skip-link">Saltar al contenido principal</a>
-        {children}
+        <ThemeProvider>
+          <a href="#main-content" className="skip-link">Saltar al contenido principal</a>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

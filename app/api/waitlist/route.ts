@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { email, phone } = parsed.data;
+    const { email, phone, name, contactMethod, source } = parsed.data;
 
     // Crear cliente Supabase (real o mock)
     let supabase;
@@ -92,12 +92,15 @@ export async function POST(request: NextRequest) {
       throw error;
     }
 
-    // Insertar en waitlist
+    // Insertar en waitlist con campos extendidos
     const { error: _error } = await supabase
       .from('waitlist')
       .insert({
         email,
-        phone: phone || null
+        phone: phone || null,
+        name: name || null,
+        contact_method: contactMethod || null,
+        source: source || 'how-it-works'
       })
       .select()
       .single();

@@ -4,6 +4,17 @@
 
 /* Design tokens as CSS variables */
 :root{
+  /* Light theme (default) */
+  --bg: #FFFFFF;
+  --surface: #F8FAFC;
+  --soft: #F1F5F9;
+  --text: #0F172A;
+  --subtext: #475569;
+  --ring: #6D4AFF;
+}
+
+/* Dark theme */
+.dark{
   --bg: #0B0B10;
   --surface: #12121A;
   --soft: #1A1A24;
@@ -21,6 +32,12 @@ html, body {
 
 body {
   min-height: 100vh;
+  background: var(--bg);
+  transition: background-color 0.3s ease;
+}
+
+/* Dark theme gradient background */
+.dark body {
   background: linear-gradient(180deg, rgba(2,6,23,1) 0%, rgba(2,6,23,.98) 20%, rgba(2,6,23,.95) 50%, rgba(2,6,23,.98) 80%, rgba(2,6,23,1) 100%);
 }
 ::selection{ background: #6D4AFF; color: white; }

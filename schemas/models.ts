@@ -138,6 +138,9 @@ export const BookingRequestSchema = z.object({
 export const WaitlistRequestSchema = z.object({
   email: z.string().email(),
   phone: z.string().max(32).optional(),
+  name: z.string().min(1).max(100).optional(),
+  contactMethod: z.enum(['whatsapp', 'call', 'email']).optional(),
+  source: z.string().max(50).optional(),
 });
 
 export type Unit = z.infer<typeof UnitSchema>;
