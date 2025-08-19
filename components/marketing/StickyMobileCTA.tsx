@@ -30,7 +30,7 @@ export default function StickyMobileCTA() {
       initial={{ opacity: 0, y: 100 }}
       animate={{ opacity: 1, y: 0 }}
     >
-      <div className="rounded-2xl border border-border bg-background/95 p-4 shadow-2xl backdrop-blur-sm">
+      <div className="rounded-2xl border border-border bg-background/95 dark:bg-background/90 p-4 shadow-2xl backdrop-blur-sm">
         <div className="flex items-center justify-between gap-3">
           <div className="flex-1">
             <p className="text-sm font-semibold text-foreground">
@@ -43,7 +43,7 @@ export default function StickyMobileCTA() {
           
           <a
             href="/coming-soon"
-            className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-lg transition-all duration-200 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
+            className="inline-flex items-center gap-2 rounded-xl bg-primary hover:bg-primary/90 px-4 py-2 text-sm font-semibold text-primary-foreground shadow-lg transition-all duration-200 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
           >
             Contactar
             <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">

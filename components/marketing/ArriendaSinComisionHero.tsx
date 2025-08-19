@@ -21,11 +21,11 @@ export default function ArriendaSinComisionHero() {
         <MotionWrapper direction="down" delay={0.1}>
           <div className="mb-8 flex justify-center">
             <div className="relative">
-              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-green-500/20 to-emerald-500/20 blur-lg" />
-              <p className="relative inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-green-500/10 via-green-500/5 to-emerald-500/10 px-4 py-2 text-sm font-semibold text-green-400 ring-1 ring-inset ring-green-500/20 backdrop-blur-sm">
+              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-emerald-500/20 to-emerald-600/20 dark:from-emerald-400/20 dark:to-emerald-500/20 blur-lg" />
+              <p className="relative inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-500/10 via-emerald-500/5 to-emerald-600/10 dark:from-emerald-400/10 dark:via-emerald-400/5 dark:to-emerald-500/10 px-4 py-2 text-sm font-semibold text-emerald-600 dark:text-emerald-400 ring-1 ring-inset ring-emerald-500/20 dark:ring-emerald-400/20 backdrop-blur-sm">
                 <span className="flex h-2 w-2 items-center justify-center">
-                  <span className="absolute h-2 w-2 animate-ping rounded-full bg-green-400 opacity-75" />
-                  <span className="relative h-1.5 w-1.5 rounded-full bg-green-400" />
+                  <span className="absolute h-2 w-2 animate-ping rounded-full bg-emerald-500 dark:bg-emerald-400 opacity-75" />
+                  <span className="relative h-1.5 w-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400" />
                 </span>
                 0% comisión garantizada
               </p>
@@ -37,7 +37,7 @@ export default function ArriendaSinComisionHero() {
         <MotionWrapper direction="up" delay={0.2}>
           <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl">
             Arrienda{" "}
-            <span className="bg-gradient-to-r from-green-400 via-green-500 to-emerald-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-emerald-500 via-emerald-600 to-emerald-700 dark:from-emerald-400 dark:via-emerald-500 dark:to-emerald-600 bg-clip-text text-transparent">
               sin comisión
             </span>
             <br />
@@ -59,15 +59,15 @@ export default function ArriendaSinComisionHero() {
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-6">
             <a
               href="#buildings-grid"
-              className="group relative inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-green-500 to-emerald-500 px-8 py-4 text-base font-semibold text-white shadow-lg transition-all duration-200 hover:shadow-xl hover:shadow-green-500/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500 sm:px-10 sm:py-5 sm:text-lg"
+              className="group relative inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 dark:from-emerald-600 dark:to-emerald-700 dark:hover:from-emerald-700 dark:hover:to-emerald-800 px-8 py-4 text-base font-semibold text-white shadow-lg transition-all duration-200 hover:shadow-xl hover:shadow-emerald-500/25 dark:hover:shadow-emerald-600/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-emerald-500 sm:px-10 sm:py-5 sm:text-lg"
             >
-              <span className="absolute inset-0 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-600 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+              <span className="absolute inset-0 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-600 dark:from-emerald-600 dark:to-emerald-700 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
               <span className="relative">Ver departamentos disponibles</span>
             </a>
             
             <a
               href="/coming-soon"
-              className="inline-flex items-center gap-2 rounded-2xl border border-border/50 bg-background/80 px-6 py-3 text-sm font-medium text-foreground backdrop-blur-sm transition-colors hover:bg-muted/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500 sm:px-8 sm:py-4 sm:text-base"
+              className="inline-flex items-center gap-2 rounded-2xl border border-border/50 bg-background/80 dark:bg-background/60 px-6 py-3 text-sm font-medium text-foreground backdrop-blur-sm transition-colors hover:bg-muted/50 dark:hover:bg-muted/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-emerald-500 sm:px-8 sm:py-4 sm:text-base"
             >
               Quiero ser contactado
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
@@ -81,19 +81,19 @@ export default function ArriendaSinComisionHero() {
         <MotionWrapper direction="up" delay={0.6}>
           <div className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-3 sm:gap-8">
             <div className="flex flex-col items-center">
-              <div className="rounded-2xl bg-gradient-to-br from-green-50 to-emerald-50 p-4 ring-1 ring-green-200/50 dark:from-green-950/20 dark:to-emerald-950/20 dark:ring-green-800/50">
-                <div className="text-2xl font-bold text-green-600 dark:text-green-400">0%</div>
+              <div className="rounded-2xl bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-950/30 dark:to-emerald-900/30 p-4 ring-1 ring-emerald-200/50 dark:ring-emerald-800/50">
+                <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">0%</div>
               </div>
               <p className="mt-2 text-sm font-medium text-muted-foreground">Comisión</p>
             </div>
             <div className="flex flex-col items-center">
-              <div className="rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 p-4 ring-1 ring-blue-200/50 dark:from-blue-950/20 dark:to-indigo-950/20 dark:ring-blue-800/50">
+              <div className="rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950/30 dark:to-blue-900/30 p-4 ring-1 ring-blue-200/50 dark:ring-blue-800/50">
                 <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">100%</div>
               </div>
               <p className="mt-2 text-sm font-medium text-muted-foreground">Digital</p>
             </div>
             <div className="flex flex-col items-center">
-              <div className="rounded-2xl bg-gradient-to-br from-purple-50 to-violet-50 p-4 ring-1 ring-purple-200/50 dark:from-purple-950/20 dark:to-violet-950/20 dark:ring-purple-800/50">
+              <div className="rounded-2xl bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950/30 dark:to-purple-900/30 p-4 ring-1 ring-purple-200/50 dark:ring-purple-800/50">
                 <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">24/7</div>
               </div>
               <p className="mt-2 text-sm font-medium text-muted-foreground">Disponible</p>
