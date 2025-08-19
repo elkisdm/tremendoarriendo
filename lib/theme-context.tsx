@@ -43,11 +43,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     
     const root = window.document.documentElement;
     
-    // Remover todas las clases de tema existentes
-    root.classList.remove('dark', 'light');
-    
-    // Aplicar la clase del tema actual
-    root.classList.add(theme);
+    // Solo aplicar la clase si es diferente a la actual para evitar conflictos
+    if (!root.classList.contains(theme)) {
+      // Remover todas las clases de tema existentes
+      root.classList.remove('dark', 'light');
+      
+      // Aplicar la clase del tema actual
+      root.classList.add(theme);
+    }
     
     try {
       localStorage.setItem('theme', theme);
