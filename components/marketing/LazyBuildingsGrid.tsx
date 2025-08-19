@@ -1,94 +1,123 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import ArriendaSinComisionBuildingCard from "./ArriendaSinComisionBuildingCard";
+import { useState, useCallback } from "react";
+import { motion } from "framer-motion";
+import { ArriendaSinComisionBuildingCard } from "./ArriendaSinComisionBuildingCard";
 import type { BuildingSummary } from "@/hooks/useFetchBuildings";
 
 interface LazyBuildingsGridProps {
   initialBuildings: BuildingSummary[];
-  total: number;
   hasMore: boolean;
+  total: number;
 }
 
-export default function LazyBuildingsGrid({ 
-  initialBuildings, 
-  total, 
-  hasMore: initialHasMore 
-}: LazyBuildingsGridProps) {
+export function LazyBuildingsGrid({ initialBuildings, hasMore, total }: LazyBuildingsGridProps) {
   const [buildings, setBuildings] = useState<BuildingSummary[]>(initialBuildings);
   const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(initialHasMore);
-  const [page, setPage] = useState(1);
 
-  const loadMore = async () => {
+  const loadMore = useCallback(async () => {
     if (loading || !hasMore) return;
-
+    
     setLoading(true);
     try {
-      // Usar el nuevo API endpoint específico de arriendo sin comisión
-      const response = await fetch(`/api/arrienda-sin-comision?page=${page + 1}&limit=12`);
-      const data = await response.json();
-
-      if (data.success && data.buildings) {
-        setBuildings(prev => [...prev, ...data.buildings]);
-        setHasMore(data.pagination.hasMore);
-        setPage(prev => prev + 1);
-      }
+      // Simular carga de más edificios (en este caso no hay más)
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setBuildings(prev => [...prev]);
     } catch (error) {
-      console.error('Error cargando más edificios:', error);
+      console.error("Error loading more buildings:", error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [loading, hasMore]);
+
+  // Si solo hay un edificio, centrarlo
+  if (total === 1) {
+    return (
+      <div className="max-w-2xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <ArriendaSinComisionBuildingCard building={buildings[0]} />
+        </motion.div>
+        
+        {/* Mensaje especial para un solo edificio */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="text-center mt-8 p-6 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 rounded-2xl border border-blue-200 dark:border-blue-800"
+        >
+          <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-2">
+            🎯 Edificio Destacado
+          </h3>
+          <p className="text-blue-700 dark:text-blue-300 text-sm">
+            Este es nuestro edificio más popular con las mejores promociones. 
+            ¡No te pierdas esta oportunidad única!
+          </p>
+        </motion.div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
       {/* Grid de edificios */}
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <motion.div 
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
         {buildings.map((building, index) => (
-          <ArriendaSinComisionBuildingCard
-            key={`${building.id}-${index}`}
-            building={building}
-            priority={index < 3}
-          />
+          <motion.div
+            key={building.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: index * 0.1 }}
+          >
+            <ArriendaSinComisionBuildingCard building={building} />
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
-      {/* Loading indicator */}
-      {loading && (
-        <div className="flex justify-center py-8">
-          <div className="flex items-center gap-3">
-            <div className="h-6 w-6 animate-spin rounded-full border-2 border-green-500 border-t-transparent"></div>
-            <span className="text-muted-foreground">Cargando más edificios...</span>
-          </div>
-        </div>
-      )}
-
-      {/* Load more button */}
-      {hasMore && !loading && (
+      {/* Botón de cargar más */}
+      {hasMore && (
         <div className="text-center">
           <button
             onClick={loadMore}
-            className="inline-flex items-center gap-2 rounded-2xl border border-border bg-background px-6 py-3 text-sm font-medium text-foreground transition-colors hover:bg-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500"
+            disabled={loading}
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Cargar más edificios
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-            </svg>
+            {loading ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                Cargando...
+              </>
+            ) : (
+              <>
+                Cargar más edificios
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </>
+            )}
           </button>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Mostrando {buildings.length} de {total} edificios
-          </p>
         </div>
       )}
 
-      {/* No more buildings */}
-      {!hasMore && buildings.length > 0 && (
-        <div className="text-center py-8">
+      {/* Mensaje cuando no hay más edificios */}
+      {!hasMore && total > 1 && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center py-8"
+        >
           <p className="text-muted-foreground">
             Has visto todos los {total} edificios disponibles
           </p>
-        </div>
+        </motion.div>
       )}
     </div>
   );

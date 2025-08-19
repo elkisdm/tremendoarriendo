@@ -5,8 +5,8 @@ import { ThemeProvider } from "@lib/theme-context";
 
 export const metadata: Metadata = {
   title: {
-    default: "Hommie · 0% Comisión",
-    template: "%s | Hommie",
+    default: "Elkis Realtor · 0% Comisión",
+    template: "%s | Elkis Realtor",
   },
   description: "Arrienda departamentos con 0% de comisión. Compara, agenda visita y arrienda fácil.",
 };
@@ -22,16 +22,16 @@ const themeScript = `
   (function() {
     try {
       var theme = localStorage.getItem('theme');
-      var systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       
-      if (theme === 'dark' || (!theme && systemPrefersDark)) {
+      // Siempre usar light como default para consistencia
+      if (theme === 'dark') {
         document.documentElement.classList.add('dark');
       } else {
         document.documentElement.classList.remove('dark');
       }
     } catch (e) {
-      // Fallback a dark si hay error
-      document.documentElement.classList.add('dark');
+      // Fallback a light si hay error
+      document.documentElement.classList.remove('dark');
     }
   })();
 `;

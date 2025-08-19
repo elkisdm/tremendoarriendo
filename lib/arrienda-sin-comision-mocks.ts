@@ -1,15 +1,200 @@
 /**
  * Mock data para la landing "Arrienda Sin Comisión"
  * 
- * Este archivo contiene datos temporales que serán migrados a Supabase:
- * - Badges de promoción
- * - Amenidades
- * - Galerías de imágenes
- * 
- * TODO: Migrar estos datos a Supabase cuando estén disponibles las tablas correspondientes
+ * Este archivo contiene datos temporales optimizados para demostrar las funcionalidades
+ * de la landing con el edificio Home Amengual como caso principal.
  */
 
 import { PromotionType } from "@schemas/models";
+
+// Mock específico para Home Amengual
+export const HOME_AMENGUAL_MOCK = {
+  id: "home-amengual",
+  slug: "home-amengual",
+  name: "Home Amengual",
+  comuna: "Estación Central",
+  address: "Gral Amengual 102, Estación Central",
+  coverImage: "/images/edificio/estacioncentral-cover.jpg",
+  gallery: [
+    "/images/edificio/estacioncentral-cover.jpg",
+    "/images/edificio/nunoa-1.jpg",
+    "/images/edificio/lascondes-1.jpg",
+    "/images/edificio/mirador-1.jpg"
+  ],
+  precioDesde: 450000,
+  precioHasta: 650000,
+  precioPromedio: 550000,
+  hasAvailability: true,
+  totalUnidades: 12,
+  unidadesDisponibles: 8,
+  badges: [
+    {
+      type: "promotion",
+      label: "Sin comisión",
+      tag: "0% Comisión",
+      description: "Sin comisión de arrendamiento"
+    },
+    {
+      type: "promotion", 
+      label: "Garantía en cuotas",
+      tag: "Flexible",
+      description: "Paga tu garantía en cuotas"
+    },
+    {
+      type: "special",
+      label: "Pet Friendly",
+      tag: "Mascotas",
+      description: "Acepta mascotas"
+    },
+    {
+      type: "promotion",
+      label: "Opción sin garantía",
+      tag: "Sin aval",
+      description: "Arriendo sin garantía"
+    },
+    {
+      type: "promotion",
+      label: "Comisión gratis",
+      tag: "Exclusivo",
+      description: "Sin gastos de gestión"
+    }
+  ],
+  amenities: [
+    "Pet Friendly",
+    "Estacionamiento",
+    "Bodega", 
+    "Seguridad 24/7",
+    "Áreas Comunes",
+    "Gimnasio",
+    "Lavandería",
+    "WiFi"
+  ],
+  typologySummary: [
+    {
+      key: "Estudio",
+      label: "Estudio",
+      count: 2,
+      minPrice: 450000
+    },
+    {
+      key: "1D1B",
+      label: "1 Dorm, 1 Baño",
+      count: 3,
+      minPrice: 520000
+    },
+    {
+      key: "2D1B", 
+      label: "2 Dorm, 1 Baño",
+      count: 2,
+      minPrice: 580000
+    },
+    {
+      key: "2D2B",
+      label: "2 Dorm, 2 Baños", 
+      count: 1,
+      minPrice: 650000
+    }
+  ]
+};
+
+// Solo usar Home Amengual para la landing
+export const LANDING_BUILDINGS_MOCK = [HOME_AMENGUAL_MOCK];
+
+// Mock extendido para la página de detalle
+export const HOME_AMENGUAL_EXTENDED = {
+  ...HOME_AMENGUAL_MOCK,
+  amenities: [
+    "Pet Friendly",
+    "Estacionamiento",
+    "Bodega", 
+    "Seguridad 24/7",
+    "Áreas Comunes",
+    "Gimnasio",
+    "Lavandería",
+    "WiFi",
+    "Sala Multiuso",
+    "Quincho",
+    "Terraza",
+    "Conserjería"
+  ],
+  description: "Home Amengual es un edificio moderno ubicado en el corazón de Estación Central, a pasos del metro y con excelente conectividad. Ofrece departamentos desde estudio hasta 2 dormitorios, con amenidades premium y la mejor ubicación.",
+  linkListing: "https://www.assetplan.cl/arriendo/departamento/estacion-central/2-dormitorios/amengual/745?codigo_referido=elkis",
+  tipologias: ["Estudio", "1D1B", "2D1B", "2D2B"],
+  unidades: [
+    {
+      op: "225413",
+      unidad: "207",
+      tipologia: "Estudio",
+      precio: 450000,
+      m2: 28,
+      orientacion: "Norte",
+      estacionamiento: 0,
+      bodega: 0,
+      gc: 45000,
+      aceptaMascotas: true,
+      estado: "Disponible",
+      especial: false,
+      tremendaPromo: false,
+      descuento: 0,
+      mesesDescuento: 0,
+      linkListing: "https://www.assetplan.cl/arriendo/departamento/estacion-central/estudio/amengual/745?selectedUnit=225413&codigo_referido=elkis"
+    },
+    {
+      op: "225500",
+      unidad: "305",
+      tipologia: "1D1B",
+      precio: 520000,
+      m2: 35,
+      orientacion: "Norte",
+      estacionamiento: 1,
+      bodega: 1,
+      gc: 52000,
+      aceptaMascotas: true,
+      estado: "Disponible",
+      especial: false,
+      tremendaPromo: false,
+      descuento: 0,
+      mesesDescuento: 0,
+      linkListing: "https://www.assetplan.cl/arriendo/departamento/estacion-central/1-dormitorio/amengual/745?codigo_referido=elkis"
+    },
+    {
+      op: "225564",
+      unidad: "405",
+      tipologia: "2D1B",
+      precio: 580000,
+      m2: 42,
+      orientacion: "Norte",
+      estacionamiento: 1,
+      bodega: 1,
+      gc: 58000,
+      aceptaMascotas: true,
+      estado: "Disponible",
+      especial: false,
+      tremendaPromo: false,
+      descuento: 0,
+      mesesDescuento: 0,
+      linkListing: "https://www.assetplan.cl/arriendo/departamento/estacion-central/2-dormitorios/amengual/745?selectedUnit=225564&codigo_referido=elkis"
+    },
+    {
+      op: "225600",
+      unidad: "505",
+      tipologia: "2D2B",
+      precio: 650000,
+      m2: 48,
+      orientacion: "Norte",
+      estacionamiento: 1,
+      bodega: 1,
+      gc: 65000,
+      aceptaMascotas: true,
+      estado: "Disponible",
+      especial: false,
+      tremendaPromo: false,
+      descuento: 0,
+      mesesDescuento: 0,
+      linkListing: "https://www.assetplan.cl/arriendo/departamento/estacion-central/2-dormitorios/amengual/745?codigo_referido=elkis"
+    }
+  ]
+};
 
 export const MOCK_PROMOTIONS = [
   { 

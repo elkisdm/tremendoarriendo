@@ -45,10 +45,10 @@ export default function ArriendaSinComisionFilters({ onFiltersChange }: Arrienda
         
         if (data.success && data.buildings) {
           const buildings = data.buildings;
-          const comunas = [...new Set(buildings.map((b: any) => b.comuna))].sort();
+          const comunas = [...new Set(buildings.map((b: any) => b.comuna))].sort() as string[];
           const tipologias = [...new Set(buildings.flatMap((b: any) => 
             b.typologySummary?.map((t: any) => t.key) || []
-          ))].sort();
+          ))].sort() as string[];
           const prices = buildings.map((b: any) => b.precioDesde).filter((p: number) => p > 0);
           
           setOptions({

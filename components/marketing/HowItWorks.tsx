@@ -10,11 +10,24 @@ export default function HowItWorks() {
   const steps = [
     {
       number: "01",
-      title: "Explora proyectos",
-      description: "Navega por nuestra selección de proyectos verificados con disponibilidad real y precios transparentes.",
+      title: "Explora Home Amengual",
+      description: "Descubre este increíble edificio en Estación Central con 4 tipologías disponibles y las mejores amenidades.",
       icon: (
         <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      ),
+      color: "text-cyan-600 dark:text-cyan-400",
+      bgColor: "bg-cyan-50 dark:bg-cyan-950/20",
+      borderColor: "border-cyan-200 dark:border-cyan-800/30",
+    },
+    {
+      number: "02",
+      title: "Ahorra la comisión",
+      description: "Selecciona tu tipología ideal y ahorra el 100% de la comisión. Precios desde $450,000.",
+      icon: (
+        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       ),
       color: "text-blue-600 dark:text-blue-400",
@@ -22,22 +35,9 @@ export default function HowItWorks() {
       borderColor: "border-blue-200 dark:border-blue-800/30",
     },
     {
-      number: "02",
-      title: "Cotiza sin fricción",
-      description: "Selecciona tipologías, ve precios finales y ahorra toda la comisión. Proceso 100% digital.",
-      icon: (
-        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      ),
-      color: "text-emerald-600 dark:text-emerald-400",
-      bgColor: "bg-emerald-50 dark:bg-emerald-950/20",
-      borderColor: "border-emerald-200 dark:border-emerald-800/30",
-    },
-    {
       number: "03",
-      title: "Reserva en minutos",
-      description: "Te acompañamos en todo el proceso hasta la escrituración. Soporte personal dedicado.",
+      title: "Reserva tu departamento",
+      description: "Te acompañamos en todo el proceso hasta la firma. Soporte personalizado y sin complicaciones.",
       icon: (
         <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -60,7 +60,7 @@ export default function HowItWorks() {
                 ¿Cómo funciona?
               </h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Proceso simple y transparente en 3 pasos
+                Proceso simple para arrendar en Home Amengual
               </p>
             </div>
           </MotionWrapper>
@@ -106,51 +106,24 @@ export default function HowItWorks() {
               </MotionWrapper>
             ))}
           </div>
-          
-          {/* CTA - diseño minimalista */}
-          <MotionWrapper direction="up" delay={0.5}>
-            <div className="mt-20 text-center">
-              <div className="max-w-2xl mx-auto bg-card border border-border/50 rounded-3xl p-8 lg:p-12 shadow-lg">
-                <div className="mb-8">
-                  <h3 className="text-2xl font-bold text-foreground mb-4">
-                    ¿Listo para empezar?
-                  </h3>
-                  <p className="text-muted-foreground text-lg">
-                    Déjanos tus datos y te contactaremos para ayudarte a encontrar tu próximo hogar
-                  </p>
-                </div>
-                
-                <div className="space-y-6">
-                  <div>
-                    <h4 className="text-lg font-medium text-foreground mb-2">
-                      Te contactamos por el método que prefieras
-                    </h4>
-                    <p className="text-sm text-muted-foreground">
-                      WhatsApp, llamada telefónica o email
-                    </p>
-                  </div>
-                  
-                  <button
-                    onClick={() => setIsContactModalOpen(true)}
-                    className="w-full inline-flex items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 dark:from-emerald-600 dark:to-emerald-700 dark:hover:from-emerald-700 dark:hover:to-emerald-800 px-8 py-4 text-base font-semibold text-white shadow-lg transition-all duration-200 hover:shadow-xl hover:shadow-emerald-500/25 dark:hover:shadow-emerald-600/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-emerald-500 active:scale-[0.98]"
-                  >
-                    Quiero ser contactado
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                    </svg>
-                  </button>
-                  
-                  <p className="text-xs text-muted-foreground">
-                    Sin compromiso • Respuesta en menos de 24 horas
-                  </p>
-                </div>
-              </div>
+
+          {/* CTA */}
+          <MotionWrapper direction="up" delay={0.6}>
+            <div className="mt-16 text-center">
+              <button
+                onClick={() => setIsContactModalOpen(true)}
+                className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white px-8 py-4 text-base font-semibold shadow-lg transition-all duration-200 hover:shadow-xl hover:shadow-cyan-500/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-cyan-500"
+              >
+                Quiero más información
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+              </button>
             </div>
           </MotionWrapper>
         </div>
       </section>
 
-      {/* Modal de contacto */}
       <ContactModal 
         isOpen={isContactModalOpen} 
         onClose={() => setIsContactModalOpen(false)} 

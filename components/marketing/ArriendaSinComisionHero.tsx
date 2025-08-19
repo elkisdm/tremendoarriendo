@@ -21,13 +21,13 @@ export default function ArriendaSinComisionHero() {
         <MotionWrapper direction="down" delay={0.1}>
           <div className="mb-8 flex justify-center">
             <div className="relative">
-              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-emerald-500/20 to-emerald-600/20 dark:from-emerald-400/20 dark:to-emerald-500/20 blur-lg" />
-              <p className="relative inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-500/10 via-emerald-500/5 to-emerald-600/10 dark:from-emerald-400/10 dark:via-emerald-400/5 dark:to-emerald-500/10 px-4 py-2 text-sm font-semibold text-emerald-600 dark:text-emerald-400 ring-1 ring-inset ring-emerald-500/20 dark:ring-emerald-400/20 backdrop-blur-sm">
+              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-500/20 to-blue-500/20 dark:from-cyan-400/20 dark:to-blue-400/20 blur-lg" />
+              <p className="relative inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-500/10 via-blue-500/5 to-purple-600/10 dark:from-cyan-400/10 dark:via-blue-400/5 dark:to-purple-500/10 px-4 py-2 text-sm font-semibold text-cyan-600 dark:text-cyan-400 ring-1 ring-inset ring-cyan-500/20 dark:ring-cyan-400/20 backdrop-blur-sm">
                 <span className="flex h-2 w-2 items-center justify-center">
-                  <span className="absolute h-2 w-2 animate-ping rounded-full bg-emerald-500 dark:bg-emerald-400 opacity-75" />
-                  <span className="relative h-1.5 w-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400" />
+                  <span className="absolute h-2 w-2 animate-ping rounded-full bg-cyan-500 dark:bg-cyan-400 opacity-75" />
+                  <span className="relative h-1.5 w-1.5 rounded-full bg-cyan-500 dark:bg-cyan-400" />
                 </span>
-                0% comisión garantizada
+                ⚡ Oportunidad única disponible
               </p>
             </div>
           </div>
@@ -37,20 +37,20 @@ export default function ArriendaSinComisionHero() {
         <MotionWrapper direction="up" delay={0.2}>
           <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl">
             Arrienda{" "}
-            <span className="bg-gradient-to-r from-emerald-500 via-emerald-600 to-emerald-700 dark:from-emerald-400 dark:via-emerald-500 dark:to-emerald-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 dark:from-cyan-400 dark:via-blue-400 dark:to-purple-500 bg-clip-text text-transparent">
               sin comisión
             </span>
             <br />
-            <span className="text-3xl sm:text-4xl lg:text-5xl">en departamentos nuevos</span>
+            <span className="text-3xl sm:text-4xl lg:text-5xl">en Estación Central</span>
           </h1>
         </MotionWrapper>
 
         {/* Subtítulo */}
         <MotionWrapper direction="up" delay={0.3}>
           <p className="mt-6 text-lg leading-8 text-muted-foreground sm:text-xl lg:text-2xl lg:leading-9">
-            Proyectos multifamily verificados con disponibilidad real.{" "}
+            Descubre <strong>Home Amengual</strong>, un edificio premium con{" "}
             <br className="hidden sm:block" />
-            Precios actualizados y proceso 100% digital.
+            las mejores amenidades y 0% de comisión garantizada.
           </p>
         </MotionWrapper>
 
@@ -59,15 +59,15 @@ export default function ArriendaSinComisionHero() {
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-6">
             <a
               href="#buildings-grid"
-              className="group relative inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 dark:from-emerald-600 dark:to-emerald-700 dark:hover:from-emerald-700 dark:hover:to-emerald-800 px-8 py-4 text-base font-semibold text-white shadow-lg transition-all duration-200 hover:shadow-xl hover:shadow-emerald-500/25 dark:hover:shadow-emerald-600/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-emerald-500 sm:px-10 sm:py-5 sm:text-lg"
+              className="group relative inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 dark:from-cyan-600 dark:to-blue-700 dark:hover:from-cyan-700 dark:hover:to-blue-800 px-8 py-4 text-base font-semibold text-white shadow-lg transition-all duration-200 hover:shadow-xl hover:shadow-cyan-500/25 dark:hover:shadow-cyan-600/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-cyan-500 sm:px-10 sm:py-5 sm:text-lg"
             >
-              <span className="absolute inset-0 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-600 dark:from-emerald-600 dark:to-emerald-700 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
-              <span className="relative">Ver departamentos disponibles</span>
+              <span className="absolute inset-0 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 dark:from-cyan-600 dark:to-blue-700 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+              <span className="relative">Ver edificio disponible</span>
             </a>
             
             <a
               href="/coming-soon"
-              className="inline-flex items-center gap-2 rounded-2xl border border-border/50 bg-background/80 dark:bg-background/60 px-6 py-3 text-sm font-medium text-foreground backdrop-blur-sm transition-colors hover:bg-muted/50 dark:hover:bg-muted/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-emerald-500 sm:px-8 sm:py-4 sm:text-base"
+              className="inline-flex items-center gap-2 rounded-2xl border border-border/50 bg-background/80 dark:bg-background/60 px-6 py-3 text-sm font-medium text-foreground backdrop-blur-sm transition-colors hover:bg-muted/50 dark:hover:bg-muted/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-cyan-500 sm:px-8 sm:py-4 sm:text-base"
             >
               Quiero ser contactado
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
@@ -81,22 +81,22 @@ export default function ArriendaSinComisionHero() {
         <MotionWrapper direction="up" delay={0.6}>
           <div className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-3 sm:gap-8">
             <div className="flex flex-col items-center">
-              <div className="rounded-2xl bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-950/30 dark:to-emerald-900/30 p-4 ring-1 ring-emerald-200/50 dark:ring-emerald-800/50">
-                <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">0%</div>
+              <div className="rounded-2xl bg-gradient-to-br from-cyan-50 to-cyan-100 dark:from-cyan-950/30 dark:to-cyan-900/30 p-4 ring-1 ring-cyan-200/50 dark:ring-cyan-800/50">
+                <div className="text-2xl font-bold text-cyan-600 dark:text-cyan-400">0%</div>
               </div>
               <p className="mt-2 text-sm font-medium text-muted-foreground">Comisión</p>
             </div>
             <div className="flex flex-col items-center">
               <div className="rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950/30 dark:to-blue-900/30 p-4 ring-1 ring-blue-200/50 dark:ring-blue-800/50">
-                <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">100%</div>
+                <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">8</div>
               </div>
-              <p className="mt-2 text-sm font-medium text-muted-foreground">Digital</p>
+              <p className="mt-2 text-sm font-medium text-muted-foreground">Unidades</p>
             </div>
             <div className="flex flex-col items-center">
               <div className="rounded-2xl bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950/30 dark:to-purple-900/30 p-4 ring-1 ring-purple-200/50 dark:ring-purple-800/50">
-                <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">24/7</div>
+                <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">4</div>
               </div>
-              <p className="mt-2 text-sm font-medium text-muted-foreground">Disponible</p>
+              <p className="mt-2 text-sm font-medium text-muted-foreground">Tipologías</p>
             </div>
           </div>
         </MotionWrapper>

@@ -19,33 +19,20 @@ export default function ArriendaSinComisionStats() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await fetch('/api/arrienda-sin-comision?limit=100');
-        const data = await response.json();
-        
-        if (data.success && data.buildings) {
-          const buildings = data.buildings;
-          const totalBuildings = buildings.length;
-          const totalUnits = buildings.reduce((sum: number, b: any) => 
-            sum + (b.typologySummary?.reduce((s: number, t: any) => s + t.count, 0) || 0), 0
-          );
-          const availableUnits = buildings.reduce((sum: number, b: any) => 
-            sum + (b.typologySummary?.reduce((s: number, t: any) => s + t.count, 0) || 0), 0
-          );
-          const averagePrice = buildings.reduce((sum: number, b: any) => sum + b.precioDesde, 0) / totalBuildings;
-          const comunas = [...new Set(buildings.map((b: any) => b.comuna))];
-          const tipologias = [...new Set(buildings.flatMap((b: any) => 
-            b.typologySummary?.map((t: any) => t.key) || []
-          ))];
+        // Usar datos mock de Home Amengual
+        const mockStats = {
+          totalBuildings: 1,
+          totalUnits: 8,
+          availableUnits: 8,
+          averagePrice: 550000,
+          comunas: ["Estación Central"],
+          tipologias: ["Estudio", "1D1B", "2D1B", "2D2B"]
+        };
 
-          setStats({
-            totalBuildings,
-            totalUnits,
-            availableUnits,
-            averagePrice,
-            comunas,
-            tipologias
-          });
-        }
+        // Simular delay de red
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        setStats(mockStats);
       } catch (error) {
         console.error('Error fetching stats:', error);
       } finally {
@@ -89,55 +76,55 @@ export default function ArriendaSinComisionStats() {
         <MotionWrapper direction="up" delay={0.1}>
           <div className="text-center mb-8">
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-              Estadísticas del Mercado
+              Home Amengual en Números
             </h2>
             <p className="mt-2 text-muted-foreground">
-              Datos actualizados de departamentos disponibles
+              Datos actualizados del edificio disponible
             </p>
           </div>
         </MotionWrapper>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
           <MotionWrapper direction="up" delay={0.2}>
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 rounded-2xl p-6 text-center ring-1 ring-green-200/50 dark:ring-green-800/50">
-              <div className="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">
+            <div className="bg-gradient-to-br from-cyan-50 to-cyan-100 dark:from-cyan-950/30 dark:to-cyan-900/30 rounded-2xl p-6 ring-1 ring-cyan-200/50 dark:ring-cyan-800/50">
+              <div className="text-3xl font-bold text-cyan-600 dark:text-cyan-400">
                 {stats.totalBuildings}
               </div>
-              <div className="text-sm text-muted-foreground">
-                Edificios Disponibles
+              <div className="text-sm font-medium text-cyan-700 dark:text-cyan-300">
+                Edificio
               </div>
             </div>
           </MotionWrapper>
 
           <MotionWrapper direction="up" delay={0.3}>
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 rounded-2xl p-6 text-center ring-1 ring-blue-200/50 dark:ring-blue-800/50">
-              <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950/30 dark:to-blue-900/30 rounded-2xl p-6 ring-1 ring-blue-200/50 dark:ring-blue-800/50">
+              <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
                 {stats.availableUnits}
               </div>
-              <div className="text-sm text-muted-foreground">
+              <div className="text-sm font-medium text-blue-700 dark:text-blue-300">
                 Unidades Disponibles
               </div>
             </div>
           </MotionWrapper>
 
           <MotionWrapper direction="up" delay={0.4}>
-            <div className="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-950/20 dark:to-violet-950/20 rounded-2xl p-6 text-center ring-1 ring-purple-200/50 dark:ring-purple-800/50">
-              <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">
-                {formatPrice(stats.averagePrice)}
+            <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950/30 dark:to-purple-900/30 rounded-2xl p-6 ring-1 ring-purple-200/50 dark:ring-purple-800/50">
+              <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">
+                {stats.tipologias.length}
               </div>
-              <div className="text-sm text-muted-foreground">
-                Precio Promedio
+              <div className="text-sm font-medium text-purple-700 dark:text-purple-300">
+                Tipologías
               </div>
             </div>
           </MotionWrapper>
 
           <MotionWrapper direction="up" delay={0.5}>
-            <div className="bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-950/20 dark:to-red-950/20 rounded-2xl p-6 text-center ring-1 ring-orange-200/50 dark:ring-orange-800/50">
-              <div className="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-2">
-                {stats.comunas.length}
+            <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-950/30 dark:to-emerald-900/30 rounded-2xl p-6 ring-1 ring-emerald-200/50 dark:ring-emerald-800/50">
+              <div className="text-3xl font-bold text-emerald-600 dark:text-emerald-400">
+                {formatPrice(stats.averagePrice)}
               </div>
-              <div className="text-sm text-muted-foreground">
-                Comunas Cubiertas
+              <div className="text-sm font-medium text-emerald-700 dark:text-emerald-300">
+                Precio Promedio
               </div>
             </div>
           </MotionWrapper>
@@ -145,38 +132,15 @@ export default function ArriendaSinComisionStats() {
 
         {/* Información adicional */}
         <MotionWrapper direction="up" delay={0.6}>
-          <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-card rounded-2xl p-6 ring-1 ring-border">
-              <h3 className="font-semibold mb-3">Comunas Disponibles</h3>
-              <div className="flex flex-wrap gap-2">
-                {stats.comunas.slice(0, 8).map((comuna) => (
-                  <span
-                    key={comuna}
-                    className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground"
-                  >
-                    {comuna}
-                  </span>
-                ))}
-                {stats.comunas.length > 8 && (
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground">
-                    +{stats.comunas.length - 8} más
-                  </span>
-                )}
-              </div>
-            </div>
-
-            <div className="bg-card rounded-2xl p-6 ring-1 ring-border">
-              <h3 className="font-semibold mb-3">Tipologías Disponibles</h3>
-              <div className="flex flex-wrap gap-2">
-                {stats.tipologias.map((tipologia) => (
-                  <span
-                    key={tipologia}
-                    className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400"
-                  >
-                    {tipologia}
-                  </span>
-                ))}
-              </div>
+          <div className="mt-12 text-center">
+            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 dark:from-cyan-400/10 dark:to-blue-400/10 px-6 py-3 rounded-2xl border border-cyan-200/50 dark:border-cyan-800/50">
+              <span className="text-cyan-600 dark:text-cyan-400 font-semibold">
+                📍 {stats.comunas.join(", ")}
+              </span>
+              <span className="text-muted-foreground">•</span>
+              <span className="text-muted-foreground">
+                Desde {formatPrice(450000)} hasta {formatPrice(650000)}
+              </span>
             </div>
           </div>
         </MotionWrapper>

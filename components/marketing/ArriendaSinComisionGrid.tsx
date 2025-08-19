@@ -1,183 +1,139 @@
-import Link from "next/link";
+"use client";
+
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { ArriendaSinComisionBuildingCard } from "./ArriendaSinComisionBuildingCard";
+import { LazyBuildingsGrid } from "./LazyBuildingsGrid";
+import { LANDING_BUILDINGS_MOCK } from "@/lib/arrienda-sin-comision-mocks";
 import type { BuildingSummary } from "@/hooks/useFetchBuildings";
-import LazyBuildingsGrid from "./LazyBuildingsGrid";
-import { getSupabaseProcessor } from "@/lib/supabase-data-processor";
 
-type ArriendaSinComisionGridProps = Record<string, never>;
-
-async function fetchInitialBuildings(): Promise<{
-  buildings: BuildingSummary[];
-  total: number;
-  hasMore: boolean;
-}> {
-  try {
-    console.log('🔍 Cargando edificios iniciales para Arriendo Sin Comisión...');
-    
-    // Intentar usar el nuevo API endpoint específico
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/arrienda-sin-comision?limit=12&page=1`, {
-      next: { revalidate: 3600 } // Cache por 1 hora
-    });
-    
-    if (response.ok) {
-      const data = await response.json();
-      console.log(`✅ API Arriendo Sin Comisión: ${data.buildings.length} edificios cargados`);
-      
-      return {
-        buildings: data.buildings,
-        total: data.pagination.total,
-        hasMore: data.pagination.hasMore
-      };
-    }
-    
-    // Fallback: usar el procesador directo
-    console.log('⚠️ Fallback: usando procesador directo...');
-    const processor = await getSupabaseProcessor();
-    const result = await processor.getLandingBuildings(12, 0);
-    
-    console.log(`🏢 Edificios iniciales cargados: ${result.buildings.length} de ${result.total}`);
-    
-    // Convertir LandingBuilding a BuildingSummary
-    const buildings: BuildingSummary[] = result.buildings.map(building => ({
-      id: building.id,
-      slug: building.slug,
-      name: building.name,
-      comuna: building.comuna,
-      address: building.address,
-      coverImage: building.coverImage,
-      gallery: building.gallery,
-      precioDesde: building.precioDesde,
-      hasAvailability: building.hasAvailability,
-      badges: building.badges.map(badge => ({
-        type: badge.type as any,
-        label: badge.label,
-        description: badge.description,
-      })),
-      amenities: building.amenities,
-      typologySummary: building.typologySummary,
-    }));
-    
-    return {
-      buildings,
-      total: result.total,
-      hasMore: result.hasMore
-    };
-    
-  } catch (error) {
-    console.error('❌ Error cargando datos de Arriendo Sin Comisión:', error);
-    
-    // Fallback: intentar cargar desde CSV si Supabase falla
-    try {
-      console.log('⚠️ Fallback: intentando cargar desde CSV...');
-      const { getCSVProcessor } = await import("@lib/csv-data-processor");
-      
-      const csvProcessor = await getCSVProcessor();
-      const csvBuildings = csvProcessor.getLandingBuildings();
-      
-      const buildings: BuildingSummary[] = csvBuildings.slice(0, 12).map(building => ({
-        id: building.id,
-        slug: building.slug,
-        name: building.name,
-        comuna: building.comuna,
-        address: building.address,
-        coverImage: building.coverImage,
-        gallery: building.gallery,
-        precioDesde: building.precioDesde,
-        hasAvailability: building.hasAvailability,
-        badges: building.badges.map(badge => ({
-          type: badge.type as any,
-          label: badge.label,
-          description: badge.description,
-        })),
-        amenities: building.amenities,
-        typologySummary: building.typologySummary,
-      }));
-      
-      return {
-        buildings,
-        total: csvBuildings.length,
-        hasMore: csvBuildings.length > 12
-      };
-      
-    } catch (csvError) {
-      console.error('❌ Error también en CSV:', csvError);
-      return {
-        buildings: [],
-        total: 0,
-        hasMore: false
-      };
-    }
-  }
+interface ArriendaSinComisionGridProps {
+  initialBuildings?: BuildingSummary[];
 }
 
-export default async function ArriendaSinComisionGrid(_: ArriendaSinComisionGridProps) {
-  const { buildings, total, hasMore } = await fetchInitialBuildings();
+export default function ArriendaSinComisionGrid({ initialBuildings }: ArriendaSinComisionGridProps) {
+  const [buildings, setBuildings] = useState<BuildingSummary[]>(initialBuildings || []);
+  const [loading, setLoading] = useState(!initialBuildings);
+  const [error, setError] = useState<string | null>(null);
 
-  // Fallback si no hay edificios
-  if (buildings.length === 0) {
+  useEffect(() => {
+    if (!initialBuildings) {
+      fetchInitialBuildings();
+    }
+  }, [initialBuildings]);
+
+  const fetchInitialBuildings = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // Usar solo los datos mock de Home Amengual
+      const mockBuildings = LANDING_BUILDINGS_MOCK;
+      
+      // Simular delay de red
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      setBuildings(mockBuildings);
+    } catch (err) {
+      console.error("Error fetching buildings:", err);
+      setError("Error al cargar los edificios");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
     return (
-      <section id="buildings-grid" aria-labelledby="buildings-heading" className="px-6 py-12 lg:px-8">
-        <div className="mx-auto max-w-6xl">
-          <h2 id="buildings-heading" className="text-2xl font-semibold text-center">
-            Departamentos con 0% comisión
-          </h2>
-          <div className="mt-8 rounded-2xl border border-border bg-card p-8 text-center">
-            <p className="text-muted-foreground">
-              Próximamente tendremos departamentos con promociones especiales disponibles
-            </p>
+      <section className="py-16 bg-gradient-to-b from-background to-muted/20">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <motion.h2 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-3xl md:text-4xl font-bold mb-4"
+            >
+              Cargando edificios disponibles...
+            </motion.h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="bg-white dark:bg-gray-800 rounded-2xl p-6 animate-pulse">
+                <div className="h-48 bg-gray-200 dark:bg-gray-700 rounded-xl mb-4"></div>
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
+                <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded mb-4"></div>
+                <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded"></div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
     );
   }
 
-  return (
-    <section id="buildings-grid" aria-labelledby="buildings-heading" className="relative px-6 py-16 lg:px-8 lg:py-24">
-      {/* Background gradient */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-gradient-to-b from-background via-background to-muted/20"
-      />
-
-      <div className="mx-auto max-w-6xl">
-        {/* Header */}
-        <div className="text-center">
-          <h2 id="buildings-heading" className="text-3xl font-bold tracking-tight sm:text-4xl">
-            Departamentos con{" "}
-            <span className="bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">
-              0% comisión
-            </span>
-          </h2>
-          <p className="mt-4 text-lg text-muted-foreground">
-            Proyectos multifamily verificados con promociones especiales
-          </p>
-          {total > 0 && (
-            <p className="mt-2 text-sm text-muted-foreground">
-              {total} edificios disponibles
-            </p>
-          )}
-        </div>
-
-        {/* Grid de edificios con carga diferida */}
-        <div className="mt-12">
-          <LazyBuildingsGrid
-            initialBuildings={buildings}
-            total={total}
-            hasMore={hasMore}
-          />
-        </div>
-
-        {/* CTA adicional */}
-        <div className="mt-12 text-center">
-          <Link
-            href="/cotizador"
-            className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-500 px-8 py-4 text-base font-semibold text-white shadow-lg transition-all duration-200 hover:shadow-xl hover:shadow-green-500/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500"
+  if (error) {
+    return (
+      <section className="py-16 bg-gradient-to-b from-background to-muted/20">
+        <div className="container mx-auto px-4 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl p-8"
           >
-            Cotizar arriendo
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16a2 2 0 002 2z" />
-            </svg>
-          </Link>
+            <h3 className="text-xl font-semibold text-red-800 dark:text-red-200 mb-2">
+              Error al cargar edificios
+            </h3>
+            <p className="text-red-600 dark:text-red-300 mb-4">{error}</p>
+            <button
+              onClick={fetchInitialBuildings}
+              className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg transition-colors"
+            >
+              Intentar nuevamente
+            </button>
+          </motion.div>
         </div>
+      </section>
+    );
+  }
+
+  const total = buildings.length;
+
+  return (
+    <section className="py-16 bg-gradient-to-b from-background to-muted/20">
+      <div className="container mx-auto px-4">
+        {/* Header con información */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-12"
+        >
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
+            {total === 1 ? "Edificio Destacado" : "Edificios Disponibles"}
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            {total === 1 
+              ? "Descubre este increíble edificio con 0% de comisión y las mejores amenidades"
+              : `Encuentra ${total} edificios con 0% de comisión y las mejores amenidades`
+            }
+          </p>
+          
+          {/* Badge destacado */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2 }}
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-4 py-2 rounded-full text-sm font-semibold mt-4"
+          >
+            <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+            ⚡ {total === 1 ? "1 oportunidad" : `${total} oportunidades`} disponible{total === 1 ? '' : 's'}
+          </motion.div>
+        </motion.div>
+
+        {/* Grid de edificios */}
+        <LazyBuildingsGrid 
+          initialBuildings={buildings}
+          hasMore={false} // Solo tenemos 1 edificio mock
+          total={total}
+        />
       </div>
     </section>
   );

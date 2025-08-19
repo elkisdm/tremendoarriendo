@@ -1,207 +1,426 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
+import { useState, useMemo, useCallback } from "react";
+import { motion } from "framer-motion";
+import { Home, Users, Zap, ArrowRight, Percent, Shield, Clock, CreditCard, UserCheck, ChevronLeft, ChevronRight, Bed, Building2, Castle, Hotel, Flame } from "lucide-react";
 import Link from "next/link";
 import type { BuildingSummary } from "@/hooks/useFetchBuildings";
 
 interface ArriendaSinComisionBuildingCardProps {
   building: BuildingSummary;
-  priority?: boolean;
 }
 
-export default function ArriendaSinComisionBuildingCard({ building, priority = false }: ArriendaSinComisionBuildingCardProps) {
-  const [selectedTypology, setSelectedTypology] = useState<string | null>(null);
-  const [showTypologySelector, setShowTypologySelector] = useState(false);
-  
-  const cover = building.coverImage ?? building.gallery?.[0] ?? "/images/nunoa-cover.jpg";
-  
-  const formatPrice = (price: number): string => {
-    if (price >= 1_000_000) {
-      const millions = price / 1_000_000;
-      return `$${millions.toFixed(0)}M`;
-    }
-    return `$${price.toLocaleString('es-CL')}`;
-  };
+// Memoizar funciones utilitarias para mejor performance
+const getMaxPrice = (typologySummary: BuildingSummary['typologySummary']) => {
+  if (!typologySummary) return 0;
+  return Math.max(...typologySummary.map(t => t.minPrice || 0));
+};
 
-  const handleTypologySelect = (typology: string) => {
-    setSelectedTypology(typology);
-    setShowTypologySelector(false);
-    // Navegar a la página de detalle con la tipología seleccionada
-    const href = `/arrienda-sin-comision/${building.slug}?tipologia=${typology}`;
-    window.location.href = href;
-  };
+const getMinPrice = (typologySummary: BuildingSummary['typologySummary']) => {
+  if (!typologySummary) return 0;
+  return Math.min(...typologySummary.map(t => t.minPrice || 0));
+};
 
-  const handleCardClick = (e: React.MouseEvent) => {
-    // Si hay múltiples tipologías, mostrar selector en lugar de navegar directamente
-    if (building.typologySummary && building.typologySummary.length > 1) {
-      e.preventDefault();
-      setShowTypologySelector(true);
-    }
-  };
+const getTypologyIcon = (label: string) => {
+  const labelLower = label.toLowerCase();
+  
+  if (labelLower.includes('estudio')) return <Home className="w-4 h-4" aria-hidden="true" />;
+  if (labelLower.includes('1 dormitorio') || labelLower.includes('1d')) return <Bed className="w-4 h-4" aria-hidden="true" />;
+  if (labelLower.includes('2 dormitorios') || labelLower.includes('2d')) return <Building2 className="w-4 h-4" aria-hidden="true" />;
+  if (labelLower.includes('3 dormitorios') || labelLower.includes('3d')) return <Hotel className="w-4 h-4" aria-hidden="true" />;
+  if (labelLower.includes('4 dormitorios') || labelLower.includes('4d')) return <Castle className="w-4 h-4" aria-hidden="true" />;
+  return <Home className="w-4 h-4" aria-hidden="true" />;
+};
+
+const getBadgeIcon = (label: string) => {
+  if (label.includes('Sin comisión') || label.includes('Comisión gratis')) return <Percent className="w-3 h-3" aria-hidden="true" />;
+  if (label.includes('Garantía en cuotas')) return <Shield className="w-3 h-3" aria-hidden="true" />;
+  if (label.includes('Opción sin garantía')) return <Shield className="w-3 h-3" aria-hidden="true" />;
+  if (label.includes('Precio fijo') || label.includes('12 meses')) return <Clock className="w-3 h-3" aria-hidden="true" />;
+  if (label.includes('cuotas')) return <CreditCard className="w-3 h-3" aria-hidden="true" />;
+  if (label.includes('sin aval')) return <UserCheck className="w-3 h-3" aria-hidden="true" />;
+  if (label.includes('OFF') || label.includes('%')) return <Zap className="w-3 h-3" aria-hidden="true" />;
+  return <Zap className="w-3 h-3" aria-hidden="true" />;
+};
+
+const getBadgeColor = (label: string) => {
+  if (label.includes('Sin comisión') || label.includes('Comisión gratis')) {
+    return "bg-gradient-to-r from-emerald-500 to-teal-500 text-white";
+  }
+  if (label.includes('Garantía en cuotas')) {
+    return "bg-gradient-to-r from-blue-500 to-indigo-500 text-white";
+  }
+  if (label.includes('Opción sin garantía')) {
+    return "bg-gradient-to-r from-amber-500 to-orange-500 text-white";
+  }
+  if (label.includes('Precio fijo') || label.includes('12 meses')) {
+    return "bg-gradient-to-r from-purple-500 to-violet-500 text-white";
+  }
+  if (label.includes('cuotas')) {
+    return "bg-gradient-to-r from-cyan-500 to-blue-500 text-white";
+  }
+  if (label.includes('sin aval')) {
+    return "bg-gradient-to-r from-orange-500 to-red-500 text-white";
+  }
+  if (label.includes('OFF') || label.includes('%')) {
+    return "bg-gradient-to-r from-red-500 to-pink-500 text-white";
+  }
+  return "bg-gradient-to-r from-gray-500 to-gray-600 text-white";
+};
+
+const getTypologyOrder = (label: string) => {
+  if (label.includes('Estudio')) return 1;
+  if (label.includes('1 dormitorio')) return 2;
+  if (label.includes('2 dormitorios')) return 3;
+  if (label.includes('3 dormitorios')) return 4;
+  if (label.includes('4 dormitorios')) return 5;
+  return 6;
+};
+
+export default function ArriendaSinComisionBuildingCard({ building }: ArriendaSinComisionBuildingCardProps) {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  
+  // Memoizar cálculos costosos
+  const {
+    minPrice,
+    maxPrice,
+    totalUnits,
+    sinComisionBadge,
+    otherBadges,
+    sortedTypologies,
+    allImages
+  } = useMemo(() => {
+    const minPrice = getMinPrice(building.typologySummary);
+    const maxPrice = getMaxPrice(building.typologySummary);
+    const totalUnits = building.typologySummary?.reduce((sum, t) => sum + t.count, 0) || 0;
+    
+    // Encontrar el badge de "Sin comisión" para el principal
+    const sinComisionBadge = building.badges?.find(badge => 
+      badge.label.includes('Sin comisión') || badge.label.includes('Comisión gratis')
+    );
+    
+    // Resto de badges para mostrar debajo (hasta 5 badges)
+    const otherBadges = building.badges?.filter(badge => 
+      !badge.label.includes('Sin comisión') && !badge.label.includes('Comisión gratis')
+    ).slice(0, 5) || [];
+
+    // Ordenar tipologías de la más pequeña a la más grande
+    const sortedTypologies = building.typologySummary?.sort((a, b) => 
+      getTypologyOrder(a.label) - getTypologyOrder(b.label)
+    ) || [];
+
+    // Obtener todas las imágenes disponibles
+    const allImages = building.gallery && building.gallery.length > 0 
+      ? building.gallery 
+      : [building.coverImage];
+
+    return {
+      minPrice,
+      maxPrice,
+      totalUnits,
+      sinComisionBadge,
+      otherBadges,
+      sortedTypologies,
+      allImages
+    };
+  }, [building]);
+
+  // Memoizar funciones de navegación
+  const nextImage = useCallback(() => {
+    setCurrentImageIndex((prev) => (prev + 1) % allImages.length);
+  }, [allImages.length]);
+
+  const prevImage = useCallback(() => {
+    setCurrentImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length);
+  }, [allImages.length]);
 
   return (
-    <div className="relative">
-      <div
-        onClick={handleCardClick}
-        className="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-2xl cursor-pointer"
-      >
-        <article className="rounded-2xl bg-card/90 ring-1 ring-border overflow-hidden transition-all group-hover:ring-green-500/60">
-          <div className="relative aspect-[16/10]">
-            <Image
-              src={cover}
-              alt={`Portada ${building.name}`}
-              fill
-              sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width: 1536px) 25vw, 25vw"
-              className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-              placeholder="blur"
-              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
-              priority={priority}
-            />
-            {building.badges && building.badges.length > 0 && (
-              <div className="absolute top-3 left-3">
-                <div className="inline-flex items-center gap-1 rounded-full bg-green-500/90 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">
-                  <span className="flex h-1.5 w-1.5 items-center justify-center">
-                    <span className="absolute h-1.5 w-1.5 animate-ping rounded-full bg-white opacity-75" />
-                    <span className="relative h-1 w-1 rounded-full bg-white" />
-                  </span>
-                  {building.badges[0].label}
-                </div>
-              </div>
-            )}
-            
-            {/* Indicador de múltiples tipologías */}
-            {building.typologySummary && building.typologySummary.length > 1 && (
-              <div className="absolute top-3 right-3">
-                <div className="inline-flex items-center gap-1 rounded-full bg-blue-500/90 px-2 py-1 text-xs font-semibold text-white backdrop-blur-sm">
-                  <span className="text-xs">📋</span>
-                  <span>{building.typologySummary.length} tipos</span>
-                </div>
-              </div>
-            )}
-          </div>
-          
-          <div className="p-4">
-            <div className="flex items-start justify-between gap-3 mb-3">
-              <div className="min-w-0 flex-1">
-                <h3 className="font-semibold leading-tight truncate" title={building.name}>
-                  {building.name}
-                </h3>
-                <p className="text-sm text-muted-foreground truncate">{building.comuna}</p>
-              </div>
-              <div className="text-right shrink-0">
-                {building.hasAvailability ? (
-                  <>
-                    <div className="font-bold text-green-500">{formatPrice(building.precioDesde)}</div>
-                    <div className="text-xs text-muted-foreground">Desde</div>
-                  </>
-                ) : (
-                  <>
-                    <div className="text-sm text-muted-foreground">Sin disponibilidad</div>
-                  </>
-                )}
-              </div>
-            </div>
-            
-            {/* Tipologías disponibles */}
-            <div className="flex flex-wrap gap-1.5 mb-3">
-              {building.typologySummary?.slice(0, 3).map((typology) => (
-                <span
-                  key={typology.key}
-                  className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-muted text-muted-foreground"
-                >
-                  {typology.label}
-                </span>
-              ))}
-              {building.typologySummary && building.typologySummary.length > 3 && (
-                <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-muted text-muted-foreground">
-                  +{building.typologySummary.length - 3} más
-                </span>
-              )}
-            </div>
-            
-            {/* Botón de acción */}
-            <div className="flex gap-2">
-              {building.typologySummary && building.typologySummary.length > 1 ? (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setShowTypologySelector(true);
+    <motion.article
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="group relative bg-white dark:bg-gray-900 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-800"
+      role="article"
+      aria-labelledby={`building-${building.id}-title`}
+    >
+      {/* Imagen principal con carrusel */}
+      <div className="relative h-64 overflow-hidden" role="region" aria-label="Galería de imágenes del edificio">
+        <div
+          className="w-full h-full bg-cover bg-center transition-all duration-150"
+          style={{ backgroundImage: `url(${allImages[currentImageIndex]})` }}
+          aria-label={`Imagen ${currentImageIndex + 1} de ${allImages.length} del edificio ${building.name}`}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+        
+        {/* Badge principal: Sin comisión */}
+        {sinComisionBadge && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="absolute top-4 left-4 z-10"
+          >
+            <div className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 text-white px-4 py-2 text-sm font-bold rounded-full shadow-lg flex items-center gap-2 backdrop-blur-sm border border-cyan-300/50">
+              <div className="relative">
+                {/* Fuego principal */}
+                <motion.div
+                  animate={{ 
+                    scale: [1, 1.2, 0.8, 1.1, 1],
+                    rotate: [0, 10, -8, 5, 0],
+                    y: [0, -2, 1, -1, 0]
                   }}
-                  className="flex-1 bg-green-500 hover:bg-green-600 text-white text-sm font-medium py-2 px-3 rounded-lg transition-colors"
+                  transition={{ 
+                    duration: 1.5,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                  className="relative z-10"
                 >
-                  Seleccionar tipología
-                </button>
-              ) : (
-                <Link
-                  href={`/arrienda-sin-comision/${building.slug}`}
-                  className="flex-1 bg-green-500 hover:bg-green-600 text-white text-sm font-medium py-2 px-3 rounded-lg transition-colors text-center"
-                >
-                  Ver detalles
-                </Link>
-              )}
+                  <Flame className="w-4 h-4 text-cyan-200 drop-shadow-lg" aria-hidden="true" />
+                </motion.div>
+                
+                {/* Chispas de magma y humo */}
+                <motion.div
+                  animate={{ 
+                    scale: [0, 1.2, 0],
+                    opacity: [0, 1, 0],
+                    y: [0, -15, -30],
+                    x: [0, 4, -3],
+                    rotate: [0, 45, 90, 180]
+                  }}
+                  transition={{ 
+                    duration: 1.4,
+                    repeat: Infinity,
+                    delay: 0.3,
+                    ease: "easeOut"
+                  }}
+                  className="absolute top-0 left-0 w-1 h-3 bg-gradient-to-t from-cyan-400 to-transparent rounded-full drop-shadow-lg"
+                  style={{ transformOrigin: 'center bottom' }}
+                />
+                <motion.div
+                  animate={{ 
+                    scale: [0, 1, 0],
+                    opacity: [0, 0.8, 0],
+                    y: [0, -8, -20],
+                    x: [0, -3, 2],
+                    rotate: [0, -30, 60, -90]
+                  }}
+                  transition={{ 
+                    duration: 1.6,
+                    repeat: Infinity,
+                    delay: 0.7,
+                    ease: "easeOut"
+                  }}
+                  className="absolute top-0 left-0 w-0.5 h-2 bg-gradient-to-t from-blue-400 to-transparent rounded-full drop-shadow-lg"
+                  style={{ transformOrigin: 'center bottom' }}
+                />
+                <motion.div
+                  animate={{ 
+                    scale: [0, 1.5, 0],
+                    opacity: [0, 0.6, 0],
+                    y: [0, -25, -40],
+                    x: [0, 2, -4],
+                    rotate: [0, 90, 180, 270]
+                  }}
+                  transition={{ 
+                    duration: 1.8,
+                    repeat: Infinity,
+                    delay: 1.1,
+                    ease: "easeOut"
+                  }}
+                  className="absolute top-0 left-0 w-0.5 h-4 bg-gradient-to-t from-purple-400 to-transparent rounded-full drop-shadow-lg"
+                  style={{ transformOrigin: 'center bottom' }}
+                />
+                <motion.div
+                  animate={{ 
+                    scale: [0, 1.1, 0],
+                    opacity: [0, 0.7, 0],
+                    y: [0, -12, -25],
+                    x: [0, -2, 3],
+                    rotate: [0, -45, 90, -135]
+                  }}
+                  transition={{ 
+                    duration: 1.5,
+                    repeat: Infinity,
+                    delay: 0.5,
+                    ease: "easeOut"
+                  }}
+                  className="absolute top-0 left-0 w-0.5 h-2.5 bg-gradient-to-t from-cyan-200 to-transparent rounded-full drop-shadow-lg"
+                  style={{ transformOrigin: 'center bottom' }}
+                />
+                
+                {/* Humo sutil */}
+                <motion.div
+                  animate={{ 
+                    scale: [0, 1.3, 0],
+                    opacity: [0, 0.4, 0],
+                    y: [0, -5, -15],
+                    x: [0, 1, -1]
+                  }}
+                  transition={{ 
+                    duration: 2,
+                    repeat: Infinity,
+                    delay: 0.2,
+                    ease: "easeOut"
+                  }}
+                  className="absolute top-0 left-0 w-2 h-1 bg-gradient-to-r from-gray-400/30 to-transparent rounded-full blur-sm"
+                />
+              </div>
+              <span className="drop-shadow-sm">Sin comisión</span>
             </div>
-          </div>
-        </article>
+          </motion.div>
+        )}
+
+        {/* Controles del carrusel */}
+        {allImages.length > 1 && (
+          <>
+            {/* Botón anterior */}
+            <button
+              onClick={prevImage}
+              className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/40 hover:bg-black/60 text-white rounded-full flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100 backdrop-blur-sm z-20"
+              aria-label="Imagen anterior"
+            >
+              <ChevronLeft className="w-5 h-5" aria-hidden="true" />
+            </button>
+
+            {/* Botón siguiente */}
+            <button
+              onClick={nextImage}
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/40 hover:bg-black/60 text-white rounded-full flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100 backdrop-blur-sm z-20"
+              aria-label="Imagen siguiente"
+            >
+              <ChevronRight className="w-5 h-5" aria-hidden="true" />
+            </button>
+
+            {/* Indicador de posición */}
+            <div className="absolute bottom-4 right-4 bg-black/40 backdrop-blur-sm rounded-full px-2 py-1 text-white text-xs font-medium z-10">
+              {currentImageIndex + 1} / {allImages.length}
+            </div>
+          </>
+        )}
       </div>
-      
-      {/* Modal selector de tipología */}
-      {showTypologySelector && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 max-w-md w-full max-h-[80vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold">Selecciona una tipología</h3>
-              <button
-                onClick={() => setShowTypologySelector(false)}
-                className="text-gray-500 hover:text-gray-700"
+
+      {/* Contenido */}
+      <div className="p-5 space-y-4">
+        {/* Nombre del edificio */}
+        <motion.h3 
+          id={`building-${building.id}-title`}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.1 }}
+          className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors"
+        >
+          <Link href={`/arrienda-sin-comision/${building.slug}`} className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+            {building.name}
+          </Link>
+        </motion.h3>
+
+        {/* Dirección */}
+        <motion.p 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.15 }}
+          className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-1"
+        >
+          <span role="img" aria-label="ubicación">📍</span> {building.address}, {building.comuna}
+        </motion.p>
+
+        {/* Badges principales con colores modernos */}
+        {otherBadges.length > 0 && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="flex flex-wrap gap-1.5"
+            role="list"
+            aria-label="Promociones disponibles"
+          >
+            {otherBadges.map((badge, index) => (
+              <div
+                key={index}
+                className={`${getBadgeColor(badge.label)} px-2.5 py-1 text-xs font-semibold rounded-full shadow-md flex items-center gap-1.5`}
+                role="listitem"
               >
-                ✕
-              </button>
-            </div>
-            
-            <div className="space-y-3">
-              {building.typologySummary?.map((typology) => (
-                <button
+                {getBadgeIcon(badge.label)}
+                <span>{badge.label}</span>
+              </div>
+            ))}
+          </motion.div>
+        )}
+
+        {/* Precio */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.25 }}
+          className="space-y-1"
+        >
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Arriendo mensual desde:
+          </p>
+          <p className="text-xl font-bold text-gray-900 dark:text-white">
+            ${minPrice.toLocaleString('es-CL')} - ${maxPrice.toLocaleString('es-CL')}
+          </p>
+        </motion.div>
+
+        {/* Tipologías disponibles */}
+        {sortedTypologies.length > 0 && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="space-y-3"
+          >
+            <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              Tipologías disponibles:
+            </p>
+            <div className="grid grid-cols-2 gap-2" role="list" aria-label="Tipologías de departamentos">
+              {sortedTypologies.map((typology, index) => (
+                <div
                   key={typology.key}
-                  onClick={() => handleTypologySelect(typology.key)}
-                  className="w-full text-left p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  className="flex items-center justify-between p-2.5 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group cursor-pointer"
+                  role="listitem"
+                  tabIndex={0}
+                  aria-label={`${typology.label}, ${typology.count} unidades disponibles`}
                 >
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <div className="font-medium">{typology.label}</div>
-                      <div className="text-sm text-gray-500">
-                        {typology.count} {typology.count === 1 ? 'unidad' : 'unidades'} disponible{typology.count === 1 ? '' : 's'}
-                      </div>
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-1.5 bg-blue-100 dark:bg-blue-900/30 rounded-md">
+                      {getTypologyIcon(typology.label)}
                     </div>
-                    <div className="text-right">
-                      <div className="font-bold text-green-500">
-                        {formatPrice(typology.minPrice)}
-                      </div>
-                      <div className="text-xs text-gray-500">Desde</div>
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                        {typology.label}
+                      </p>
+                      <p className="text-xs text-gray-600 dark:text-gray-400">
+                        {typology.count} disp.
+                      </p>
                     </div>
                   </div>
-                </button>
+                  <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors flex-shrink-0" aria-hidden="true" />
+                </div>
               ))}
             </div>
-            
-            <div className="mt-6 flex gap-3">
-              <button
-                onClick={() => setShowTypologySelector(false)}
-                className="flex-1 py-2 px-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                Cancelar
-              </button>
-              <Link
-                href={`/arrienda-sin-comision/${building.slug}`}
-                className="flex-1 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg text-center transition-colors"
-              >
-                Ver todas
-              </Link>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+          </motion.div>
+        )}
+
+        {/* CTA */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="pt-2"
+        >
+          <Link href={`/arrienda-sin-comision/${building.slug}`}>
+            <button 
+              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              aria-label={`Ver detalles completos del edificio ${building.name}`}
+            >
+              Ver detalles del edificio
+            </button>
+          </Link>
+        </motion.div>
+      </div>
+    </motion.article>
   );
 }
 
