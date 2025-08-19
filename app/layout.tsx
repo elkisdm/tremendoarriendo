@@ -17,16 +17,25 @@ const inter = Inter({
   preload: true,
 });
 
-// Script simple para prevenir parpadeo inicial
+// Script robusto para prevenir parpadeo inicial y errores de hidratación
 const themeScript = `
   (function() {
     try {
       var theme = localStorage.getItem('theme');
+      var html = document.documentElement;
+      
+      // Remover clases existentes para evitar conflictos
+      html.classList.remove('dark', 'light');
+      
       if (theme === 'dark') {
-        document.documentElement.classList.add('dark');
+        html.classList.add('dark');
+      } else {
+        // Por defecto, mantener light theme para consistencia SSR
+        html.classList.add('light');
       }
     } catch (e) {
-      // Silenciar errores
+      // En caso de error, mantener light theme por defecto
+      document.documentElement.classList.add('light');
     }
   })();
 `;
