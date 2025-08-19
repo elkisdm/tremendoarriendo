@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArriendaSinComisionBuildingCard } from "./ArriendaSinComisionBuildingCard";
+import ArriendaSinComisionBuildingCard from "./ArriendaSinComisionBuildingCard";
 import { LazyBuildingsGrid } from "./LazyBuildingsGrid";
 import { LANDING_BUILDINGS_MOCK } from "@/lib/arrienda-sin-comision-mocks";
 import type { BuildingSummary } from "@/hooks/useFetchBuildings";

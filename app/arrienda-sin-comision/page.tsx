@@ -8,6 +8,7 @@ import HowItWorks from "@/components/marketing/HowItWorks";
 import Trust from "@/components/marketing/Trust";
 import StickyMobileCTA from "@/components/marketing/StickyMobileCTA";
 
+
 export const revalidate = 3600;
 
 export default function ArriendaSinComisionPage() {

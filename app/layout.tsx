@@ -17,21 +17,16 @@ const inter = Inter({
   preload: true,
 });
 
-// Script para prevenir parpadeo de tema durante hidratación
+// Script simple para prevenir parpadeo inicial
 const themeScript = `
   (function() {
     try {
       var theme = localStorage.getItem('theme');
-      
-      // Siempre usar light como default para consistencia
       if (theme === 'dark') {
         document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
       }
     } catch (e) {
-      // Fallback a light si hay error
-      document.documentElement.classList.remove('dark');
+      // Silenciar errores
     }
   })();
 `;
@@ -48,8 +43,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         suppressHydrationWarning={true}
       >
         <ThemeProvider>
-          <a href="#main-content" className="skip-link">Saltar al contenido principal</a>
-          {children}
+          <a href="#main-content" className="skip-link">
+            Saltar al contenido principal
+          </a>
+          <main className="min-h-screen bg-background text-foreground">
+            {children}
+          </main>
         </ThemeProvider>
       </body>
     </html>

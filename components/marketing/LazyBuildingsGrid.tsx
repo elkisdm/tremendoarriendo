@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { motion } from "framer-motion";
-import { ArriendaSinComisionBuildingCard } from "./ArriendaSinComisionBuildingCard";
+import ArriendaSinComisionBuildingCard from "./ArriendaSinComisionBuildingCard";
 import type { BuildingSummary } from "@/hooks/useFetchBuildings";
 
 interface LazyBuildingsGridProps {

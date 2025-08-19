@@ -13,50 +13,38 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-// Función para obtener el tema inicial de forma segura
-function getInitialTheme(): Theme {
-  if (typeof window === 'undefined') return 'light';
-  
-  try {
-    const savedTheme = localStorage.getItem('theme') as Theme;
-    if (savedTheme && (savedTheme === 'light' || savedTheme === 'dark')) {
-      return savedTheme;
-    }
-    return 'light'; // Default a light
-  } catch (error) {
-    console.warn('Error getting initial theme, falling back to light:', error);
-    return 'light';
-  }
-}
-
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>('light'); // Default a light
+  const [theme, setThemeState] = useState<Theme>('light');
   const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
-    // Inicializar tema de forma segura
-    const initialTheme = getInitialTheme();
-    setThemeState(initialTheme);
+    // Solo ejecutar en el cliente
+    try {
+      const savedTheme = localStorage.getItem('theme') as Theme;
+      if (savedTheme === 'dark' || savedTheme === 'light') {
+        setThemeState(savedTheme);
+      }
+    } catch (error) {
+      console.warn('Error reading theme from localStorage:', error);
+    }
     setIsHydrated(true);
   }, []);
 
   useEffect(() => {
     if (!isHydrated) return;
     
+    const root = window.document.documentElement;
+    
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+    
     try {
-      const root = window.document.documentElement;
-      
-      // Aplicar tema
-      if (theme === 'dark') {
-        root.classList.add('dark');
-      } else {
-        root.classList.remove('dark');
-      }
-      
-      // Guardar en localStorage
       localStorage.setItem('theme', theme);
     } catch (error) {
-      console.warn('Could not update theme:', error);
+      console.warn('Error saving theme to localStorage:', error);
     }
   }, [theme, isHydrated]);
 

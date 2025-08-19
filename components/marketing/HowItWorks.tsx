@@ -1,11 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import MotionWrapper from "@/components/ui/MotionWrapper";
-import ContactModal from "./ContactModal";
 
 export default function HowItWorks() {
-  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
   const steps = [
     {
@@ -111,7 +108,7 @@ export default function HowItWorks() {
           <MotionWrapper direction="up" delay={0.6}>
             <div className="mt-16 text-center">
               <button
-                onClick={() => setIsContactModalOpen(true)}
+                onClick={() => window.dispatchEvent(new CustomEvent('openContactModal'))}
                 className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white px-8 py-4 text-base font-semibold shadow-lg transition-all duration-200 hover:shadow-xl hover:shadow-cyan-500/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-cyan-500"
               >
                 Quiero más información
@@ -123,11 +120,6 @@ export default function HowItWorks() {
           </MotionWrapper>
         </div>
       </section>
-
-      <ContactModal 
-        isOpen={isContactModalOpen} 
-        onClose={() => setIsContactModalOpen(false)} 
-      />
     </>
   );
 }

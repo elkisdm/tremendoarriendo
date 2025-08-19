@@ -1,3 +1,5 @@
+"use client";
+
 import MotionWrapper from "@/components/ui/MotionWrapper";
 
 export default function ArriendaSinComisionHero() {
@@ -65,15 +67,15 @@ export default function ArriendaSinComisionHero() {
               <span className="relative">Ver edificio disponible</span>
             </a>
             
-            <a
-              href="/coming-soon"
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent('openContactModal'))}
               className="inline-flex items-center gap-2 rounded-2xl border border-border/50 bg-background/80 dark:bg-background/60 px-6 py-3 text-sm font-medium text-foreground backdrop-blur-sm transition-colors hover:bg-muted/50 dark:hover:bg-muted/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-cyan-500 sm:px-8 sm:py-4 sm:text-base"
             >
               Quiero ser contactado
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
               </svg>
-            </a>
+            </button>
           </div>
         </MotionWrapper>
 
