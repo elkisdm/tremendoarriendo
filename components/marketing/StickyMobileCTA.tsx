@@ -2,11 +2,13 @@
 
 import { useState, useEffect } from "react";
 import MotionWrapper from "@/components/ui/MotionWrapper";
-import { ContactForm } from "@/components/forms/ContactForm";
 
-export default function StickyMobileCTA() {
+interface StickyMobileCTAProps {
+  onContactClick?: () => void;
+}
+
+export default function StickyMobileCTA({ onContactClick }: StickyMobileCTAProps) {
   const [isVisible, setIsVisible] = useState(false);
-  const [showContactForm, setShowContactForm] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -44,7 +46,7 @@ export default function StickyMobileCTA() {
           </div>
           
           <button
-            onClick={() => setShowContactForm(true)}
+            onClick={onContactClick}
             className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 px-4 py-2 text-sm font-semibold text-white shadow-lg transition-all duration-200 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-amber-500"
           >
             Contacto
@@ -55,14 +57,6 @@ export default function StickyMobileCTA() {
         </div>
       </div>
     </MotionWrapper>
-
-    {/* Contact Form Modal */}
-    {showContactForm && (
-      <ContactForm
-        onClose={() => setShowContactForm(false)}
-      />
-    )}
-  </>
   );
 }
 
