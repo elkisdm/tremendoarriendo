@@ -26,7 +26,7 @@ export function StickyMobileCTA() {
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden">
       <div 
-        className="bg-[var(--bg)]/95 backdrop-blur-sm border-t border-white/10 p-4"
+        className="bg-bg/95 backdrop-blur-sm border-t border-soft/50 p-4"
         style={{
           paddingBottom: "calc(1rem + env(safe-area-inset-bottom))"
         }}
@@ -34,7 +34,7 @@ export function StickyMobileCTA() {
         <div className="flex gap-3 max-w-sm mx-auto">
           <button
             onClick={handleBookingClick}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-[var(--ring)] text-white font-medium rounded-lg hover:bg-[var(--ring)]/90 focus:outline-none focus:ring-2 focus:ring-[var(--ring)] focus:ring-offset-2 focus:ring-offset-[var(--bg)] transition-colors motion-reduce:transition-none"
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-ring text-white font-medium rounded-lg hover:bg-ring/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-bg transition-colors motion-reduce:transition-none"
             aria-label="Ir al formulario de reserva de visita"
           >
             <Calendar className="w-4 h-4" aria-hidden="true" />
@@ -43,7 +43,7 @@ export function StickyMobileCTA() {
           
           <button
             onClick={handleWhatsAppClick}
-            className="flex items-center justify-center gap-2 px-4 py-3 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-[var(--bg)] transition-colors motion-reduce:transition-none disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center justify-center gap-2 px-4 py-3 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-bg transition-colors motion-reduce:transition-none disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="Contactar por WhatsApp"
             aria-disabled={!process.env.NEXT_PUBLIC_WHATSAPP_PHONE}
             disabled={!process.env.NEXT_PUBLIC_WHATSAPP_PHONE}

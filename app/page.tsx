@@ -14,7 +14,7 @@ export default function Home() {
   // Mostrar landing directamente sin redirección
   return (
     <>
-      <main className="min-h-screen bg-background text-foreground">
+      <main className="min-h-screen bg-bg text-text">
         <HeroV2 />
         <FeaturedGrid />
         <HowItWorks />

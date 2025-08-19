@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { getTremendoUnitsProcessor } from './tremendo-units-processor';
 
 export interface SupabaseUnit {
   id: string;
@@ -80,6 +81,7 @@ class SupabaseDataProcessor {
   private supabase: any;
   private condominios: Map<string, CondominioData> = new Map();
   private isInitialized = false;
+  private tremendoProcessor: any = null;
 
   constructor() {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -95,6 +97,14 @@ class SupabaseDataProcessor {
   async loadDataFromSupabase(): Promise<void> {
     try {
       console.log('🔍 Cargando datos desde Supabase...');
+      
+      // Cargar el procesador de Tremendo Units
+      this.tremendoProcessor = await getTremendoUnitsProcessor();
+      const tremendoBuildings = this.tremendoProcessor.getTremendoBuildings();
+      const tremendoCondominios = this.tremendoProcessor.getTremendoCondominios();
+      
+      console.log(`🏢 Edificios Tremendo disponibles: ${tremendoBuildings.length}`);
+      console.log(`🏘️ Condominios Tremendo: ${tremendoCondominios.join(', ')}`);
       
       // Obtener todas las unidades desde Supabase usando las columnas correctas
       const { data: units, error } = await this.supabase
@@ -147,7 +157,37 @@ class SupabaseDataProcessor {
       }
 
       console.log(`📊 Unidades cargadas desde Supabase: ${units.length}`);
-      await this.processCondominios(units);
+      
+      // Filtrar solo las unidades que pertenecen a edificios Tremendo
+      const filteredUnits = units.filter((unit: any) => {
+        const buildingName = unit.buildings?.nombre;
+        
+        if (!buildingName) {
+          return false;
+        }
+        
+        // Verificar si el edificio está en la lista de Tremendo
+        const isTremendoBuilding = this.tremendoProcessor.isTremendoBuilding(buildingName);
+        
+        if (isTremendoBuilding) {
+          console.log(`✅ Edificio Tremendo encontrado: ${buildingName}`);
+        }
+        
+        return isTremendoBuilding;
+      });
+
+      console.log(`✅ Unidades Tremendo filtradas: ${filteredUnits.length} de ${units.length}`);
+      
+      if (filteredUnits.length === 0) {
+        console.log('⚠️ No se encontraron unidades de edificios Tremendo');
+        console.log('📋 Edificios disponibles en Supabase:');
+        const uniqueBuildings = [...new Set(units.map((u: any) => u.buildings?.nombre).filter(Boolean))];
+        uniqueBuildings.forEach((building: any) => {
+          console.log(`   - ${building}`);
+        });
+      }
+      
+      await this.processCondominios(filteredUnits);
       
     } catch (error) {
       console.error('❌ Error cargando datos de Supabase:', error);

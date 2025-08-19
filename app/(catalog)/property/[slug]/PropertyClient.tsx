@@ -24,12 +24,12 @@ export function PropertyClient({ building, relatedBuildings }: PropertyClientPro
   };
 
   return (
-    <main id="main-content" role="main" className="min-h-screen bg-[var(--bg)] text-[var(--text)]">
+    <main id="main-content" role="main" className="min-h-screen bg-bg text-text">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Header Section */}
         <div className="mb-8">
           <h1 className="text-3xl md:text-4xl font-bold mb-2">{building.name}</h1>
-          <p className="text-[var(--subtext)] text-lg">{building.address}, {building.comuna}</p>
+          <p className="text-subtext text-lg">{building.address}, {building.comuna}</p>
         </div>
 
         {/* Main Content Grid */}

@@ -34,11 +34,11 @@ export function FilterBar({
   const tipologias = ["Todas", "Studio", "1D/1B", "2D/1B", "2D/2B"];
 
   return (
-    <div className="sticky top-0 z-30 backdrop-blur bg-[var(--bg)]/75 ring-1 ring-white/10 rounded-2xl p-3">
+    <div className="sticky top-0 z-30 backdrop-blur bg-bg/75 ring-1 ring-soft/50 rounded-2xl p-3">
       <div className="flex flex-wrap items-center gap-2">
         <button 
           onClick={() => setOpen(!open)} 
-          className="md:hidden inline-flex items-center gap-2 rounded-xl px-3 py-2 bg-white/5 ring-1 ring-white/10 hover:bg-white/10 transition-colors" 
+          className="md:hidden inline-flex items-center gap-2 rounded-xl px-3 py-2 bg-soft/50 ring-1 ring-soft/50 hover:bg-soft transition-colors" 
           aria-expanded={open}
           aria-controls="mobile-filters"
         >
@@ -50,7 +50,7 @@ export function FilterBar({
         </div>
         <button 
           onClick={onClear} 
-          className="md:ml-auto inline-flex items-center gap-2 text-sm text-[var(--subtext)] hover:text-white transition-colors"
+          className="md:ml-auto inline-flex items-center gap-2 text-sm text-subtext hover:text-text transition-colors"
         >
           <X className="w-4 h-4" aria-hidden="true" /> 
           Limpiar

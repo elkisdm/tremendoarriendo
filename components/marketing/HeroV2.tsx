@@ -1,8 +1,11 @@
 import MotionWrapper from "@/components/ui/MotionWrapper";
+import { Header } from "@/components/marketing/Header";
 
 export default function HeroV2() {
   return (
-    <section className="relative isolate overflow-hidden px-6 py-24 sm:py-32 lg:px-8">
+    <>
+      <Header />
+      <section className="relative isolate overflow-hidden px-6 py-24 sm:py-32 lg:px-8">
       {/* Background gradient */}
       <div 
         aria-hidden="true"
@@ -35,7 +38,7 @@ export default function HeroV2() {
 
         {/* Título principal */}
         <MotionWrapper direction="up" delay={0.2}>
-          <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl">
+          <h1 className="text-4xl font-bold tracking-tight text-text sm:text-6xl lg:text-7xl">
             Invierte en{" "}
             <span className="bg-gradient-to-r from-primary via-primary to-secondary bg-clip-text text-transparent">
               arriendo
@@ -47,7 +50,7 @@ export default function HeroV2() {
 
         {/* Subtítulo */}
         <MotionWrapper direction="up" delay={0.3}>
-          <p className="mt-6 text-lg leading-8 text-muted-foreground sm:text-xl lg:text-2xl lg:leading-9">
+          <p className="mt-6 text-lg leading-8 text-subtext sm:text-xl lg:text-2xl lg:leading-9">
             Proyectos nuevos verificados con disponibilidad real.{" "}
             <br className="hidden sm:block" />
             Precios actualizados y proceso 100% digital.
@@ -67,7 +70,7 @@ export default function HeroV2() {
             
             <a
               href="#featured-heading"
-              className="inline-flex items-center gap-2 rounded-2xl border border-border/50 bg-background/80 px-6 py-3 text-sm font-medium text-foreground backdrop-blur-sm transition-colors hover:bg-muted/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary sm:px-8 sm:py-4 sm:text-base"
+              className="inline-flex items-center gap-2 rounded-2xl border border-soft/50 bg-bg/80 px-6 py-3 text-sm font-medium text-text backdrop-blur-sm transition-colors hover:bg-soft/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ring sm:px-8 sm:py-4 sm:text-base"
             >
               Ver proyectos
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
@@ -84,19 +87,19 @@ export default function HeroV2() {
               <div className="rounded-2xl bg-gradient-to-br from-green-50 to-emerald-50 p-4 ring-1 ring-green-200/50 dark:from-green-950/20 dark:to-emerald-950/20 dark:ring-green-800/50">
                 <div className="text-2xl font-bold text-green-600 dark:text-green-400">0%</div>
               </div>
-              <p className="mt-2 text-sm font-medium text-muted-foreground">Comisión</p>
+              <p className="mt-2 text-sm font-medium text-subtext">Comisión</p>
             </div>
             <div className="flex flex-col items-center">
               <div className="rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 p-4 ring-1 ring-blue-200/50 dark:from-blue-950/20 dark:to-indigo-950/20 dark:ring-blue-800/50">
                 <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">100%</div>
               </div>
-              <p className="mt-2 text-sm font-medium text-muted-foreground">Digital</p>
+              <p className="mt-2 text-sm font-medium text-subtext">Digital</p>
             </div>
             <div className="flex flex-col items-center">
               <div className="rounded-2xl bg-gradient-to-br from-purple-50 to-violet-50 p-4 ring-1 ring-purple-200/50 dark:from-purple-950/20 dark:to-violet-950/20 dark:ring-purple-800/50">
                 <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">24/7</div>
               </div>
-              <p className="mt-2 text-sm font-medium text-muted-foreground">Disponible</p>
+              <p className="mt-2 text-sm font-medium text-subtext">Disponible</p>
             </div>
           </div>
         </MotionWrapper>
@@ -115,6 +118,7 @@ export default function HeroV2() {
         />
       </div>
     </section>
+    </>
   );
 }
 
