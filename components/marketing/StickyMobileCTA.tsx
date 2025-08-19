@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from "react";
 import MotionWrapper from "@/components/ui/MotionWrapper";
+import { ContactForm } from "@/components/forms/ContactForm";
 
 export default function StickyMobileCTA() {
   const [isVisible, setIsVisible] = useState(false);
+  const [showContactForm, setShowContactForm] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -41,18 +43,26 @@ export default function StickyMobileCTA() {
             </p>
           </div>
           
-          <a
-            href="#buildings-grid"
+          <button
+            onClick={() => setShowContactForm(true)}
             className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 px-4 py-2 text-sm font-semibold text-white shadow-lg transition-all duration-200 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-amber-500"
           >
-            Explorar
+            Contacto
             <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
             </svg>
-          </a>
+          </button>
         </div>
       </div>
     </MotionWrapper>
+
+    {/* Contact Form Modal */}
+    {showContactForm && (
+      <ContactForm
+        onClose={() => setShowContactForm(false)}
+      />
+    )}
+  </>
   );
 }
 

@@ -423,6 +423,8 @@ export default function ArriendaSinComisionBuildingCard({ building }: ArriendaSi
           </Link>
         </motion.div>
       </div>
+
+
     </motion.article>
   );
 }
