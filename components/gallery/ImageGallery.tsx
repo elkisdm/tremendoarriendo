@@ -13,6 +13,7 @@ type ImageGalleryProps = {
   coverImage?: string;
   autoPlay?: boolean;
   autoPlayInterval?: number;
+  compact?: boolean; // Para layouts más pequeños
 };
 
 export function ImageGallery({ 
@@ -20,7 +21,8 @@ export function ImageGallery({
   media, 
   coverImage, 
   autoPlay = false, 
-  autoPlayInterval = 5000 
+  autoPlayInterval = 5000,
+  compact = false
 }: ImageGalleryProps) {
   const [active, setActive] = useState(0);
   const [isPlaying, setIsPlaying] = useState(autoPlay);
@@ -135,9 +137,14 @@ export function ImageGallery({
     setIsLoading(false);
   };
 
+  // Aspect ratios optimizados según el layout
+  const aspectRatioClass = compact 
+    ? "aspect-[4/3] md:aspect-[3/2]" 
+    : "aspect-[16/10] md:aspect-[21/9] lg:aspect-[24/9]";
+
   return (
     <div 
-      className="w-full space-y-4" 
+      className="w-full space-y-3" 
       role="region" 
       aria-label="Galería de imágenes de la propiedad"
       onMouseEnter={handleMouseEnter}
@@ -145,7 +152,10 @@ export function ImageGallery({
       ref={containerRef}
     >
       {/* Main Image Container */}
-      <div className="relative aspect-[16/10] md:aspect-[21/9] lg:aspect-[24/9] overflow-hidden rounded-2xl ring-1 ring-white/10 group">
+      <div className={clx(
+        "relative overflow-hidden rounded-2xl ring-1 ring-white/10 group",
+        aspectRatioClass
+      )}>
         {/* Loading State */}
         {isLoading && (
           <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 animate-pulse flex items-center justify-center">
@@ -158,7 +168,10 @@ export function ImageGallery({
           src={imageList[active]}
           alt={`Imagen ${active + 1} de ${imageList.length} de la galería`}
           fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
+          sizes={compact 
+            ? "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            : "(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
+          }
           className={clx(
             "object-cover transition-all duration-700 ease-out",
             isLoading ? "opacity-0" : "opacity-100",
@@ -177,38 +190,50 @@ export function ImageGallery({
             <button
               onClick={prevImage}
               onKeyDown={handleKeyDown}
-              className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100 focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+              className={clx(
+                "absolute top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100 focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white",
+                compact ? "left-2" : "left-4"
+              )}
               aria-label="Imagen anterior"
               tabIndex={0}
             >
-              <ChevronLeft className="w-6 h-6" />
+              <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
             </button>
 
             {/* Next Button */}
             <button
               onClick={nextImage}
               onKeyDown={handleKeyDown}
-              className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100 focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+              className={clx(
+                "absolute top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100 focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white",
+                compact ? "right-2" : "right-4"
+              )}
               aria-label="Imagen siguiente"
               tabIndex={0}
             >
-              <ChevronRight className="w-6 h-6" />
+              <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
             </button>
 
             {/* Auto-play Toggle */}
             {autoPlay && (
               <button
                 onClick={() => setIsPlaying(!isPlaying)}
-                className="absolute top-4 right-4 w-10 h-10 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100 focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                className={clx(
+                  "absolute w-8 h-8 md:w-10 md:h-10 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100 focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white",
+                  compact ? "top-2 right-2" : "top-4 right-4"
+                )}
                 aria-label={isPlaying ? "Pausar presentación" : "Reproducir presentación"}
                 tabIndex={0}
               >
-                {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                {isPlaying ? <Pause className="w-3 h-3 md:w-4 md:h-4" /> : <Play className="w-3 h-3 md:w-4 md:h-4" />}
               </button>
             )}
 
             {/* Image Counter */}
-            <div className="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm font-medium">
+            <div className={clx(
+              "absolute bg-black/50 text-white px-2 py-1 md:px-3 md:py-1 rounded-full text-xs md:text-sm font-medium",
+              compact ? "bottom-2 left-2" : "bottom-4 left-4"
+            )}>
               {active + 1} / {imageList.length}
             </div>
           </>
@@ -217,15 +242,18 @@ export function ImageGallery({
 
       {/* Thumbnails */}
       {imageList.length > 1 && (
-        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
+        <div className="flex gap-2 md:gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
           {imageList.map((src, i) => (
             <button
               key={src}
               onClick={() => setActive(i)}
               onKeyDown={(e) => handleKeyDown(e, i)}
               className={clx(
-                "shrink-0 aspect-video w-24 md:w-32 rounded-xl overflow-hidden ring-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)] transition-all duration-300 ease-out",
+                "shrink-0 aspect-video rounded-lg md:rounded-xl overflow-hidden ring-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)] transition-all duration-300 ease-out",
                 !prefersReducedMotion && "motion-reduce:transition-none",
+                compact 
+                  ? "w-16 md:w-20" 
+                  : "w-20 md:w-24 lg:w-28",
                 i === active 
                   ? "ring-[var(--ring)] scale-105" 
                   : "ring-white/10 hover:ring-white/20 hover:scale-102"
@@ -237,8 +265,8 @@ export function ImageGallery({
               <Image
                 src={src}
                 alt={`Miniatura ${i + 1}`}
-                width={128}
-                height={96}
+                width={compact ? 80 : 112}
+                height={compact ? 60 : 84}
                 className="w-full h-full object-cover"
                 placeholder="blur"
                 blurDataURL={DEFAULT_BLUR}

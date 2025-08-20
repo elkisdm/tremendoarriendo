@@ -309,19 +309,19 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
 
           {/* Layout principal redistribuido */}
           <div className="grid lg:grid-cols-12 gap-8 items-start">
-            {/* Columna izquierda - Información principal (8/12) */}
-            <div className="lg:col-span-8 space-y-8">
+            {/* Columna izquierda - Información principal (7/12) */}
+            <div className="lg:col-span-7 space-y-8">
               {/* Header con nombre, ubicación y badges */}
               <div className="space-y-6">
                 {/* Nombre y ubicación */}
                 <div className="space-y-4">
                   {/* Título minimalista y serio */}
-                  <h1 className="text-6xl font-bold text-foreground dark:text-white leading-tight">
+                  <h1 className="text-5xl md:text-6xl font-bold text-foreground dark:text-white leading-tight">
                     {building.name}
                   </h1>
                   
-                  <div className="flex items-center gap-3 text-xl text-muted-foreground">
-                    <MapPin className="h-6 w-6" />
+                  <div className="flex items-center gap-3 text-lg md:text-xl text-muted-foreground">
+                    <MapPin className="h-5 w-5 md:h-6 md:w-6" />
                     <span className="font-medium">{building.comuna}</span>
                     <span className="text-muted-foreground">•</span>
                     <span>{building.address}</span>
@@ -340,7 +340,7 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
 
                 {/* Badges con iconos y bordes de colores */}
                 {building.badges && building.badges.length > 0 && (
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                     {building.badges.map((badge, index) => {
                       const BadgeIcon = getBadgeIcon(badge.label);
                       return (
@@ -362,8 +362,8 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
               </div>
             </div>
 
-            {/* Columna derecha - Galería prominente (4/12) */}
-            <div className="lg:col-span-4 space-y-4">
+            {/* Columna derecha - Galería prominente (5/12) */}
+            <div className="lg:col-span-5 space-y-4">
               {/* Galería optimizada */}
               <motion.div 
                 className="relative"
@@ -376,6 +376,7 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
                   coverImage={building.coverImage}
                   autoPlay={true}
                   autoPlayInterval={4000}
+                  compact={false}
                 />
               </motion.div>
             </div>
