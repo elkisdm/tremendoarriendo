@@ -465,6 +465,32 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
                       </motion.button>
                     </div>
                   </div>
+                  
+                  {/* Precio destacado - POSICIÓN ESTRATÉGICA PARA CONVERSIÓN */}
+                  <motion.div 
+                    className="mt-6 p-4 bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-2xl border border-amber-200/50 dark:border-amber-800/30"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="text-xs text-muted-foreground mb-1">Precio desde</div>
+                        <div className="text-2xl sm:text-3xl font-bold text-amber-600 dark:text-amber-400">
+                          {formatPrice(minPrice)}
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-xs text-amber-600 dark:text-amber-400 flex items-center gap-1 mb-1">
+                          <TrendingUp className="w-3 h-3" />
+                          Especial
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {totalAvailableUnits} disponibles
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
                 </div>
 
                 {/* Badges optimizados - Mejor distribución */}
@@ -610,20 +636,20 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
         >
           <div className="max-w-4xl mx-auto">
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                              <motion.div 
-                  className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 backdrop-blur-sm rounded-2xl p-4 border border-amber-200/50 dark:border-amber-800/30"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.7 }}
-                >
+              <motion.div 
+                className="bg-gradient-to-br from-rose-500/10 to-pink-500/10 backdrop-blur-sm rounded-2xl p-4 border border-rose-200/50 dark:border-rose-800/30"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7 }}
+              >
                 <div className="text-center space-y-2">
-                  <div className="text-2xl font-bold text-amber-600 dark:text-amber-400">
-                    {formatPrice(minPrice)}
+                  <div className="text-2xl font-bold text-rose-600 dark:text-rose-400">
+                    {formatPrice(avgPrice)}
                   </div>
-                  <div className="text-xs text-muted-foreground">Precio desde</div>
-                  <div className="text-xs text-amber-600 dark:text-amber-400 flex items-center justify-center gap-1">
-                    <TrendingUp className="w-3 h-3" />
-                    Especial
+                  <div className="text-xs text-muted-foreground">Precio promedio</div>
+                  <div className="text-xs text-rose-600 dark:text-rose-400 flex items-center justify-center gap-1">
+                                         <TrendingUp className="w-3 h-3" />
+                    {availableTypologies.length} tipos
                   </div>
                 </div>
               </motion.div>
