@@ -372,32 +372,51 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
             <ThemeToggle />
           </div>
 
-          {/* Layout principal redistribuido */}
+          {/* Layout principal - GALERÍA CON PROTAGONISMO */}
           <div className="grid lg:grid-cols-12 gap-4 sm:gap-6 lg:gap-8 items-start">
-            {/* Columna izquierda - Información principal (7/12) */}
-            <div className="lg:col-span-7 space-y-6 sm:space-y-8">
+            {/* GALERÍA DOMINANTE - MÓVIL: ARRIBA, DESKTOP: DERECHA */}
+            <div className="lg:col-span-8 space-y-3 sm:space-y-4 order-1 lg:order-2">
+              {/* Galería con protagonismo */}
+              <motion.div 
+                className="relative"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2, duration: 0.6 }}
+              >
+                <ImageGallery 
+                  images={building.gallery} 
+                  coverImage={building.coverImage}
+                  autoPlay={true}
+                  autoPlayInterval={4000}
+                  compact={false}
+                />
+              </motion.div>
+            </div>
+
+                        {/* INFORMACIÓN COMPACTA - MÓVIL: ABAJO, DESKTOP: IZQUIERDA */}
+            <div className="lg:col-span-4 space-y-4 sm:space-y-6 order-2 lg:order-1">
               {/* Header con nombre, ubicación y badges */}
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {/* Nombre y ubicación */}
-                <div className="space-y-4">
-                  {/* Título minimalista y serio */}
-                  <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground dark:text-white leading-tight">
+                <div className="space-y-3">
+                  {/* Título más pequeño para no competir con galería */}
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground dark:text-white leading-tight">
                     {building.name}
                   </h1>
                   
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 text-base sm:text-lg md:text-xl text-muted-foreground">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 text-sm sm:text-base md:text-lg text-muted-foreground">
                     <div className="flex items-center gap-2 sm:gap-3">
-                      <MapPin className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 flex-shrink-0" />
+                      <MapPin className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
                       <span className="font-medium">{building.comuna}</span>
                       <span className="hidden sm:inline text-muted-foreground">•</span>
                     </div>
                     <span className="sm:hidden text-muted-foreground">•</span>
-                    <span className="text-sm sm:text-base">{building.address}</span>
+                    <span className="text-xs sm:text-sm">{building.address}</span>
                     <motion.button
                       onClick={openGoogleMaps}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="inline-flex items-center gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors dark:text-blue-400 dark:bg-blue-950/30 dark:hover:bg-blue-950/50 border border-blue-200 dark:border-blue-800/50 mt-2 sm:mt-0"
+                      className="inline-flex items-center gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors dark:text-blue-400 dark:bg-blue-950/30 dark:hover:bg-blue-950/50 border border-blue-200 dark:border-blue-800/50 mt-2 sm:mt-0"
                       aria-label="Abrir ubicación en Google Maps"
                     >
                       <ExternalLink className="h-3 w-3" />
@@ -406,9 +425,9 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
                   </div>
                 </div>
 
-                {/* Badges con iconos y bordes de colores */}
+                {/* Badges más compactos */}
                 {building.badges && building.badges.length > 0 && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                  <div className="grid grid-cols-2 gap-2">
                     {building.badges.map((badge, index) => {
                       const BadgeIcon = getBadgeIcon(badge.label);
                       return (
@@ -418,7 +437,7 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
                           animate={{ scale: 1, opacity: 1 }}
                           transition={{ delay: 0.3 + index * 0.1 }}
                         >
-                          <div className={`${getBadgeColor(badge.label)} px-3 py-2 text-xs font-semibold rounded-lg shadow-md text-center border flex items-center justify-center gap-1.5`}>
+                          <div className={`${getBadgeColor(badge.label)} px-2 py-1.5 text-xs font-semibold rounded-lg shadow-md text-center border flex items-center justify-center gap-1`}>
                             <BadgeIcon className="w-3 h-3" />
                             {badge.label}
                           </div>
@@ -430,24 +449,7 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
               </div>
             </div>
 
-            {/* Columna derecha - Galería prominente (5/12) */}
-            <div className="lg:col-span-5 space-y-3 sm:space-y-4">
-              {/* Galería optimizada */}
-              <motion.div 
-                className="relative"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.3, duration: 0.6 }}
-              >
-                <ImageGallery 
-                  images={building.gallery} 
-                  coverImage={building.coverImage}
-                  autoPlay={true}
-                  autoPlayInterval={4000}
-                  compact={false}
-                />
-              </motion.div>
-            </div>
+
           </div>
 
           {/* Selección de tipología - SEGUNDA SECCIÓN ABOVE THE FOLD (ANCHO COMPLETO) */}
