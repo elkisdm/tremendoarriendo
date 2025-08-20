@@ -2,6 +2,7 @@
 
 import { clx } from '@lib/utils';
 import { ThemeToggle } from '@components/ui/ThemeToggle';
+import { ContactDropdown } from './ContactDropdown';
 
 export function Header() {
   return (
@@ -26,13 +27,8 @@ export function Header() {
           {/* Theme Toggle */}
           <ThemeToggle />
           
-          {/* Botón de contacto */}
-          <a 
-            href="/coming-soon" 
-            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-ring to-ring/80 hover:from-ring/90 hover:to-ring/70 text-white px-4 py-2 text-sm font-semibold transition-all duration-200 shadow-lg hover:shadow-xl hover:shadow-ring/25 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-bg"
-          >
-            Contacto
-          </a>
+          {/* Dropdown de contacto */}
+          <ContactDropdown />
         </div>
       </div>
     </header>
