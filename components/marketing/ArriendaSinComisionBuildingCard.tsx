@@ -145,10 +145,10 @@ export default function ArriendaSinComisionBuildingCard({ building }: ArriendaSi
     >
       {/* Imagen principal con carrusel - altura fija */}
       <div className="relative h-64 overflow-hidden flex-shrink-0" role="region" aria-label="Galería de imágenes del edificio">
-        <div
-          className="w-full h-full bg-cover bg-center transition-all duration-150"
-          style={{ backgroundImage: `url(${allImages[currentImageIndex]})` }}
-          aria-label={`Imagen ${currentImageIndex + 1} de ${allImages.length} del edificio ${building.name}`}
+        <img
+          src={allImages[currentImageIndex]}
+          alt={`Imagen ${currentImageIndex + 1} de ${allImages.length} del edificio ${building.name}`}
+          className="w-full h-full object-cover transition-all duration-150"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
         
