@@ -393,41 +393,47 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
               </motion.div>
             </div>
 
-                        {/* INFORMACIÓN COMPACTA - MÓVIL: ABAJO, DESKTOP: IZQUIERDA */}
-            <div className="lg:col-span-4 space-y-4 sm:space-y-6 order-2 lg:order-1">
+                        {/* INFORMACIÓN OPTIMIZADA - MÓVIL: ABAJO, DESKTOP: IZQUIERDA */}
+            <div className="lg:col-span-4 space-y-6 sm:space-y-8 order-2 lg:order-1">
               {/* Header con nombre, ubicación y badges */}
-              <div className="space-y-4">
-                {/* Nombre y ubicación */}
-                <div className="space-y-3">
-                  {/* Título más pequeño para no competir con galería */}
+              <div className="space-y-6">
+                {/* Nombre y ubicación optimizada */}
+                <div className="space-y-4">
+                  {/* Título con mejor jerarquía */}
                   <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground dark:text-white leading-tight">
                     {building.name}
                   </h1>
                   
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 text-sm sm:text-base md:text-lg text-muted-foreground">
-                    <div className="flex items-center gap-2 sm:gap-3">
-                      <MapPin className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
-                      <span className="font-medium">{building.comuna}</span>
-                      <span className="hidden sm:inline text-muted-foreground">•</span>
+                  {/* Ubicación mejorada - Layout horizontal optimizado */}
+                  <div className="space-y-3">
+                    {/* Comuna prominente */}
+                    <div className="flex items-center gap-3 text-base sm:text-lg text-muted-foreground">
+                      <MapPin className="h-5 w-5 sm:h-6 sm:w-6 text-blue-500 flex-shrink-0" />
+                      <span className="font-semibold text-foreground">{building.comuna}</span>
                     </div>
-                    <span className="sm:hidden text-muted-foreground">•</span>
-                    <span className="text-xs sm:text-sm">{building.address}</span>
-                    <motion.button
-                      onClick={openGoogleMaps}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="inline-flex items-center gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors dark:text-blue-400 dark:bg-blue-950/30 dark:hover:bg-blue-950/50 border border-blue-200 dark:border-blue-800/50 mt-2 sm:mt-0"
-                      aria-label="Abrir ubicación en Google Maps"
-                    >
-                      <ExternalLink className="h-3 w-3" />
-                      Mapa
-                    </motion.button>
+                    
+                    {/* Dirección y botón mapa en línea */}
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-sm sm:text-base text-muted-foreground flex-1">
+                        {building.address}
+                      </span>
+                      <motion.button
+                        onClick={openGoogleMaps}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors dark:text-blue-400 dark:bg-blue-950/30 dark:hover:bg-blue-950/50 border border-blue-200 dark:border-blue-800/50 flex-shrink-0"
+                        aria-label="Abrir ubicación en Google Maps"
+                      >
+                        <ExternalLink className="h-4 w-4" />
+                        Mapa
+                      </motion.button>
+                    </div>
                   </div>
                 </div>
 
-                {/* Badges más compactos */}
+                {/* Badges optimizados - Mejor distribución */}
                 {building.badges && building.badges.length > 0 && (
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {building.badges.map((badge, index) => {
                       const BadgeIcon = getBadgeIcon(badge.label);
                       return (
@@ -437,8 +443,8 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
                           animate={{ scale: 1, opacity: 1 }}
                           transition={{ delay: 0.3 + index * 0.1 }}
                         >
-                          <div className={`${getBadgeColor(badge.label)} px-2 py-1.5 text-xs font-semibold rounded-lg shadow-md text-center border flex items-center justify-center gap-1`}>
-                            <BadgeIcon className="w-3 h-3" />
+                          <div className={`${getBadgeColor(badge.label)} px-3 py-2 text-sm font-semibold rounded-lg shadow-md text-center border flex items-center justify-center gap-2 hover:scale-105 transition-transform duration-200`}>
+                            <BadgeIcon className="w-4 h-4" />
                             {badge.label}
                           </div>
                         </motion.div>
