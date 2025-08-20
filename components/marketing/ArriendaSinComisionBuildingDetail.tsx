@@ -384,8 +384,8 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
           {/* Header heredado de la landing */}
           <Header />
           
-          {/* Navegación específica de la página */}
-          <div className="mb-8">
+          {/* Navegación integrada y mejorada */}
+          <div className="mb-8 flex items-center justify-between">
             <button 
               onClick={() => {
                 sessionStorage.setItem('from-building-details', 'true');
@@ -396,6 +396,13 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
               <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
               Volver a edificios
             </button>
+            
+            {/* Breadcrumb sutil para mejor UX */}
+            <div className="text-xs text-muted-foreground">
+              <span className="hover:text-foreground transition-colors cursor-pointer">Edificios</span>
+              <span className="mx-2">/</span>
+              <span className="text-foreground font-medium">{building.name}</span>
+            </div>
           </div>
 
           {/* Layout principal - GALERÍA CON PROTAGONISMO */}
