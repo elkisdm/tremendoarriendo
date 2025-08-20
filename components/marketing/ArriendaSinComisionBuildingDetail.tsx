@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ImageGallery } from "@components/gallery/ImageGallery";
 import { AmenityList } from "@components/ui/AmenityList";
 import { PromotionBadge } from "@components/ui/PromotionBadge";
-import { GlobalHeader } from "@components/ui/GlobalHeader";
+import { Header } from "@components/marketing/Header";
 import { ArrowLeft, MapPin, Users, Home, Sparkles, ExternalLink, Calendar, MessageCircle, Clock, Star, CheckCircle, Zap, TrendingUp, Eye, Wifi, Car, Dumbbell, Waves, Shield, Coffee, WashingMachine, AirVent, ParkingCircle, TreePine, Camera, Lock, Wrench, ChevronLeft, ChevronRight, Building2, Bed, Bath, Sofa, Utensils, Baby, Dog, Bike, Percent, CreditCard, Heart, Award, Gift, Tag, DollarSign, ShoppingCart, CalendarDays, Gamepad2, Tv, Music, BookOpen, Palette, Globe, Phone, Mail, Smartphone, Monitor, Printer, Projector, Headphones, Speaker, Lightbulb, Fan, Thermometer, Snowflake, Sun, Moon, Cloud, CloudRain, CloudLightning, CloudSnow, Wind, Umbrella, ChevronUp, ChevronDown, Key, Bell, Flame, Droplets, Trash2, Layers, Pill, Cat, Video, Image as ImageIcon } from "lucide-react";
 
 // Función local para obtener el badge principal
@@ -381,16 +381,22 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          {/* Header Global */}
-          <GlobalHeader 
-            showBackButton={true}
-            backUrl="/arrienda-sin-comision"
-            backText="Volver a edificios"
-            showContact={true}
-            contactPhone="+56912345678"
-            contactWhatsApp="+56912345678"
-            className="mb-8"
-          />
+          {/* Header heredado de la landing */}
+          <Header />
+          
+          {/* Navegación específica de la página */}
+          <div className="mb-8">
+            <button 
+              onClick={() => {
+                sessionStorage.setItem('from-building-details', 'true');
+                window.location.href = '/arrienda-sin-comision';
+              }}
+              className="group inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+              Volver a edificios
+            </button>
+          </div>
 
           {/* Layout principal - GALERÍA CON PROTAGONISMO */}
           <div className="grid lg:grid-cols-12 gap-4 sm:gap-6 lg:gap-8 items-start">
