@@ -428,6 +428,112 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
                   </div>
                 )}
               </div>
+
+              {/* Selección de tipología - SEGUNDA SECCIÓN ABOVE THE FOLD */}
+              {availableTypologies.length > 0 && (
+                <motion.div 
+                  className="space-y-4"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  <div className="space-y-3">
+                    <h3 className="text-xl sm:text-2xl font-bold text-foreground">Elige tu tipología ideal</h3>
+                    <p className="text-sm sm:text-base text-muted-foreground">
+                      Selecciona la que mejor se adapte a tu estilo de vida
+                    </p>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    {availableTypologies.map((typology, index) => {
+                      const units = typologyGroups[typology];
+                      const minPrice = Math.min(...units.map(u => u.precio));
+                      const maxM2 = Math.max(...units.map(u => u.m2));
+                      const minM2 = Math.min(...units.map(u => u.m2));
+                      const isHovered = hoveredTypology === typology;
+                      
+                      return (
+                        <motion.div
+                          key={typology}
+                          className="group relative bg-card/50 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-5 border-2 transition-all duration-300 cursor-pointer overflow-hidden"
+                          style={{
+                            borderColor: isHovered ? '#f59e0b' : 'var(--border)',
+                            backgroundColor: isHovered ? 'rgba(245, 158, 11, 0.05)' : 'var(--card)'
+                          }}
+                          whileHover={{ 
+                            scale: 1.02, 
+                            y: -2,
+                            boxShadow: "0 10px 25px rgba(245, 158, 11, 0.15)"
+                          }}
+                          whileTap={{ scale: 0.98 }}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.5 + index * 0.1 }}
+                          onHoverStart={() => setHoveredTypology(typology)}
+                          onHoverEnd={() => setHoveredTypology(null)}
+                        >
+                          {/* Efecto de brillo en hover */}
+                          <motion.div
+                            className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-500/10 to-transparent"
+                            initial={{ x: '-100%' }}
+                            animate={{ x: isHovered ? '100%' : '-100%' }}
+                            transition={{ duration: 0.6 }}
+                          />
+
+                          <div className="space-y-3 relative z-10">
+                            {/* Header de tipología */}
+                            <div className="flex items-center gap-3">
+                              <motion.div 
+                                className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 flex items-center justify-center text-white shadow-lg"
+                                whileHover={{ scale: 1.1, rotate: 5 }}
+                                transition={{ duration: 0.2 }}
+                              >
+                                {typology.includes('Estudio') ? <Home className="h-5 w-5 sm:h-6 sm:w-6" /> : <Users className="h-5 w-5 sm:h-6 sm:w-6" />}
+                              </motion.div>
+                              <div>
+                                <h4 className="font-bold text-base sm:text-lg">{formatTypologyLabel(typology)}</h4>
+                                <p className="text-xs text-muted-foreground">
+                                  {units.length} unidad{units.length !== 1 ? 'es' : ''} disponible{units.length !== 1 ? 's' : ''}
+                                </p>
+                              </div>
+                            </div>
+
+                            {/* Información clave */}
+                            <div className="space-y-2">
+                              <div className="flex justify-between items-center">
+                                <span className="text-xs text-muted-foreground">Precio desde:</span>
+                                <span className="text-lg sm:text-xl font-bold text-amber-600 dark:text-amber-400">
+                                  {formatPrice(minPrice)}
+                                </span>
+                              </div>
+                              <div className="flex justify-between items-center">
+                                <span className="text-xs text-muted-foreground">Superficie:</span>
+                                <span className="font-semibold text-sm sm:text-base">
+                                  {minM2}-{maxM2} m²
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* CTA principal */}
+                            <Link
+                              href={`/arrienda-sin-comision/${building.slug}/unidad/${typology.toLowerCase().replace(/\s+/g, '-')}`}
+                              className="block w-full"
+                            >
+                              <motion.button
+                                className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold hover:shadow-lg hover:shadow-amber-500/25 transition-all duration-300 group-hover:scale-105 text-sm sm:text-base"
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                              >
+                                Ver Departamentos
+                              </motion.button>
+                            </Link>
+                          </div>
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+                </motion.div>
+              )}
             </div>
 
             {/* Columna derecha - Galería prominente (5/12) */}
@@ -451,21 +557,21 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
           </div>
         </motion.div>
 
-        {/* Estadísticas centradas en toda la página */}
+        {/* Estadísticas - TERCERA SECCIÓN ABOVE THE FOLD */}
         <motion.div 
           className="mb-16"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
+          transition={{ delay: 0.6 }}
         >
           <div className="max-w-4xl mx-auto">
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-              <motion.div 
-                className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 backdrop-blur-sm rounded-2xl p-4 border border-amber-200/50 dark:border-amber-800/30"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
-              >
+                              <motion.div 
+                  className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 backdrop-blur-sm rounded-2xl p-4 border border-amber-200/50 dark:border-amber-800/30"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.7 }}
+                >
                 <div className="text-center space-y-2">
                   <div className="text-2xl font-bold text-amber-600 dark:text-amber-400">
                     {formatPrice(minPrice)}
@@ -482,7 +588,7 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
                 className="bg-gradient-to-br from-emerald-500/10 to-teal-500/10 backdrop-blur-sm rounded-2xl p-4 border border-emerald-200/50 dark:border-emerald-800/30"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7 }}
+                transition={{ delay: 0.8 }}
               >
                 <div className="text-center space-y-2">
                   <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
@@ -500,7 +606,7 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
                 className="bg-gradient-to-br from-blue-500/10 to-indigo-500/10 backdrop-blur-sm rounded-2xl p-4 border border-blue-200/50 dark:border-blue-800/30"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 }}
+                transition={{ delay: 0.9 }}
               >
                 <div className="text-center space-y-2">
                   <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
@@ -518,7 +624,7 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
                 className="bg-gradient-to-br from-purple-500/10 to-violet-500/10 backdrop-blur-sm rounded-2xl p-4 border border-purple-200/50 dark:border-purple-800/30"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.9 }}
+                transition={{ delay: 1.0 }}
               >
                 <div className="text-center space-y-2">
                   <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
@@ -541,7 +647,7 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
             className="mb-16"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.0 }}
+            transition={{ delay: 1.1 }}
           >
             <div className="text-center mb-6 sm:mb-8">
               <h3 className="text-2xl sm:text-3xl font-bold mb-2">Estilo de vida premium</h3>
@@ -556,7 +662,7 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
                       key={amenity}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 1.1 + index * 0.1 }}
+                      transition={{ delay: 1.2 + index * 0.1 }}
                       className="bg-card/50 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 border-2 border-amber-200/30 dark:border-amber-800/30 text-center hover:bg-card/70 hover:border-amber-300/50 dark:hover:border-amber-700/50 transition-all duration-300 hover:scale-105"
                     >
                       <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-2 sm:mb-3 bg-gradient-to-br from-amber-500/20 to-orange-500/20 rounded-lg sm:rounded-xl flex items-center justify-center border border-amber-300/30 dark:border-amber-700/30">
