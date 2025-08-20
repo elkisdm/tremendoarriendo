@@ -3,7 +3,8 @@ import { PromotionBadge as UiPromotionBadge } from "@components/ui/PromotionBadg
 type Props = {
   label?: string;
   tag?: string;
-  variant?: 'default' | 'hero';
+  variant?: 'primary' | 'secondary';
+  className?: string;
 };
 
 export function PromotionBadge(props: Props) {

@@ -15,9 +15,22 @@ type ImageGalleryProps = {
 export function ImageGallery({ images, media, coverImage }: ImageGalleryProps) {
   const [active, setActive] = useState(0);
   const isInitialRenderRef = useRef(true);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  
   useEffect(() => {
     // After first client render, disable priority to avoid multiple priority images after interactions
     isInitialRenderRef.current = false;
+    
+    // Check for reduced motion preference
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setPrefersReducedMotion(mediaQuery.matches);
+    
+    const handleChange = (e: MediaQueryListEvent) => {
+      setPrefersReducedMotion(e.matches);
+    };
+    
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
   
   // Priority: media.images > images prop > fallback to coverImage
@@ -27,16 +40,45 @@ export function ImageGallery({ images, media, coverImage }: ImageGalleryProps) {
     return null;
   }
 
+  const handleKeyDown = (event: React.KeyboardEvent, index: number) => {
+    switch (event.key) {
+      case 'Enter':
+      case ' ':
+        event.preventDefault();
+        setActive(index);
+        break;
+      case 'ArrowRight':
+        event.preventDefault();
+        setActive((prev) => (prev + 1) % imageList.length);
+        break;
+      case 'ArrowLeft':
+        event.preventDefault();
+        setActive((prev) => (prev - 1 + imageList.length) % imageList.length);
+        break;
+      case 'Home':
+        event.preventDefault();
+        setActive(0);
+        break;
+      case 'End':
+        event.preventDefault();
+        setActive(imageList.length - 1);
+        break;
+    }
+  };
+
   return (
     <div className="grid grid-cols-4 gap-3" role="region" aria-label="Galería de imágenes de la propiedad">
       {/* Main Image */}
-      <div className="col-span-4 md:col-span-3 aspect-[16/10] overflow-hidden rounded-2xl ring-1 ring-white/10 relative">
+      <div className="col-span-4 md:col-span-3 aspect-[16/10] overflow-hidden rounded-2xl ring-1 ring-white/10 relative group">
         <Image
           src={imageList[active]}
           alt={`Imagen ${active + 1} de ${imageList.length} de la galería`}
           fill
-          sizes="(max-width: 768px) 100vw, 75vw"
-          className="object-cover transition-opacity duration-300 motion-reduce:transition-none"
+          sizes="(max-width: 768px) 100vw, 60vw"
+          className={clx(
+            "object-cover transition-opacity duration-300",
+            !prefersReducedMotion && "group-hover:scale-105 transition-transform duration-500"
+          )}
           placeholder="blur"
           blurDataURL={DEFAULT_BLUR}
           priority={isInitialRenderRef.current && active === 0}
@@ -49,12 +91,15 @@ export function ImageGallery({ images, media, coverImage }: ImageGalleryProps) {
           <button
             key={src}
             onClick={() => setActive(i)}
+            onKeyDown={(e) => handleKeyDown(e, i)}
             className={clx(
-              "shrink-0 aspect-video md:aspect-[4/3] w-40 md:w-auto rounded-xl overflow-hidden ring-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)] transition-all duration-200 motion-reduce:transition-none",
+              "shrink-0 aspect-video md:aspect-[4/3] w-40 md:w-auto rounded-xl overflow-hidden ring-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)] transition-all duration-200",
+              !prefersReducedMotion && "motion-reduce:transition-none",
               i === active ? "ring-[var(--ring)]" : "ring-white/10 hover:ring-white/20"
             )}
             aria-label={`Ver imagen ${i + 1} de ${imageList.length}`}
             aria-pressed={i === active}
+            tabIndex={0}
           >
             <Image
               src={src}
