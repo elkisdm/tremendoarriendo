@@ -384,8 +384,11 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
           {/* Header heredado de la landing */}
           <Header />
           
+          {/* Separador visual entre header y contenido */}
+          <div className="border-b border-border/50 my-8"></div>
+          
           {/* Navegación integrada y mejorada */}
-          <div className="mb-8 flex items-center justify-between">
+          <div className="mb-12 flex items-center justify-between">
             <button 
               onClick={() => {
                 sessionStorage.setItem('from-building-details', 'true');
