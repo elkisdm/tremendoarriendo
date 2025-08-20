@@ -172,7 +172,6 @@ interface ArriendaSinComisionBuildingDetailProps {
 export default function ArriendaSinComisionBuildingDetail({ building }: ArriendaSinComisionBuildingDetailProps) {
   const [hoveredTypology, setHoveredTypology] = useState<string | null>(null);
   const [showUrgencyBanner, setShowUrgencyBanner] = useState(true);
-  const [selectedImage, setSelectedImage] = useState(0);
   
   const primaryBadge = getPrimaryBadge(building.badges);
   
@@ -248,9 +247,6 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
   // Simular visitas recientes para crear urgencia
   const recentVisitors = Math.floor(Math.random() * 15) + 5;
   const lastReservation = Math.floor(Math.random() * 60) + 5; // minutos
-
-  // Todas las imágenes incluyendo la principal
-  const allImages = [building.coverImage, ...(building.gallery || [])];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
@@ -368,85 +364,20 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
 
             {/* Columna derecha - Galería prominente (4/12) */}
             <div className="lg:col-span-4 space-y-4">
-              {/* Imagen principal prominente con flechas */}
+              {/* Galería optimizada */}
               <motion.div 
                 className="relative"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.3, duration: 0.6 }}
               >
-                <div className="relative aspect-[3/2] rounded-3xl overflow-hidden shadow-2xl">
-                  <Image
-                    src={allImages[selectedImage]}
-                    alt={`${building.name} - Imagen ${selectedImage + 1}`}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    priority
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
-                  
-                  {/* Overlay de urgencia */}
-                  <div className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-1">
-                    <Clock className="w-4 h-4" />
-                    ¡Oferta limitada!
-                  </div>
-
-                  {/* Flechas de navegación */}
-                  {allImages.length > 1 && (
-                    <>
-                      <motion.button
-                        onClick={() => setSelectedImage(selectedImage === 0 ? allImages.length - 1 : selectedImage - 1)}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-colors backdrop-blur-sm"
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                      >
-                        <ChevronLeft className="w-5 h-5" />
-                      </motion.button>
-                      <motion.button
-                        onClick={() => setSelectedImage(selectedImage === allImages.length - 1 ? 0 : selectedImage + 1)}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-colors backdrop-blur-sm"
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                      >
-                        <ChevronRight className="w-5 h-5" />
-                      </motion.button>
-                    </>
-                  )}
-                </div>
+                <ImageGallery 
+                  images={building.gallery} 
+                  coverImage={building.coverImage}
+                  autoPlay={true}
+                  autoPlayInterval={4000}
+                />
               </motion.div>
-
-              {/* Thumbnails de imágenes */}
-              {allImages.length > 1 && (
-                <div className="grid grid-cols-4 gap-2">
-                  {allImages.slice(0, 4).map((image, index) => (
-                    <motion.button
-                      key={index}
-                      onClick={() => setSelectedImage(index)}
-                      className={`relative aspect-square rounded-xl overflow-hidden border-2 transition-all duration-300 ${
-                        selectedImage === index 
-                          ? 'border-amber-500 scale-105' 
-                          : 'border-transparent hover:border-amber-300'
-                      }`}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <Image
-                        src={image}
-                        alt={`Thumbnail ${index + 1}`}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 25vw, 8vw"
-                      />
-                      {selectedImage === index && (
-                        <div className="absolute inset-0 bg-amber-500/20 flex items-center justify-center">
-                          <CheckCircle className="w-4 h-4 text-white" />
-                        </div>
-                      )}
-                    </motion.button>
-                  ))}
-                </div>
-              )}
             </div>
           </div>
         </motion.div>
