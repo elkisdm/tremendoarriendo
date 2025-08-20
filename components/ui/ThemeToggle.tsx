@@ -1,69 +1,48 @@
-'use client';
+"use client";
 
-import { useTheme } from '@lib/theme-context';
-import { Sun, Moon } from 'lucide-react';
-import { clx } from '@lib/utils';
+import { useTheme } from "@/lib/theme-context";
+import { Sun, Moon } from "lucide-react";
+import { motion } from "framer-motion";
 
-export function ThemeToggle({ className }: { className?: string }) {
+export function ThemeToggle() {
   const { theme, toggleTheme, isHydrated } = useTheme();
 
-  // No renderizar hasta que esté hidratado para evitar problemas de SSR
+  // No renderizar hasta que esté hidratado para evitar hydration mismatch
   if (!isHydrated) {
     return (
-      <button
-        className={clx(
-          "relative inline-flex items-center justify-center w-10 h-10 rounded-2xl",
-          "bg-surface border border-soft/50",
-          "text-subtext transition-all duration-200",
-          "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-bg",
-          "motion-reduce:transition-none",
-          className
-        )}
-        aria-label="Cambiar tema"
-        title="Cambiar tema"
-        disabled
-      >
-        <div className="relative w-5 h-5">
-          <Sun className="absolute inset-0 w-5 h-5 opacity-50" aria-hidden="true" />
-        </div>
-      </button>
+      <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse" />
     );
   }
 
   return (
-    <button
+    <motion.button
       onClick={toggleTheme}
-      className={clx(
-        "relative inline-flex items-center justify-center w-10 h-10 rounded-2xl",
-        "bg-surface border border-soft/50 hover:bg-soft/50",
-        "text-subtext hover:text-text transition-all duration-200",
-        "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-bg",
-        "motion-reduce:transition-none",
-        className
-      )}
+      className="relative w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center justify-center transition-colors duration-200 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+      whileTap={{ scale: 0.95 }}
       aria-label={`Cambiar a tema ${theme === 'light' ? 'oscuro' : 'claro'}`}
-      title={`Cambiar a tema ${theme === 'light' ? 'oscuro' : 'claro'}`}
     >
-      <div className="relative w-5 h-5">
-        <Sun 
-          className={clx(
-            "absolute inset-0 w-5 h-5 transition-all duration-300",
-            theme === 'light' 
-              ? "opacity-100 rotate-0 scale-100" 
-              : "opacity-0 rotate-90 scale-75"
-          )}
-          aria-hidden="true"
-        />
-        <Moon 
-          className={clx(
-            "absolute inset-0 w-5 h-5 transition-all duration-300",
-            theme === 'dark' 
-              ? "opacity-100 rotate-0 scale-100" 
-              : "opacity-0 -rotate-90 scale-75"
-          )}
-          aria-hidden="true"
-        />
-      </div>
-    </button>
+      <motion.div
+        initial={false}
+        animate={{ rotate: theme === 'light' ? 0 : 180 }}
+        transition={{ duration: 0.3 }}
+        className="relative"
+      >
+        {theme === 'light' ? (
+          <Sun className="w-5 h-5 text-yellow-500" />
+        ) : (
+          <Moon className="w-5 h-5 text-blue-400" />
+        )}
+      </motion.div>
+      
+      {/* Indicador de estado */}
+      <motion.div
+        className="absolute inset-0 rounded-full border-2 border-transparent"
+        initial={false}
+        animate={{
+          borderColor: theme === 'light' ? 'transparent' : 'rgba(59, 130, 246, 0.3)',
+        }}
+        transition={{ duration: 0.2 }}
+      />
+    </motion.button>
   );
 }

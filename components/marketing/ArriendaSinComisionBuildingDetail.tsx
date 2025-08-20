@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ImageGallery } from "@components/gallery/ImageGallery";
 import { AmenityList } from "@components/ui/AmenityList";
 import { PromotionBadge } from "@components/ui/PromotionBadge";
+import { ThemeToggle } from "@components/ui/ThemeToggle";
 import { ArrowLeft, MapPin, Users, Home, Sparkles, ExternalLink, Calendar, MessageCircle, Clock, Star, CheckCircle, Zap, TrendingUp, Eye, Wifi, Car, Dumbbell, Waves, Shield, Coffee, WashingMachine, AirVent, ParkingCircle, TreePine, Camera, Lock, Wrench, ChevronLeft, ChevronRight, Building2, Bed, Bath, Sofa, Utensils, Baby, Dog, Bike, Percent, CreditCard, Heart, Award, Gift, Tag, DollarSign, ShoppingCart, CalendarDays, Gamepad2, Tv, Music, BookOpen, Palette, Globe, Phone, Mail, Smartphone, Monitor, Printer, Projector, Headphones, Speaker, Lightbulb, Fan, Thermometer, Snowflake, Sun, Moon, Cloud, CloudRain, CloudLightning, CloudSnow, Wind, Umbrella, ChevronUp, ChevronDown, Key, Bell, Flame, Droplets, Trash2, Layers, Pill, Cat, Video, Image as ImageIcon } from "lucide-react";
 
 // Función local para obtener el badge principal
@@ -355,7 +356,7 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
           transition={{ duration: 0.6 }}
         >
           {/* Navegación */}
-          <div className="flex items-center gap-4 mb-8">
+          <div className="flex items-center justify-between mb-8">
             <button 
               onClick={() => {
                 sessionStorage.setItem('from-building-details', 'true');
@@ -366,6 +367,9 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
               <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
               Volver a edificios
             </button>
+            
+            {/* Selector de tema */}
+            <ThemeToggle />
           </div>
 
           {/* Layout principal redistribuido */}
