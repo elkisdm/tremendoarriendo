@@ -107,15 +107,22 @@ export function ContactDropdown() {
                 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleWhatsApp}
-                className="group flex items-center gap-3 px-4 py-2.5 bg-gradient-to-r from-green-500 to-green-600 rounded-full shadow-lg hover:shadow-xl hover:shadow-green-500/30 transition-all duration-200"
+                className="group relative flex items-center gap-3 px-4 py-2.5 bg-gradient-to-r from-green-500 to-green-600 rounded-full shadow-lg hover:shadow-xl hover:shadow-green-500/30 transition-all duration-200 overflow-hidden"
               >
+                {/* Efecto de brillo en hover */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out"></div>
+                
+                {/* Efecto de borde brillante */}
+                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-green-400 via-green-300 to-green-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm scale-110 group-hover:scale-100"></div>
+                
                 <motion.div
-                  whileHover={{ rotate: 5 }}
+                  whileHover={{ rotate: 5, scale: 1.1 }}
                   transition={{ duration: 0.2 }}
+                  className="relative z-10"
                 >
                   <MessageCircle className="w-4 h-4 text-white" />
                 </motion.div>
-                <span className="text-white text-sm font-medium whitespace-nowrap">WhatsApp</span>
+                <span className="relative z-10 text-white text-sm font-medium whitespace-nowrap group-hover:font-semibold transition-all duration-200">WhatsApp</span>
               </motion.button>
 
               {/* Opción Llamada - Segunda paleta */}
@@ -135,15 +142,22 @@ export function ContactDropdown() {
                 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleCall}
-                className="group flex items-center gap-3 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full shadow-lg hover:shadow-xl hover:shadow-blue-500/30 transition-all duration-200"
+                className="group relative flex items-center gap-3 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full shadow-lg hover:shadow-xl hover:shadow-blue-500/30 transition-all duration-200 overflow-hidden"
               >
+                {/* Efecto de brillo en hover */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out"></div>
+                
+                {/* Efecto de borde brillante */}
+                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-400 via-blue-300 to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm scale-110 group-hover:scale-100"></div>
+                
                 <motion.div
-                  whileHover={{ rotate: 5 }}
+                  whileHover={{ rotate: 5, scale: 1.1 }}
                   transition={{ duration: 0.2 }}
+                  className="relative z-10"
                 >
                   <Phone className="w-4 h-4 text-white" />
                 </motion.div>
-                <span className="text-white text-sm font-medium whitespace-nowrap">Llamar</span>
+                <span className="relative z-10 text-white text-sm font-medium whitespace-nowrap group-hover:font-semibold transition-all duration-200">Llamar</span>
               </motion.button>
 
               {/* Opción Contacto Modal - Tercera paleta */}
@@ -163,15 +177,22 @@ export function ContactDropdown() {
                 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleContactModal}
-                className="group flex items-center gap-3 px-4 py-2.5 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full shadow-lg hover:shadow-xl hover:shadow-purple-500/30 transition-all duration-200"
+                className="group relative flex items-center gap-3 px-4 py-2.5 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full shadow-lg hover:shadow-xl hover:shadow-purple-500/30 transition-all duration-200 overflow-hidden"
               >
+                {/* Efecto de brillo en hover */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out"></div>
+                
+                {/* Efecto de borde brillante */}
+                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-400 via-purple-300 to-purple-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm scale-110 group-hover:scale-100"></div>
+                
                 <motion.div
-                  whileHover={{ rotate: 5 }}
+                  whileHover={{ rotate: 5, scale: 1.1 }}
                   transition={{ duration: 0.2 }}
+                  className="relative z-10"
                 >
                   <Mail className="w-4 h-4 text-white" />
                 </motion.div>
-                <span className="text-white text-sm font-medium whitespace-nowrap">Contacto</span>
+                <span className="relative z-10 text-white text-sm font-medium whitespace-nowrap group-hover:font-semibold transition-all duration-200">Contacto</span>
               </motion.button>
             </div>
           </motion.div>
