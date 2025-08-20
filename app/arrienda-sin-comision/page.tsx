@@ -6,7 +6,6 @@ import HowItWorks from "@/components/marketing/HowItWorks";
 import Trust from "@/components/marketing/Trust";
 import StickyMobileCTA from "@/components/marketing/StickyMobileCTA";
 import ContactModalWrapper from "@/components/marketing/ContactModalWrapper";
-import TestImage from "@/components/marketing/TestImage";
 
 export default function ArriendaSinComisionPage() {
   return (
@@ -15,7 +14,6 @@ export default function ArriendaSinComisionPage() {
         <Header />
         <ArriendaSinComisionHero />
         <Benefits />
-        <TestImage />
         <ArriendaSinComisionGrid />
         <HowItWorks />
         <Trust />
