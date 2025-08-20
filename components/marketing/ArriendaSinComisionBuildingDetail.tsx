@@ -322,19 +322,19 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
             className="bg-gradient-to-r from-red-500 via-orange-500 to-amber-500 text-white py-4 relative overflow-hidden"
           >
             <div className="container mx-auto max-w-7xl px-4">
-              <div className="flex items-center justify-center gap-6 text-sm font-medium">
-                <motion.div
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 1, repeat: Infinity }}
-                  className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center"
-                >
-                  <Zap className="w-4 h-4" />
-                </motion.div>
-                <span>🔥 {recentVisitors} personas viendo este edificio</span>
-                <span className="hidden sm:inline">•</span>
-                <span>⏰ Última reserva hace {lastReservation} minutos</span>
-                <span className="hidden sm:inline">•</span>
-                <span>🎯 Solo {totalAvailableUnits} unidades disponibles</span>
+                          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 text-xs sm:text-sm font-medium">
+              <motion.div
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 1, repeat: Infinity }}
+                className="w-5 h-5 sm:w-6 sm:h-6 bg-white/20 rounded-full flex items-center justify-center"
+              >
+                <Zap className="w-3 h-3 sm:w-4 sm:h-4" />
+              </motion.div>
+              <span>🔥 {recentVisitors} personas viendo</span>
+              <span className="hidden sm:inline">•</span>
+              <span>⏰ Última reserva hace {lastReservation} min</span>
+              <span className="hidden sm:inline">•</span>
+              <span>🎯 {totalAvailableUnits} unidades disponibles</span>
                 <button
                   onClick={() => setShowUrgencyBanner(false)}
                   className="absolute right-4 text-white/80 hover:text-white transition-colors"
@@ -373,28 +373,31 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
           </div>
 
           {/* Layout principal redistribuido */}
-          <div className="grid lg:grid-cols-12 gap-8 items-start">
+          <div className="grid lg:grid-cols-12 gap-4 sm:gap-6 lg:gap-8 items-start">
             {/* Columna izquierda - Información principal (7/12) */}
-            <div className="lg:col-span-7 space-y-8">
+            <div className="lg:col-span-7 space-y-6 sm:space-y-8">
               {/* Header con nombre, ubicación y badges */}
               <div className="space-y-6">
                 {/* Nombre y ubicación */}
                 <div className="space-y-4">
                   {/* Título minimalista y serio */}
-                  <h1 className="text-5xl md:text-6xl font-bold text-foreground dark:text-white leading-tight">
+                  <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground dark:text-white leading-tight">
                     {building.name}
                   </h1>
                   
-                  <div className="flex items-center gap-3 text-lg md:text-xl text-muted-foreground">
-                    <MapPin className="h-5 w-5 md:h-6 md:w-6" />
-                    <span className="font-medium">{building.comuna}</span>
-                    <span className="text-muted-foreground">•</span>
-                    <span>{building.address}</span>
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 text-base sm:text-lg md:text-xl text-muted-foreground">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <MapPin className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 flex-shrink-0" />
+                      <span className="font-medium">{building.comuna}</span>
+                      <span className="hidden sm:inline text-muted-foreground">•</span>
+                    </div>
+                    <span className="sm:hidden text-muted-foreground">•</span>
+                    <span className="text-sm sm:text-base">{building.address}</span>
                     <motion.button
                       onClick={openGoogleMaps}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors dark:text-blue-400 dark:bg-blue-950/30 dark:hover:bg-blue-950/50 border border-blue-200 dark:border-blue-800/50"
+                      className="inline-flex items-center gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors dark:text-blue-400 dark:bg-blue-950/30 dark:hover:bg-blue-950/50 border border-blue-200 dark:border-blue-800/50 mt-2 sm:mt-0"
                       aria-label="Abrir ubicación en Google Maps"
                     >
                       <ExternalLink className="h-3 w-3" />
@@ -405,7 +408,7 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
 
                 {/* Badges con iconos y bordes de colores */}
                 {building.badges && building.badges.length > 0 && (
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
                     {building.badges.map((badge, index) => {
                       const BadgeIcon = getBadgeIcon(badge.label);
                       return (
@@ -428,7 +431,7 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
             </div>
 
             {/* Columna derecha - Galería prominente (5/12) */}
-            <div className="lg:col-span-5 space-y-4">
+            <div className="lg:col-span-5 space-y-3 sm:space-y-4">
               {/* Galería optimizada */}
               <motion.div 
                 className="relative"
@@ -456,7 +459,7 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
           transition={{ delay: 0.5 }}
         >
           <div className="max-w-4xl mx-auto">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
               <motion.div 
                 className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 backdrop-blur-sm rounded-2xl p-4 border border-amber-200/50 dark:border-amber-800/30"
                 initial={{ opacity: 0, y: 20 }}
@@ -540,12 +543,12 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.0 }}
           >
-            <div className="text-center mb-8">
-              <h3 className="text-3xl font-bold mb-2">Estilo de vida premium</h3>
-              <p className="text-muted-foreground">Descubre todas las amenidades que hacen de este edificio tu próximo hogar</p>
+            <div className="text-center mb-6 sm:mb-8">
+              <h3 className="text-2xl sm:text-3xl font-bold mb-2">Estilo de vida premium</h3>
+              <p className="text-sm sm:text-base text-muted-foreground">Descubre todas las amenidades que hacen de este edificio tu próximo hogar</p>
             </div>
             <div className="max-w-4xl mx-auto">
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
                 {building.amenities.map((amenity, index) => {
                   const IconComponent = getAmenityIcon(amenity);
                   return (
@@ -554,12 +557,12 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 1.1 + index * 0.1 }}
-                      className="bg-card/50 backdrop-blur-sm rounded-2xl p-4 border-2 border-amber-200/30 dark:border-amber-800/30 text-center hover:bg-card/70 hover:border-amber-300/50 dark:hover:border-amber-700/50 transition-all duration-300 hover:scale-105"
+                      className="bg-card/50 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 border-2 border-amber-200/30 dark:border-amber-800/30 text-center hover:bg-card/70 hover:border-amber-300/50 dark:hover:border-amber-700/50 transition-all duration-300 hover:scale-105"
                     >
-                      <div className="w-12 h-12 mx-auto mb-3 bg-gradient-to-br from-amber-500/20 to-orange-500/20 rounded-xl flex items-center justify-center border border-amber-300/30 dark:border-amber-700/30">
-                        <IconComponent className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-2 sm:mb-3 bg-gradient-to-br from-amber-500/20 to-orange-500/20 rounded-lg sm:rounded-xl flex items-center justify-center border border-amber-300/30 dark:border-amber-700/30">
+                        <IconComponent className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600 dark:text-amber-400" />
                       </div>
-                      <p className="text-sm font-medium text-foreground">{amenity}</p>
+                      <p className="text-xs sm:text-sm font-medium text-foreground">{amenity}</p>
                     </motion.div>
                   );
                 })}
@@ -576,13 +579,13 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.2 }}
           >
-            <div className="text-center mb-12">
-              <h3 className="text-4xl font-bold mb-4">Elige tu tipología ideal</h3>
-              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            <div className="text-center mb-8 sm:mb-12">
+              <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4">Elige tu tipología ideal</h3>
+              <p className="text-sm sm:text-base lg:text-lg text-muted-foreground max-w-2xl mx-auto">
                 Selecciona la que mejor se adapte a tu estilo de vida y descubre todas las opciones disponibles
               </p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
               {availableTypologies.map((typology, index) => {
                 const units = typologyGroups[typology];
                 const minPrice = Math.min(...units.map(u => u.precio));
@@ -593,7 +596,7 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
                 return (
                   <motion.div
                     key={typology}
-                    className="group relative bg-card/50 backdrop-blur-sm rounded-3xl p-8 border-2 transition-all duration-300 cursor-pointer overflow-hidden"
+                    className="group relative bg-card/50 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 border-2 transition-all duration-300 cursor-pointer overflow-hidden"
                     style={{
                       borderColor: isHovered ? '#f59e0b' : 'var(--border)',
                       backgroundColor: isHovered ? 'rgba(245, 158, 11, 0.05)' : 'var(--card)'
@@ -618,35 +621,35 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
                       transition={{ duration: 0.6 }}
                     />
 
-                    <div className="space-y-6 relative z-10">
-                      {/* Header de tipología */}
-                      <div className="flex items-center gap-4">
-                        <motion.div 
-                          className="w-16 h-16 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 flex items-center justify-center text-white shadow-lg"
-                          whileHover={{ scale: 1.1, rotate: 5 }}
-                          transition={{ duration: 0.2 }}
-                        >
-                          {typology.includes('Estudio') ? <Home className="h-8 w-8" /> : <Users className="h-8 w-8" />}
-                        </motion.div>
-                        <div>
-                          <h4 className="font-bold text-2xl">{formatTypologyLabel(typology)}</h4>
-                          <p className="text-sm text-muted-foreground">
-                            {units.length} unidad{units.length !== 1 ? 'es' : ''} disponible{units.length !== 1 ? 's' : ''}
-                          </p>
+                                          <div className="space-y-4 sm:space-y-6 relative z-10">
+                        {/* Header de tipología */}
+                        <div className="flex items-center gap-3 sm:gap-4">
+                          <motion.div 
+                            className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 flex items-center justify-center text-white shadow-lg"
+                            whileHover={{ scale: 1.1, rotate: 5 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            {typology.includes('Estudio') ? <Home className="h-6 w-6 sm:h-8 sm:w-8" /> : <Users className="h-6 w-6 sm:h-8 sm:w-8" />}
+                          </motion.div>
+                          <div>
+                            <h4 className="font-bold text-lg sm:text-xl lg:text-2xl">{formatTypologyLabel(typology)}</h4>
+                            <p className="text-xs sm:text-sm text-muted-foreground">
+                              {units.length} unidad{units.length !== 1 ? 'es' : ''} disponible{units.length !== 1 ? 's' : ''}
+                            </p>
+                          </div>
                         </div>
-                      </div>
 
                       {/* Información clave */}
-                      <div className="space-y-4">
+                      <div className="space-y-3 sm:space-y-4">
                         <div className="flex justify-between items-center">
-                          <span className="text-muted-foreground">Precio desde:</span>
-                          <span className="text-3xl font-bold text-amber-600 dark:text-amber-400">
+                          <span className="text-xs sm:text-sm text-muted-foreground">Precio desde:</span>
+                          <span className="text-xl sm:text-2xl lg:text-3xl font-bold text-amber-600 dark:text-amber-400">
                             {formatPrice(minPrice)}
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-muted-foreground">Superficie:</span>
-                          <span className="font-semibold text-lg">
+                          <span className="text-xs sm:text-sm text-muted-foreground">Superficie:</span>
+                          <span className="font-semibold text-base sm:text-lg">
                             {minM2}-{maxM2} m²
                           </span>
                         </div>
@@ -658,7 +661,7 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
                         className="block w-full"
                       >
                         <motion.button
-                          className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-4 rounded-2xl font-semibold hover:shadow-lg hover:shadow-amber-500/25 transition-all duration-300 group-hover:scale-105 text-lg"
+                          className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 sm:px-6 py-3 sm:py-4 rounded-xl sm:rounded-2xl font-semibold hover:shadow-lg hover:shadow-amber-500/25 transition-all duration-300 group-hover:scale-105 text-sm sm:text-base lg:text-lg"
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                         >
@@ -668,7 +671,7 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
 
                       {/* Información adicional */}
                       <div className="text-xs text-muted-foreground text-center">
-                        ✨ Sin comisión • Pet friendly • Garantía en cuotas
+                        ✨ Sin comisión • Pet friendly • Garantía
                       </div>
                     </div>
                   </motion.div>
