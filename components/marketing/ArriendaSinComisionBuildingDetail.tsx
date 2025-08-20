@@ -84,7 +84,7 @@ const getAmenityIcon = (amenity: string) => {
   
   // Comunicación y Tecnología
   if (amenityLower.includes('wifi') || amenityLower.includes('internet')) return Wifi;
-  if (amenityLower.includes('cito') || amenityLower.includes('citófono') || amenityLower.includes('intercom')) return Phone;
+  if (amenityLower.includes('cito') || amenityLower.includes('citófono') || amenityLower.includes('citefono') || amenityLower.includes('intercom') || amenityLower.includes('interfono')) return Phone;
   if (amenityLower.includes('teléfono') || amenityLower.includes('phone')) return Phone;
   if (amenityLower.includes('tv') || amenityLower.includes('televisión') || amenityLower.includes('cable')) return Tv;
   if (amenityLower.includes('smartphone') || amenityLower.includes('celular')) return Smartphone;
