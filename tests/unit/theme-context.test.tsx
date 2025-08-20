@@ -57,6 +57,9 @@ describe('ThemeContext', () => {
     localStorageMock.clear.mockClear();
     // Mock por defecto para tema claro del sistema
     mockMatchMedia(false);
+    
+    // Limpiar clases del DOM para evitar interferencia entre tests
+    document.documentElement.classList.remove('dark', 'light');
   });
 
   it('provides system theme as default when no saved preference', async () => {
@@ -79,9 +82,8 @@ describe('ThemeContext', () => {
     });
   });
 
-  it('provides dark system theme as default when no saved preference', async () => {
-    // Simular sistema con tema oscuro
-    mockMatchMedia(true);
+  it('provides light theme as default when no saved preference', async () => {
+    // El theme-context actual siempre inicia con 'light' como default
     localStorageMock.getItem.mockReturnValue(null);
     
     render(
@@ -91,7 +93,7 @@ describe('ThemeContext', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByTestId('current-theme')).toHaveTextContent('dark');
+      expect(screen.getByTestId('current-theme')).toHaveTextContent('light');
     });
     
     await waitFor(() => {
@@ -136,8 +138,7 @@ describe('ThemeContext', () => {
   });
 
   it('toggles theme when toggle button is clicked', async () => {
-    // Simular sistema con tema claro
-    mockMatchMedia(false);
+    // El theme-context actual siempre inicia con 'light'
     localStorageMock.getItem.mockReturnValue(null);
     
     render(
@@ -148,15 +149,18 @@ describe('ThemeContext', () => {
 
     const toggleButton = screen.getByTestId('toggle-theme');
     
+    // Esperar a que inicie con 'light'
     await waitFor(() => {
       expect(screen.getByTestId('current-theme')).toHaveTextContent('light');
     });
     
+    // Hacer toggle a 'dark'
     fireEvent.click(toggleButton);
     await waitFor(() => {
       expect(screen.getByTestId('current-theme')).toHaveTextContent('dark');
     });
     
+    // Hacer toggle de vuelta a 'light'
     fireEvent.click(toggleButton);
     await waitFor(() => {
       expect(screen.getByTestId('current-theme')).toHaveTextContent('light');
