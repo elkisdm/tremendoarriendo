@@ -184,7 +184,7 @@ export const HOME_AMENGUAL_EXTENDED: BuildingForArriendaSinComision = {
   ],
   amenities: [
     "Accesos controlados",
-    "Citéfono",
+    "Citófono",
     "Gimnasio",
     "Bicicletero",
     "Lavandería",
