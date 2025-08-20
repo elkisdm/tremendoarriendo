@@ -1,6 +1,7 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import Image from "next/image";
+import { ChevronLeft, ChevronRight, Play, Pause } from "lucide-react";
 import { clx } from "@lib/utils";
 
 const DEFAULT_BLUR =
@@ -10,12 +11,27 @@ type ImageGalleryProps = {
   images?: string[];
   media?: { images?: string[] };
   coverImage?: string;
+  autoPlay?: boolean;
+  autoPlayInterval?: number;
 };
 
-export function ImageGallery({ images, media, coverImage }: ImageGalleryProps) {
+export function ImageGallery({ 
+  images, 
+  media, 
+  coverImage, 
+  autoPlay = false, 
+  autoPlayInterval = 5000 
+}: ImageGalleryProps) {
   const [active, setActive] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(autoPlay);
+  const [isLoading, setIsLoading] = useState(true);
   const isInitialRenderRef = useRef(true);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  
+  // Priority: media.images > images prop > fallback to coverImage
+  const imageList = media?.images?.length ? media.images : images?.length ? images : coverImage ? [coverImage] : [];
   
   useEffect(() => {
     // After first client render, disable priority to avoid multiple priority images after interactions
@@ -32,28 +48,72 @@ export function ImageGallery({ images, media, coverImage }: ImageGalleryProps) {
     mediaQuery.addEventListener('change', handleChange);
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
-  
-  // Priority: media.images > images prop > fallback to coverImage
-  const imageList = media?.images?.length ? media.images : images?.length ? images : coverImage ? [coverImage] : [];
+
+  // Auto-play functionality
+  useEffect(() => {
+    if (!autoPlay || prefersReducedMotion || imageList.length <= 1) {
+      return;
+    }
+
+    if (isPlaying) {
+      autoPlayRef.current = setInterval(() => {
+        setActive((prev) => (prev + 1) % imageList.length);
+      }, autoPlayInterval);
+    } else {
+      if (autoPlayRef.current) {
+        clearInterval(autoPlayRef.current);
+        autoPlayRef.current = null;
+      }
+    }
+
+    return () => {
+      if (autoPlayRef.current) {
+        clearInterval(autoPlayRef.current);
+      }
+    };
+  }, [isPlaying, autoPlay, autoPlayInterval, imageList.length, prefersReducedMotion]);
+
+  // Pause auto-play on hover
+  const handleMouseEnter = useCallback(() => {
+    if (autoPlay && !prefersReducedMotion) {
+      setIsPlaying(false);
+    }
+  }, [autoPlay, prefersReducedMotion]);
+
+  const handleMouseLeave = useCallback(() => {
+    if (autoPlay && !prefersReducedMotion) {
+      setIsPlaying(true);
+    }
+  }, [autoPlay, prefersReducedMotion]);
   
   if (!imageList || imageList.length === 0) {
     return null;
   }
 
-  const handleKeyDown = (event: React.KeyboardEvent, index: number) => {
+  const nextImage = useCallback(() => {
+    setActive((prev) => (prev + 1) % imageList.length);
+  }, [imageList.length]);
+
+  const prevImage = useCallback(() => {
+    setActive((prev) => (prev - 1 + imageList.length) % imageList.length);
+  }, [imageList.length]);
+
+  const handleKeyDown = (event: React.KeyboardEvent, index?: number) => {
     switch (event.key) {
       case 'Enter':
       case ' ':
-        event.preventDefault();
-        setActive(index);
+        if (index !== undefined) {
+          event.preventDefault();
+          setActive(index);
+        }
         break;
       case 'ArrowRight':
         event.preventDefault();
-        setActive((prev) => (prev + 1) % imageList.length);
+        nextImage();
         break;
       case 'ArrowLeft':
         event.preventDefault();
-        setActive((prev) => (prev - 1 + imageList.length) % imageList.length);
+        prevImage();
         break;
       case 'Home':
         event.preventDefault();
@@ -63,56 +123,130 @@ export function ImageGallery({ images, media, coverImage }: ImageGalleryProps) {
         event.preventDefault();
         setActive(imageList.length - 1);
         break;
+      case 'Escape':
+        if (autoPlay) {
+          setIsPlaying(false);
+        }
+        break;
     }
   };
 
+  const handleImageLoad = () => {
+    setIsLoading(false);
+  };
+
   return (
-    <div className="grid grid-cols-4 gap-3" role="region" aria-label="Galería de imágenes de la propiedad">
-      {/* Main Image */}
-      <div className="col-span-4 md:col-span-3 aspect-[16/10] overflow-hidden rounded-2xl ring-1 ring-white/10 relative group">
+    <div 
+      className="w-full space-y-4" 
+      role="region" 
+      aria-label="Galería de imágenes de la propiedad"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      ref={containerRef}
+    >
+      {/* Main Image Container */}
+      <div className="relative aspect-[16/10] md:aspect-[21/9] lg:aspect-[24/9] overflow-hidden rounded-2xl ring-1 ring-white/10 group">
+        {/* Loading State */}
+        {isLoading && (
+          <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 animate-pulse flex items-center justify-center">
+            <div className="w-8 h-8 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+          </div>
+        )}
+        
+        {/* Main Image */}
         <Image
           src={imageList[active]}
           alt={`Imagen ${active + 1} de ${imageList.length} de la galería`}
           fill
-          sizes="(max-width: 768px) 100vw, 60vw"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
           className={clx(
-            "object-cover transition-opacity duration-300",
-            !prefersReducedMotion && "group-hover:scale-105 transition-transform duration-500"
+            "object-cover transition-all duration-700 ease-out",
+            isLoading ? "opacity-0" : "opacity-100",
+            !prefersReducedMotion && "group-hover:scale-105 transition-transform duration-700 ease-out"
           )}
           placeholder="blur"
           blurDataURL={DEFAULT_BLUR}
           priority={isInitialRenderRef.current && active === 0}
+          onLoad={handleImageLoad}
         />
+
+        {/* Navigation Controls */}
+        {imageList.length > 1 && (
+          <>
+            {/* Previous Button */}
+            <button
+              onClick={prevImage}
+              onKeyDown={handleKeyDown}
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100 focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+              aria-label="Imagen anterior"
+              tabIndex={0}
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+
+            {/* Next Button */}
+            <button
+              onClick={nextImage}
+              onKeyDown={handleKeyDown}
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100 focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+              aria-label="Imagen siguiente"
+              tabIndex={0}
+            >
+              <ChevronRight className="w-6 h-6" />
+            </button>
+
+            {/* Auto-play Toggle */}
+            {autoPlay && (
+              <button
+                onClick={() => setIsPlaying(!isPlaying)}
+                className="absolute top-4 right-4 w-10 h-10 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100 focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                aria-label={isPlaying ? "Pausar presentación" : "Reproducir presentación"}
+                tabIndex={0}
+              >
+                {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+              </button>
+            )}
+
+            {/* Image Counter */}
+            <div className="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm font-medium">
+              {active + 1} / {imageList.length}
+            </div>
+          </>
+        )}
       </div>
 
       {/* Thumbnails */}
-      <div className="col-span-4 md:col-span-1 flex md:flex-col gap-3 overflow-x-auto md:overflow-y-auto md:max-h-[400px]">
-        {imageList.map((src, i) => (
-          <button
-            key={src}
-            onClick={() => setActive(i)}
-            onKeyDown={(e) => handleKeyDown(e, i)}
-            className={clx(
-              "shrink-0 aspect-video md:aspect-[4/3] w-40 md:w-auto rounded-xl overflow-hidden ring-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)] transition-all duration-200",
-              !prefersReducedMotion && "motion-reduce:transition-none",
-              i === active ? "ring-[var(--ring)]" : "ring-white/10 hover:ring-white/20"
-            )}
-            aria-label={`Ver imagen ${i + 1} de ${imageList.length}`}
-            aria-pressed={i === active}
-            tabIndex={0}
-          >
-            <Image
-              src={src}
-              alt={`Miniatura ${i + 1}`}
-              width={160}
-              height={120}
-              className="w-full h-full object-cover"
-              placeholder="blur"
-              blurDataURL={DEFAULT_BLUR}
-            />
-          </button>
-        ))}
-      </div>
+      {imageList.length > 1 && (
+        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
+          {imageList.map((src, i) => (
+            <button
+              key={src}
+              onClick={() => setActive(i)}
+              onKeyDown={(e) => handleKeyDown(e, i)}
+              className={clx(
+                "shrink-0 aspect-video w-24 md:w-32 rounded-xl overflow-hidden ring-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)] transition-all duration-300 ease-out",
+                !prefersReducedMotion && "motion-reduce:transition-none",
+                i === active 
+                  ? "ring-[var(--ring)] scale-105" 
+                  : "ring-white/10 hover:ring-white/20 hover:scale-102"
+              )}
+              aria-label={`Ver imagen ${i + 1} de ${imageList.length}`}
+              aria-pressed={i === active}
+              tabIndex={0}
+            >
+              <Image
+                src={src}
+                alt={`Miniatura ${i + 1}`}
+                width={128}
+                height={96}
+                className="w-full h-full object-cover"
+                placeholder="blur"
+                blurDataURL={DEFAULT_BLUR}
+              />
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

@@ -171,6 +171,8 @@ export function PropertyClient({ building, relatedBuildings }: PropertyClientPro
                 images={building.gallery} 
                 media={building.media}
                 coverImage={building.coverImage}
+                autoPlay={true}
+                autoPlayInterval={4000}
               />
             </section>
 
