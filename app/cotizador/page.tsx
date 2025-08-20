@@ -71,7 +71,7 @@ function CotizadorContent() {
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-medium mb-4">
             <span className="w-2 h-2 bg-blue-600 rounded-full"></span>
-            Sistema de Cotizaciones Hommie
+            Sistema de Cotizaciones Elkis Realtor
           </div>
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             Cotizador de Arriendos
@@ -428,7 +428,7 @@ function CotizadorContent() {
             </div>
             
             <div className="mt-8 text-xs text-gray-500">
-              <p>Cotizador Hommie v2.0 • Datos actualizados en tiempo real • Sistema validado</p>
+              <p>Cotizador Elkis Realtor v2.0 • Datos actualizados en tiempo real • Sistema validado</p>
             </div>
           </div>
         </div>

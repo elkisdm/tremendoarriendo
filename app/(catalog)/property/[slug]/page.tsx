@@ -75,7 +75,7 @@ export async function generateMetadata({ params }: PropertyPageProps) {
   }
 
   return {
-    title: `${building.name} - 0% Comisión | Hommie`,
+    title: `${building.name} - 0% Comisión | Elkis Realtor`,
     description: `Arrienda ${building.name} en ${building.comuna} sin comisión de corretaje. ${building.amenities.join(", ")}.`,
     alternates: { canonical: `/property/${slug}` },
     openGraph: {

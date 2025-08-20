@@ -15,9 +15,9 @@ export function Header() {
             aria-label="Ir al inicio"
           >
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-ring to-ring/80">
-              <span className="text-sm font-bold text-white">H</span>
+              <span className="text-sm font-bold text-white">E</span>
             </div>
-            <span>Hommie</span>
+            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent font-bold">Elkis Realtor</span>
           </a>
         </div>
 
