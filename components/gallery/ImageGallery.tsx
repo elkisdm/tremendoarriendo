@@ -137,10 +137,10 @@ export function ImageGallery({
     setIsLoading(false);
   };
 
-  // Aspect ratios optimizados según el layout
+  // Aspect ratios optimizados para imágenes de propiedades
   const aspectRatioClass = compact 
     ? "aspect-[4/3] md:aspect-[3/2]" 
-    : "aspect-[16/10] md:aspect-[21/9] lg:aspect-[24/9]";
+    : "aspect-[4/3] md:aspect-[3/2] lg:aspect-[16/10]";
 
   return (
     <div 
