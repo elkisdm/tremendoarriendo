@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ImageGallery } from "@components/gallery/ImageGallery";
 import { AmenityList } from "@components/ui/AmenityList";
 import { PromotionBadge } from "@components/ui/PromotionBadge";
-import { ThemeToggle } from "@components/ui/ThemeToggle";
+import { GlobalHeader } from "@components/ui/GlobalHeader";
 import { ArrowLeft, MapPin, Users, Home, Sparkles, ExternalLink, Calendar, MessageCircle, Clock, Star, CheckCircle, Zap, TrendingUp, Eye, Wifi, Car, Dumbbell, Waves, Shield, Coffee, WashingMachine, AirVent, ParkingCircle, TreePine, Camera, Lock, Wrench, ChevronLeft, ChevronRight, Building2, Bed, Bath, Sofa, Utensils, Baby, Dog, Bike, Percent, CreditCard, Heart, Award, Gift, Tag, DollarSign, ShoppingCart, CalendarDays, Gamepad2, Tv, Music, BookOpen, Palette, Globe, Phone, Mail, Smartphone, Monitor, Printer, Projector, Headphones, Speaker, Lightbulb, Fan, Thermometer, Snowflake, Sun, Moon, Cloud, CloudRain, CloudLightning, CloudSnow, Wind, Umbrella, ChevronUp, ChevronDown, Key, Bell, Flame, Droplets, Trash2, Layers, Pill, Cat, Video, Image as ImageIcon } from "lucide-react";
 
 // Función local para obtener el badge principal
@@ -39,6 +39,32 @@ const getBadgeColor = (label: string) => {
     return "bg-gradient-to-r from-red-500 to-pink-500 text-white border-red-300/50";
   }
   return "bg-gradient-to-r from-gray-500 to-gray-600 text-white border-gray-300/50";
+};
+
+// Función para acortar texto de badges y mantener armonía visual
+const getShortBadgeText = (label: string) => {
+  const labelLower = label.toLowerCase();
+  
+  if (labelLower.includes('precio fijo 12 meses')) {
+    return "Precio fijo";
+  }
+  if (labelLower.includes('garantía en cuotas')) {
+    return "Garantía";
+  }
+  if (labelLower.includes('opción sin garantía')) {
+    return "Sin garantía";
+  }
+  if (labelLower.includes('sin comisión') || labelLower.includes('comisión gratis')) {
+    return "Sin comisión";
+  }
+  if (labelLower.includes('sin aval')) {
+    return "Sin aval";
+  }
+  if (labelLower.includes('off') || labelLower.includes('%')) {
+    return label; // Mantener descuentos como están
+  }
+  
+  return label; // Mantener otros textos como están
 };
 
 // Función para obtener icono de badge de promoción
@@ -355,22 +381,16 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          {/* Navegación */}
-          <div className="flex items-center justify-between mb-8">
-            <button 
-              onClick={() => {
-                sessionStorage.setItem('from-building-details', 'true');
-                window.location.href = '/arrienda-sin-comision';
-              }}
-              className="group inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-              Volver a edificios
-            </button>
-            
-            {/* Selector de tema */}
-            <ThemeToggle />
-          </div>
+          {/* Header Global */}
+          <GlobalHeader 
+            showBackButton={true}
+            backUrl="/arrienda-sin-comision"
+            backText="Volver a edificios"
+            showContact={true}
+            contactPhone="+56912345678"
+            contactWhatsApp="+56912345678"
+            className="mb-8"
+          />
 
           {/* Layout principal - GALERÍA CON PROTAGONISMO */}
           <div className="grid lg:grid-cols-12 gap-4 sm:gap-6 lg:gap-8 items-start">
@@ -445,7 +465,7 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
                         >
                           <div className={`${getBadgeColor(badge.label)} px-3 py-2 text-sm font-semibold rounded-lg shadow-md text-center border flex items-center justify-center gap-2 hover:scale-105 transition-transform duration-200`}>
                             <BadgeIcon className="w-4 h-4" />
-                            {badge.label}
+                            {getShortBadgeText(badge.label)}
                           </div>
                         </motion.div>
                       );
