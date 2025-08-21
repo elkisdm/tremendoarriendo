@@ -19,16 +19,16 @@ function getPrimaryBadge(badges?: Array<{ label: string; tag?: string; type: str
 const getBadgeColor = (label: string) => {
   const labelLower = label.toLowerCase();
   
-  // Solo destacar lo más importante con color
+  // Solo destacar lo más importante con colores llamativos
   if (labelLower.includes('off') || labelLower.includes('%') || labelLower.includes('descuento')) {
-    return "bg-blue-600 text-white border-blue-500 hover:bg-blue-700";
+    return "bg-orange-500 text-white border-orange-400 hover:bg-orange-600 shadow-lg";
   }
   if (labelLower.includes('sin comisión') || labelLower.includes('comisión gratis')) {
-    return "bg-green-600 text-white border-green-500 hover:bg-green-700";
+    return "bg-green-500 text-white border-green-400 hover:bg-green-600 shadow-lg";
   }
   
-  // El resto en grises sobrios
-  return "bg-gray-600 text-white border-gray-500 hover:bg-gray-700";
+  // El resto en un color unificado pero destacado
+  return "bg-blue-600 text-white border-blue-500 hover:bg-blue-700 shadow-md";
 };
 
 // Función para acortar texto de badges y mantener armonía visual
