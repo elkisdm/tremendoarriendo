@@ -596,20 +596,6 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
 
             {/* Right Column - Sidebar optimizado */}
             <div className="lg:col-span-4 space-y-6">
-              {/* Selector de Unidad */}
-              <section aria-label="Selector de unidad">
-                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-3xl font-bold">{selectedUnit?.id || '207'}</span>
-                    <button className="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center gap-1">
-                      <ExternalLink className="w-4 h-4" />
-                      Cambiar
-                    </button>
-                  </div>
-                  <h3 className="font-semibold text-lg mb-1">{building.name}</h3>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm">{building.address}, {building.comuna}</p>
-                </div>
-              </section>
 
               {/* Cost Table */}
               <section aria-label="Detalles de costos">
