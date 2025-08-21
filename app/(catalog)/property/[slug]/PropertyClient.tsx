@@ -27,7 +27,16 @@ import {
   Layers,
   Compass,
   Refrigerator,
-  PawPrint
+  PawPrint,
+  Wrench,
+  Home,
+  Droplets,
+  Lock,
+  Bell,
+  Fan,
+  Tv,
+  Microwave,
+  Sofa
 } from "lucide-react";
 import { ImageGallery } from "@components/gallery/ImageGallery";
 import { UnitSelector } from "@components/UnitSelector";
@@ -72,6 +81,8 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
   });
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [openFAQ, setOpenFAQ] = useState<string | null>(null);
+  const [includeParking, setIncludeParking] = useState(false);
+  const [includeStorage, setIncludeStorage] = useState(false);
 
   // Analytics tracking on mount
   useEffect(() => {
@@ -127,7 +138,8 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
   const calculateFirstPayment = (startDate: Date) => {
     // Variables de entrada según la lógica
     const RENT = originalPrice;
-    const STORAGE_RENT = 0; // Sin bodega por defecto
+    const PARKING_RENT = includeParking ? 50000 : 0; // $50.000 si está disponible
+    const STORAGE_RENT = includeStorage ? 30000 : 0; // $30.000 si está disponible
     const GC_RENT = Math.round(originalPrice * 0.21); // Gasto común 21% del arriendo
     const GC_STORAGE = 0; // Sin gasto común de bodega
     const PROMO_RATE = 0.50; // 50% de descuento
@@ -144,7 +156,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
     const daysChargedCount = Math.ceil(daysCharged / (24 * 60 * 60 * 1000));
     const prorateFactor = daysChargedCount / daysInMonth;
 
-    const monthlyRentStorage = RENT + STORAGE_RENT;
+    const monthlyRentStorage = RENT + PARKING_RENT + STORAGE_RENT;
     const proratedRentStorage = Math.round(monthlyRentStorage * prorateFactor);
     const promoDiscount = Math.round(proratedRentStorage * PROMO_RATE);
     const netRentStorage = proratedRentStorage - promoDiscount;
@@ -170,7 +182,9 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
       totalFirstPayment,
       daysChargedCount,
       daysInMonth,
-      prorateFactor
+      prorateFactor,
+      parkingRent: PARKING_RENT,
+      storageRent: STORAGE_RENT
     };
   };
 
@@ -626,43 +640,57 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                         <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
                           <div className="flex items-center gap-3 mb-4">
                             <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
-                              <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
-                              </svg>
+                              <Home className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                             </div>
                             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Terminaciones</h3>
                           </div>
                           <div className="space-y-3">
-                            <div className="flex items-center gap-3 p-2 bg-white dark:bg-gray-800 rounded-lg">
-                              <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                              <div className="w-8 h-8 bg-blue-50 dark:bg-blue-900/10 rounded-lg flex items-center justify-center">
+                                <Square className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                              </div>
                               <span className="text-sm text-gray-700 dark:text-gray-300">Ventanas: Termopanel en PVC</span>
                             </div>
-                            <div className="flex items-center gap-3 p-2 bg-white dark:bg-gray-800 rounded-lg">
-                              <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                              <div className="w-8 h-8 bg-blue-50 dark:bg-blue-900/10 rounded-lg flex items-center justify-center">
+                                <Droplets className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                              </div>
                               <span className="text-sm text-gray-700 dark:text-gray-300">Agua caliente: Central</span>
                             </div>
-                            <div className="flex items-center gap-3 p-2 bg-white dark:bg-gray-800 rounded-lg">
-                              <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                              <div className="w-8 h-8 bg-blue-50 dark:bg-blue-900/10 rounded-lg flex items-center justify-center">
+                                <Square className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                              </div>
                               <span className="text-sm text-gray-700 dark:text-gray-300">Cocina: Encimera Vitrocerámica</span>
                             </div>
-                            <div className="flex items-center gap-3 p-2 bg-white dark:bg-gray-800 rounded-lg">
-                              <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                              <div className="w-8 h-8 bg-blue-50 dark:bg-blue-900/10 rounded-lg flex items-center justify-center">
+                                <Square className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                              </div>
                               <span className="text-sm text-gray-700 dark:text-gray-300">Piso baños: Porcelanato/Cerámica</span>
                             </div>
-                            <div className="flex items-center gap-3 p-2 bg-white dark:bg-gray-800 rounded-lg">
-                              <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                              <div className="w-8 h-8 bg-blue-50 dark:bg-blue-900/10 rounded-lg flex items-center justify-center">
+                                <Square className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                              </div>
                               <span className="text-sm text-gray-700 dark:text-gray-300">Piso estar: Vinílico</span>
                             </div>
-                            <div className="flex items-center gap-3 p-2 bg-white dark:bg-gray-800 rounded-lg">
-                              <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                              <div className="w-8 h-8 bg-blue-50 dark:bg-blue-900/10 rounded-lg flex items-center justify-center">
+                                <Square className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                              </div>
                               <span className="text-sm text-gray-700 dark:text-gray-300">Piso dormitorios: Vinílico</span>
                             </div>
-                            <div className="flex items-center gap-3 p-2 bg-white dark:bg-gray-800 rounded-lg">
-                              <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                              <div className="w-8 h-8 bg-blue-50 dark:bg-blue-900/10 rounded-lg flex items-center justify-center">
+                                <Lock className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                              </div>
                               <span className="text-sm text-gray-700 dark:text-gray-300">Chapa: Electrónica</span>
                             </div>
-                            <div className="flex items-center gap-3 p-2 bg-white dark:bg-gray-800 rounded-lg">
-                              <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                              <div className="w-8 h-8 bg-blue-50 dark:bg-blue-900/10 rounded-lg flex items-center justify-center">
+                                <Bell className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                              </div>
                               <span className="text-sm text-gray-700 dark:text-gray-300">Alarma: Sí</span>
                             </div>
                           </div>
@@ -672,43 +700,57 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                         <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
                           <div className="flex items-center gap-3 mb-4">
                             <div className="w-8 h-8 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center">
-                              <svg className="w-5 h-5 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M10 3.5a1.5 1.5 0 013 0V4a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-.5l-1 1h2a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1h-2v1a1 1 0 01-1 1H6a1 1 0 01-1-1v-3a1 1 0 011-1h2l1-1H8a1 1 0 01-1-1V6a1 1 0 011-1h3a1 1 0 001-1v-.5z" />
-                              </svg>
+                              <Wrench className="w-4 h-4 text-green-600 dark:text-green-400" />
                             </div>
                             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Equipamiento</h3>
                           </div>
                           <div className="space-y-3">
-                            <div className="flex items-center gap-3 p-2 bg-white dark:bg-gray-800 rounded-lg">
-                              <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                              <div className="w-8 h-8 bg-green-50 dark:bg-green-900/10 rounded-lg flex items-center justify-center">
+                                <Refrigerator className="w-4 h-4 text-green-600 dark:text-green-400" />
+                              </div>
                               <span className="text-sm text-gray-700 dark:text-gray-300">Refrigerador</span>
                             </div>
-                            <div className="flex items-center gap-3 p-2 bg-white dark:bg-gray-800 rounded-lg">
-                              <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                              <div className="w-8 h-8 bg-green-50 dark:bg-green-900/10 rounded-lg flex items-center justify-center">
+                                <Fan className="w-4 h-4 text-green-600 dark:text-green-400" />
+                              </div>
                               <span className="text-sm text-gray-700 dark:text-gray-300">Campana</span>
                             </div>
-                            <div className="flex items-center gap-3 p-2 bg-white dark:bg-gray-800 rounded-lg">
-                              <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                              <div className="w-8 h-8 bg-green-50 dark:bg-green-900/10 rounded-lg flex items-center justify-center">
+                                <Square className="w-4 h-4 text-green-600 dark:text-green-400" />
+                              </div>
                               <span className="text-sm text-gray-700 dark:text-gray-300">Cortinas Roller</span>
                             </div>
-                            <div className="flex items-center gap-3 p-2 bg-white dark:bg-gray-800 rounded-lg">
-                              <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                              <div className="w-8 h-8 bg-green-50 dark:bg-green-900/10 rounded-lg flex items-center justify-center">
+                                <Tv className="w-4 h-4 text-green-600 dark:text-green-400" />
+                              </div>
                               <span className="text-sm text-gray-700 dark:text-gray-300">Porta TV</span>
                             </div>
-                            <div className="flex items-center gap-3 p-2 bg-white dark:bg-gray-800 rounded-lg">
-                              <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                              <div className="w-8 h-8 bg-green-50 dark:bg-green-900/10 rounded-lg flex items-center justify-center">
+                                <Bed className="w-4 h-4 text-green-600 dark:text-green-400" />
+                              </div>
                               <span className="text-sm text-gray-700 dark:text-gray-300">Cama</span>
                             </div>
-                            <div className="flex items-center gap-3 p-2 bg-white dark:bg-gray-800 rounded-lg">
-                              <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                              <div className="w-8 h-8 bg-green-50 dark:bg-green-900/10 rounded-lg flex items-center justify-center">
+                                <Microwave className="w-4 h-4 text-green-600 dark:text-green-400" />
+                              </div>
                               <span className="text-sm text-gray-700 dark:text-gray-300">Microondas</span>
                             </div>
-                            <div className="flex items-center gap-3 p-2 bg-white dark:bg-gray-800 rounded-lg">
-                              <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                              <div className="w-8 h-8 bg-green-50 dark:bg-green-900/10 rounded-lg flex items-center justify-center">
+                                <Square className="w-4 h-4 text-green-600 dark:text-green-400" />
+                              </div>
                               <span className="text-sm text-gray-700 dark:text-gray-300">Horno Eléctrico</span>
                             </div>
-                            <div className="flex items-center gap-3 p-2 bg-white dark:bg-gray-800 rounded-lg">
-                              <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                              <div className="w-8 h-8 bg-green-50 dark:bg-green-900/10 rounded-lg flex items-center justify-center">
+                                <Sofa className="w-4 h-4 text-green-600 dark:text-green-400" />
+                              </div>
                               <span className="text-sm text-gray-700 dark:text-gray-300">Sofá Cama</span>
                             </div>
                           </div>
