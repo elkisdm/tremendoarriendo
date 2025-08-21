@@ -383,8 +383,8 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                       <span className="text-sm font-medium text-gray-900 dark:text-white">${originalPrice.toLocaleString('es-CL')}</span>
                     </div>
                     <div className="flex justify-between items-center bg-green-50 dark:bg-green-900/20 p-2 rounded-lg border border-green-200 dark:border-green-800">
-                      <span className="text-sm text-green-700 dark:text-green-300 font-medium">Comisión corretaje:</span>
-                      <span className="text-sm line-through text-green-600 dark:text-green-400 font-medium">${Math.round((originalPrice * 0.5) * 1.19).toLocaleString('es-CL')}</span>
+                      <span className="text-sm text-green-700 dark:text-green-300 font-medium">¡Comisión corretaje GRATIS!</span>
+                      <span className="text-lg font-bold text-green-600 dark:text-green-400 line-through">${Math.round((originalPrice * 0.5) * 1.19).toLocaleString('es-CL')}</span>
                     </div>
                   </div>
                 </div>
