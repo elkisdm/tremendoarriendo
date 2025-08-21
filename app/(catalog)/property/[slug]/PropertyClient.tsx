@@ -688,22 +688,22 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                       </div>
                     )}
 
-                    {activeTab === 'caracteristicas' && (
-                      <div>
-                        <h3 className="text-lg font-semibold mb-3">Comodidades del edificio {building.name}</h3>
-                        <div className="flex flex-wrap gap-3">
-                          {building.amenities.map((amenity, index) => (
-                            <div
-                              key={index}
-                              className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm bg-white/5 ring-1 ring-white/10 transition-colors hover:bg-white/10"
-                            >
-                              <CheckCircle className="w-4 h-4 text-green-500" aria-hidden="true" />
-                              <span>{amenity}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                                         {activeTab === 'caracteristicas' && (
+                       <div>
+                         <h3 className="text-lg font-semibold mb-3">Comodidades del edificio {building.name}</h3>
+                         <div className="flex flex-wrap gap-3">
+                           {building.amenities.map((amenity, index) => (
+                             <div
+                               key={index}
+                               className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm bg-gray-50 dark:bg-gray-700 ring-1 ring-gray-200 dark:ring-gray-600 transition-colors hover:bg-gray-100 dark:hover:bg-gray-600"
+                             >
+                               <CheckCircle className="w-4 h-4 text-green-500" aria-hidden="true" />
+                               <span className="text-gray-900 dark:text-white">{amenity}</span>
+                             </div>
+                           ))}
+                         </div>
+                       </div>
+                     )}
 
                     {activeTab === 'requisitos' && (
                       <div className="space-y-6">
