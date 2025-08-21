@@ -55,6 +55,12 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
   const [selectedUnit, setSelectedUnit] = useState<Unit>(getDefaultUnit());
   const [showUrgencyBanner, setShowUrgencyBanner] = useState(true);
   const [activeTab, setActiveTab] = useState<'detalle' | 'caracteristicas' | 'requisitos' | 'faq'>('detalle');
+  const [moveInDate, setMoveInDate] = useState<Date>(() => {
+    const today = new Date();
+    const firstDayNextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+    return firstDayNextMonth;
+  });
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   // Analytics tracking on mount
   useEffect(() => {
@@ -101,6 +107,96 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
   // Datos estratégicos basados en AssetPlan
   const originalPrice = selectedUnit?.price || 290000;
   const discountPrice = Math.round(originalPrice * 0.5); // 50% OFF primer mes
+
+  // Función para calcular el primer pago según la lógica proporcionada
+  const calculateFirstPayment = (startDate: Date) => {
+    // Variables de entrada según la lógica
+    const RENT = originalPrice;
+    const STORAGE_RENT = 0; // Sin bodega por defecto
+    const GC_RENT = Math.round(originalPrice * 0.21); // Gasto común 21% del arriendo
+    const GC_STORAGE = 0; // Sin gasto común de bodega
+    const PROMO_RATE = 0.50; // 50% de descuento
+    const DEPOSIT_MONTHS = 1;
+    const DEPOSIT_INIT_PCT = 0.33; // 33% inicial de garantía
+    const COMMISSION_RATE = 0.50; // 50% de comisión
+    const VAT = 0.19; // IVA 19%
+    const COMMISSION_BONIF_RATE = 1; // 100% bonificada
+    const EXTRA_FEES = 0; // Sin costos extra
+
+    // Cálculos según la lógica
+    const daysInMonth = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0).getDate();
+    const daysCharged = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0).getTime() - startDate.getTime() + (24 * 60 * 60 * 1000);
+    const daysChargedCount = Math.ceil(daysCharged / (24 * 60 * 60 * 1000));
+    const prorateFactor = daysChargedCount / daysInMonth;
+
+    const monthlyRentStorage = RENT + STORAGE_RENT;
+    const proratedRentStorage = Math.round(monthlyRentStorage * prorateFactor);
+    const promoDiscount = Math.round(proratedRentStorage * PROMO_RATE);
+    const netRentStorage = proratedRentStorage - promoDiscount;
+
+    const monthlyGC = GC_RENT + GC_STORAGE;
+    const proratedGC = Math.round(monthlyGC * prorateFactor);
+
+    const totalDeposit = Math.round(DEPOSIT_MONTHS * monthlyRentStorage);
+    const initialDeposit = Math.round(totalDeposit * DEPOSIT_INIT_PCT);
+
+    const commissionBase = Math.round(COMMISSION_RATE * monthlyRentStorage);
+    const commissionVAT = Math.round(commissionBase * VAT);
+    const totalCommission = commissionBase + commissionVAT;
+    const commissionToPay = Math.max(0, Math.round(totalCommission * (1 - COMMISSION_BONIF_RATE)));
+
+    const totalFirstPayment = netRentStorage + proratedGC + initialDeposit + EXTRA_FEES + commissionToPay;
+
+    return {
+      netRentStorage,
+      proratedGC,
+      initialDeposit,
+      commissionToPay,
+      totalFirstPayment,
+      daysChargedCount,
+      daysInMonth,
+      prorateFactor
+    };
+  };
+
+  const firstPaymentCalculation = calculateFirstPayment(moveInDate);
+
+  // Función para obtener la fecha máxima (30 días desde hoy)
+  const getMaxDate = () => {
+    const today = new Date();
+    const maxDate = new Date(today);
+    maxDate.setDate(today.getDate() + 30);
+    return maxDate;
+  };
+
+  // Función para formatear fecha
+  const formatDate = (date: Date) => {
+    return date.toLocaleDateString('es-CL', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  };
+
+  // Función para manejar cambio de fecha
+  const handleDateChange = (date: Date) => {
+    setMoveInDate(date);
+    setShowDatePicker(false);
+  };
+
+  // Función para enviar cotización por email
+  const handleSendQuotation = () => {
+    track("quotation_sent", {
+      property_id: building.id,
+      property_name: building.name,
+      move_in_date: moveInDate.toISOString(),
+      total_amount: firstPaymentCalculation.totalFirstPayment
+    });
+    
+    // Aquí se implementaría la lógica para enviar el email
+    // Por ahora solo mostraremos un alert
+    alert(`Cotización enviada por email para mudanza el ${formatDate(moveInDate)}`);
+  };
 
   // PASO 2: Badges estratégicos optimizados (solo 3 principales)
   const strategicBadges = [
@@ -665,7 +761,111 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
               <section aria-label="Cálculo del primer pago">
                 <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Cálculo del primer pago</h3>
-                  <CostTable unit={selectedUnit} promoLabel="$0" />
+                  
+                  {/* Selector de fecha de mudanza */}
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Fecha de mudanza
+                    </label>
+                    <div className="relative">
+                      <button
+                        onClick={() => setShowDatePicker(!showDatePicker)}
+                        className="w-full flex items-center justify-between px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <span>{formatDate(moveInDate)}</span>
+                        <svg className="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
+                        </svg>
+                      </button>
+                      
+                      {/* Calendario */}
+                      {showDatePicker && (
+                        <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg z-10 p-3">
+                          <div className="grid grid-cols-7 gap-1 text-xs">
+                            {['D', 'L', 'M', 'M', 'J', 'V', 'S'].map(day => (
+                              <div key={day} className="p-2 text-center text-gray-500 font-medium">
+                                {day}
+                              </div>
+                            ))}
+                            {Array.from({ length: 30 }, (_, i) => {
+                              const date = new Date();
+                              date.setDate(date.getDate() + i + 1);
+                              const isSelected = date.toDateString() === moveInDate.toDateString();
+                              const isDisabled = date > getMaxDate();
+                              
+                              return (
+                                <button
+                                  key={i}
+                                  onClick={() => !isDisabled && handleDateChange(date)}
+                                  disabled={isDisabled}
+                                  className={`p-2 text-center text-sm rounded ${
+                                    isSelected
+                                      ? 'bg-blue-600 text-white'
+                                      : isDisabled
+                                      ? 'text-gray-300 cursor-not-allowed'
+                                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                                  }`}
+                                >
+                                  {date.getDate()}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Cálculo basado en {firstPaymentCalculation.daysChargedCount} días del mes ({firstPaymentCalculation.daysInMonth} días totales)
+                    </p>
+                  </div>
+
+                  {/* Detalle del cálculo */}
+                  <div className="space-y-3 mb-6">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600 dark:text-gray-400">Arriendo prorrateado:</span>
+                      <span className="text-sm font-medium text-gray-900 dark:text-white">
+                        ${firstPaymentCalculation.netRentStorage.toLocaleString('es-CL')}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600 dark:text-gray-400">Gastos comunes prorrateados:</span>
+                      <span className="text-sm font-medium text-gray-900 dark:text-white">
+                        ${firstPaymentCalculation.proratedGC.toLocaleString('es-CL')}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600 dark:text-gray-400">Garantía inicial (33%):</span>
+                      <span className="text-sm font-medium text-gray-900 dark:text-white">
+                        ${firstPaymentCalculation.initialDeposit.toLocaleString('es-CL')}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600 dark:text-gray-400">Comisión corretaje:</span>
+                      <span className="text-sm font-medium text-green-600 dark:text-green-400">
+                        ${firstPaymentCalculation.commissionToPay.toLocaleString('es-CL')}
+                      </span>
+                    </div>
+                    <div className="border-t border-gray-200 dark:border-gray-600 pt-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-base font-semibold text-gray-900 dark:text-white">Total primer pago:</span>
+                        <span className="text-lg font-bold text-blue-600 dark:text-blue-400">
+                          ${firstPaymentCalculation.totalFirstPayment.toLocaleString('es-CL')}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Botón enviar cotización */}
+                  <button
+                    onClick={handleSendQuotation}
+                    className="w-full inline-flex items-center justify-center px-4 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500 transition-colors"
+                  >
+                    <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                      <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                    </svg>
+                    Enviar cotización por email
+                  </button>
                 </div>
               </section>
 
