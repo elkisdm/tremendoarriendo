@@ -711,7 +711,7 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
           </div>
         </motion.div>
 
-        {/* Amenities con iconos centradas */}
+        {/* Amenities con el nuevo estilo mejorado */}
         {building.amenities && building.amenities.length > 0 && (
           <motion.section 
             className="mb-16"
@@ -719,26 +719,48 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.1 }}
           >
-            <div className="text-center mb-6 sm:mb-8">
-              <h3 className="text-2xl sm:text-3xl font-bold mb-2">Estilo de vida premium</h3>
-              <p className="text-sm sm:text-base text-muted-foreground">Descubre todas las amenidades que hacen de este edificio tu próximo hogar</p>
-            </div>
             <div className="max-w-4xl mx-auto">
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center">
+                  <Building2 className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Comodidades del edificio {building.name}</h3>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {building.amenities.map((amenity, index) => {
-                  const IconComponent = getAmenityIcon(amenity);
+                  // Función para obtener el icono apropiado según la comodidad
+                  const getAmenityIcon = (amenityName: string) => {
+                    const lowerAmenity = amenityName.toLowerCase();
+                    if (lowerAmenity.includes('acceso') || lowerAmenity.includes('control')) return <Lock className="w-4 h-4 text-blue-600 dark:text-blue-400" />;
+                    if (lowerAmenity.includes('citófono') || lowerAmenity.includes('intercom')) return <Phone className="w-4 h-4 text-blue-600 dark:text-blue-400" />;
+                    if (lowerAmenity.includes('gimnasio') || lowerAmenity.includes('gym')) return <Dumbbell className="w-4 h-4 text-green-600 dark:text-green-400" />;
+                    if (lowerAmenity.includes('bicicletero') || lowerAmenity.includes('bici')) return <Bike className="w-4 h-4 text-green-600 dark:text-green-400" />;
+                    if (lowerAmenity.includes('lavandería') || lowerAmenity.includes('lavadora')) return <WashingMachine className="w-4 h-4 text-blue-600 dark:text-blue-400" />;
+                    if (lowerAmenity.includes('internet') || lowerAmenity.includes('wifi')) return <Wifi className="w-4 h-4 text-purple-600 dark:text-purple-400" />;
+                    if (lowerAmenity.includes('quincho') || lowerAmenity.includes('bbq')) return <Flame className="w-4 h-4 text-orange-600 dark:text-orange-400" />;
+                    if (lowerAmenity.includes('gourmet') || lowerAmenity.includes('evento')) return <Users className="w-4 h-4 text-purple-600 dark:text-purple-400" />;
+                    if (lowerAmenity.includes('seguridad')) return <Eye className="w-4 h-4 text-red-600 dark:text-red-400" />;
+                    if (lowerAmenity.includes('terraza') || lowerAmenity.includes('panorámica')) return <Sun className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />;
+                    if (lowerAmenity.includes('lounge') || lowerAmenity.includes('salón')) return <Coffee className="w-4 h-4 text-brown-600 dark:text-brown-400" />;
+                    if (lowerAmenity.includes('transporte') || lowerAmenity.includes('cercano')) return <Car className="w-4 h-4 text-green-600 dark:text-green-400" />;
+                    if (lowerAmenity.includes('conserjería') || lowerAmenity.includes('concierge')) return <Users className="w-4 h-4 text-blue-600 dark:text-blue-400" />;
+                    if (lowerAmenity.includes('ascensor') || lowerAmenity.includes('elevador')) return <ChevronUp className="w-4 h-4 text-gray-600 dark:text-gray-400" />;
+                    if (lowerAmenity.includes('comercio') || lowerAmenity.includes('tienda')) return <ShoppingCart className="w-4 h-4 text-orange-600 dark:text-orange-400" />;
+                    return <CheckCircle className="w-4 h-4 text-green-500" />;
+                  };
+
                   return (
                     <motion.div
                       key={amenity}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 1.2 + index * 0.1 }}
-                      className="bg-card/50 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 border-2 border-amber-200/30 dark:border-amber-800/30 text-center hover:bg-card/70 hover:border-amber-300/50 dark:hover:border-amber-700/50 transition-all duration-300 hover:scale-105"
+                      className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
                     >
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-2 sm:mb-3 bg-gradient-to-br from-amber-500/20 to-orange-500/20 rounded-lg sm:rounded-xl flex items-center justify-center border border-amber-300/30 dark:border-amber-700/30">
-                        <IconComponent className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600 dark:text-amber-400" />
+                      <div className="w-8 h-8 bg-white dark:bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0">
+                        {getAmenityIcon(amenity)}
                       </div>
-                      <p className="text-xs sm:text-sm font-medium text-foreground">{amenity}</p>
+                      <span className="text-sm text-gray-900 dark:text-white font-medium">{amenity}</span>
                     </motion.div>
                   );
                 })}
