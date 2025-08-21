@@ -20,7 +20,12 @@ import {
   Calendar,
   Package,
   Users,
-  Building2
+  Building2,
+  Sun,
+  Heart,
+  Car,
+  Layers,
+  Compass
 } from "lucide-react";
 import { ImageGallery } from "@components/gallery/ImageGallery";
 import { UnitSelector } from "@components/UnitSelector";
@@ -462,9 +467,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
 
                 {/* Metros cuadrados exterior */}
                 <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
-                  </svg>
+                  <Layers className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                   <div>
                     <div className="text-lg font-bold text-gray-900 dark:text-white">0</div>
                     <div className="text-xs text-gray-600 dark:text-gray-400">m² exterior</div>
@@ -473,9 +476,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
 
                 {/* Piso */}
                 <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm3 1h6v2H7V5zm6 4H7v2h6V9zm0 4H7v2h6v-2z" clipRule="evenodd" />
-                  </svg>
+                  <Building2 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                   <div>
                     <div className="text-lg font-bold text-gray-900 dark:text-white">2</div>
                     <div className="text-xs text-gray-600 dark:text-gray-400">Piso</div>
@@ -484,9 +485,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
 
                 {/* Orientación */}
                 <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <svg className="w-5 h-5 text-yellow-600 dark:text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
-                  </svg>
+                  <Compass className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
                   <div>
                     <div className="text-sm font-medium text-gray-900 dark:text-white">Orientación</div>
                     <div className="text-xs text-gray-600 dark:text-gray-400">Norte</div>
@@ -495,10 +494,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
 
                 {/* Mascotas */}
                 <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <svg className="w-5 h-5 text-purple-600 dark:text-purple-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                    <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
-                  </svg>
+                  <Heart className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                   <div>
                     <div className="text-sm font-medium text-gray-900 dark:text-white">Mascotas</div>
                     <div className="text-xs text-gray-600 dark:text-gray-400">Permitidas</div>
@@ -507,9 +503,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
 
                 {/* Tipo de amoblado */}
                 <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <svg className="w-5 h-5 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
-                  </svg>
+                  <Package className="w-5 h-5 text-green-600 dark:text-green-400" />
                   <div>
                     <div className="text-sm font-medium text-gray-900 dark:text-white">Amoblado</div>
                     <div className="text-xs text-gray-600 dark:text-gray-400">Completo</div>
@@ -559,16 +553,16 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
               <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    {/* Ícono de metro con imagen */}
+                    {/* Ícono de metro con SVG */}
                     <div className="relative">
                       <img
-                        src="/images/metro/metro-icon.png"
+                        src="/images/metro/metro-icon.svg"
                         alt="Metro Línea 1"
-                        className="w-6 h-6"
+                        className="w-8 h-8"
                       />
                       {/* Círculo rojo de línea 1 */}
-                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
-                        <span className="text-white text-xs font-bold">1</span>
+                      <div className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center shadow-sm">
+                        <span className="text-white text-sm font-bold">1</span>
                       </div>
                     </div>
                     <div>
