@@ -95,6 +95,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
   const [openFAQ, setOpenFAQ] = useState<string | null>(null);
   const [includeParking, setIncludeParking] = useState(false);
   const [includeStorage, setIncludeStorage] = useState(false);
+  const [guaranteeInInstallments, setGuaranteeInInstallments] = useState(false);
 
   // Analytics tracking on mount
   useEffect(() => {
@@ -553,11 +554,57 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                 </div>
 
                 {/* Bodega */}
-                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <Package className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-                  <div>
-                    <div className="text-sm font-medium text-gray-900 dark:text-white">Bodega</div>
-                    <div className="text-xs text-gray-600 dark:text-gray-400">Desde $30.000</div>
+                <div className={`flex items-center justify-between p-3 rounded-lg border transition-colors ${true ? 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600' : 'bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600'
+                  }`}>
+                  <div className="flex items-center gap-3">
+                    <Package className={`w-5 h-5 ${true ? 'text-purple-600 dark:text-purple-400' : 'text-gray-400'}`} />
+                    <div>
+                      <span className={`text-sm font-medium ${true ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>
+                        Bodega
+                      </span>
+                      <p className={`text-xs ${true ? 'text-gray-500 dark:text-gray-400' : 'text-gray-400'}`}>
+                        {true ? 'Desde $30.000 mensual' : 'No disponible'}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className={`text-sm font-semibold ${true ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>
+                      ${true ? '30.000' : '0'}
+                    </span>
+                    <input
+                      type="checkbox"
+                      checked={includeStorage}
+                      onChange={(e) => setIncludeStorage(e.target.checked)}
+                      disabled={!true}
+                      className={`w-4 h-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500 ${!true ? 'opacity-50 cursor-not-allowed' : ''
+                        }`}
+                    />
+                  </div>
+                </div>
+
+                {/* Garantía en cuotas */}
+                <div className="flex items-center justify-between p-3 rounded-lg border bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600">
+                  <div className="flex items-center gap-3">
+                    <Shield className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                    <div>
+                      <span className="text-sm font-medium text-gray-900 dark:text-white">
+                        Garantía en cuotas
+                      </span>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        3 cuotas de ${Math.round(originalPrice * 0.22).toLocaleString('es-CL')} c/u
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                      ${Math.round(originalPrice * 0.22).toLocaleString('es-CL')}
+                    </span>
+                    <input
+                      type="checkbox"
+                      checked={guaranteeInInstallments}
+                      onChange={(e) => setGuaranteeInInstallments(e.target.checked)}
+                      className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    />
                   </div>
                 </div>
 
@@ -1193,6 +1240,32 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                         />
                       </div>
                     </div>
+
+                    {/* Garantía en cuotas */}
+                    <div className="flex items-center justify-between p-3 rounded-lg border bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600">
+                      <div className="flex items-center gap-3">
+                        <Shield className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                        <div>
+                          <span className="text-sm font-medium text-gray-900 dark:text-white">
+                            Garantía en cuotas
+                          </span>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                            3 cuotas de ${Math.round(originalPrice * 0.22).toLocaleString('es-CL')} c/u
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                          ${Math.round(originalPrice * 0.22).toLocaleString('es-CL')}
+                        </span>
+                        <input
+                          type="checkbox"
+                          checked={guaranteeInInstallments}
+                          onChange={(e) => setGuaranteeInInstallments(e.target.checked)}
+                          className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        />
+                      </div>
+                    </div>
                   </div>
 
                   {/* Detalle del cálculo */}
@@ -1255,9 +1328,14 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                       <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
                         <div className="flex justify-between items-center mb-2">
                           <span className="text-sm font-medium text-gray-900 dark:text-white">Mes 2 (Precio normal):</span>
-                          <span className="text-sm text-gray-600 dark:text-gray-400">
-                            {new Date(moveInDate.getFullYear(), moveInDate.getMonth() + 1, 1).toLocaleDateString('es-CL', { month: 'long', year: 'numeric' })}
-                          </span>
+                          <div className="text-right">
+                            <div className="text-sm text-gray-600 dark:text-gray-400">
+                              {new Date(moveInDate.getFullYear(), moveInDate.getMonth() + 1, 1).toLocaleDateString('es-CL', { month: 'long', year: 'numeric' })}
+                            </div>
+                            <div className="text-xs text-red-600 dark:text-red-400 font-medium">
+                              Pago máximo: 5 de {new Date(moveInDate.getFullYear(), moveInDate.getMonth() + 1, 1).toLocaleDateString('es-CL', { month: 'long' })}
+                            </div>
+                          </div>
                         </div>
                         <div className="space-y-1">
                           <div className="flex justify-between items-center">
@@ -1280,11 +1358,17 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                             <span className="text-xs text-gray-600 dark:text-gray-400">Gastos comunes:</span>
                             <span className="text-xs font-medium text-gray-900 dark:text-white">${Math.round(originalPrice * 0.21).toLocaleString('es-CL')}</span>
                           </div>
+                          {guaranteeInInstallments && (
+                            <div className="flex justify-between items-center">
+                              <span className="text-xs text-gray-600 dark:text-gray-400">Garantía (cuota 2):</span>
+                              <span className="text-xs font-medium text-blue-600 dark:text-blue-400">${Math.round(originalPrice * 0.22).toLocaleString('es-CL')}</span>
+                            </div>
+                          )}
                           <div className="border-t border-gray-200 dark:border-gray-600 pt-1 mt-1">
                             <div className="flex justify-between items-center">
                               <span className="text-xs font-semibold text-gray-900 dark:text-white">Total mes 2:</span>
                               <span className="text-sm font-bold text-gray-900 dark:text-white">
-                                ${(originalPrice + (includeParking ? 50000 : 0) + (includeStorage ? 30000 : 0) + Math.round(originalPrice * 0.21)).toLocaleString('es-CL')}
+                                ${(originalPrice + (includeParking ? 50000 : 0) + (includeStorage ? 30000 : 0) + Math.round(originalPrice * 0.21) + (guaranteeInInstallments ? Math.round(originalPrice * 0.22) : 0)).toLocaleString('es-CL')}
                               </span>
                             </div>
                           </div>
@@ -1295,9 +1379,14 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                       <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
                         <div className="flex justify-between items-center mb-2">
                           <span className="text-sm font-medium text-gray-900 dark:text-white">Mes 3 (Precio normal):</span>
-                          <span className="text-sm text-gray-600 dark:text-gray-400">
-                            {new Date(moveInDate.getFullYear(), moveInDate.getMonth() + 2, 1).toLocaleDateString('es-CL', { month: 'long', year: 'numeric' })}
-                          </span>
+                          <div className="text-right">
+                            <div className="text-sm text-gray-600 dark:text-gray-400">
+                              {new Date(moveInDate.getFullYear(), moveInDate.getMonth() + 2, 1).toLocaleDateString('es-CL', { month: 'long', year: 'numeric' })}
+                            </div>
+                            <div className="text-xs text-red-600 dark:text-red-400 font-medium">
+                              Pago máximo: 5 de {new Date(moveInDate.getFullYear(), moveInDate.getMonth() + 2, 1).toLocaleDateString('es-CL', { month: 'long' })}
+                            </div>
+                          </div>
                         </div>
                         <div className="space-y-1">
                           <div className="flex justify-between items-center">
@@ -1320,11 +1409,17 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                             <span className="text-xs text-gray-600 dark:text-gray-400">Gastos comunes:</span>
                             <span className="text-xs font-medium text-gray-900 dark:text-white">${Math.round(originalPrice * 0.21).toLocaleString('es-CL')}</span>
                           </div>
+                          {guaranteeInInstallments && (
+                            <div className="flex justify-between items-center">
+                              <span className="text-xs text-gray-600 dark:text-gray-400">Garantía (cuota 3):</span>
+                              <span className="text-xs font-medium text-blue-600 dark:text-blue-400">${Math.round(originalPrice * 0.22).toLocaleString('es-CL')}</span>
+                            </div>
+                          )}
                           <div className="border-t border-gray-200 dark:border-gray-600 pt-1 mt-1">
                             <div className="flex justify-between items-center">
                               <span className="text-xs font-semibold text-gray-900 dark:text-white">Total mes 3:</span>
                               <span className="text-sm font-bold text-gray-900 dark:text-white">
-                                ${(originalPrice + (includeParking ? 50000 : 0) + (includeStorage ? 30000 : 0) + Math.round(originalPrice * 0.21)).toLocaleString('es-CL')}
+                                ${(originalPrice + (includeParking ? 50000 : 0) + (includeStorage ? 30000 : 0) + Math.round(originalPrice * 0.21) + (guaranteeInInstallments ? Math.round(originalPrice * 0.22) : 0)).toLocaleString('es-CL')}
                               </span>
                             </div>
                           </div>
