@@ -554,31 +554,11 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                 </div>
 
                 {/* Bodega */}
-                <div className={`flex items-center justify-between p-3 rounded-lg border transition-colors ${true ? 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600' : 'bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600'
-                  }`}>
-                  <div className="flex items-center gap-3">
-                    <Package className={`w-5 h-5 ${true ? 'text-purple-600 dark:text-purple-400' : 'text-gray-400'}`} />
-                    <div>
-                      <span className={`text-sm font-medium ${true ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>
-                        Bodega
-                      </span>
-                      <p className={`text-xs ${true ? 'text-gray-500 dark:text-gray-400' : 'text-gray-400'}`}>
-                        {true ? 'Desde $30.000 mensual' : 'No disponible'}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className={`text-sm font-semibold ${true ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>
-                      ${true ? '30.000' : '0'}
-                    </span>
-                    <input
-                      type="checkbox"
-                      checked={includeStorage}
-                      onChange={(e) => setIncludeStorage(e.target.checked)}
-                      disabled={!true}
-                      className={`w-4 h-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500 ${!true ? 'opacity-50 cursor-not-allowed' : ''
-                        }`}
-                    />
+                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <Package className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                  <div>
+                    <div className="text-sm font-medium text-gray-900 dark:text-white">Bodega</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">Desde $30.000</div>
                   </div>
                 </div>
 
