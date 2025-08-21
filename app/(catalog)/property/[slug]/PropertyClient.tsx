@@ -464,10 +464,10 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
             </div>
           </div>
 
-          {/* PASO 5: LAYOUT PRINCIPAL OPTIMIZADO */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* PASO 5: LAYOUT PRINCIPAL OPTIMIZADO - 2 COLUMNAS IGUALES */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Left Column - Información Detallada */}
-            <div className="lg:col-span-8 space-y-8">
+            <div className="space-y-8">
 
               {/* Tabs Estratégicos */}
               <section aria-label="Información detallada">
@@ -594,12 +594,14 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
               </section>
             </div>
 
-            {/* Right Column - Sidebar optimizado */}
-            <div className="lg:col-span-4 space-y-6">
-
-              {/* Cost Table */}
-              <section aria-label="Detalles de costos">
-                <CostTable unit={selectedUnit} promoLabel="$0" />
+            {/* Right Column - Cálculo del primer pago */}
+            <div className="space-y-6">
+              {/* Cálculo del primer pago */}
+              <section aria-label="Cálculo del primer pago">
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Cálculo del primer pago</h3>
+                  <CostTable unit={selectedUnit} promoLabel="$0" />
+                </div>
               </section>
 
               {/* Información de Reajuste */}
