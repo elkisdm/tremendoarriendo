@@ -97,6 +97,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
   const [includeStorage, setIncludeStorage] = useState(false);
   const [guaranteeInInstallments, setGuaranteeInInstallments] = useState(true);
   const [showStickyCTA, setShowStickyCTA] = useState(false);
+  const [urgencyData, setUrgencyData] = useState({ recentVisitors: 0, lastReservation: 0 });
 
   // Analytics tracking on mount
   useEffect(() => {
@@ -106,6 +107,14 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
       property_slug: building.slug,
     });
   }, [building.id, building.name, building.slug]);
+
+  // Generar datos de urgencia solo en el cliente
+  useEffect(() => {
+    setUrgencyData({
+      recentVisitors: Math.floor(Math.random() * 15) + 5,
+      lastReservation: Math.floor(Math.random() * 60) + 5
+    });
+  }, []);
 
   // Scroll handler para sticky CTA
   useEffect(() => {
@@ -151,9 +160,8 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
     ? "Última unidad disponible"
     : `${availableCount} unidades disponibles`;
 
-  // Simular datos dinámicos para urgencia
-  const recentVisitors = Math.floor(Math.random() * 15) + 5;
-  const lastReservation = Math.floor(Math.random() * 60) + 5; // minutos
+  // Simular datos dinámicos para urgencia (usando estado para evitar hidratación)
+  const { recentVisitors, lastReservation } = urgencyData;
 
   // Datos estratégicos basados en AssetPlan
   const originalPrice = selectedUnit?.price || 290000;
@@ -658,10 +666,9 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
           </div>
 
           {/* STICKY TOP MINIMALISTA - APARECE DESPUÉS DE CARACTERÍSTICAS */}
-          <div 
-            className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 ease-in-out ${
-              showStickyCTA ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-            }`}
+          <div
+            className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 ease-in-out ${showStickyCTA ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+              }`}
           >
             <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-white/20 dark:border-gray-700/50 max-w-sm">
               {/* Información básica del departamento */}
