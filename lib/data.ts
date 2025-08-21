@@ -243,6 +243,12 @@ export async function getBuildingBySlug(slug: string): Promise<(Building & { pre
   if (simulateLatency) {
     await delay(200 + Math.floor(Math.random() * 200));
   }
+  
+  // Mock específico para Home Amengual con departamento 207
+  if (slug === "home-amengual") {
+    return { ...HOME_AMENGUAL_WITH_UNIT_207, precioDesde: calculatePrecioDesde(HOME_AMENGUAL_WITH_UNIT_207.units) };
+  }
+  
   const all = await readAll();
   const found = all.find((b) => b.slug === slug);
   if (!found) return null;
@@ -492,3 +498,193 @@ export async function getBuildingsWithRealPromotions(): Promise<Building[]> {
     return [];
   }
 }
+
+// Mock específico para Home Amengual con departamento 207
+const HOME_AMENGUAL_WITH_UNIT_207: Building = {
+  id: "home-amengual",
+  slug: "home-amengual",
+  name: "Home Inclusive Ecuador",
+  comuna: "Estación Central",
+  address: "Gral. Amengual 0148, Estación Central",
+  coverImage: "/images/edificio/original_79516B40-7BA9-4F4E-4F7D-7BA4C0A2A938-mg0578.jpg",
+  gallery: [
+    "/images/edificio/original_79516B40-7BA9-4F4E-4F7D-7BA4C0A2A938-mg0578.jpg",
+    "/images/edificio/original_05CC1BCB-6719-A6F3-4299-F6078DC02E05-mg0345.jpg",
+    "/images/edificio/original_311AE0D8-2A11-2E32-04F0-829F5F46775F-mg0348.jpg",
+    "/images/edificio/original_58D0B1B6-BDBF-2FEB-A92F-82493157ADA7-mg0731.jpg",
+    "/images/edificio/original_87F94E6E-7B88-8EDF-4AE9-481F4458226B-mg0608.jpg",
+    "/images/edificio/original_9E2C7938-6514-1B1E-EB7D-90B7D9CC4386-mg0300.jpg",
+    "/images/edificio/original_E83F6CA9-97BD-EE6D-9AF3-29C004963C07-mg0309.jpg",
+    "/images/edificio/original_D02A4F27-BD68-D47B-14B1-185BE67CE479-mg0626.jpg",
+    "/images/edificio/original_07050B6E-BC69-04EB-9619-584F161455C6-mg0659pano.jpg",
+    "/images/edificio/original_62CDE25C-4152-E1A0-3ABC-BCAF57A614EB-mg0397pano.jpg"
+  ],
+  media: {
+    images: [
+      // Imágenes específicas del departamento 207
+      "/Imagenes/Home Inclusive Amengual/Depto 207/original_A8E7145A-B129-782B-C614-965C55E0A8A3-ecuador04.jpg",
+      "/Imagenes/Home Inclusive Amengual/Depto 207/original_A9F310EB-EFF4-9438-AD96-BAEA85DD19BA-ecuador06.jpg",
+      "/Imagenes/Home Inclusive Amengual/Depto 207/original_A9F310EB-EFF4-9438-AD96-BAEA85DD19BA-ecuador06 (1).jpg",
+      // Imágenes del edificio como respaldo
+      "/images/edificio/original_79516B40-7BA9-4F4E-4F7D-7BA4C0A2A938-mg0578.jpg",
+      "/images/edificio/original_05CC1BCB-6719-A6F3-4299-F6078DC02E05-mg0345.jpg"
+    ]
+  },
+  amenities: [
+    "Accesos controlados",
+    "Citófono",
+    "Gimnasio",
+    "Bicicletero",
+    "Lavandería",
+    "Sala de internet",
+    "Quincho",
+    "Sala gourmet / eventos",
+    "Seguridad",
+    "Terraza panorámica",
+    "Salón lounge",
+    "Transporte cercano",
+    "Conserjería",
+    "Ascensor",
+    "Cerca a comercios"
+  ],
+  badges: [
+    {
+      type: "FREE_COMMISSION",
+      label: "Comisión gratis",
+      tag: "Exclusivo"
+    },
+    {
+      type: "NO_AVAL",
+      label: "Garantía en cuotas",
+      tag: "Flexible"
+    },
+    {
+      type: "NO_GUARANTEE",
+      label: "Precio fijo 12 meses",
+      tag: "Estable"
+    },
+    {
+      type: "FREE_COMMISSION",
+      label: "50% OFF",
+      tag: "Primer mes"
+    },
+    {
+      type: "NO_AVAL",
+      label: "Opción sin aval",
+      tag: "Sin aval"
+    }
+  ],
+  units: [
+    {
+      id: "207",
+      tipologia: "1 dormitorio",
+      m2: 45,
+      price: 290000, // Precio original
+      disponible: true,
+      petFriendly: true,
+      estacionamiento: 1,
+      bodega: 0,
+      floor: 2,
+      orientacion: "Sur",
+      gastosComunes: 62000,
+      parkingOptions: ["Estacionamiento incluido"],
+      storageOptions: []
+    },
+    {
+      id: "301",
+      tipologia: "1 dormitorio",
+      m2: 48,
+      price: 360000,
+      disponible: true,
+      petFriendly: false,
+      estacionamiento: 1,
+      bodega: 0,
+      floor: 3,
+      orientacion: "Norte",
+      gastosComunes: 65000,
+      parkingOptions: ["Estacionamiento incluido"],
+      storageOptions: []
+    },
+    {
+      id: "302",
+      tipologia: "1 dormitorio",
+      m2: 46,
+      price: 350000,
+      disponible: true,
+      petFriendly: true,
+      estacionamiento: 1,
+      bodega: 0,
+      floor: 3,
+      orientacion: "Oeste",
+      gastosComunes: 64000,
+      parkingOptions: ["Estacionamiento incluido"],
+      storageOptions: []
+    },
+    {
+      id: "401",
+      tipologia: "2 dormitorios",
+      m2: 65,
+      price: 450000,
+      disponible: true,
+      petFriendly: true,
+      estacionamiento: 1,
+      bodega: 0,
+      floor: 4,
+      orientacion: "Este",
+      gastosComunes: 85000,
+      parkingOptions: ["Estacionamiento incluido"],
+      storageOptions: []
+    },
+    {
+      id: "402",
+      tipologia: "2 dormitorios",
+      m2: 68,
+      price: 470000,
+      disponible: true,
+      petFriendly: true,
+      estacionamiento: 1,
+      bodega: 1,
+      floor: 4,
+      orientacion: "Norte",
+      gastosComunes: 87000,
+      parkingOptions: ["Estacionamiento incluido"],
+      storageOptions: ["Bodega incluida"]
+    },
+    {
+      id: "501",
+      tipologia: "4 dormitorios",
+      m2: 85,
+      price: 650000,
+      disponible: true,
+      petFriendly: true,
+      estacionamiento: 2,
+      bodega: 1,
+      floor: 5,
+      orientacion: "Norte",
+      gastosComunes: 95000,
+      parkingOptions: ["Estacionamiento incluido", "Estacionamiento adicional"],
+      storageOptions: ["Bodega incluida"]
+    },
+    {
+      id: "502",
+      tipologia: "4 dormitorios",
+      m2: 90,
+      price: 680000,
+      disponible: true,
+      petFriendly: true,
+      estacionamiento: 2,
+      bodega: 1,
+      floor: 5,
+      orientacion: "Este",
+      gastosComunes: 98000,
+      parkingOptions: ["Estacionamiento incluido", "Estacionamiento adicional"],
+      storageOptions: ["Bodega incluida"]
+    }
+  ],
+  precioDesde: 290000,
+  precioHasta: 650000,
+  precioPromedio: 437500,
+  hasAvailability: true,
+  totalUnidades: 4,
+  unidadesDisponibles: 4
+};
