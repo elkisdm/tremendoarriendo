@@ -520,249 +520,172 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
 
           </div>
 
-          {/* Selección de tipología - ESTILO MEJORADO Y CONSISTENTE */}
-          {availableTypologies.length > 0 && (
-            <motion.div 
-              className="space-y-6 mt-8 sm:mt-12"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-            >
-              {/* Header con icono y título */}
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
-                  <Home className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Elige tu tipología ideal</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Selecciona la que mejor se adapte a tu estilo de vida
-                  </p>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {availableTypologies.map((typology, index) => {
-                  const units = typologyGroups[typology];
-                  const minPrice = Math.min(...units.map(u => u.precio));
-                  const maxM2 = Math.max(...units.map(u => u.m2));
-                  const minM2 = Math.min(...units.map(u => u.m2));
-                  const isHovered = hoveredTypology === typology;
-                  
-                  return (
-                    <motion.div
-                      key={typology}
-                      className="group relative bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 transition-all duration-300 cursor-pointer overflow-hidden hover:bg-gray-100 dark:hover:bg-gray-600"
-                      whileHover={{ 
-                        scale: 1.02, 
-                        y: -2,
-                        boxShadow: "0 8px 25px rgba(0, 0, 0, 0.1)"
-                      }}
-                      whileTap={{ scale: 0.98 }}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.5 + index * 0.1 }}
-                      onHoverStart={() => setHoveredTypology(typology)}
-                      onHoverEnd={() => setHoveredTypology(null)}
-                    >
-                      <div className="p-4 space-y-4">
-                        {/* Header de tipología */}
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
-                            {typology.includes('Estudio') ? 
-                              <Home className="w-5 h-5 text-blue-600 dark:text-blue-400" /> : 
-                              <Users className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                            }
-                          </div>
-                          <div>
-                            <h4 className="font-semibold text-gray-900 dark:text-white">{formatTypologyLabel(typology)}</h4>
-                            <p className="text-xs text-gray-600 dark:text-gray-400">
-                              {units.length} unidad{units.length !== 1 ? 'es' : ''} disponible{units.length !== 1 ? 's' : ''}
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Información clave */}
-                        <div className="space-y-3">
-                          <div className="flex justify-between items-center p-3 bg-white dark:bg-gray-800 rounded-lg">
-                            <span className="text-sm text-gray-600 dark:text-gray-400">Precio desde:</span>
-                            <span className="text-lg font-bold text-blue-600 dark:text-blue-400">
-                              {formatPrice(minPrice)}
-                            </span>
-                          </div>
-                          <div className="flex justify-between items-center p-3 bg-white dark:bg-gray-800 rounded-lg">
-                            <span className="text-sm text-gray-600 dark:text-gray-400">Superficie:</span>
-                            <span className="font-semibold text-gray-900 dark:text-white">
-                              {minM2}-{maxM2} m²
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* CTA principal */}
-                        <Link
-                          href={`/arrienda-sin-comision/${building.slug}/unidad/${typology.toLowerCase().replace(/\s+/g, '-')}`}
-                          className="block w-full"
-                        >
-                          <motion.button
-                            className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg font-semibold transition-colors duration-300 text-sm"
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                          >
-                            Ver Departamentos
-                          </motion.button>
-                        </Link>
-                      </div>
-                    </motion.div>
-                  );
-                })}
-              </div>
-            </motion.div>
-          )}
-        </motion.div>
-
-        {/* Estadísticas - TERCERA SECCIÓN ABOVE THE FOLD */}
-        <motion.div 
-          className="mb-16"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-        >
-          <div className="max-w-4xl mx-auto">
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-              <motion.div 
-                className="bg-gradient-to-br from-rose-500/10 to-pink-500/10 backdrop-blur-sm rounded-2xl p-4 border border-rose-200/50 dark:border-rose-800/30"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7 }}
-              >
-                <div className="text-center space-y-2">
-                  <div className="text-2xl font-bold text-rose-600 dark:text-rose-400">
-                    {formatPrice(avgPrice)}
-                  </div>
-                  <div className="text-xs text-muted-foreground">Precio promedio</div>
-                  <div className="text-xs text-rose-600 dark:text-rose-400 flex items-center justify-center gap-1">
-                                         <TrendingUp className="w-3 h-3" />
-                    {availableTypologies.length} tipos
-                  </div>
-                </div>
-              </motion.div>
-              
-              <motion.div 
-                className="bg-gradient-to-br from-emerald-500/10 to-teal-500/10 backdrop-blur-sm rounded-2xl p-4 border border-emerald-200/50 dark:border-emerald-800/30"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 }}
-              >
-                <div className="text-center space-y-2">
-                  <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
-                    {totalAvailableUnits}
-                  </div>
-                  <div className="text-xs text-muted-foreground">Disponibles</div>
-                  <div className="text-xs text-emerald-600 dark:text-emerald-400 flex items-center justify-center gap-1">
-                    <Eye className="w-3 h-3" />
-                    {recentVisitors} viendo
-                  </div>
-                </div>
-              </motion.div>
-              
-              <motion.div 
-                className="bg-gradient-to-br from-blue-500/10 to-indigo-500/10 backdrop-blur-sm rounded-2xl p-4 border border-blue-200/50 dark:border-blue-800/30"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.9 }}
-              >
-                <div className="text-center space-y-2">
-                  <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                    {availableTypologies.length}
-                  </div>
-                  <div className="text-xs text-muted-foreground">Tipologías</div>
-                  <div className="text-xs text-blue-600 dark:text-blue-400 flex items-center justify-center gap-1">
-                    <Star className="w-3 h-3" />
-                    Premium
-                  </div>
-                </div>
-              </motion.div>
-              
-              <motion.div 
-                className="bg-gradient-to-br from-purple-500/10 to-violet-500/10 backdrop-blur-sm rounded-2xl p-4 border border-purple-200/50 dark:border-purple-800/30"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.0 }}
-              >
-                <div className="text-center space-y-2">
-                  <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
-                    ⭐
-                  </div>
-                  <div className="text-xs text-muted-foreground">Calificación</div>
-                  <div className="text-xs text-purple-600 dark:text-purple-400 flex items-center justify-center gap-1">
-                    <CheckCircle className="w-3 h-3" />
-                    4.9/5
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Amenities con el nuevo estilo mejorado */}
-        {building.amenities && building.amenities.length > 0 && (
-          <motion.section 
-            className="mb-16"
+          {/* Secciones unificadas - Layout de 2 columnas */}
+          <motion.div 
+            className="mt-8 sm:mt-12 mb-16"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.1 }}
+            transition={{ delay: 0.4 }}
           >
-            <div className="max-w-4xl mx-auto">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center">
-                  <Building2 className="w-4 h-4 text-purple-600 dark:text-purple-400" />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Comodidades del edificio {building.name}</h3>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {building.amenities.map((amenity, index) => {
-                  // Función para obtener el icono apropiado según la comodidad
-                  const getAmenityIcon = (amenityName: string) => {
-                    const lowerAmenity = amenityName.toLowerCase();
-                    if (lowerAmenity.includes('acceso') || lowerAmenity.includes('control')) return <Lock className="w-4 h-4 text-blue-600 dark:text-blue-400" />;
-                    if (lowerAmenity.includes('citófono') || lowerAmenity.includes('intercom')) return <Phone className="w-4 h-4 text-blue-600 dark:text-blue-400" />;
-                    if (lowerAmenity.includes('gimnasio') || lowerAmenity.includes('gym')) return <Dumbbell className="w-4 h-4 text-green-600 dark:text-green-400" />;
-                    if (lowerAmenity.includes('bicicletero') || lowerAmenity.includes('bici')) return <Bike className="w-4 h-4 text-green-600 dark:text-green-400" />;
-                    if (lowerAmenity.includes('lavandería') || lowerAmenity.includes('lavadora')) return <WashingMachine className="w-4 h-4 text-blue-600 dark:text-blue-400" />;
-                    if (lowerAmenity.includes('internet') || lowerAmenity.includes('wifi')) return <Wifi className="w-4 h-4 text-purple-600 dark:text-purple-400" />;
-                    if (lowerAmenity.includes('quincho') || lowerAmenity.includes('bbq')) return <Flame className="w-4 h-4 text-orange-600 dark:text-orange-400" />;
-                    if (lowerAmenity.includes('gourmet') || lowerAmenity.includes('evento')) return <Users className="w-4 h-4 text-purple-600 dark:text-purple-400" />;
-                    if (lowerAmenity.includes('seguridad')) return <Eye className="w-4 h-4 text-red-600 dark:text-red-400" />;
-                    if (lowerAmenity.includes('terraza') || lowerAmenity.includes('panorámica')) return <Sun className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />;
-                    if (lowerAmenity.includes('lounge') || lowerAmenity.includes('salón')) return <Coffee className="w-4 h-4 text-brown-600 dark:text-brown-400" />;
-                    if (lowerAmenity.includes('transporte') || lowerAmenity.includes('cercano')) return <Car className="w-4 h-4 text-green-600 dark:text-green-400" />;
-                    if (lowerAmenity.includes('conserjería') || lowerAmenity.includes('concierge')) return <Users className="w-4 h-4 text-blue-600 dark:text-blue-400" />;
-                    if (lowerAmenity.includes('ascensor') || lowerAmenity.includes('elevador')) return <ChevronUp className="w-4 h-4 text-gray-600 dark:text-gray-400" />;
-                    if (lowerAmenity.includes('comercio') || lowerAmenity.includes('tienda')) return <ShoppingCart className="w-4 h-4 text-orange-600 dark:text-orange-400" />;
-                    return <CheckCircle className="w-4 h-4 text-green-500" />;
-                  };
-
-                  return (
-                    <motion.div
-                      key={amenity}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 1.2 + index * 0.1 }}
-                      className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
-                    >
-                      <div className="w-8 h-8 bg-white dark:bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0">
-                        {getAmenityIcon(amenity)}
+            <div className="max-w-7xl mx-auto">
+              <div className="grid lg:grid-cols-2 gap-8">
+                
+                {/* Columna Izquierda - Tipologías */}
+                {availableTypologies.length > 0 && (
+                  <div className="space-y-6">
+                    {/* Header con icono y título */}
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
+                        <Home className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                       </div>
-                      <span className="text-sm text-gray-900 dark:text-white font-medium">{amenity}</span>
-                    </motion.div>
-                  );
-                })}
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Elige tu tipología ideal</h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          Selecciona la que mejor se adapte a tu estilo de vida
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {availableTypologies.map((typology, index) => {
+                        const units = typologyGroups[typology];
+                        const minPrice = Math.min(...units.map(u => u.precio));
+                        const maxM2 = Math.max(...units.map(u => u.m2));
+                        const minM2 = Math.min(...units.map(u => u.m2));
+                        const isHovered = hoveredTypology === typology;
+                        
+                        return (
+                          <motion.div
+                            key={typology}
+                            className="group relative bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 transition-all duration-300 cursor-pointer overflow-hidden hover:bg-gray-100 dark:hover:bg-gray-600"
+                            whileHover={{ 
+                              scale: 1.02, 
+                              y: -2,
+                              boxShadow: "0 8px 25px rgba(0, 0, 0, 0.1)"
+                            }}
+                            whileTap={{ scale: 0.98 }}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.5 + index * 0.1 }}
+                            onHoverStart={() => setHoveredTypology(typology)}
+                            onHoverEnd={() => setHoveredTypology(null)}
+                          >
+                            <div className="p-4 space-y-4">
+                              {/* Header de tipología */}
+                              <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
+                                  {typology.includes('Estudio') ? 
+                                    <Home className="w-5 h-5 text-blue-600 dark:text-blue-400" /> : 
+                                    <Users className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                                  }
+                                </div>
+                                <div>
+                                  <h4 className="font-semibold text-gray-900 dark:text-white">{formatTypologyLabel(typology)}</h4>
+                                  <p className="text-xs text-gray-600 dark:text-gray-400">
+                                    {units.length} unidad{units.length !== 1 ? 'es' : ''} disponible{units.length !== 1 ? 's' : ''}
+                                  </p>
+                                </div>
+                              </div>
+
+                              {/* Información clave */}
+                              <div className="space-y-3">
+                                <div className="flex justify-between items-center p-3 bg-white dark:bg-gray-800 rounded-lg">
+                                  <span className="text-sm text-gray-600 dark:text-gray-400">Precio desde:</span>
+                                  <span className="text-lg font-bold text-blue-600 dark:text-blue-400">
+                                    {formatPrice(minPrice)}
+                                  </span>
+                                </div>
+                                <div className="flex justify-between items-center p-3 bg-white dark:bg-gray-800 rounded-lg">
+                                  <span className="text-sm text-gray-600 dark:text-gray-400">Superficie:</span>
+                                  <span className="font-semibold text-gray-900 dark:text-white">
+                                    {minM2}-{maxM2} m²
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* CTA principal */}
+                              <Link
+                                href={`/arrienda-sin-comision/${building.slug}/unidad/${typology.toLowerCase().replace(/\s+/g, '-')}`}
+                                className="block w-full"
+                              >
+                                <motion.button
+                                  className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg font-semibold transition-colors duration-300 text-sm"
+                                  whileHover={{ scale: 1.02 }}
+                                  whileTap={{ scale: 0.98 }}
+                                >
+                                  Ver Departamentos
+                                </motion.button>
+                              </Link>
+                            </div>
+                          </motion.div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Columna Derecha - Amenidades */}
+                {building.amenities && building.amenities.length > 0 && (
+                  <div className="space-y-6">
+                    {/* Header con icono y título */}
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center">
+                        <Building2 className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Comodidades del edificio</h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          Descubre todas las amenidades disponibles
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {building.amenities.map((amenity, index) => {
+                        // Función para obtener el icono apropiado según la comodidad
+                        const getAmenityIcon = (amenityName: string) => {
+                          const lowerAmenity = amenityName.toLowerCase();
+                          if (lowerAmenity.includes('acceso') || lowerAmenity.includes('control')) return <Lock className="w-4 h-4 text-blue-600 dark:text-blue-400" />;
+                          if (lowerAmenity.includes('citófono') || lowerAmenity.includes('intercom')) return <Phone className="w-4 h-4 text-blue-600 dark:text-blue-400" />;
+                          if (lowerAmenity.includes('gimnasio') || lowerAmenity.includes('gym')) return <Dumbbell className="w-4 h-4 text-green-600 dark:text-green-400" />;
+                          if (lowerAmenity.includes('bicicletero') || lowerAmenity.includes('bici')) return <Bike className="w-4 h-4 text-green-600 dark:text-green-400" />;
+                          if (lowerAmenity.includes('lavandería') || lowerAmenity.includes('lavadora')) return <WashingMachine className="w-4 h-4 text-blue-600 dark:text-blue-400" />;
+                          if (lowerAmenity.includes('internet') || lowerAmenity.includes('wifi')) return <Wifi className="w-4 h-4 text-purple-600 dark:text-purple-400" />;
+                          if (lowerAmenity.includes('quincho') || lowerAmenity.includes('bbq')) return <Flame className="w-4 h-4 text-orange-600 dark:text-orange-400" />;
+                          if (lowerAmenity.includes('gourmet') || lowerAmenity.includes('evento')) return <Users className="w-4 h-4 text-purple-600 dark:text-purple-400" />;
+                          if (lowerAmenity.includes('seguridad')) return <Eye className="w-4 h-4 text-red-600 dark:text-red-400" />;
+                          if (lowerAmenity.includes('terraza') || lowerAmenity.includes('panorámica')) return <Sun className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />;
+                          if (lowerAmenity.includes('lounge') || lowerAmenity.includes('salón')) return <Coffee className="w-4 h-4 text-brown-600 dark:text-brown-400" />;
+                          if (lowerAmenity.includes('transporte') || lowerAmenity.includes('cercano')) return <Car className="w-4 h-4 text-green-600 dark:text-green-400" />;
+                          if (lowerAmenity.includes('conserjería') || lowerAmenity.includes('concierge')) return <Users className="w-4 h-4 text-blue-600 dark:text-blue-400" />;
+                          if (lowerAmenity.includes('ascensor') || lowerAmenity.includes('elevador')) return <ChevronUp className="w-4 h-4 text-gray-600 dark:text-gray-400" />;
+                          if (lowerAmenity.includes('comercio') || lowerAmenity.includes('tienda')) return <ShoppingCart className="w-4 h-4 text-orange-600 dark:text-orange-400" />;
+                          return <CheckCircle className="w-4 h-4 text-green-500" />;
+                        };
+
+                        return (
+                          <motion.div
+                            key={amenity}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.6 + index * 0.1 }}
+                            className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+                          >
+                            <div className="w-8 h-8 bg-white dark:bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0">
+                              {getAmenityIcon(amenity)}
+                            </div>
+                            <span className="text-sm text-gray-900 dark:text-white font-medium">{amenity}</span>
+                          </motion.div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
               </div>
             </div>
-          </motion.section>
-        )}
-
-        
+          </motion.div>
+        </motion.div>
       </div>
     </div>
   );
