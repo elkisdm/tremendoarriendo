@@ -17,22 +17,7 @@ import {
   Bath,
   Square,
   Star,
-  Calendar,
-  Waves,
-  Dumbbell,
-  UtensilsCrossed,
-  Wifi,
-  Car,
-  Trees,
-  Baby,
-  Sparkles,
-  Users,
-  Shirt,
-  Bike,
-  Sun,
-  Heart,
-  Package,
-  Building2
+  Calendar
 } from "lucide-react";
 import { ImageGallery } from "@components/gallery/ImageGallery";
 import { UnitSelector } from "@components/UnitSelector";
@@ -440,63 +425,103 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
             </div>
           </div>
 
-          {/* CARACTERÍSTICAS PRINCIPALES - ESTILO HEREDADO DE AMENITYLIST */}
+          {/* CARACTERÍSTICAS PRINCIPALES - ANCHURA COMPLETA */}
           <div className="mb-8">
             <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Características principales</h3>
-              <div className="flex flex-wrap gap-3">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
                 {/* Dormitorios */}
-                <div className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm bg-blue-50 dark:bg-blue-900/20 ring-1 ring-blue-200 dark:ring-blue-800 transition-colors hover:bg-blue-100 dark:hover:bg-blue-900/30">
-                  <Bed className="w-4 h-4 text-blue-600 dark:text-blue-400" aria-hidden="true" />
-                  <span>1 Dormitorio</span>
+                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <Bed className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  <div>
+                    <div className="text-lg font-bold text-gray-900 dark:text-white">1</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">Dormitorio</div>
+                  </div>
                 </div>
 
                 {/* Baños */}
-                <div className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm bg-blue-50 dark:bg-blue-900/20 ring-1 ring-blue-200 dark:ring-blue-800 transition-colors hover:bg-blue-100 dark:hover:bg-blue-900/30">
-                  <Bath className="w-4 h-4 text-blue-600 dark:text-blue-400" aria-hidden="true" />
-                  <span>1 Baño</span>
+                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <Bath className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  <div>
+                    <div className="text-lg font-bold text-gray-900 dark:text-white">1</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">Baño</div>
+                  </div>
                 </div>
 
                 {/* Metros cuadrados interior */}
-                <div className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm bg-green-50 dark:bg-green-900/20 ring-1 ring-green-200 dark:ring-green-800 transition-colors hover:bg-green-100 dark:hover:bg-green-900/30">
-                  <Square className="w-4 h-4 text-green-600 dark:text-green-400" aria-hidden="true" />
-                  <span>29 m² interior</span>
+                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <Square className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  <div>
+                    <div className="text-lg font-bold text-gray-900 dark:text-white">29</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">m² interior</div>
+                  </div>
                 </div>
 
-                {/* Metros cuadrados total */}
-                <div className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm bg-green-50 dark:bg-green-900/20 ring-1 ring-green-200 dark:ring-green-800 transition-colors hover:bg-green-100 dark:hover:bg-green-900/30">
-                  <Building2 className="w-4 h-4 text-green-600 dark:text-green-400" aria-hidden="true" />
-                  <span>35 m² total</span>
+                {/* Metros cuadrados exterior */}
+                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                  </svg>
+                  <div>
+                    <div className="text-lg font-bold text-gray-900 dark:text-white">35</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">m² total</div>
+                  </div>
                 </div>
 
                 {/* Piso */}
-                <div className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm bg-purple-50 dark:bg-purple-900/20 ring-1 ring-purple-200 dark:ring-purple-800 transition-colors hover:bg-purple-100 dark:hover:bg-purple-900/30">
-                  <Building2 className="w-4 h-4 text-purple-600 dark:text-purple-400" aria-hidden="true" />
-                  <span>Piso 2</span>
+                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm3 1h6v2H7V5zm6 4H7v2h6V9zm0 4H7v2h6v-2z" clipRule="evenodd" />
+                  </svg>
+                  <div>
+                    <div className="text-lg font-bold text-gray-900 dark:text-white">2</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">Piso</div>
+                  </div>
                 </div>
 
                 {/* Orientación */}
-                <div className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm bg-yellow-50 dark:bg-yellow-900/20 ring-1 ring-yellow-200 dark:ring-yellow-800 transition-colors hover:bg-yellow-100 dark:hover:bg-yellow-900/30">
-                  <Sun className="w-4 h-4 text-yellow-600 dark:text-yellow-400" aria-hidden="true" />
-                  <span>Orientación Norte</span>
+                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <svg className="w-5 h-5 text-yellow-600 dark:text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                  </svg>
+                  <div>
+                    <div className="text-sm font-medium text-gray-900 dark:text-white">Orientación</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">Norte</div>
+                  </div>
                 </div>
 
                 {/* Mascotas */}
-                <div className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm bg-purple-50 dark:bg-purple-900/20 ring-1 ring-purple-200 dark:ring-purple-800 transition-colors hover:bg-purple-100 dark:hover:bg-purple-900/30">
-                  <Heart className="w-4 h-4 text-purple-600 dark:text-purple-400" aria-hidden="true" />
-                  <span>Mascotas permitidas</span>
+                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <svg className="w-5 h-5 text-purple-600 dark:text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                    <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                  </svg>
+                  <div>
+                    <div className="text-sm font-medium text-gray-900 dark:text-white">Mascotas</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">Permitidas</div>
+                  </div>
                 </div>
 
                 {/* Tipo de amoblado */}
-                <div className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm bg-emerald-50 dark:bg-emerald-900/20 ring-1 ring-emerald-200 dark:ring-emerald-800 transition-colors hover:bg-emerald-100 dark:hover:bg-emerald-900/30">
-                  <Package className="w-4 h-4 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
-                  <span>Amoblado completo</span>
+                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <svg className="w-5 h-5 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                  </svg>
+                  <div>
+                    <div className="text-sm font-medium text-gray-900 dark:text-white">Amoblado</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">Completo</div>
+                  </div>
                 </div>
 
                 {/* Estacionamiento */}
-                <div className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm bg-orange-50 dark:bg-orange-900/20 ring-1 ring-orange-200 dark:ring-orange-800 transition-colors hover:bg-orange-100 dark:hover:bg-orange-900/30">
-                  <Car className="w-4 h-4 text-orange-600 dark:text-orange-400" aria-hidden="true" />
-                  <span>Estacionamiento opcional</span>
+                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <svg className="w-5 h-5 text-orange-600 dark:text-orange-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm2 2h12v8H6V6z" clipRule="evenodd" />
+                  </svg>
+                  <div>
+                    <div className="text-sm font-medium text-gray-900 dark:text-white">Estacionamiento</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">Opcional</div>
+                  </div>
                 </div>
               </div>
 
