@@ -598,31 +598,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                   </div>
                 </div>
 
-                {/* Garantía en cuotas */}
-                <div className="flex items-center justify-between p-3 rounded-lg border bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600">
-                  <div className="flex items-center gap-3">
-                    <Shield className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                    <div>
-                      <span className="text-sm font-medium text-gray-900 dark:text-white">
-                        Garantía en cuotas
-                      </span>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        3 cuotas de ${Math.round(originalPrice * 0.22).toLocaleString('es-CL')} c/u
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                      ${Math.round(originalPrice * 0.22).toLocaleString('es-CL')}
-                    </span>
-                    <input
-                      type="checkbox"
-                      checked={guaranteeInInstallments}
-                      onChange={(e) => setGuaranteeInInstallments(e.target.checked)}
-                      className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                    />
-                  </div>
-                </div>
+
 
                 {/* Habitantes */}
                 <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
