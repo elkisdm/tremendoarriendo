@@ -1247,6 +1247,92 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                     </div>
                   </div>
 
+                  {/* Proyección meses 2 y 3 */}
+                  <div className="mb-6">
+                    <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Proyección próximos meses</h4>
+                    <div className="space-y-3">
+                      {/* Mes 2 */}
+                      <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-sm font-medium text-gray-900 dark:text-white">Mes 2 (Precio normal):</span>
+                          <span className="text-sm text-gray-600 dark:text-gray-400">
+                            {new Date(moveInDate.getFullYear(), moveInDate.getMonth() + 1, 1).toLocaleDateString('es-CL', { month: 'long', year: 'numeric' })}
+                          </span>
+                        </div>
+                        <div className="space-y-1">
+                          <div className="flex justify-between items-center">
+                            <span className="text-xs text-gray-600 dark:text-gray-400">Arriendo:</span>
+                            <span className="text-xs font-medium text-gray-900 dark:text-white">${originalPrice.toLocaleString('es-CL')}</span>
+                          </div>
+                          {includeParking && (
+                            <div className="flex justify-between items-center">
+                              <span className="text-xs text-gray-600 dark:text-gray-400">Estacionamiento:</span>
+                              <span className="text-xs font-medium text-orange-600 dark:text-orange-400">$50.000</span>
+                            </div>
+                          )}
+                          {includeStorage && (
+                            <div className="flex justify-between items-center">
+                              <span className="text-xs text-gray-600 dark:text-gray-400">Bodega:</span>
+                              <span className="text-xs font-medium text-purple-600 dark:text-purple-400">$30.000</span>
+                            </div>
+                          )}
+                          <div className="flex justify-between items-center">
+                            <span className="text-xs text-gray-600 dark:text-gray-400">Gastos comunes:</span>
+                            <span className="text-xs font-medium text-gray-900 dark:text-white">${Math.round(originalPrice * 0.21).toLocaleString('es-CL')}</span>
+                          </div>
+                          <div className="border-t border-gray-200 dark:border-gray-600 pt-1 mt-1">
+                            <div className="flex justify-between items-center">
+                              <span className="text-xs font-semibold text-gray-900 dark:text-white">Total mes 2:</span>
+                              <span className="text-sm font-bold text-gray-900 dark:text-white">
+                                ${(originalPrice + (includeParking ? 50000 : 0) + (includeStorage ? 30000 : 0) + Math.round(originalPrice * 0.21)).toLocaleString('es-CL')}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Mes 3 */}
+                      <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-sm font-medium text-gray-900 dark:text-white">Mes 3 (Precio normal):</span>
+                          <span className="text-sm text-gray-600 dark:text-gray-400">
+                            {new Date(moveInDate.getFullYear(), moveInDate.getMonth() + 2, 1).toLocaleDateString('es-CL', { month: 'long', year: 'numeric' })}
+                          </span>
+                        </div>
+                        <div className="space-y-1">
+                          <div className="flex justify-between items-center">
+                            <span className="text-xs text-gray-600 dark:text-gray-400">Arriendo:</span>
+                            <span className="text-xs font-medium text-gray-900 dark:text-white">${originalPrice.toLocaleString('es-CL')}</span>
+                          </div>
+                          {includeParking && (
+                            <div className="flex justify-between items-center">
+                              <span className="text-xs text-gray-600 dark:text-gray-400">Estacionamiento:</span>
+                              <span className="text-xs font-medium text-orange-600 dark:text-orange-400">$50.000</span>
+                            </div>
+                          )}
+                          {includeStorage && (
+                            <div className="flex justify-between items-center">
+                              <span className="text-xs text-gray-600 dark:text-gray-400">Bodega:</span>
+                              <span className="text-xs font-medium text-purple-600 dark:text-purple-400">$30.000</span>
+                            </div>
+                          )}
+                          <div className="flex justify-between items-center">
+                            <span className="text-xs text-gray-600 dark:text-gray-400">Gastos comunes:</span>
+                            <span className="text-xs font-medium text-gray-900 dark:text-white">${Math.round(originalPrice * 0.21).toLocaleString('es-CL')}</span>
+                          </div>
+                          <div className="border-t border-gray-200 dark:border-gray-600 pt-1 mt-1">
+                            <div className="flex justify-between items-center">
+                              <span className="text-xs font-semibold text-gray-900 dark:text-white">Total mes 3:</span>
+                              <span className="text-sm font-bold text-gray-900 dark:text-white">
+                                ${(originalPrice + (includeParking ? 50000 : 0) + (includeStorage ? 30000 : 0) + Math.round(originalPrice * 0.21)).toLocaleString('es-CL')}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
                   {/* Botón enviar cotización */}
                   <button
                     onClick={handleSendQuotation}
