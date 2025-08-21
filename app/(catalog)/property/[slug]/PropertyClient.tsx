@@ -192,7 +192,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
       move_in_date: moveInDate.toISOString(),
       total_amount: firstPaymentCalculation.totalFirstPayment
     });
-    
+
     // Aquí se implementaría la lógica para enviar el email
     // Por ahora solo mostraremos un alert
     alert(`Cotización enviada por email para mudanza el ${formatDate(moveInDate)}`);
@@ -761,7 +761,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
               <section aria-label="Cálculo del primer pago">
                 <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Cálculo del primer pago</h3>
-                  
+
                   {/* Selector de fecha de mudanza */}
                   <div className="mb-6">
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -777,7 +777,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                           <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
                         </svg>
                       </button>
-                      
+
                       {/* Calendario */}
                       {showDatePicker && (
                         <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg z-10 p-3">
@@ -792,19 +792,18 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                               date.setDate(date.getDate() + i + 1);
                               const isSelected = date.toDateString() === moveInDate.toDateString();
                               const isDisabled = date > getMaxDate();
-                              
+
                               return (
                                 <button
                                   key={i}
                                   onClick={() => !isDisabled && handleDateChange(date)}
                                   disabled={isDisabled}
-                                  className={`p-2 text-center text-sm rounded ${
-                                    isSelected
-                                      ? 'bg-blue-600 text-white'
-                                      : isDisabled
+                                  className={`p-2 text-center text-sm rounded ${isSelected
+                                    ? 'bg-blue-600 text-white'
+                                    : isDisabled
                                       ? 'text-gray-300 cursor-not-allowed'
                                       : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                                  }`}
+                                    }`}
                                 >
                                   {date.getDate()}
                                 </button>
