@@ -228,20 +228,20 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
     // Calcular cuántos días del mes 1 se usaron
     const daysInFirstMonth = new Date(moveInDate.getFullYear(), moveInDate.getMonth() + 1, 0).getDate();
     const daysUsedInFirstMonth = daysInFirstMonth - moveInDate.getDate() + 1;
-    
+
     // Los días restantes del descuento son los que faltan para completar 30 días
     const promoDaysRemaining = Math.max(0, 30 - daysUsedInFirstMonth);
-    
+
     if (promoDaysRemaining === 0) return 0;
-    
+
     const dailyRent = originalPrice / 30;
     const dailyParking = includeParking ? 50000 / 30 : 0;
     const dailyStorage = includeStorage ? 30000 / 30 : 0;
-    
+
     const rentSavings = Math.round(dailyRent * promoDaysRemaining * 0.5);
     const parkingSavings = Math.round(dailyParking * promoDaysRemaining * 0.5);
     const storageSavings = Math.round(dailyStorage * promoDaysRemaining * 0.5);
-    
+
     return rentSavings + parkingSavings + storageSavings;
   };
 
@@ -602,8 +602,6 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                   </div>
                 </div>
 
-
-
                 {/* Habitantes */}
                 <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                   <Users className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
@@ -628,31 +626,51 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     {/* Ícono de metro con SVG */}
-                    <div className="relative">
-                      <img
-                        src="/images/metro/metro-icon.svg"
-                        alt="Metro Línea 1"
-                        className="w-8 h-8"
-                      />
+                    <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                      <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                      </svg>
                     </div>
                     <div>
-                      <div className="text-sm font-medium text-gray-900 dark:text-white">Metro Ecuador</div>
-                      <div className="text-xs text-gray-600 dark:text-gray-400">
-                        <span className="text-red-500 font-semibold">Línea 1</span> • 5 minutos, 450 metros
-                      </div>
+                      <div className="text-sm font-semibold text-gray-900 dark:text-white">Metro Ecuador</div>
+                      <div className="text-xs text-gray-600 dark:text-gray-400">Línea 1 • 5 minutos, 450 metros</div>
                     </div>
                   </div>
-                  {/* Botón ver en mapa */}
-                  <button
-                    className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500 transition-colors"
-                    aria-label="Ver ubicación en mapa"
-                  >
-                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                    </svg>
+                  <button className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                    <MapPin className="w-3 h-3" />
                     Ver mapa
                   </button>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          {/* STICKY TOP - AGENDAMIENTO Y WHATSAPP */}
+          <div className="sticky top-4 z-50 mb-8">
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-lg border border-gray-200 dark:border-gray-700 backdrop-blur-sm bg-white/95 dark:bg-gray-800/95">
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button
+                  onClick={handleBookingClick}
+                  className="flex-1 inline-flex items-center justify-center px-4 py-3 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500 transition-colors min-h-[48px] shadow-sm"
+                  aria-label="Agendar visita a la propiedad"
+                >
+                  <Phone className="w-4 h-4 mr-2" />
+                  Agendar visita
+                </button>
+
+                {whatsappUrl && (
+                  <a
+                    href={whatsappUrl}
+                    onClick={handleWhatsAppClick}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 inline-flex items-center justify-center px-4 py-3 bg-green-600 text-white text-sm font-semibold rounded-lg hover:bg-green-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500 transition-colors min-h-[48px] shadow-sm"
+                    aria-label="Contactar por WhatsApp sobre esta propiedad"
+                  >
+                    <MessageCircle className="w-4 h-4 mr-2" />
+                    Hablar por WhatsApp
+                  </a>
+                )}
               </div>
             </div>
           </div>
