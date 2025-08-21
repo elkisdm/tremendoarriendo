@@ -96,6 +96,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
   const [includeParking, setIncludeParking] = useState(false);
   const [includeStorage, setIncludeStorage] = useState(false);
   const [guaranteeInInstallments, setGuaranteeInInstallments] = useState(true);
+  const [showStickyCTA, setShowStickyCTA] = useState(false);
 
   // Analytics tracking on mount
   useEffect(() => {
@@ -105,6 +106,17 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
       property_slug: building.slug,
     });
   }, [building.id, building.name, building.slug]);
+
+  // Scroll handler para sticky CTA
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      setShowStickyCTA(scrollY > 800);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleUnitChange = (unit: Unit) => {
     setSelectedUnit(unit);
@@ -645,13 +657,43 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
             </div>
           </div>
 
-          {/* STICKY TOP - AGENDAMIENTO Y WHATSAPP */}
-          <div className="sticky top-4 z-50 mb-8">
-            <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-lg border border-gray-200 dark:border-gray-700 backdrop-blur-sm bg-white/95 dark:bg-gray-800/95">
-              <div className="flex flex-col sm:flex-row gap-3">
+          {/* STICKY TOP MINIMALISTA - APARECE DESPUÉS DE CARACTERÍSTICAS */}
+          <div 
+            className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 ease-in-out ${
+              showStickyCTA ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+            }`}
+          >
+            <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-white/20 dark:border-gray-700/50 max-w-sm">
+              {/* Información básica del departamento */}
+              <div className="mb-4 pb-3 border-b border-gray-200/50 dark:border-gray-600/50">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                    <Home className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-semibold text-gray-900 dark:text-white">
+                      {building.name}
+                    </h4>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">
+                      Depto {selectedUnit?.id || '207'} • {building.comuna}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-gray-600 dark:text-gray-400">
+                    {originalPrice.toLocaleString('es-CL')} CLP
+                  </span>
+                  <span className="text-orange-600 dark:text-orange-400 font-medium">
+                    50% OFF primer mes
+                  </span>
+                </div>
+              </div>
+
+              {/* CTAs apilados */}
+              <div className="space-y-2">
                 <button
                   onClick={handleBookingClick}
-                  className="flex-1 inline-flex items-center justify-center px-4 py-3 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500 transition-colors min-h-[48px] shadow-sm"
+                  className="w-full inline-flex items-center justify-center px-4 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm font-medium rounded-xl hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-sm"
                   aria-label="Agendar visita a la propiedad"
                 >
                   <Phone className="w-4 h-4 mr-2" />
@@ -664,7 +706,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                     onClick={handleWhatsAppClick}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 inline-flex items-center justify-center px-4 py-3 bg-green-600 text-white text-sm font-semibold rounded-lg hover:bg-green-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500 transition-colors min-h-[48px] shadow-sm"
+                    className="w-full inline-flex items-center justify-center px-4 py-2.5 bg-gradient-to-r from-green-600 to-green-700 text-white text-sm font-medium rounded-xl hover:from-green-700 hover:to-green-800 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200 shadow-sm"
                     aria-label="Contactar por WhatsApp sobre esta propiedad"
                   >
                     <MessageCircle className="w-4 h-4 mr-2" />
