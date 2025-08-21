@@ -512,23 +512,21 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
 
                 {/* Estacionamiento */}
                 <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <svg className="w-5 h-5 text-orange-600 dark:text-orange-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm2 2h12v8H6V6z" clipRule="evenodd" />
-                  </svg>
+                  <Car className="w-5 h-5 text-orange-600 dark:text-orange-400" />
                   <div>
                     <div className="text-sm font-medium text-gray-900 dark:text-white">Estacionamiento</div>
-                    <div className="text-xs text-gray-600 dark:text-gray-400">Opcional</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">No disponible</div>
                   </div>
                 </div>
 
-                {/* Bodega */}
-                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <Package className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-                  <div>
-                    <div className="text-sm font-medium text-gray-900 dark:text-white">Bodega</div>
-                    <div className="text-xs text-gray-600 dark:text-gray-400">Opcional</div>
-                  </div>
-                </div>
+                                 {/* Bodega */}
+                 <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                   <Package className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                   <div>
+                     <div className="text-sm font-medium text-gray-900 dark:text-white">Bodega</div>
+                     <div className="text-xs text-gray-600 dark:text-gray-400">Desde $30.000</div>
+                   </div>
+                 </div>
 
                 {/* Habitantes */}
                 <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
