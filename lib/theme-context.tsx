@@ -24,16 +24,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       if (savedTheme === 'dark' || savedTheme === 'light') {
         setThemeState(savedTheme);
       } else {
-        // Si no hay tema guardado, usar el que ya está aplicado en el DOM
-        const html = document.documentElement;
-        if (html.classList.contains('dark')) {
-          setThemeState('dark');
-        } else {
-          setThemeState('light');
-        }
+        // Por defecto light theme
+        setThemeState('light');
       }
     } catch (error) {
       console.warn('Error reading theme from localStorage:', error);
+      setThemeState('light');
     }
     setIsHydrated(true);
   }, []);
@@ -43,14 +39,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     
     const root = window.document.documentElement;
     
-    // Solo aplicar la clase si es diferente a la actual para evitar conflictos
-    if (!root.classList.contains(theme)) {
-      // Remover todas las clases de tema existentes
-      root.classList.remove('dark', 'light');
-      
-      // Aplicar la clase del tema actual
-      root.classList.add(theme);
-    }
+    // Remover todas las clases de tema existentes
+    root.classList.remove('dark', 'light');
+    
+    // Aplicar la clase del tema actual
+    root.classList.add(theme);
     
     try {
       localStorage.setItem('theme', theme);
