@@ -15,30 +15,20 @@ function getPrimaryBadge(badges?: Array<{ label: string; tag?: string; type: str
   return badges[0];
 }
 
-// Función para obtener colores y bordes de badges consistentes con building cards
+// Función para obtener colores sobrios y consistentes
 const getBadgeColor = (label: string) => {
-  if (label.includes('Sin comisión') || label.includes('Comisión gratis')) {
-    return "bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 text-white border-cyan-300/50";
+  const labelLower = label.toLowerCase();
+  
+  // Solo destacar lo más importante con color
+  if (labelLower.includes('off') || labelLower.includes('%') || labelLower.includes('descuento')) {
+    return "bg-blue-600 text-white border-blue-500 hover:bg-blue-700";
   }
-  if (label.includes('Garantía en cuotas')) {
-    return "bg-gradient-to-r from-blue-500 to-indigo-500 text-white border-blue-300/50";
+  if (labelLower.includes('sin comisión') || labelLower.includes('comisión gratis')) {
+    return "bg-green-600 text-white border-green-500 hover:bg-green-700";
   }
-  if (label.includes('Opción sin garantía')) {
-    return "bg-gradient-to-r from-amber-500 to-orange-500 text-white border-amber-300/50";
-  }
-  if (label.includes('Precio fijo') || label.includes('12 meses')) {
-    return "bg-gradient-to-r from-purple-500 to-violet-500 text-white border-purple-300/50";
-  }
-  if (label.includes('cuotas')) {
-    return "bg-gradient-to-r from-cyan-500 to-blue-500 text-white border-cyan-300/50";
-  }
-  if (label.includes('sin aval')) {
-    return "bg-gradient-to-r from-orange-500 to-red-500 text-white border-orange-300/50";
-  }
-  if (label.includes('OFF') || label.includes('%')) {
-    return "bg-gradient-to-r from-red-500 to-pink-500 text-white border-red-300/50";
-  }
-  return "bg-gradient-to-r from-gray-500 to-gray-600 text-white border-gray-300/50";
+  
+  // El resto en grises sobrios
+  return "bg-gray-600 text-white border-gray-500 hover:bg-gray-700";
 };
 
 // Función para acortar texto de badges y mantener armonía visual
@@ -533,17 +523,17 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
                 {/* Columna Izquierda - Tipologías */}
                 {availableTypologies.length > 0 && (
                   <div className="space-y-6 h-full flex flex-col">
-                    {/* Header con icono y título */}
-                    <div className="flex items-center gap-3 mb-6">
-                      <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
-                        <Home className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                      </div>
-                      <div>
+                    {/* Header con icono y título centrado */}
+                    <div className="text-center mb-6">
+                      <div className="flex items-center justify-center gap-3 mb-3">
+                        <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
+                          <Home className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                        </div>
                         <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Elige tu tipología ideal</h3>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                          Selecciona la que mejor se adapte a tu estilo de vida
-                        </p>
                       </div>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        Selecciona la que mejor se adapte a tu estilo de vida
+                      </p>
                     </div>
                     
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
@@ -624,17 +614,17 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
                 {/* Columna Derecha - Amenidades */}
                 {building.amenities && building.amenities.length > 0 && (
                   <div className="space-y-6 h-full flex flex-col">
-                    {/* Header con icono y título */}
-                    <div className="flex items-center gap-3 mb-6">
-                      <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center">
-                        <Building2 className="w-4 h-4 text-purple-600 dark:text-purple-400" />
-                      </div>
-                      <div>
+                    {/* Header con icono y título centrado */}
+                    <div className="text-center mb-6">
+                      <div className="flex items-center justify-center gap-3 mb-3">
+                        <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center">
+                          <Building2 className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                        </div>
                         <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Comodidades del edificio</h3>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                          Descubre todas las amenidades disponibles
-                        </p>
                       </div>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        Descubre todas las amenidades disponibles
+                      </p>
                     </div>
                     
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
@@ -642,22 +632,22 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
                         // Función para obtener el icono apropiado según la comodidad
                         const getAmenityIcon = (amenityName: string) => {
                           const lowerAmenity = amenityName.toLowerCase();
-                          if (lowerAmenity.includes('acceso') || lowerAmenity.includes('control')) return <Lock className="w-4 h-4 text-blue-600 dark:text-blue-400" />;
-                          if (lowerAmenity.includes('citófono') || lowerAmenity.includes('intercom')) return <Phone className="w-4 h-4 text-blue-600 dark:text-blue-400" />;
-                          if (lowerAmenity.includes('gimnasio') || lowerAmenity.includes('gym')) return <Dumbbell className="w-4 h-4 text-green-600 dark:text-green-400" />;
-                          if (lowerAmenity.includes('bicicletero') || lowerAmenity.includes('bici')) return <Bike className="w-4 h-4 text-green-600 dark:text-green-400" />;
-                          if (lowerAmenity.includes('lavandería') || lowerAmenity.includes('lavadora')) return <WashingMachine className="w-4 h-4 text-blue-600 dark:text-blue-400" />;
-                          if (lowerAmenity.includes('internet') || lowerAmenity.includes('wifi')) return <Wifi className="w-4 h-4 text-purple-600 dark:text-purple-400" />;
-                          if (lowerAmenity.includes('quincho') || lowerAmenity.includes('bbq')) return <Flame className="w-4 h-4 text-orange-600 dark:text-orange-400" />;
-                          if (lowerAmenity.includes('gourmet') || lowerAmenity.includes('evento')) return <Users className="w-4 h-4 text-purple-600 dark:text-purple-400" />;
-                          if (lowerAmenity.includes('seguridad')) return <Eye className="w-4 h-4 text-red-600 dark:text-red-400" />;
-                          if (lowerAmenity.includes('terraza') || lowerAmenity.includes('panorámica')) return <Sun className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />;
-                          if (lowerAmenity.includes('lounge') || lowerAmenity.includes('salón')) return <Coffee className="w-4 h-4 text-brown-600 dark:text-brown-400" />;
-                          if (lowerAmenity.includes('transporte') || lowerAmenity.includes('cercano')) return <Car className="w-4 h-4 text-green-600 dark:text-green-400" />;
-                          if (lowerAmenity.includes('conserjería') || lowerAmenity.includes('concierge')) return <Users className="w-4 h-4 text-blue-600 dark:text-blue-400" />;
+                          if (lowerAmenity.includes('acceso') || lowerAmenity.includes('control')) return <Lock className="w-4 h-4 text-gray-600 dark:text-gray-400" />;
+                          if (lowerAmenity.includes('citófono') || lowerAmenity.includes('intercom')) return <Phone className="w-4 h-4 text-gray-600 dark:text-gray-400" />;
+                          if (lowerAmenity.includes('gimnasio') || lowerAmenity.includes('gym')) return <Dumbbell className="w-4 h-4 text-gray-600 dark:text-gray-400" />;
+                          if (lowerAmenity.includes('bicicletero') || lowerAmenity.includes('bici')) return <Bike className="w-4 h-4 text-gray-600 dark:text-gray-400" />;
+                          if (lowerAmenity.includes('lavandería') || lowerAmenity.includes('lavadora')) return <WashingMachine className="w-4 h-4 text-gray-600 dark:text-gray-400" />;
+                          if (lowerAmenity.includes('internet') || lowerAmenity.includes('wifi')) return <Wifi className="w-4 h-4 text-gray-600 dark:text-gray-400" />;
+                          if (lowerAmenity.includes('quincho') || lowerAmenity.includes('bbq')) return <Flame className="w-4 h-4 text-gray-600 dark:text-gray-400" />;
+                          if (lowerAmenity.includes('gourmet') || lowerAmenity.includes('evento')) return <Users className="w-4 h-4 text-gray-600 dark:text-gray-400" />;
+                          if (lowerAmenity.includes('seguridad')) return <Eye className="w-4 h-4 text-gray-600 dark:text-gray-400" />;
+                          if (lowerAmenity.includes('terraza') || lowerAmenity.includes('panorámica')) return <Sun className="w-4 h-4 text-gray-600 dark:text-gray-400" />;
+                          if (lowerAmenity.includes('lounge') || lowerAmenity.includes('salón')) return <Coffee className="w-4 h-4 text-gray-600 dark:text-gray-400" />;
+                          if (lowerAmenity.includes('transporte') || lowerAmenity.includes('cercano')) return <Car className="w-4 h-4 text-gray-600 dark:text-gray-400" />;
+                          if (lowerAmenity.includes('conserjería') || lowerAmenity.includes('concierge')) return <Users className="w-4 h-4 text-gray-600 dark:text-gray-400" />;
                           if (lowerAmenity.includes('ascensor') || lowerAmenity.includes('elevador')) return <ChevronUp className="w-4 h-4 text-gray-600 dark:text-gray-400" />;
-                          if (lowerAmenity.includes('comercio') || lowerAmenity.includes('tienda')) return <ShoppingCart className="w-4 h-4 text-orange-600 dark:text-orange-400" />;
-                          return <CheckCircle className="w-4 h-4 text-green-500" />;
+                          if (lowerAmenity.includes('comercio') || lowerAmenity.includes('tienda')) return <ShoppingCart className="w-4 h-4 text-gray-600 dark:text-gray-400" />;
+                          return <CheckCircle className="w-4 h-4 text-gray-600 dark:text-gray-400" />;
                         };
 
                         return (
