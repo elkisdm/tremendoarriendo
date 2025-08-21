@@ -336,13 +336,13 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
             </h1>
           </div>
 
-          {/* BADGES PRINCIPALES - ESTILO GRÁFICO ANTERIOR */}
+          {/* BADGES PRINCIPALES - ESTILO SOBRIO */}
           <div className="flex flex-wrap gap-2 mb-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 text-xs font-medium rounded-lg border border-green-200 dark:border-green-800">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-green-500 text-white text-xs font-medium rounded-lg border border-green-400 shadow-md">
               <DollarSign className="w-3 h-3" />
               Comisión gratis
             </div>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 text-xs font-medium rounded-lg border border-blue-200 dark:border-blue-800">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-lg border border-blue-500 shadow-md">
               <Star className="w-3 h-3" />
               Administración Pro
             </div>
@@ -388,25 +388,25 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                   </div>
                 </div>
 
-                {/* BADGES DE PROMOCIÓN INTEGRADOS - MÁS PEQUEÑOS */}
+                {/* BADGES DE PROMOCIÓN INTEGRADOS - ESTILO SOBRIO */}
                 <div>
                   <h3 className="text-xs font-semibold text-gray-900 dark:text-white mb-2">Promociones actuales</h3>
                   <div className="grid grid-cols-2 gap-1.5">
-                    <div className="flex items-center gap-1.5 p-1.5 bg-orange-50 dark:bg-orange-900/20 rounded-md border border-orange-200 dark:border-orange-800">
-                      <Flame className="w-3 h-3 text-orange-600 dark:text-orange-400" />
-                      <span className="text-xs font-medium text-orange-700 dark:text-orange-300">50% OFF primer mes</span>
+                    <div className="flex items-center gap-1.5 p-1.5 bg-orange-500 text-white rounded-md border border-orange-400 shadow-md">
+                      <Flame className="w-3 h-3" />
+                      <span className="text-xs font-medium">50% OFF primer mes</span>
                     </div>
-                    <div className="flex items-center gap-1.5 p-1.5 bg-blue-50 dark:bg-blue-900/20 rounded-md border border-blue-200 dark:border-blue-800">
-                      <Shield className="w-3 h-3 text-blue-600 dark:text-blue-400" />
-                      <span className="text-xs font-medium text-blue-700 dark:text-blue-300">Garantía en cuotas</span>
+                    <div className="flex items-center gap-1.5 p-1.5 bg-blue-600 text-white rounded-md border border-blue-500 shadow-md">
+                      <Shield className="w-3 h-3" />
+                      <span className="text-xs font-medium">Garantía en cuotas</span>
                     </div>
-                    <div className="flex items-center gap-1.5 p-1.5 bg-purple-50 dark:bg-purple-900/20 rounded-md border border-purple-200 dark:border-purple-800">
-                      <Calendar className="w-3 h-3 text-purple-600 dark:text-purple-400" />
-                      <span className="text-xs font-medium text-purple-700 dark:text-purple-300">Precio fijo 12 meses</span>
+                    <div className="flex items-center gap-1.5 p-1.5 bg-blue-600 text-white rounded-md border border-blue-500 shadow-md">
+                      <Calendar className="w-3 h-3" />
+                      <span className="text-xs font-medium">Precio fijo 12 meses</span>
                     </div>
-                    <div className="flex items-center gap-1.5 p-1.5 bg-indigo-50 dark:bg-indigo-900/20 rounded-md border border-indigo-200 dark:border-indigo-800">
-                      <CheckCircle className="w-3 h-3 text-indigo-600 dark:text-indigo-400" />
-                      <span className="text-xs font-medium text-indigo-700 dark:text-indigo-300">Opción sin aval</span>
+                    <div className="flex items-center gap-1.5 p-1.5 bg-blue-600 text-white rounded-md border border-blue-500 shadow-md">
+                      <CheckCircle className="w-3 h-3" />
+                      <span className="text-xs font-medium">Opción sin aval</span>
                     </div>
                   </div>
                 </div>
