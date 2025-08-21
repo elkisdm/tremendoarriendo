@@ -223,6 +223,26 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
 
   const firstPaymentCalculation = calculateFirstPayment(moveInDate);
 
+  // Función para calcular ahorros del mes 2 (días restantes del descuento)
+  const calculateMonth2Savings = () => {
+    const promoDaysUsed = Math.min(30, firstPaymentCalculation.daysChargedCount);
+    const promoDaysRemaining = Math.max(0, 30 - promoDaysUsed);
+    
+    if (promoDaysRemaining === 0) return 0;
+    
+    const dailyRent = originalPrice / 30;
+    const dailyParking = includeParking ? 50000 / 30 : 0;
+    const dailyStorage = includeStorage ? 30000 / 30 : 0;
+    
+    const rentSavings = Math.round(dailyRent * promoDaysRemaining * 0.5);
+    const parkingSavings = Math.round(dailyParking * promoDaysRemaining * 0.5);
+    const storageSavings = Math.round(dailyStorage * promoDaysRemaining * 0.5);
+    
+    return rentSavings + parkingSavings + storageSavings;
+  };
+
+  const month2Savings = calculateMonth2Savings();
+
   // Función para obtener la fecha máxima (30 días desde hoy)
   const getMaxDate = () => {
     const today = new Date();
@@ -1345,7 +1365,9 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                       {/* Mes 2 */}
                       <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
                         <div className="flex justify-between items-center mb-2">
-                          <span className="text-sm font-medium text-gray-900 dark:text-white">Mes 2 (Precio normal):</span>
+                          <span className="text-sm font-medium text-gray-900 dark:text-white">
+                            Mes 2 {month2Savings > 0 ? '(con días restantes 50% OFF)' : '(Precio normal)'}:
+                          </span>
                           <div className="text-right">
                             <div className="text-sm text-gray-600 dark:text-gray-400">
                               {new Date(moveInDate.getFullYear(), moveInDate.getMonth() + 1, 1).toLocaleDateString('es-CL', { month: 'long', year: 'numeric' })}
@@ -1382,11 +1404,17 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                               <span className="text-xs font-medium text-blue-600 dark:text-blue-400">${Math.round(originalPrice * 0.22).toLocaleString('es-CL')}</span>
                             </div>
                           )}
+                          {month2Savings > 0 && (
+                            <div className="flex justify-between items-center">
+                              <span className="text-xs text-orange-600 dark:text-orange-400 font-medium">50% OFF días restantes:</span>
+                              <span className="text-xs font-semibold text-orange-600 dark:text-orange-400">-${month2Savings.toLocaleString('es-CL')}</span>
+                            </div>
+                          )}
                           <div className="border-t border-gray-200 dark:border-gray-600 pt-1 mt-1">
                             <div className="flex justify-between items-center">
                               <span className="text-xs font-semibold text-gray-900 dark:text-white">Total mes 2:</span>
                               <span className="text-sm font-bold text-gray-900 dark:text-white">
-                                ${(originalPrice + (includeParking ? 50000 : 0) + (includeStorage ? 30000 : 0) + Math.round(originalPrice * 0.21) + (guaranteeInInstallments ? Math.round(originalPrice * 0.22) : 0)).toLocaleString('es-CL')}
+                                ${(originalPrice + (includeParking ? 50000 : 0) + (includeStorage ? 30000 : 0) + Math.round(originalPrice * 0.21) + (guaranteeInInstallments ? Math.round(originalPrice * 0.22) : 0) - month2Savings).toLocaleString('es-CL')}
                               </span>
                             </div>
                           </div>
