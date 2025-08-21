@@ -691,11 +691,14 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                     {activeTab === 'caracteristicas' && (
                       <div>
                         <h3 className="text-lg font-semibold mb-3">Comodidades del edificio {building.name}</h3>
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <div className="flex flex-wrap gap-3">
                           {building.amenities.map((amenity, index) => (
-                            <div key={index} className="flex items-center gap-2 text-sm">
-                              <CheckCircle className="w-4 h-4 text-green-500" />
-                              {amenity}
+                            <div
+                              key={index}
+                              className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm bg-white/5 ring-1 ring-white/10 transition-colors hover:bg-white/10"
+                            >
+                              <CheckCircle className="w-4 h-4 text-green-500" aria-hidden="true" />
+                              <span>{amenity}</span>
                             </div>
                           ))}
                         </div>
