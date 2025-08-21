@@ -408,10 +408,10 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
             </div>
           </div>
 
-          {/* Layout principal - GALERÍA CON PROTAGONISMO */}
-          <div className="grid lg:grid-cols-12 gap-4 sm:gap-6 lg:gap-8 items-start">
-            {/* GALERÍA DOMINANTE - MÓVIL: ARRIBA, DESKTOP: DERECHA */}
-            <div className="lg:col-span-8 space-y-3 sm:space-y-4 order-1 lg:order-2">
+          {/* Layout principal - 2 COLUMNAS IGUALES */}
+          <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 items-start">
+            {/* GALERÍA - MÓVIL: ARRIBA, DESKTOP: DERECHA */}
+            <div className="order-1 lg:order-2">
               {/* Galería con protagonismo */}
               <motion.div 
                 className="relative bg-gray-50 dark:bg-gray-700 rounded-lg overflow-hidden"
@@ -429,8 +429,8 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
               </motion.div>
             </div>
 
-                        {/* INFORMACIÓN OPTIMIZADA - MÓVIL: ABAJO, DESKTOP: IZQUIERDA */}
-            <div className="lg:col-span-4 space-y-6 sm:space-y-8 order-2 lg:order-1">
+            {/* INFORMACIÓN - MÓVIL: ABAJO, DESKTOP: IZQUIERDA */}
+            <div className="order-2 lg:order-1 space-y-6">
               {/* Header con nombre, ubicación y badges */}
               <div className="space-y-6">
                 {/* Nombre y ubicación optimizada */}
