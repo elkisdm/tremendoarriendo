@@ -503,14 +503,14 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                   </div>
                 </div>
 
-                                 {/* Tipo de amoblado */}
-                 <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                   <Refrigerator className="w-5 h-5 text-green-600 dark:text-green-400" />
-                   <div>
-                     <div className="text-sm font-medium text-gray-900 dark:text-white">Amoblado</div>
-                     <div className="text-xs text-gray-600 dark:text-gray-400">Básico</div>
-                   </div>
-                 </div>
+                {/* Tipo de amoblado */}
+                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <Refrigerator className="w-5 h-5 text-green-600 dark:text-green-400" />
+                  <div>
+                    <div className="text-sm font-medium text-gray-900 dark:text-white">Amoblado</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">Básico</div>
+                  </div>
+                </div>
 
                 {/* Estacionamiento */}
                 <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
@@ -728,37 +728,88 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                       </div>
                     )}
 
-                    {activeTab === 'requisitos' && (
-                      <div className="space-y-6">
-                        <div className="grid md:grid-cols-2 gap-6">
-                          <div>
-                            <h3 className="text-lg font-semibold mb-3">Requisitos generales</h3>
-                            <ul className="space-y-2 text-sm">
-                              <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-blue-500" /> Cédula de identidad chilena vigente</li>
-                              <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-blue-500" /> Puntaje financiero 999 titular y aval(es)</li>
-                              <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-blue-500" /> Renta líquida igual o mayor a ${(originalPrice * 3).toLocaleString('es-CL')}</li>
-                            </ul>
-                          </div>
-                          <div>
-                            <h3 className="text-lg font-semibold mb-3 text-blue-600">Trabajador dependiente</h3>
-                            <ul className="space-y-2 text-sm">
-                              <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-blue-500" /> Tres últimas liquidaciones de sueldo</li>
-                              <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-blue-500" /> Certificado de cotizaciones de AFP</li>
-                            </ul>
-                            <h3 className="text-lg font-semibold mb-3 mt-4 text-blue-600">Trabajador independiente</h3>
-                            <ul className="space-y-2 text-sm">
-                              <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-blue-500" /> Informe mensual de boletas de honorario (6 meses)</li>
-                              <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-blue-500" /> Carpeta tributaria o formulario 29 (6 meses)</li>
-                            </ul>
-                          </div>
-                        </div>
-                        <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
-                          <p className="text-sm font-medium text-blue-800 dark:text-blue-200">
-                            Si eres extranjero y tienes cédula vencida puedes solicitar visita y/o postular presentando tu visa en trámite.
-                          </p>
-                        </div>
-                      </div>
-                    )}
+                                         {activeTab === 'requisitos' && (
+                       <div className="space-y-8">
+                         {/* Requisitos Generales */}
+                         <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
+                           <div className="flex items-center gap-3 mb-4">
+                             <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                               <Shield className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                             </div>
+                             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Requisitos Generales</h3>
+                           </div>
+                           <div className="grid gap-3">
+                             <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                               <CheckCircle className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                               <span className="text-sm text-gray-900 dark:text-white">Cédula de identidad chilena vigente</span>
+                             </div>
+                             <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                               <CheckCircle className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                               <span className="text-sm text-gray-900 dark:text-white">Puntaje financiero 999 titular y aval(es)</span>
+                             </div>
+                             <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                               <CheckCircle className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                               <span className="text-sm text-gray-900 dark:text-white">Renta líquida igual o mayor a <span className="font-semibold text-blue-600 dark:text-blue-400">${(originalPrice * 3).toLocaleString('es-CL')}</span></span>
+                             </div>
+                           </div>
+                         </div>
+
+                         {/* Tipos de Trabajador */}
+                         <div className="grid md:grid-cols-2 gap-6">
+                           {/* Trabajador Dependiente */}
+                           <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
+                             <div className="flex items-center gap-3 mb-4">
+                               <div className="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                                 <Users className="w-4 h-4 text-green-600 dark:text-green-400" />
+                               </div>
+                               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Trabajador Dependiente</h3>
+                             </div>
+                             <div className="space-y-3">
+                               <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                                 <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                                 <span className="text-sm text-gray-900 dark:text-white">Tres últimas liquidaciones de sueldo</span>
+                               </div>
+                               <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                                 <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                                 <span className="text-sm text-gray-900 dark:text-white">Certificado de cotizaciones de AFP</span>
+                               </div>
+                             </div>
+                           </div>
+
+                           {/* Trabajador Independiente */}
+                           <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
+                             <div className="flex items-center gap-3 mb-4">
+                               <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+                                 <Square className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                               </div>
+                               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Trabajador Independiente</h3>
+                             </div>
+                             <div className="space-y-3">
+                               <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                                 <CheckCircle className="w-4 h-4 text-purple-500 flex-shrink-0" />
+                                 <span className="text-sm text-gray-900 dark:text-white">Informe mensual de boletas de honorario (6 meses)</span>
+                               </div>
+                               <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                                 <CheckCircle className="w-4 h-4 text-purple-500 flex-shrink-0" />
+                                 <span className="text-sm text-gray-900 dark:text-white">Carpeta tributaria o formulario 29 (6 meses)</span>
+                               </div>
+                             </div>
+                           </div>
+                         </div>
+
+                         {/* Nota para Extranjeros */}
+                         <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4">
+                           <div className="flex items-start gap-3">
+                             <div className="w-6 h-6 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                               <MessageCircle className="w-3 h-3 text-blue-600 dark:text-blue-400" />
+                             </div>
+                             <p className="text-sm font-medium text-blue-800 dark:text-blue-200">
+                               Si eres extranjero y tienes cédula vencida puedes solicitar visita y/o postular presentando tu visa en trámite.
+                             </p>
+                           </div>
+                         </div>
+                       </div>
+                     )}
 
                     {activeTab === 'faq' && (
                       <div className="space-y-4">
