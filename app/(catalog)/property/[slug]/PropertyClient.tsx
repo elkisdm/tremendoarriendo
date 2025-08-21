@@ -71,6 +71,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
     return firstDayNextMonth;
   });
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [openFAQ, setOpenFAQ] = useState<string | null>(null);
 
   // Analytics tracking on mount
   useEffect(() => {
@@ -97,6 +98,10 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
       property_id: building.id,
       property_name: building.name,
     });
+  };
+
+  const handleFAQToggle = (faqId: string) => {
+    setOpenFAQ(openFAQ === faqId ? null : faqId);
   };
 
   const whatsappUrl = buildWaLink({
@@ -728,105 +733,251 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                       </div>
                     )}
 
-                                         {activeTab === 'requisitos' && (
-                       <div className="space-y-8">
-                         {/* Requisitos Generales */}
-                         <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
-                           <div className="flex items-center gap-3 mb-4">
-                             <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-                               <Shield className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                             </div>
-                             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Requisitos Generales</h3>
-                           </div>
-                           <div className="grid gap-3">
-                             <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
-                               <CheckCircle className="w-4 h-4 text-blue-500 flex-shrink-0" />
-                               <span className="text-sm text-gray-900 dark:text-white">Cédula de identidad chilena vigente</span>
-                             </div>
-                             <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
-                               <CheckCircle className="w-4 h-4 text-blue-500 flex-shrink-0" />
-                               <span className="text-sm text-gray-900 dark:text-white">Puntaje financiero 999 titular y aval(es)</span>
-                             </div>
-                             <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
-                               <CheckCircle className="w-4 h-4 text-blue-500 flex-shrink-0" />
-                               <span className="text-sm text-gray-900 dark:text-white">Renta líquida igual o mayor a <span className="font-semibold text-blue-600 dark:text-blue-400">${(originalPrice * 3).toLocaleString('es-CL')}</span></span>
-                             </div>
-                           </div>
-                         </div>
-
-                         {/* Tipos de Trabajador */}
-                         <div className="grid md:grid-cols-2 gap-6">
-                           {/* Trabajador Dependiente */}
-                           <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
-                             <div className="flex items-center gap-3 mb-4">
-                               <div className="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
-                                 <Users className="w-4 h-4 text-green-600 dark:text-green-400" />
-                               </div>
-                               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Trabajador Dependiente</h3>
-                             </div>
-                             <div className="space-y-3">
-                               <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
-                                 <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                                 <span className="text-sm text-gray-900 dark:text-white">Tres últimas liquidaciones de sueldo</span>
-                               </div>
-                               <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
-                                 <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                                 <span className="text-sm text-gray-900 dark:text-white">Certificado de cotizaciones de AFP</span>
-                               </div>
-                             </div>
-                           </div>
-
-                           {/* Trabajador Independiente */}
-                           <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
-                             <div className="flex items-center gap-3 mb-4">
-                               <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
-                                 <Square className="w-4 h-4 text-purple-600 dark:text-purple-400" />
-                               </div>
-                               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Trabajador Independiente</h3>
-                             </div>
-                             <div className="space-y-3">
-                               <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
-                                 <CheckCircle className="w-4 h-4 text-purple-500 flex-shrink-0" />
-                                 <span className="text-sm text-gray-900 dark:text-white">Informe mensual de boletas de honorario (6 meses)</span>
-                               </div>
-                               <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
-                                 <CheckCircle className="w-4 h-4 text-purple-500 flex-shrink-0" />
-                                 <span className="text-sm text-gray-900 dark:text-white">Carpeta tributaria o formulario 29 (6 meses)</span>
-                               </div>
-                             </div>
-                           </div>
-                         </div>
-
-                         {/* Nota para Extranjeros */}
-                         <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4">
-                           <div className="flex items-start gap-3">
-                             <div className="w-6 h-6 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-                               <MessageCircle className="w-3 h-3 text-blue-600 dark:text-blue-400" />
-                             </div>
-                             <p className="text-sm font-medium text-blue-800 dark:text-blue-200">
-                               Si eres extranjero y tienes cédula vencida puedes solicitar visita y/o postular presentando tu visa en trámite.
-                             </p>
-                           </div>
-                         </div>
-                       </div>
-                     )}
-
-                    {activeTab === 'faq' && (
-                      <div className="space-y-4">
-                        <div className="border border-gray-200 dark:border-gray-700 rounded-lg">
-                          <button className="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800">
-                            <span className="font-medium">¿Cuáles son los requisitos para arrendar?</span>
-                            <ChevronDown className="w-5 h-5" />
-                          </button>
+                    {activeTab === 'requisitos' && (
+                      <div className="space-y-8">
+                        {/* Requisitos Generales */}
+                        <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
+                          <div className="flex items-center gap-3 mb-4">
+                            <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                              <Shield className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                            </div>
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Requisitos Generales</h3>
+                          </div>
+                          <div className="grid gap-3">
+                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                              <CheckCircle className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                              <span className="text-sm text-gray-900 dark:text-white">Cédula de identidad chilena vigente</span>
+                            </div>
+                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                              <CheckCircle className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                              <span className="text-sm text-gray-900 dark:text-white">Puntaje financiero 999 titular y aval(es)</span>
+                            </div>
+                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                              <CheckCircle className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                              <span className="text-sm text-gray-900 dark:text-white">Renta líquida igual o mayor a <span className="font-semibold text-blue-600 dark:text-blue-400">${(originalPrice * 3).toLocaleString('es-CL')}</span></span>
+                            </div>
+                          </div>
                         </div>
-                        <div className="border border-gray-200 dark:border-gray-700 rounded-lg">
-                          <button className="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800">
-                            <span className="font-medium">¿Necesito contar con un aval para poder arrendar?</span>
-                            <ChevronDown className="w-5 h-5" />
-                          </button>
+
+                        {/* Tipos de Trabajador */}
+                        <div className="grid md:grid-cols-2 gap-6">
+                          {/* Trabajador Dependiente */}
+                          <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
+                            <div className="flex items-center gap-3 mb-4">
+                              <div className="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                                <Users className="w-4 h-4 text-green-600 dark:text-green-400" />
+                              </div>
+                              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Trabajador Dependiente</h3>
+                            </div>
+                            <div className="space-y-3">
+                              <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                                <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                                <span className="text-sm text-gray-900 dark:text-white">Tres últimas liquidaciones de sueldo</span>
+                              </div>
+                              <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                                <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                                <span className="text-sm text-gray-900 dark:text-white">Certificado de cotizaciones de AFP</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Trabajador Independiente */}
+                          <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
+                            <div className="flex items-center gap-3 mb-4">
+                              <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+                                <Square className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                              </div>
+                              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Trabajador Independiente</h3>
+                            </div>
+                            <div className="space-y-3">
+                              <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                                <CheckCircle className="w-4 h-4 text-purple-500 flex-shrink-0" />
+                                <span className="text-sm text-gray-900 dark:text-white">Informe mensual de boletas de honorario (6 meses)</span>
+                              </div>
+                              <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                                <CheckCircle className="w-4 h-4 text-purple-500 flex-shrink-0" />
+                                <span className="text-sm text-gray-900 dark:text-white">Carpeta tributaria o formulario 29 (6 meses)</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Nota para Extranjeros */}
+                        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4">
+                          <div className="flex items-start gap-3">
+                            <div className="w-6 h-6 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                              <MessageCircle className="w-3 h-3 text-blue-600 dark:text-blue-400" />
+                            </div>
+                            <p className="text-sm font-medium text-blue-800 dark:text-blue-200">
+                              Si eres extranjero y tienes cédula vencida puedes solicitar visita y/o postular presentando tu visa en trámite.
+                            </p>
+                          </div>
                         </div>
                       </div>
                     )}
+
+                                         {activeTab === 'faq' && (
+                       <div className="space-y-4">
+                         {/* FAQ 1: Requisitos para arrendar */}
+                         <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+                           <button 
+                             onClick={() => handleFAQToggle('requisitos')}
+                             className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                           >
+                             <span className="font-semibold text-gray-900 dark:text-white">¿Cuáles son los requisitos para arrendar?</span>
+                             <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform ${openFAQ === 'requisitos' ? 'rotate-180' : ''}`} />
+                           </button>
+                           {openFAQ === 'requisitos' && (
+                             <div className="px-6 pb-4">
+                               <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+                                 <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                                   Los requisitos varían dependiendo del departamento que elijas, pero en general son: acreditar renta suficiente, demostrar que no tienes deudas vencidas y, en ciertos casos, contar con un aval.
+                                 </p>
+                               </div>
+                             </div>
+                           )}
+                         </div>
+
+                         {/* FAQ 2: Aval */}
+                         <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+                           <button 
+                             onClick={() => handleFAQToggle('aval')}
+                             className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                           >
+                             <span className="font-semibold text-gray-900 dark:text-white">¿Necesito contar con un aval para poder arrendar?</span>
+                             <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform ${openFAQ === 'aval' ? 'rotate-180' : ''}`} />
+                           </button>
+                           {openFAQ === 'aval' && (
+                             <div className="px-6 pb-4">
+                               <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+                                 <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                                   Tener un aval es obligatorio en algunas propiedades mientras que en otras es opcional.
+                                 </p>
+                               </div>
+                             </div>
+                           )}
+                         </div>
+
+                         {/* FAQ 3: Mascotas */}
+                         <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+                           <button 
+                             onClick={() => handleFAQToggle('mascotas')}
+                             className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                           >
+                             <span className="font-semibold text-gray-900 dark:text-white">¿Cuáles son las condiciones para arrendar un departamento que acepta mascotas?</span>
+                             <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform ${openFAQ === 'mascotas' ? 'rotate-180' : ''}`} />
+                           </button>
+                           {openFAQ === 'mascotas' && (
+                             <div className="px-6 pb-4">
+                               <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+                                 <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-2">
+                                   <li className="flex items-start gap-2">
+                                     <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                                     <span>La aceptación de mascotas depende del propietario del departamento.</span>
+                                   </li>
+                                   <li className="flex items-start gap-2">
+                                     <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                                     <span>Peso máximo de 20 kg y cumplir con la Ley de Tenencia Responsable de Mascotas (Ley 21.020) y reglamentos del edificio para tranquilidad, seguridad y salud.</span>
+                                   </li>
+                                   <li className="flex items-start gap-2">
+                                     <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                                     <span>Mascotas permitidas: perros, gatos, peces en pecera. Prohibidas: exóticas, peligrosas, silvestres o protegidas.</span>
+                                   </li>
+                                   <li className="flex items-start gap-2">
+                                     <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                                     <span>Notificar al arrendador si adquiere mascota después de firmar contrato. Mascotas siempre con correa en áreas comunes.</span>
+                                   </li>
+                                   <li className="flex items-start gap-2">
+                                     <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                                     <span>El arrendatario asume responsabilidad total por daños o molestias causadas por la mascota y debe respetar todas las regulaciones.</span>
+                                   </li>
+                                 </ul>
+                               </div>
+                             </div>
+                           )}
+                         </div>
+
+                         {/* FAQ 4: Duración del contrato */}
+                         <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+                           <button 
+                             onClick={() => handleFAQToggle('duracion')}
+                             className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                           >
+                             <span className="font-semibold text-gray-900 dark:text-white">¿Cuánto dura el contrato?</span>
+                             <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform ${openFAQ === 'duracion' ? 'rotate-180' : ''}`} />
+                           </button>
+                           {openFAQ === 'duracion' && (
+                             <div className="px-6 pb-4">
+                               <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+                                 <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                                   Los contratos de arriendo típicamente tienen una duración de 12 meses, con opción de renovación según las condiciones establecidas.
+                                 </p>
+                               </div>
+                             </div>
+                           )}
+                         </div>
+
+                         {/* FAQ 5: Trabajo nuevo */}
+                         <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+                           <button 
+                             onClick={() => handleFAQToggle('trabajo-nuevo')}
+                             className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                           >
+                             <span className="font-semibold text-gray-900 dark:text-white">Tengo un trabajo nuevo ¿puedo postular si aún no tengo liquidaciones de sueldo?</span>
+                             <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform ${openFAQ === 'trabajo-nuevo' ? 'rotate-180' : ''}`} />
+                           </button>
+                           {openFAQ === 'trabajo-nuevo' && (
+                             <div className="px-6 pb-4">
+                               <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+                                 <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                                   Sí, siempre que tengas un contrato indefinido.
+                                 </p>
+                               </div>
+                             </div>
+                           )}
+                         </div>
+
+                         {/* FAQ 6: Capacidad de personas */}
+                         <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+                           <button 
+                             onClick={() => handleFAQToggle('capacidad')}
+                             className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                           >
+                             <span className="font-semibold text-gray-900 dark:text-white">¿Cuántas personas pueden vivir en la propiedad?</span>
+                             <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform ${openFAQ === 'capacidad' ? 'rotate-180' : ''}`} />
+                           </button>
+                           {openFAQ === 'capacidad' && (
+                             <div className="px-6 pb-4">
+                               <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+                                 <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                                   Una capacidad máxima de 2 personas por dormitorio (menores de 3 años con los padres).
+                                 </p>
+                               </div>
+                             </div>
+                           )}
+                         </div>
+
+                         {/* FAQ 7: Garantía en cuotas */}
+                         <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+                           <button 
+                             onClick={() => handleFAQToggle('garantia-cuotas')}
+                             className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                           >
+                             <span className="font-semibold text-gray-900 dark:text-white">¿Se puede pagar la garantía en cuotas?</span>
+                             <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform ${openFAQ === 'garantia-cuotas' ? 'rotate-180' : ''}`} />
+                           </button>
+                           {openFAQ === 'garantia-cuotas' && (
+                             <div className="px-6 pb-4">
+                               <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+                                 <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                                   Esto depende de cada departamento. Te recomendamos seleccionar un departamento y solicitar una visita para obtener más información sobre los costos iniciales.
+                                 </p>
+                               </div>
+                             </div>
+                           )}
+                         </div>
+                       </div>
+                     )}
                   </div>
                 </div>
               </section>
