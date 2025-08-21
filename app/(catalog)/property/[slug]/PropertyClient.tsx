@@ -214,7 +214,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
           {/* LAYOUT 2 COLUMNAS - DISEÑO MINIMALISTA OPTIMIZADO */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             {/* COLUMNA IZQUIERDA - INFORMACIÓN PRINCIPAL INTEGRADA */}
-            <div className="space-y-6">
+            <div>
               {/* CONTENEDOR PRINCIPAL INTEGRADO - PRECIOS, PROMOCIONES Y CTAS */}
               <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 space-y-5">
                 {/* UBICACIÓN */}
@@ -300,38 +300,6 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                   )}
                 </div>
               </div>
-
-              {/* INFORMACIÓN RÁPIDA - DISEÑO MINIMALISTA */}
-              <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Características principales</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-gray-900 dark:text-white">2</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400 flex items-center justify-center gap-1">
-                      <Bed className="w-4 h-4" />
-                      Dormitorios
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-gray-900 dark:text-white">1</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400 flex items-center justify-center gap-1">
-                      <Bath className="w-4 h-4" />
-                      Baños
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-gray-900 dark:text-white">{selectedUnit?.m2 || 45}</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400 flex items-center justify-center gap-1">
-                      <Square className="w-4 h-4" />
-                      m²
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-gray-900 dark:text-white">2</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">Piso</div>
-                  </div>
-                </div>
-              </div>
             </div>
 
             {/* COLUMNA DERECHA - GALERÍA */}
@@ -361,7 +329,86 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
             </div>
           </div>
 
+          {/* CARACTERÍSTICAS PRINCIPALES - ANCHURA COMPLETA */}
+          <div className="mb-8">
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Características principales</h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                {/* Dormitorios */}
+                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <Bed className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  <div>
+                    <div className="text-lg font-bold text-gray-900 dark:text-white">1</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">Dormitorio</div>
+                  </div>
+                </div>
 
+                {/* Baños */}
+                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <Bath className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  <div>
+                    <div className="text-lg font-bold text-gray-900 dark:text-white">1</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">Baño</div>
+                  </div>
+                </div>
+
+                {/* Metros cuadrados */}
+                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <Square className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  <div>
+                    <div className="text-lg font-bold text-gray-900 dark:text-white">29</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">m² interior</div>
+                  </div>
+                </div>
+
+                {/* Piso */}
+                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm3 1h6v2H7V5zm6 4H7v2h6V9zm0 4H7v2h6v-2z" clipRule="evenodd" />
+                  </svg>
+                  <div>
+                    <div className="text-lg font-bold text-gray-900 dark:text-white">2</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">Piso</div>
+                  </div>
+                </div>
+
+                {/* Amoblado */}
+                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <svg className="w-5 h-5 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                  </svg>
+                  <div>
+                    <div className="text-sm font-medium text-gray-900 dark:text-white">Amoblado</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">básico</div>
+                  </div>
+                </div>
+
+                {/* Estacionamiento */}
+                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <svg className="w-5 h-5 text-orange-600 dark:text-orange-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm2 2h12v8H6V6z" clipRule="evenodd" />
+                  </svg>
+                  <div>
+                    <div className="text-sm font-medium text-gray-900 dark:text-white">Estacionamiento</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">Opcional</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Metro cercano - Información de ubicación */}
+              <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                <div className="flex items-center gap-3">
+                  <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                  </svg>
+                  <div>
+                    <div className="text-sm font-medium text-blue-800 dark:text-blue-200">Metro Ecuador</div>
+                    <div className="text-xs text-blue-600 dark:text-blue-300">5 minutos, 450 metros</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
           {/* PASO 5: LAYOUT PRINCIPAL OPTIMIZADO */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
