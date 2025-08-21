@@ -17,7 +17,10 @@ import {
   Bath,
   Square,
   Star,
-  Calendar
+  Calendar,
+  Package,
+  Users,
+  Building2
 } from "lucide-react";
 import { ImageGallery } from "@components/gallery/ImageGallery";
 import { UnitSelector } from "@components/UnitSelector";
@@ -558,9 +561,9 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                   <div className="flex items-center gap-3">
                     {/* Ícono de metro con imagen */}
                     <div className="relative">
-                      <img 
-                        src="/images/metro/metro-icon.png" 
-                        alt="Metro Línea 1" 
+                      <img
+                        src="/images/metro/metro-icon.png"
+                        alt="Metro Línea 1"
                         className="w-6 h-6"
                       />
                       {/* Círculo rojo de línea 1 */}
