@@ -414,7 +414,7 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
             <div className="lg:col-span-8 space-y-3 sm:space-y-4 order-1 lg:order-2">
               {/* Galería con protagonismo */}
               <motion.div 
-                className="relative"
+                className="relative bg-gray-50 dark:bg-gray-700 rounded-lg overflow-hidden"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.2, duration: 0.6 }}
@@ -455,20 +455,20 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
                       </span>
                       <motion.button
                         onClick={openGoogleMaps}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors dark:text-blue-400 dark:bg-blue-950/30 dark:hover:bg-blue-950/50 border border-blue-200 dark:border-blue-800/50 flex-shrink-0"
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="inline-flex items-center gap-2 px-4 py-3 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors dark:text-blue-400 dark:bg-blue-950/30 dark:hover:bg-blue-950/50 border border-blue-200 dark:border-blue-800/50 flex-shrink-0"
                         aria-label="Abrir ubicación en Google Maps"
                       >
                         <ExternalLink className="h-4 w-4" />
-                        Mapa
+                        Ver mapa
                       </motion.button>
                     </div>
                   </div>
                   
                   {/* Precio destacado - POSICIÓN ESTRATÉGICA PARA CONVERSIÓN */}
                   <motion.div 
-                    className="mt-6 p-4 bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-2xl border border-amber-200/50 dark:border-amber-800/30"
+                    className="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
