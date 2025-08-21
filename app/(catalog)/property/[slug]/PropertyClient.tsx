@@ -494,21 +494,21 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                   </div>
                 </div>
 
-                                 {/* Mascotas */}
-                 <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                   <PawPrint className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-                   <div>
-                     <div className="text-sm font-medium text-gray-900 dark:text-white">Mascotas</div>
-                     <div className="text-xs text-gray-600 dark:text-gray-400">Permitidas</div>
-                   </div>
-                 </div>
+                {/* Mascotas */}
+                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <PawPrint className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                  <div>
+                    <div className="text-sm font-medium text-gray-900 dark:text-white">Mascotas</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">Permitidas</div>
+                  </div>
+                </div>
 
                                  {/* Tipo de amoblado */}
                  <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                    <Refrigerator className="w-5 h-5 text-green-600 dark:text-green-400" />
                    <div>
                      <div className="text-sm font-medium text-gray-900 dark:text-white">Amoblado</div>
-                     <div className="text-xs text-gray-600 dark:text-gray-400">Completo</div>
+                     <div className="text-xs text-gray-600 dark:text-gray-400">Básico</div>
                    </div>
                  </div>
 
