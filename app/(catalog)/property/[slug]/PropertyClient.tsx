@@ -782,8 +782,8 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                       {showDatePicker && (
                         <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg z-10 p-3">
                           <div className="grid grid-cols-7 gap-1 text-xs">
-                            {['D', 'L', 'M', 'M', 'J', 'V', 'S'].map(day => (
-                              <div key={day} className="p-2 text-center text-gray-500 font-medium">
+                            {['D', 'L', 'Ma', 'Mi', 'J', 'V', 'S'].map((day, index) => (
+                              <div key={`day-${index}`} className="p-2 text-center text-gray-500 font-medium">
                                 {day}
                               </div>
                             ))}
