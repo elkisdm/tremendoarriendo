@@ -25,7 +25,9 @@ import {
   Heart,
   Car,
   Layers,
-  Compass
+  Compass,
+  Refrigerator,
+  PawPrint
 } from "lucide-react";
 import { ImageGallery } from "@components/gallery/ImageGallery";
 import { UnitSelector } from "@components/UnitSelector";
@@ -492,23 +494,23 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                   </div>
                 </div>
 
-                {/* Mascotas */}
-                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <Heart className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-                  <div>
-                    <div className="text-sm font-medium text-gray-900 dark:text-white">Mascotas</div>
-                    <div className="text-xs text-gray-600 dark:text-gray-400">Permitidas</div>
-                  </div>
-                </div>
+                                 {/* Mascotas */}
+                 <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                   <PawPrint className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                   <div>
+                     <div className="text-sm font-medium text-gray-900 dark:text-white">Mascotas</div>
+                     <div className="text-xs text-gray-600 dark:text-gray-400">Permitidas</div>
+                   </div>
+                 </div>
 
-                {/* Tipo de amoblado */}
-                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <Package className="w-5 h-5 text-green-600 dark:text-green-400" />
-                  <div>
-                    <div className="text-sm font-medium text-gray-900 dark:text-white">Amoblado</div>
-                    <div className="text-xs text-gray-600 dark:text-gray-400">Completo</div>
-                  </div>
-                </div>
+                                 {/* Tipo de amoblado */}
+                 <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                   <Refrigerator className="w-5 h-5 text-green-600 dark:text-green-400" />
+                   <div>
+                     <div className="text-sm font-medium text-gray-900 dark:text-white">Amoblado</div>
+                     <div className="text-xs text-gray-600 dark:text-gray-400">Completo</div>
+                   </div>
+                 </div>
 
                 {/* Estacionamiento */}
                 <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
@@ -519,14 +521,14 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                   </div>
                 </div>
 
-                                 {/* Bodega */}
-                 <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                   <Package className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-                   <div>
-                     <div className="text-sm font-medium text-gray-900 dark:text-white">Bodega</div>
-                     <div className="text-xs text-gray-600 dark:text-gray-400">Desde $30.000</div>
-                   </div>
-                 </div>
+                {/* Bodega */}
+                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <Package className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                  <div>
+                    <div className="text-sm font-medium text-gray-900 dark:text-white">Bodega</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">Desde $30.000</div>
+                  </div>
+                </div>
 
                 {/* Habitantes */}
                 <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
