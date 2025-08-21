@@ -169,18 +169,36 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
     const daysChargedCount = Math.ceil(daysCharged / (24 * 60 * 60 * 1000));
     const prorateFactor = daysChargedCount / daysInMonth;
 
-    const monthlyRentStorage = RENT + PARKING_RENT + STORAGE_RENT;
-    const proratedRentStorage = Math.round(monthlyRentStorage * prorateFactor);
-    const promoDiscount = Math.round(proratedRentStorage * PROMO_RATE);
-    const netRentStorage = proratedRentStorage - promoDiscount;
+    // Calcular días con descuento (primeros 30 días desde la fecha de mudanza)
+    const promoDays = Math.min(30, daysChargedCount);
+    const regularDays = Math.max(0, daysChargedCount - 30);
+    
+    // Calcular arriendo con descuento para los primeros 30 días
+    const dailyRent = RENT / 30; // Arriendo diario
+    const dailyParking = PARKING_RENT / 30; // Estacionamiento diario
+    const dailyStorage = STORAGE_RENT / 30; // Bodega diaria
+    
+    const promoRent = Math.round(dailyRent * promoDays * (1 - PROMO_RATE)); // 50% OFF
+    const regularRent = Math.round(dailyRent * regularDays); // Precio normal
+    const totalRent = promoRent + regularRent;
+    
+    const promoParking = Math.round(dailyParking * promoDays * (1 - PROMO_RATE)); // 50% OFF
+    const regularParking = Math.round(dailyParking * regularDays); // Precio normal
+    const totalParking = promoParking + regularParking;
+    
+    const promoStorage = Math.round(dailyStorage * promoDays * (1 - PROMO_RATE)); // 50% OFF
+    const regularStorage = Math.round(dailyStorage * regularDays); // Precio normal
+    const totalStorage = promoStorage + regularStorage;
+    
+    const netRentStorage = totalRent + totalParking + totalStorage;
 
     const monthlyGC = GC_RENT + GC_STORAGE;
     const proratedGC = Math.round(monthlyGC * prorateFactor);
 
-    const totalDeposit = Math.round(DEPOSIT_MONTHS * monthlyRentStorage);
+    const totalDeposit = Math.round(DEPOSIT_MONTHS * (RENT + PARKING_RENT + STORAGE_RENT));
     const initialDeposit = Math.round(totalDeposit * DEPOSIT_INIT_PCT);
 
-    const commissionBase = Math.round(COMMISSION_RATE * monthlyRentStorage);
+    const commissionBase = Math.round(COMMISSION_RATE * (RENT + PARKING_RENT + STORAGE_RENT));
     const commissionVAT = Math.round(commissionBase * VAT);
     const totalCommission = commissionBase + commissionVAT;
     const commissionToPay = Math.max(0, Math.round(totalCommission * (1 - COMMISSION_BONIF_RATE)));
@@ -197,7 +215,9 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
       daysInMonth,
       prorateFactor,
       parkingRent: PARKING_RENT,
-      storageRent: STORAGE_RENT
+      storageRent: STORAGE_RENT,
+      promoDays,
+      regularDays
     };
   };
 
@@ -1232,11 +1252,19 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                         ${firstPaymentCalculation.netRentStorage.toLocaleString('es-CL')}
                       </span>
                     </div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400 pl-2">
+                      • {firstPaymentCalculation.promoDays} días con 50% OFF: ${Math.round((originalPrice / 30) * firstPaymentCalculation.promoDays * 0.5).toLocaleString('es-CL')}
+                      {firstPaymentCalculation.regularDays > 0 && (
+                        <span>
+                          <br />• {firstPaymentCalculation.regularDays} días precio normal: ${Math.round((originalPrice / 30) * firstPaymentCalculation.regularDays).toLocaleString('es-CL')}
+                        </span>
+                      )}
+                    </div>
                     {includeParking && (
                       <div className="flex justify-between items-center">
                         <span className="text-sm text-gray-600 dark:text-gray-400">Estacionamiento prorrateado:</span>
                         <span className="text-sm font-medium text-orange-600 dark:text-orange-400">
-                          ${Math.round(firstPaymentCalculation.parkingRent * firstPaymentCalculation.prorateFactor * 0.5).toLocaleString('es-CL')}
+                          ${Math.round((50000 / 30) * firstPaymentCalculation.promoDays * 0.5 + (50000 / 30) * firstPaymentCalculation.regularDays).toLocaleString('es-CL')}
                         </span>
                       </div>
                     )}
@@ -1244,7 +1272,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                       <div className="flex justify-between items-center">
                         <span className="text-sm text-gray-600 dark:text-gray-400">Bodega prorrateada:</span>
                         <span className="text-sm font-medium text-purple-600 dark:text-purple-400">
-                          ${Math.round(firstPaymentCalculation.storageRent * firstPaymentCalculation.prorateFactor * 0.5).toLocaleString('es-CL')}
+                          ${Math.round((30000 / 30) * firstPaymentCalculation.promoDays * 0.5 + (30000 / 30) * firstPaymentCalculation.regularDays).toLocaleString('es-CL')}
                         </span>
                       </div>
                     )}
