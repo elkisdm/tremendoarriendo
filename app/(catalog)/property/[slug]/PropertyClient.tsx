@@ -380,7 +380,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                     </div>
                     <div className="flex items-center gap-1.5 p-1.5 bg-indigo-50 dark:bg-indigo-900/20 rounded-md border border-indigo-200 dark:border-indigo-800">
                       <CheckCircle className="w-3 h-3 text-indigo-600 dark:text-indigo-400" />
-                      <span className="text-xs font-medium text-indigo-700 dark:text-indigo-300">Sin gastos ocultos</span>
+                      <span className="text-xs font-medium text-indigo-700 dark:text-indigo-300">Opción sin aval</span>
                     </div>
                   </div>
                 </div>
@@ -824,7 +824,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                             onClick={() => handleFAQToggle('requisitos')}
                             className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                           >
-                                                         <span className="font-semibold text-gray-900 dark:text-white leading-relaxed tracking-wide">¿Cuáles son los requisitos para arrendar?</span>
+                            <span className="font-semibold text-gray-900 dark:text-white leading-relaxed tracking-wide">¿Cuáles son los requisitos para arrendar?</span>
                             <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform ${openFAQ === 'requisitos' ? 'rotate-180' : ''}`} />
                           </button>
                           {openFAQ === 'requisitos' && (
@@ -844,7 +844,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                             onClick={() => handleFAQToggle('aval')}
                             className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                           >
-                                                         <span className="font-semibold text-gray-900 dark:text-white leading-relaxed tracking-wide">¿Necesito contar con un aval para poder arrendar?</span>
+                            <span className="font-semibold text-gray-900 dark:text-white leading-relaxed tracking-wide">¿Necesito contar con un aval para poder arrendar?</span>
                             <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform ${openFAQ === 'aval' ? 'rotate-180' : ''}`} />
                           </button>
                           {openFAQ === 'aval' && (
@@ -864,7 +864,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                             onClick={() => handleFAQToggle('mascotas')}
                             className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                           >
-                                                         <span className="font-semibold text-gray-900 dark:text-white leading-relaxed tracking-wide">¿Cuáles son las condiciones para arrendar un departamento que acepta mascotas?</span>
+                            <span className="font-semibold text-gray-900 dark:text-white leading-relaxed tracking-wide">¿Cuáles son las condiciones para arrendar un departamento que acepta mascotas?</span>
                             <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform ${openFAQ === 'mascotas' ? 'rotate-180' : ''}`} />
                           </button>
                           {openFAQ === 'mascotas' && (
@@ -903,7 +903,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                             onClick={() => handleFAQToggle('duracion')}
                             className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                           >
-                                                         <span className="font-semibold text-gray-900 dark:text-white leading-relaxed tracking-wide">¿Cuánto dura el contrato?</span>
+                            <span className="font-semibold text-gray-900 dark:text-white leading-relaxed tracking-wide">¿Cuánto dura el contrato?</span>
                             <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform ${openFAQ === 'duracion' ? 'rotate-180' : ''}`} />
                           </button>
                           {openFAQ === 'duracion' && (
@@ -923,7 +923,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                             onClick={() => handleFAQToggle('trabajo-nuevo')}
                             className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                           >
-                                                         <span className="font-semibold text-gray-900 dark:text-white leading-relaxed tracking-wide">Tengo un trabajo nuevo ¿puedo postular si aún no tengo liquidaciones de sueldo?</span>
+                            <span className="font-semibold text-gray-900 dark:text-white leading-relaxed tracking-wide">Tengo un trabajo nuevo ¿puedo postular si aún no tengo liquidaciones de sueldo?</span>
                             <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform ${openFAQ === 'trabajo-nuevo' ? 'rotate-180' : ''}`} />
                           </button>
                           {openFAQ === 'trabajo-nuevo' && (
@@ -943,7 +943,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                             onClick={() => handleFAQToggle('capacidad')}
                             className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                           >
-                                                         <span className="font-semibold text-gray-900 dark:text-white leading-relaxed tracking-wide">¿Cuántas personas pueden vivir en la propiedad?</span>
+                            <span className="font-semibold text-gray-900 dark:text-white leading-relaxed tracking-wide">¿Cuántas personas pueden vivir en la propiedad?</span>
                             <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform ${openFAQ === 'capacidad' ? 'rotate-180' : ''}`} />
                           </button>
                           {openFAQ === 'capacidad' && (
@@ -963,7 +963,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                             onClick={() => handleFAQToggle('garantia-cuotas')}
                             className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                           >
-                                                         <span className="font-semibold text-gray-900 dark:text-white leading-relaxed tracking-wide">¿Se puede pagar la garantía en cuotas?</span>
+                            <span className="font-semibold text-gray-900 dark:text-white leading-relaxed tracking-wide">¿Se puede pagar la garantía en cuotas?</span>
                             <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform ${openFAQ === 'garantia-cuotas' ? 'rotate-180' : ''}`} />
                           </button>
                           {openFAQ === 'garantia-cuotas' && (
