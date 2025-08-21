@@ -36,7 +36,19 @@ import {
   Fan,
   Tv,
   Microwave,
-  Sofa
+  Sofa,
+  PhoneCall,
+  Dumbbell,
+  Bike,
+  WashingMachine,
+  Wifi,
+  ChefHat,
+  Users2,
+  Eye,
+  Coffee,
+  Bus,
+  ArrowUpDown,
+  ShoppingBag
 } from "lucide-react";
 import { ImageGallery } from "@components/gallery/ImageGallery";
 import { UnitSelector } from "@components/UnitSelector";
@@ -758,22 +770,52 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                       </div>
                     )}
 
-                    {activeTab === 'caracteristicas' && (
-                      <div>
-                        <h3 className="text-lg font-semibold mb-3">Comodidades del edificio {building.name}</h3>
-                        <div className="flex flex-wrap gap-3">
-                          {building.amenities.map((amenity, index) => (
-                            <div
-                              key={index}
-                              className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm bg-gray-50 dark:bg-gray-700 ring-1 ring-gray-200 dark:ring-gray-600 transition-colors hover:bg-gray-100 dark:hover:bg-gray-600"
-                            >
-                              <CheckCircle className="w-4 h-4 text-green-500" aria-hidden="true" />
-                              <span className="text-gray-900 dark:text-white">{amenity}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                                         {activeTab === 'caracteristicas' && (
+                       <div>
+                         <div className="flex items-center gap-3 mb-6">
+                           <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center">
+                             <Building2 className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                           </div>
+                           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Comodidades del edificio {building.name}</h3>
+                         </div>
+                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                           {building.amenities.map((amenity, index) => {
+                             // Función para obtener el icono apropiado según la comodidad
+                             const getAmenityIcon = (amenityName: string) => {
+                               const lowerAmenity = amenityName.toLowerCase();
+                               if (lowerAmenity.includes('acceso') || lowerAmenity.includes('control')) return <Lock className="w-4 h-4 text-blue-600 dark:text-blue-400" />;
+                               if (lowerAmenity.includes('citófono') || lowerAmenity.includes('intercom')) return <PhoneCall className="w-4 h-4 text-blue-600 dark:text-blue-400" />;
+                               if (lowerAmenity.includes('gimnasio') || lowerAmenity.includes('gym')) return <Dumbbell className="w-4 h-4 text-green-600 dark:text-green-400" />;
+                               if (lowerAmenity.includes('bicicletero') || lowerAmenity.includes('bici')) return <Bike className="w-4 h-4 text-green-600 dark:text-green-400" />;
+                               if (lowerAmenity.includes('lavandería') || lowerAmenity.includes('lavadora')) return <WashingMachine className="w-4 h-4 text-blue-600 dark:text-blue-400" />;
+                               if (lowerAmenity.includes('internet') || lowerAmenity.includes('wifi')) return <Wifi className="w-4 h-4 text-purple-600 dark:text-purple-400" />;
+                               if (lowerAmenity.includes('quincho') || lowerAmenity.includes('bbq')) return <ChefHat className="w-4 h-4 text-orange-600 dark:text-orange-400" />;
+                               if (lowerAmenity.includes('gourmet') || lowerAmenity.includes('evento')) return <Users2 className="w-4 h-4 text-purple-600 dark:text-purple-400" />;
+                               if (lowerAmenity.includes('seguridad')) return <Eye className="w-4 h-4 text-red-600 dark:text-red-400" />;
+                               if (lowerAmenity.includes('terraza') || lowerAmenity.includes('panorámica')) return <Sun className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />;
+                               if (lowerAmenity.includes('lounge') || lowerAmenity.includes('salón')) return <Coffee className="w-4 h-4 text-brown-600 dark:text-brown-400" />;
+                               if (lowerAmenity.includes('transporte') || lowerAmenity.includes('cercano')) return <Bus className="w-4 h-4 text-green-600 dark:text-green-400" />;
+                               if (lowerAmenity.includes('conserjería') || lowerAmenity.includes('concierge')) return <Users className="w-4 h-4 text-blue-600 dark:text-blue-400" />;
+                               if (lowerAmenity.includes('ascensor') || lowerAmenity.includes('elevador')) return <ArrowUpDown className="w-4 h-4 text-gray-600 dark:text-gray-400" />;
+                               if (lowerAmenity.includes('comercio') || lowerAmenity.includes('tienda')) return <ShoppingBag className="w-4 h-4 text-orange-600 dark:text-orange-400" />;
+                               return <CheckCircle className="w-4 h-4 text-green-500" />;
+                             };
+
+                             return (
+                               <div
+                                 key={index}
+                                 className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+                               >
+                                 <div className="w-8 h-8 bg-white dark:bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0">
+                                   {getAmenityIcon(amenity)}
+                                 </div>
+                                 <span className="text-sm text-gray-900 dark:text-white font-medium">{amenity}</span>
+                               </div>
+                             );
+                           })}
+                         </div>
+                       </div>
+                     )}
 
                     {activeTab === 'requisitos' && (
                       <div className="space-y-8">
