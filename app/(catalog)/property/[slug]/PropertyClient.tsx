@@ -463,8 +463,8 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                     <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
                   </svg>
                   <div>
-                    <div className="text-lg font-bold text-gray-900 dark:text-white">35</div>
-                    <div className="text-xs text-gray-600 dark:text-gray-400">m² total</div>
+                    <div className="text-lg font-bold text-gray-900 dark:text-white">0</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">m² exterior</div>
                   </div>
                 </div>
 
@@ -523,18 +523,46 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                     <div className="text-xs text-gray-600 dark:text-gray-400">Opcional</div>
                   </div>
                 </div>
+
+                {/* Bodega */}
+                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <Package className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                  <div>
+                    <div className="text-sm font-medium text-gray-900 dark:text-white">Bodega</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">Opcional</div>
+                  </div>
+                </div>
+
+                {/* Habitantes */}
+                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <Users className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                  <div>
+                    <div className="text-sm font-medium text-gray-900 dark:text-white">Habitantes</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">2 Max</div>
+                  </div>
+                </div>
+
+                {/* Cerradura */}
+                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <Shield className="w-5 h-5 text-red-600 dark:text-red-400" />
+                  <div>
+                    <div className="text-sm font-medium text-gray-900 dark:text-white">Cerradura</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">Electrónica</div>
+                  </div>
+                </div>
               </div>
 
               {/* Metro cercano - Información de ubicación */}
               <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    {/* Ícono de tren con colores de línea 1 */}
+                    {/* Ícono de metro con imagen */}
                     <div className="relative">
-                      <svg className="w-6 h-6 text-gray-600 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
-                        <path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1l1-1h2l1 1h8l1-1h2l1 1h1a1 1 0 001-1V5a1 1 0 00-1-1H3zM6 7h8v3H6V7z" />
-                      </svg>
+                      <img 
+                        src="/images/metro/metro-icon.png" 
+                        alt="Metro Línea 1" 
+                        className="w-6 h-6"
+                      />
                       {/* Círculo rojo de línea 1 */}
                       <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
                         <span className="text-white text-xs font-bold">1</span>
@@ -688,22 +716,22 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                       </div>
                     )}
 
-                                         {activeTab === 'caracteristicas' && (
-                       <div>
-                         <h3 className="text-lg font-semibold mb-3">Comodidades del edificio {building.name}</h3>
-                         <div className="flex flex-wrap gap-3">
-                           {building.amenities.map((amenity, index) => (
-                             <div
-                               key={index}
-                               className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm bg-gray-50 dark:bg-gray-700 ring-1 ring-gray-200 dark:ring-gray-600 transition-colors hover:bg-gray-100 dark:hover:bg-gray-600"
-                             >
-                               <CheckCircle className="w-4 h-4 text-green-500" aria-hidden="true" />
-                               <span className="text-gray-900 dark:text-white">{amenity}</span>
-                             </div>
-                           ))}
-                         </div>
-                       </div>
-                     )}
+                    {activeTab === 'caracteristicas' && (
+                      <div>
+                        <h3 className="text-lg font-semibold mb-3">Comodidades del edificio {building.name}</h3>
+                        <div className="flex flex-wrap gap-3">
+                          {building.amenities.map((amenity, index) => (
+                            <div
+                              key={index}
+                              className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm bg-gray-50 dark:bg-gray-700 ring-1 ring-gray-200 dark:ring-gray-600 transition-colors hover:bg-gray-100 dark:hover:bg-gray-600"
+                            >
+                              <CheckCircle className="w-4 h-4 text-green-500" aria-hidden="true" />
+                              <span className="text-gray-900 dark:text-white">{amenity}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
 
                     {activeTab === 'requisitos' && (
                       <div className="space-y-6">
