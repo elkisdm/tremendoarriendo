@@ -227,17 +227,17 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
   const calculateMonth2Savings = () => {
     const promoDaysUsed = Math.min(30, firstPaymentCalculation.daysChargedCount);
     const promoDaysRemaining = Math.max(0, 30 - promoDaysUsed);
-    
+
     if (promoDaysRemaining === 0) return 0;
-    
+
     const dailyRent = originalPrice / 30;
     const dailyParking = includeParking ? 50000 / 30 : 0;
     const dailyStorage = includeStorage ? 30000 / 30 : 0;
-    
+
     const rentSavings = Math.round(dailyRent * promoDaysRemaining * 0.5);
     const parkingSavings = Math.round(dailyParking * promoDaysRemaining * 0.5);
     const storageSavings = Math.round(dailyStorage * promoDaysRemaining * 0.5);
-    
+
     return rentSavings + parkingSavings + storageSavings;
   };
 
@@ -436,10 +436,6 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                     <div className="flex items-center gap-1.5 p-1.5 bg-orange-500 text-white rounded-md border border-orange-400 shadow-md">
                       <Flame className="w-3 h-3" />
                       <span className="text-xs font-medium">50% OFF primer mes</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 p-1.5 bg-orange-500 text-white rounded-md border border-orange-400 shadow-md">
-                      <Shield className="w-3 h-3" />
-                      <span className="text-xs font-medium">Garantía en cuotas</span>
                     </div>
                     <div className="flex items-center gap-1.5 p-1.5 bg-orange-500 text-white rounded-md border border-orange-400 shadow-md">
                       <Calendar className="w-3 h-3" />
