@@ -528,11 +528,11 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
             transition={{ delay: 0.4 }}
           >
             <div className="max-w-7xl mx-auto">
-              <div className="grid lg:grid-cols-2 gap-8">
+              <div className="grid lg:grid-cols-2 gap-8 lg:items-start">
                 
                 {/* Columna Izquierda - Tipologías */}
                 {availableTypologies.length > 0 && (
-                  <div className="space-y-6">
+                  <div className="space-y-6 h-full flex flex-col">
                     {/* Header con icono y título */}
                     <div className="flex items-center gap-3 mb-6">
                       <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
@@ -546,7 +546,7 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
                       </div>
                     </div>
                     
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
                       {availableTypologies.map((typology, index) => {
                         const units = typologyGroups[typology];
                         const minPrice = Math.min(...units.map(u => u.precio));
@@ -626,7 +626,7 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
 
                 {/* Columna Derecha - Amenidades */}
                 {building.amenities && building.amenities.length > 0 && (
-                  <div className="space-y-6">
+                  <div className="space-y-6 h-full flex flex-col">
                     {/* Header con icono y título */}
                     <div className="flex items-center gap-3 mb-6">
                       <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center">
@@ -640,7 +640,7 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
                       </div>
                     </div>
                     
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
                       {building.amenities.map((amenity, index) => {
                         // Función para obtener el icono apropiado según la comodidad
                         const getAmenityIcon = (amenityName: string) => {
