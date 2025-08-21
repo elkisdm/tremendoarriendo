@@ -333,7 +333,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
           <div className="mb-8">
             <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Características principales</h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
                 {/* Dormitorios */}
                 <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                   <Bed className="w-5 h-5 text-blue-600 dark:text-blue-400" />
@@ -352,12 +352,23 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                   </div>
                 </div>
 
-                {/* Metros cuadrados */}
+                {/* Metros cuadrados interior */}
                 <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                   <Square className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                   <div>
                     <div className="text-lg font-bold text-gray-900 dark:text-white">29</div>
                     <div className="text-xs text-gray-600 dark:text-gray-400">m² interior</div>
+                  </div>
+                </div>
+
+                {/* Metros cuadrados exterior */}
+                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                  </svg>
+                  <div>
+                    <div className="text-lg font-bold text-gray-900 dark:text-white">35</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">m² total</div>
                   </div>
                 </div>
 
@@ -372,14 +383,37 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                   </div>
                 </div>
 
-                {/* Amoblado */}
+                {/* Orientación */}
+                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <svg className="w-5 h-5 text-yellow-600 dark:text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                  </svg>
+                  <div>
+                    <div className="text-sm font-medium text-gray-900 dark:text-white">Orientación</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">Norte</div>
+                  </div>
+                </div>
+
+                {/* Mascotas */}
+                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <svg className="w-5 h-5 text-purple-600 dark:text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                    <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                  </svg>
+                  <div>
+                    <div className="text-sm font-medium text-gray-900 dark:text-white">Mascotas</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">Permitidas</div>
+                  </div>
+                </div>
+
+                {/* Tipo de amoblado */}
                 <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                   <svg className="w-5 h-5 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
                   </svg>
                   <div>
                     <div className="text-sm font-medium text-gray-900 dark:text-white">Amoblado</div>
-                    <div className="text-xs text-gray-600 dark:text-gray-400">básico</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">Completo</div>
                   </div>
                 </div>
 
@@ -396,15 +430,35 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
               </div>
 
               {/* Metro cercano - Información de ubicación */}
-              <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                <div className="flex items-center gap-3">
-                  <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
-                  </svg>
-                  <div>
-                    <div className="text-sm font-medium text-blue-800 dark:text-blue-200">Metro Ecuador</div>
-                    <div className="text-xs text-blue-600 dark:text-blue-300">5 minutos, 450 metros</div>
+              <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    {/* Ícono de tren con colores de línea 1 */}
+                    <div className="relative">
+                      <svg className="w-6 h-6 text-gray-600 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
+                        <path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1l1-1h2l1 1h8l1-1h2l1 1h1a1 1 0 001-1V5a1 1 0 00-1-1H3zM6 7h8v3H6V7z" />
+                      </svg>
+                      {/* Círculo rojo de línea 1 */}
+                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+                        <span className="text-white text-xs font-bold">1</span>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-sm font-medium text-gray-900 dark:text-white">Metro Ecuador</div>
+                      <div className="text-xs text-gray-600 dark:text-gray-400">Línea 1 • 5 minutos, 450 metros</div>
+                    </div>
                   </div>
+                  {/* Botón ver en mapa */}
+                  <button
+                    className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500 transition-colors"
+                    aria-label="Ver ubicación en mapa"
+                  >
+                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                    </svg>
+                    Ver mapa
+                  </button>
                 </div>
               </div>
             </div>
