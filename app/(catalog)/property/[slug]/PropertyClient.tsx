@@ -172,24 +172,24 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
     // Calcular días con descuento (primeros 30 días desde la fecha de mudanza)
     const promoDays = Math.min(30, daysChargedCount);
     const regularDays = Math.max(0, daysChargedCount - 30);
-    
+
     // Calcular arriendo con descuento para los primeros 30 días
     const dailyRent = RENT / 30; // Arriendo diario
     const dailyParking = PARKING_RENT / 30; // Estacionamiento diario
     const dailyStorage = STORAGE_RENT / 30; // Bodega diaria
-    
+
     const promoRent = Math.round(dailyRent * promoDays * (1 - PROMO_RATE)); // 50% OFF
     const regularRent = Math.round(dailyRent * regularDays); // Precio normal
     const totalRent = promoRent + regularRent;
-    
+
     const promoParking = Math.round(dailyParking * promoDays * (1 - PROMO_RATE)); // 50% OFF
     const regularParking = Math.round(dailyParking * regularDays); // Precio normal
     const totalParking = promoParking + regularParking;
-    
+
     const promoStorage = Math.round(dailyStorage * promoDays * (1 - PROMO_RATE)); // 50% OFF
     const regularStorage = Math.round(dailyStorage * regularDays); // Precio normal
     const totalStorage = promoStorage + regularStorage;
-    
+
     const netRentStorage = totalRent + totalParking + totalStorage;
 
     const monthlyGC = GC_RENT + GC_STORAGE;
@@ -1300,6 +1300,40 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                         <span className="text-lg font-bold text-blue-600 dark:text-blue-400">
                           ${firstPaymentCalculation.totalFirstPayment.toLocaleString('es-CL')}
                         </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Sección de Ahorros */}
+                  <div className="mb-6">
+                    <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 border border-green-200 dark:border-green-800">
+                      <h4 className="text-sm font-semibold text-green-800 dark:text-green-200 mb-3 flex items-center gap-2">
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clipRule="evenodd" />
+                        </svg>
+                        ¡Te estás ahorrando!
+                      </h4>
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-green-700 dark:text-green-300">50% OFF primer mes:</span>
+                          <span className="text-sm font-semibold text-green-800 dark:text-green-200">
+                            ${Math.round((originalPrice / 30) * firstPaymentCalculation.promoDays * 0.5 + (includeParking ? (50000 / 30) * firstPaymentCalculation.promoDays * 0.5 : 0) + (includeStorage ? (30000 / 30) * firstPaymentCalculation.promoDays * 0.5 : 0)).toLocaleString('es-CL')}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-green-700 dark:text-green-300">Comisión corretaje gratis:</span>
+                          <span className="text-sm font-semibold text-green-800 dark:text-green-200">
+                            ${Math.round((originalPrice * 0.5) * 1.19).toLocaleString('es-CL')}
+                          </span>
+                        </div>
+                        <div className="border-t border-green-300 dark:border-green-700 pt-2 mt-2">
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm font-semibold text-green-800 dark:text-green-200">Total ahorrado:</span>
+                            <span className="text-base font-bold text-green-900 dark:text-green-100">
+                              ${(Math.round((originalPrice / 30) * firstPaymentCalculation.promoDays * 0.5 + (includeParking ? (50000 / 30) * firstPaymentCalculation.promoDays * 0.5 : 0) + (includeStorage ? (30000 / 30) * firstPaymentCalculation.promoDays * 0.5 : 0)) + Math.round((originalPrice * 0.5) * 1.19)).toLocaleString('es-CL')}
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
