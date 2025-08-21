@@ -560,14 +560,12 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                         alt="Metro Línea 1"
                         className="w-8 h-8"
                       />
-                      {/* Círculo rojo de línea 1 */}
-                      <div className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center shadow-sm">
-                        <span className="text-white text-sm font-bold">1</span>
-                      </div>
                     </div>
                     <div>
                       <div className="text-sm font-medium text-gray-900 dark:text-white">Metro Ecuador</div>
-                      <div className="text-xs text-gray-600 dark:text-gray-400">Línea 1 • 5 minutos, 450 metros</div>
+                      <div className="text-xs text-gray-600 dark:text-gray-400">
+                        <span className="text-red-500 font-semibold">Línea 1</span> • 5 minutos, 450 metros
+                      </div>
                     </div>
                   </div>
                   {/* Botón ver en mapa */}
