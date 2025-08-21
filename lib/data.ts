@@ -1,4 +1,4 @@
-import { BookingRequestSchema, BuildingSchema } from "@schemas/models";
+import { BookingRequestSchema, BuildingSchema, PromotionType } from "@schemas/models";
 import type { BookingRequest, Building, Unit } from "@schemas/models";
 import { fromAssetPlan } from "@lib/adapters/assetplan";
 
@@ -549,27 +549,27 @@ const HOME_AMENGUAL_WITH_UNIT_207: Building = {
   ],
   badges: [
     {
-      type: "FREE_COMMISSION",
+      type: PromotionType.FREE_COMMISSION,
       label: "Comisión gratis",
       tag: "Exclusivo"
     },
     {
-      type: "NO_AVAL",
+      type: PromotionType.NO_AVAL,
       label: "Garantía en cuotas",
       tag: "Flexible"
     },
     {
-      type: "NO_GUARANTEE",
+      type: PromotionType.NO_GUARANTEE,
       label: "Precio fijo 12 meses",
       tag: "Estable"
     },
     {
-      type: "FREE_COMMISSION",
+      type: PromotionType.FREE_COMMISSION,
       label: "50% OFF",
       tag: "Primer mes"
     },
     {
-      type: "NO_AVAL",
+      type: PromotionType.NO_AVAL,
       label: "Opción sin aval",
       tag: "Sin aval"
     }
@@ -577,114 +577,104 @@ const HOME_AMENGUAL_WITH_UNIT_207: Building = {
   units: [
     {
       id: "207",
-      tipologia: "1 dormitorio",
+      tipologia: "1D1B",
       m2: 45,
       price: 290000, // Precio original
       disponible: true,
       petFriendly: true,
-      estacionamiento: 1,
-      bodega: 0,
-      floor: 2,
-      orientacion: "Sur",
-      gastosComunes: 62000,
+      estacionamiento: true,
+      bodega: false,
+      piso: 2,
+      orientacion: "S",
       parkingOptions: ["Estacionamiento incluido"],
       storageOptions: []
     },
     {
       id: "301",
-      tipologia: "1 dormitorio",
+      tipologia: "1D1B",
       m2: 48,
       price: 360000,
       disponible: true,
       petFriendly: false,
-      estacionamiento: 1,
-      bodega: 0,
-      floor: 3,
-      orientacion: "Norte",
-      gastosComunes: 65000,
+      estacionamiento: true,
+      bodega: false,
+      piso: 3,
+      orientacion: "N",
       parkingOptions: ["Estacionamiento incluido"],
       storageOptions: []
     },
     {
       id: "302",
-      tipologia: "1 dormitorio",
+      tipologia: "1D1B",
       m2: 46,
       price: 350000,
       disponible: true,
       petFriendly: true,
-      estacionamiento: 1,
-      bodega: 0,
-      floor: 3,
-      orientacion: "Oeste",
-      gastosComunes: 64000,
+      estacionamiento: true,
+      bodega: false,
+      piso: 3,
+      orientacion: "O",
       parkingOptions: ["Estacionamiento incluido"],
       storageOptions: []
     },
     {
       id: "401",
-      tipologia: "2 dormitorios",
+      tipologia: "2D1B",
       m2: 65,
       price: 450000,
       disponible: true,
       petFriendly: true,
-      estacionamiento: 1,
-      bodega: 0,
-      floor: 4,
-      orientacion: "Este",
-      gastosComunes: 85000,
+      estacionamiento: true,
+      bodega: false,
+      piso: 4,
+      orientacion: "E",
       parkingOptions: ["Estacionamiento incluido"],
       storageOptions: []
     },
     {
       id: "402",
-      tipologia: "2 dormitorios",
+      tipologia: "2D1B",
       m2: 68,
       price: 470000,
       disponible: true,
       petFriendly: true,
-      estacionamiento: 1,
-      bodega: 1,
-      floor: 4,
-      orientacion: "Norte",
-      gastosComunes: 87000,
+      estacionamiento: true,
+      bodega: true,
+      piso: 4,
+      orientacion: "N",
       parkingOptions: ["Estacionamiento incluido"],
       storageOptions: ["Bodega incluida"]
     },
     {
       id: "501",
-      tipologia: "4 dormitorios",
+      tipologia: "3D2B",
       m2: 85,
       price: 650000,
       disponible: true,
       petFriendly: true,
-      estacionamiento: 2,
-      bodega: 1,
-      floor: 5,
-      orientacion: "Norte",
-      gastosComunes: 95000,
+      estacionamiento: true,
+      bodega: true,
+      piso: 5,
+      orientacion: "N",
       parkingOptions: ["Estacionamiento incluido", "Estacionamiento adicional"],
       storageOptions: ["Bodega incluida"]
     },
     {
       id: "502",
-      tipologia: "4 dormitorios",
+      tipologia: "3D2B",
       m2: 90,
       price: 680000,
       disponible: true,
       petFriendly: true,
-      estacionamiento: 2,
-      bodega: 1,
-      floor: 5,
-      orientacion: "Este",
-      gastosComunes: 98000,
+      estacionamiento: true,
+      bodega: true,
+      piso: 5,
+      orientacion: "E",
       parkingOptions: ["Estacionamiento incluido", "Estacionamiento adicional"],
       storageOptions: ["Bodega incluida"]
     }
   ],
-  precioDesde: 290000,
-  precioHasta: 650000,
-  precioPromedio: 437500,
-  hasAvailability: true,
-  totalUnidades: 4,
-  unidadesDisponibles: 4
+  precio_desde: 290000,
+  precio_hasta: 650000,
+  hasAvailability: true
 };

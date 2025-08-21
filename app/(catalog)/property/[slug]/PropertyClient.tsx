@@ -127,67 +127,151 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Variantes de animación para badges escalonados
+  // Variantes de animación para badges escalonados - MEJORADAS
   const badgeVariants = {
-    hidden: { opacity: 0, y: -20, scale: 0.8 },
+    hidden: { opacity: 0, y: -20, scale: 0.8, rotateX: -15 },
     visible: (i: number) => ({
       opacity: 1,
       y: 0,
       scale: 1,
+      rotateX: 0,
       transition: {
-        delay: i * 0.1,
-        duration: 0.6,
-        ease: [0.25, 0.46, 0.45, 0.94]
+        delay: i * 0.08,
+        duration: 0.5,
+        ease: [0.25, 0.46, 0.45, 0.94],
+        type: "spring",
+        stiffness: 100
       }
-    })
+    }),
+    hover: {
+      scale: 1.05,
+      y: -2,
+      transition: {
+        duration: 0.2,
+        ease: "easeOut"
+      }
+    }
   };
 
-  // Variantes para sticky top
+  // Variantes para sticky top - MEJORADAS
   const stickyVariants = {
     hidden: {
       opacity: 0,
-      y: -20,
-      scale: 0.95,
-      filter: "blur(10px)"
+      y: -30,
+      scale: 0.9,
+      filter: "blur(8px)",
+      rotateX: -10
     },
     visible: {
       opacity: 1,
       y: 0,
       scale: 1,
       filter: "blur(0px)",
+      rotateX: 0,
       transition: {
-        duration: 0.5,
-        ease: "easeOut"
+        duration: 0.4,
+        ease: [0.25, 0.46, 0.45, 0.94],
+        type: "spring",
+        stiffness: 120
+      }
+    },
+    exit: {
+      opacity: 0,
+      y: -20,
+      scale: 0.95,
+      transition: {
+        duration: 0.3,
+        ease: "easeIn"
       }
     }
   };
 
-  // Variantes para CTAs premium
+  // Variantes para CTAs premium - MEJORADAS
   const ctaVariants = {
     hover: {
-      scale: 1.05,
-      boxShadow: "0 20px 25px -5px rgba(59, 130, 246, 0.3)",
+      scale: 1.03,
+      y: -2,
+      boxShadow: "0 20px 25px -5px rgba(59, 130, 246, 0.25), 0 10px 10px -5px rgba(0, 0, 0, 0.1)",
       transition: {
         duration: 0.3,
-        ease: "easeOut"
+        ease: [0.25, 0.46, 0.45, 0.94]
       }
     },
     tap: {
-      scale: 0.95,
+      scale: 0.97,
+      y: 0,
       transition: {
-        duration: 0.1
+        duration: 0.1,
+        ease: "easeOut"
       }
     }
   };
 
-  // Variantes para scroll animations
+  // Variantes para scroll animations - MEJORADAS
   const scrollVariants = {
-    hidden: { opacity: 0, y: 50 },
+    hidden: {
+      opacity: 0,
+      y: 60,
+      scale: 0.95
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.7,
+        ease: [0.25, 0.46, 0.45, 0.94],
+        type: "spring",
+        stiffness: 80
+      }
+    }
+  };
+
+  // NUEVAS VARIANTES PARA MEJORAR LA EXPERIENCIA
+  // Variantes para hero section
+  const heroVariants = {
+    hidden: { opacity: 0, y: 30 },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
         duration: 0.8,
+        ease: [0.25, 0.46, 0.45, 0.94],
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  // Variantes para elementos de hero
+  const heroItemVariants = {
+    hidden: { opacity: 0, x: -20 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: {
+        duration: 0.6,
+        ease: [0.25, 0.46, 0.45, 0.94]
+      }
+    }
+  };
+
+  // Variantes para características principales
+  const featureVariants = {
+    hidden: { opacity: 0, scale: 0.9 },
+    visible: (i: number) => ({
+      opacity: 1,
+      scale: 1,
+      transition: {
+        delay: i * 0.05,
+        duration: 0.5,
+        ease: [0.25, 0.46, 0.45, 0.94]
+      }
+    }),
+    hover: {
+      scale: 1.02,
+      y: -2,
+      transition: {
+        duration: 0.2,
         ease: "easeOut"
       }
     }
@@ -534,7 +618,8 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                         variants={badgeVariants}
                         initial="hidden"
                         animate="visible"
-                        className="flex items-center gap-1.5 p-1.5 bg-orange-500 text-white rounded-md border border-orange-400 shadow-md"
+                        whileHover="hover"
+                        className="flex items-center gap-1.5 p-1.5 bg-orange-500 text-white rounded-md border border-orange-400 shadow-md cursor-pointer hover:bg-orange-600 transition-colors"
                       >
                         <badge.icon className="w-3 h-3" />
                         <span className="text-xs font-medium">{badge.label}</span>
@@ -605,7 +690,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
           </div>
 
           {/* CARACTERÍSTICAS PRINCIPALES - ANCHURA COMPLETA - ANIMADA */}
-          <motion.div 
+          <motion.div
             className="mb-8"
             variants={scrollVariants}
             initial="hidden"
@@ -616,103 +701,158 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Características principales</h3>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
                 {/* Dormitorios */}
-                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <motion.div
+                  className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
+                  variants={featureVariants}
+                  custom={0}
+                  whileHover="hover"
+                >
                   <Bed className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                   <div>
                     <div className="text-lg font-bold text-gray-900 dark:text-white">1</div>
                     <div className="text-xs text-gray-600 dark:text-gray-400">Dormitorio</div>
                   </div>
-                </div>
+                </motion.div>
 
                 {/* Baños */}
-                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <motion.div
+                  className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
+                  variants={featureVariants}
+                  custom={1}
+                  whileHover="hover"
+                >
                   <Bath className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                   <div>
                     <div className="text-lg font-bold text-gray-900 dark:text-white">1</div>
                     <div className="text-xs text-gray-600 dark:text-gray-400">Baño</div>
                   </div>
-                </div>
+                </motion.div>
 
                 {/* Metros cuadrados interior */}
-                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <motion.div
+                  className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
+                  variants={featureVariants}
+                  custom={2}
+                  whileHover="hover"
+                >
                   <Square className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                   <div>
                     <div className="text-lg font-bold text-gray-900 dark:text-white">29</div>
                     <div className="text-xs text-gray-600 dark:text-gray-400">m² interior</div>
                   </div>
-                </div>
+                </motion.div>
 
                 {/* Metros cuadrados exterior */}
-                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <motion.div
+                  className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
+                  variants={featureVariants}
+                  custom={3}
+                  whileHover="hover"
+                >
                   <Layers className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                   <div>
                     <div className="text-lg font-bold text-gray-900 dark:text-white">0</div>
                     <div className="text-xs text-gray-600 dark:text-gray-400">m² exterior</div>
                   </div>
-                </div>
+                </motion.div>
 
                 {/* Piso */}
-                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <motion.div
+                  className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
+                  variants={featureVariants}
+                  custom={4}
+                  whileHover="hover"
+                >
                   <Building2 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                   <div>
                     <div className="text-lg font-bold text-gray-900 dark:text-white">2</div>
                     <div className="text-xs text-gray-600 dark:text-gray-400">Piso</div>
                   </div>
-                </div>
+                </motion.div>
 
                 {/* Orientación */}
-                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <motion.div
+                  className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
+                  variants={featureVariants}
+                  custom={5}
+                  whileHover="hover"
+                >
                   <Compass className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
                   <div>
                     <div className="text-sm font-medium text-gray-900 dark:text-white">Orientación</div>
                     <div className="text-xs text-gray-600 dark:text-gray-400">Norte</div>
                   </div>
-                </div>
+                </motion.div>
 
                 {/* Mascotas */}
-                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <motion.div
+                  className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
+                  variants={featureVariants}
+                  custom={6}
+                  whileHover="hover"
+                >
                   <PawPrint className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                   <div>
                     <div className="text-sm font-medium text-gray-900 dark:text-white">Mascotas</div>
                     <div className="text-xs text-gray-600 dark:text-gray-400">Permitidas</div>
                   </div>
-                </div>
+                </motion.div>
 
                 {/* Tipo de amoblado */}
-                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <motion.div
+                  className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
+                  variants={featureVariants}
+                  custom={7}
+                  whileHover="hover"
+                >
                   <Refrigerator className="w-5 h-5 text-green-600 dark:text-green-400" />
                   <div>
                     <div className="text-sm font-medium text-gray-900 dark:text-white">Amoblado</div>
                     <div className="text-xs text-gray-600 dark:text-gray-400">Básico</div>
                   </div>
-                </div>
+                </motion.div>
 
                 {/* Estacionamiento */}
-                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <motion.div
+                  className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
+                  variants={featureVariants}
+                  custom={8}
+                  whileHover="hover"
+                >
                   <Car className="w-5 h-5 text-orange-600 dark:text-orange-400" />
                   <div>
                     <div className="text-sm font-medium text-gray-900 dark:text-white">Estacionamiento</div>
                     <div className="text-xs text-gray-600 dark:text-gray-400">No disponible</div>
                   </div>
-                </div>
+                </motion.div>
 
                 {/* Bodega */}
-                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <motion.div
+                  className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
+                  variants={featureVariants}
+                  custom={9}
+                  whileHover="hover"
+                >
                   <Package className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                   <div>
                     <div className="text-sm font-medium text-gray-900 dark:text-white">Bodega</div>
                     <div className="text-xs text-gray-600 dark:text-gray-400">Desde $30.000</div>
                   </div>
-                </div>
+                </motion.div>
 
                 {/* Habitantes */}
-                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <motion.div
+                  className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
+                  variants={featureVariants}
+                  custom={10}
+                  whileHover="hover"
+                >
                   <Users className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                   <div>
                     <div className="text-sm font-medium text-gray-900 dark:text-white">Habitantes</div>
                     <div className="text-xs text-gray-600 dark:text-gray-400">2 Max</div>
                   </div>
-                </div>
+                </motion.div>
 
                 {/* Cerradura */}
                 <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
@@ -756,7 +896,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                 variants={stickyVariants}
                 initial="hidden"
                 animate="visible"
-                exit="hidden"
+                exit="exit"
               >
                 <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-white/20 dark:border-gray-700/50 max-w-sm">
                   {/* Información básica del departamento */}
