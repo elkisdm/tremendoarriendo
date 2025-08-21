@@ -225,19 +225,23 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
 
   // Función para calcular ahorros del mes 2 (días restantes del descuento)
   const calculateMonth2Savings = () => {
-    const promoDaysUsed = Math.min(30, firstPaymentCalculation.daysChargedCount);
-    const promoDaysRemaining = Math.max(0, 30 - promoDaysUsed);
-
+    // Calcular cuántos días del mes 1 se usaron
+    const daysInFirstMonth = new Date(moveInDate.getFullYear(), moveInDate.getMonth() + 1, 0).getDate();
+    const daysUsedInFirstMonth = daysInFirstMonth - moveInDate.getDate() + 1;
+    
+    // Los días restantes del descuento son los que faltan para completar 30 días
+    const promoDaysRemaining = Math.max(0, 30 - daysUsedInFirstMonth);
+    
     if (promoDaysRemaining === 0) return 0;
-
+    
     const dailyRent = originalPrice / 30;
     const dailyParking = includeParking ? 50000 / 30 : 0;
     const dailyStorage = includeStorage ? 30000 / 30 : 0;
-
+    
     const rentSavings = Math.round(dailyRent * promoDaysRemaining * 0.5);
     const parkingSavings = Math.round(dailyParking * promoDaysRemaining * 0.5);
     const storageSavings = Math.round(dailyStorage * promoDaysRemaining * 0.5);
-
+    
     return rentSavings + parkingSavings + storageSavings;
   };
 
