@@ -127,6 +127,72 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Variantes de animación para badges escalonados
+  const badgeVariants = {
+    hidden: { opacity: 0, y: -20, scale: 0.8 },
+    visible: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        delay: i * 0.1,
+        duration: 0.6,
+        ease: [0.25, 0.46, 0.45, 0.94]
+      }
+    })
+  };
+
+  // Variantes para sticky top
+  const stickyVariants = {
+    hidden: {
+      opacity: 0,
+      y: -20,
+      scale: 0.95,
+      filter: "blur(10px)"
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      filter: "blur(0px)",
+      transition: {
+        duration: 0.5,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  // Variantes para CTAs premium
+  const ctaVariants = {
+    hover: {
+      scale: 1.05,
+      boxShadow: "0 20px 25px -5px rgba(59, 130, 246, 0.3)",
+      transition: {
+        duration: 0.3,
+        ease: "easeOut"
+      }
+    },
+    tap: {
+      scale: 0.95,
+      transition: {
+        duration: 0.1
+      }
+    }
+  };
+
+  // Variantes para scroll animations
+  const scrollVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.8,
+        ease: "easeOut"
+      }
+    }
+  };
+
   const handleUnitChange = (unit: Unit) => {
     setSelectedUnit(unit);
   };
@@ -453,48 +519,59 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                   </div>
                 </div>
 
-                {/* BADGES DE PROMOCIÓN INTEGRADOS - ESTILO SOBRIO */}
+                {/* BADGES DE PROMOCIÓN INTEGRADOS - ANIMADOS */}
                 <div>
                   <h3 className="text-xs font-semibold text-gray-900 dark:text-white mb-2">Promociones actuales</h3>
                   <div className="grid grid-cols-2 gap-1.5">
-                    <div className="flex items-center gap-1.5 p-1.5 bg-orange-500 text-white rounded-md border border-orange-400 shadow-md">
-                      <Flame className="w-3 h-3" />
-                      <span className="text-xs font-medium">50% OFF primer mes</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 p-1.5 bg-orange-500 text-white rounded-md border border-orange-400 shadow-md">
-                      <Calendar className="w-3 h-3" />
-                      <span className="text-xs font-medium">Precio fijo 12 meses</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 p-1.5 bg-orange-500 text-white rounded-md border border-orange-400 shadow-md">
-                      <CheckCircle className="w-3 h-3" />
-                      <span className="text-xs font-medium">Opción sin aval</span>
-                    </div>
+                    {[
+                      { icon: Flame, label: "50% OFF primer mes" },
+                      { icon: Calendar, label: "Precio fijo 12 meses" },
+                      { icon: CheckCircle, label: "Opción sin aval" }
+                    ].map((badge, i) => (
+                      <motion.div
+                        key={badge.label}
+                        custom={i}
+                        variants={badgeVariants}
+                        initial="hidden"
+                        animate="visible"
+                        className="flex items-center gap-1.5 p-1.5 bg-orange-500 text-white rounded-md border border-orange-400 shadow-md"
+                      >
+                        <badge.icon className="w-3 h-3" />
+                        <span className="text-xs font-medium">{badge.label}</span>
+                      </motion.div>
+                    ))}
                   </div>
                 </div>
 
-                {/* CTAS INTEGRADOS */}
+                {/* CTAS INTEGRADOS - ANIMADOS */}
                 <div className="space-y-2">
-                  <button
+                  <motion.button
                     onClick={handleBookingClick}
-                    className="w-full inline-flex items-center justify-center px-3 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500 transition-colors min-h-[40px]"
+                    variants={ctaVariants}
+                    whileHover="hover"
+                    whileTap="tap"
+                    className="w-full inline-flex items-center justify-center px-3 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500 transition-colors min-h-[40px]"
                     aria-label="Agendar visita a la propiedad"
                   >
                     <Phone className="w-4 h-4 mr-2" />
                     Agendar visita
-                  </button>
+                  </motion.button>
 
                   {whatsappUrl && (
-                    <a
+                    <motion.a
                       href={whatsappUrl}
                       onClick={handleWhatsAppClick}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full inline-flex items-center justify-center px-3 py-2.5 bg-green-600 text-white text-sm font-semibold rounded-lg hover:bg-green-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500 transition-colors min-h-[40px]"
+                      variants={ctaVariants}
+                      whileHover="hover"
+                      whileTap="tap"
+                      className="w-full inline-flex items-center justify-center px-3 py-2.5 bg-green-600 text-white text-sm font-semibold rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500 transition-colors min-h-[40px]"
                       aria-label="Contactar por WhatsApp sobre esta propiedad"
                     >
                       <MessageCircle className="w-4 h-4 mr-2" />
                       Hablar por WhatsApp
-                    </a>
+                    </motion.a>
                   )}
                 </div>
               </div>
@@ -527,8 +604,14 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
             </div>
           </div>
 
-          {/* CARACTERÍSTICAS PRINCIPALES - ANCHURA COMPLETA */}
-          <div className="mb-8">
+          {/* CARACTERÍSTICAS PRINCIPALES - ANCHURA COMPLETA - ANIMADA */}
+          <motion.div 
+            className="mb-8"
+            variants={scrollVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+          >
             <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Características principales</h3>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
@@ -663,66 +746,79 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          {/* STICKY TOP MINIMALISTA - APARECE DESPUÉS DE CARACTERÍSTICAS */}
-          <div
-            className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 ease-in-out ${showStickyCTA ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-              }`}
-          >
-            <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-white/20 dark:border-gray-700/50 max-w-sm">
-              {/* Información básica del departamento */}
-              <div className="mb-4 pb-3 border-b border-gray-200/50 dark:border-gray-600/50">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
-                    <Home className="w-5 h-5 text-white" />
+          {/* STICKY TOP MINIMALISTA - ANIMADO */}
+          <AnimatePresence>
+            {showStickyCTA && (
+              <motion.div
+                className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50"
+                variants={stickyVariants}
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+              >
+                <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-white/20 dark:border-gray-700/50 max-w-sm">
+                  {/* Información básica del departamento */}
+                  <div className="mb-4 pb-3 border-b border-gray-200/50 dark:border-gray-600/50">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                        <Home className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-semibold text-gray-900 dark:text-white">
+                          {building.name}
+                        </h4>
+                        <p className="text-xs text-gray-600 dark:text-gray-400">
+                          Depto {selectedUnit?.id || '207'} • {building.comuna}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-gray-600 dark:text-gray-400">
+                        {originalPrice.toLocaleString('es-CL')} CLP
+                      </span>
+                      <span className="text-orange-600 dark:text-orange-400 font-medium">
+                        50% OFF primer mes
+                      </span>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="text-sm font-semibold text-gray-900 dark:text-white">
-                      {building.name}
-                    </h4>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">
-                      Depto {selectedUnit?.id || '207'} • {building.comuna}
-                    </p>
+
+                  {/* CTAs apilados - ANIMADOS */}
+                  <div className="space-y-2">
+                    <motion.button
+                      onClick={handleBookingClick}
+                      variants={ctaVariants}
+                      whileHover="hover"
+                      whileTap="tap"
+                      className="w-full inline-flex items-center justify-center px-4 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm font-medium rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-sm"
+                      aria-label="Agendar visita a la propiedad"
+                    >
+                      <Phone className="w-4 h-4 mr-2" />
+                      Agendar visita
+                    </motion.button>
+
+                    {whatsappUrl && (
+                      <motion.a
+                        href={whatsappUrl}
+                        onClick={handleWhatsAppClick}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        variants={ctaVariants}
+                        whileHover="hover"
+                        whileTap="tap"
+                        className="w-full inline-flex items-center justify-center px-4 py-2.5 bg-gradient-to-r from-green-600 to-green-700 text-white text-sm font-medium rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200 shadow-sm"
+                        aria-label="Contactar por WhatsApp sobre esta propiedad"
+                      >
+                        <MessageCircle className="w-4 h-4 mr-2" />
+                        Hablar por WhatsApp
+                      </motion.a>
+                    )}
                   </div>
                 </div>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-600 dark:text-gray-400">
-                    {originalPrice.toLocaleString('es-CL')} CLP
-                  </span>
-                  <span className="text-orange-600 dark:text-orange-400 font-medium">
-                    50% OFF primer mes
-                  </span>
-                </div>
-              </div>
-
-              {/* CTAs apilados */}
-              <div className="space-y-2">
-                <button
-                  onClick={handleBookingClick}
-                  className="w-full inline-flex items-center justify-center px-4 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm font-medium rounded-xl hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-sm"
-                  aria-label="Agendar visita a la propiedad"
-                >
-                  <Phone className="w-4 h-4 mr-2" />
-                  Agendar visita
-                </button>
-
-                {whatsappUrl && (
-                  <a
-                    href={whatsappUrl}
-                    onClick={handleWhatsAppClick}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full inline-flex items-center justify-center px-4 py-2.5 bg-gradient-to-r from-green-600 to-green-700 text-white text-sm font-medium rounded-xl hover:from-green-700 hover:to-green-800 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200 shadow-sm"
-                    aria-label="Contactar por WhatsApp sobre esta propiedad"
-                  >
-                    <MessageCircle className="w-4 h-4 mr-2" />
-                    Hablar por WhatsApp
-                  </a>
-                )}
-              </div>
-            </div>
-          </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* PASO 5: LAYOUT PRINCIPAL OPTIMIZADO - 2 COLUMNAS IGUALES */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -1401,121 +1497,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                     </div>
                   </div>
 
-                  {/* Proyección meses 2 y 3 */}
-                  <div className="mb-6">
-                    <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Proyección próximos meses</h4>
-                    <div className="space-y-3">
-                      {/* Mes 2 */}
-                      <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="text-sm font-medium text-gray-900 dark:text-white">
-                            Mes 2 {month2Savings > 0 ? '(con días restantes 50% OFF)' : '(Precio normal)'}:
-                          </span>
-                          <div className="text-right">
-                            <div className="text-sm text-gray-600 dark:text-gray-400">
-                              {new Date(moveInDate.getFullYear(), moveInDate.getMonth() + 1, 1).toLocaleDateString('es-CL', { month: 'long', year: 'numeric' })}
-                            </div>
-                            <div className="text-xs text-red-600 dark:text-red-400 font-medium">
-                              Pago máximo: 5 de {new Date(moveInDate.getFullYear(), moveInDate.getMonth() + 1, 1).toLocaleDateString('es-CL', { month: 'long' })}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="space-y-1">
-                          <div className="flex justify-between items-center">
-                            <span className="text-xs text-gray-600 dark:text-gray-400">Arriendo:</span>
-                            <span className="text-xs font-medium text-gray-900 dark:text-white">${originalPrice.toLocaleString('es-CL')}</span>
-                          </div>
-                          {includeParking && (
-                            <div className="flex justify-between items-center">
-                              <span className="text-xs text-gray-600 dark:text-gray-400">Estacionamiento:</span>
-                              <span className="text-xs font-medium text-orange-600 dark:text-orange-400">$50.000</span>
-                            </div>
-                          )}
-                          {includeStorage && (
-                            <div className="flex justify-between items-center">
-                              <span className="text-xs text-gray-600 dark:text-gray-400">Bodega:</span>
-                              <span className="text-xs font-medium text-purple-600 dark:text-purple-400">$30.000</span>
-                            </div>
-                          )}
-                          <div className="flex justify-between items-center">
-                            <span className="text-xs text-gray-600 dark:text-gray-400">Gastos comunes:</span>
-                            <span className="text-xs font-medium text-gray-900 dark:text-white">${Math.round(originalPrice * 0.21).toLocaleString('es-CL')}</span>
-                          </div>
-                          {guaranteeInInstallments && (
-                            <div className="flex justify-between items-center">
-                              <span className="text-xs text-gray-600 dark:text-gray-400">Garantía (cuota 2):</span>
-                              <span className="text-xs font-medium text-blue-600 dark:text-blue-400">${Math.round(originalPrice * 0.22).toLocaleString('es-CL')}</span>
-                            </div>
-                          )}
-                          {month2Savings > 0 && (
-                            <div className="flex justify-between items-center">
-                              <span className="text-xs text-orange-600 dark:text-orange-400 font-medium">50% OFF días restantes:</span>
-                              <span className="text-xs font-semibold text-orange-600 dark:text-orange-400">-${month2Savings.toLocaleString('es-CL')}</span>
-                            </div>
-                          )}
-                          <div className="border-t border-gray-200 dark:border-gray-600 pt-1 mt-1">
-                            <div className="flex justify-between items-center">
-                              <span className="text-xs font-semibold text-gray-900 dark:text-white">Total mes 2:</span>
-                              <span className="text-sm font-bold text-gray-900 dark:text-white">
-                                ${(originalPrice + (includeParking ? 50000 : 0) + (includeStorage ? 30000 : 0) + Math.round(originalPrice * 0.21) + (guaranteeInInstallments ? Math.round(originalPrice * 0.22) : 0) - month2Savings).toLocaleString('es-CL')}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
 
-                      {/* Mes 3 */}
-                      <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="text-sm font-medium text-gray-900 dark:text-white">Mes 3 (Precio normal):</span>
-                          <div className="text-right">
-                            <div className="text-sm text-gray-600 dark:text-gray-400">
-                              {new Date(moveInDate.getFullYear(), moveInDate.getMonth() + 2, 1).toLocaleDateString('es-CL', { month: 'long', year: 'numeric' })}
-                            </div>
-                            <div className="text-xs text-red-600 dark:text-red-400 font-medium">
-                              Pago máximo: 5 de {new Date(moveInDate.getFullYear(), moveInDate.getMonth() + 2, 1).toLocaleDateString('es-CL', { month: 'long' })}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="space-y-1">
-                          <div className="flex justify-between items-center">
-                            <span className="text-xs text-gray-600 dark:text-gray-400">Arriendo:</span>
-                            <span className="text-xs font-medium text-gray-900 dark:text-white">${originalPrice.toLocaleString('es-CL')}</span>
-                          </div>
-                          {includeParking && (
-                            <div className="flex justify-between items-center">
-                              <span className="text-xs text-gray-600 dark:text-gray-400">Estacionamiento:</span>
-                              <span className="text-xs font-medium text-orange-600 dark:text-orange-400">$50.000</span>
-                            </div>
-                          )}
-                          {includeStorage && (
-                            <div className="flex justify-between items-center">
-                              <span className="text-xs text-gray-600 dark:text-gray-400">Bodega:</span>
-                              <span className="text-xs font-medium text-purple-600 dark:text-purple-400">$30.000</span>
-                            </div>
-                          )}
-                          <div className="flex justify-between items-center">
-                            <span className="text-xs text-gray-600 dark:text-gray-400">Gastos comunes:</span>
-                            <span className="text-xs font-medium text-gray-900 dark:text-white">${Math.round(originalPrice * 0.21).toLocaleString('es-CL')}</span>
-                          </div>
-                          {guaranteeInInstallments && (
-                            <div className="flex justify-between items-center">
-                              <span className="text-xs text-gray-600 dark:text-gray-400">Garantía (cuota 3):</span>
-                              <span className="text-xs font-medium text-blue-600 dark:text-blue-400">${Math.round(originalPrice * 0.22).toLocaleString('es-CL')}</span>
-                            </div>
-                          )}
-                          <div className="border-t border-gray-200 dark:border-gray-600 pt-1 mt-1">
-                            <div className="flex justify-between items-center">
-                              <span className="text-xs font-semibold text-gray-900 dark:text-white">Total mes 3:</span>
-                              <span className="text-sm font-bold text-gray-900 dark:text-white">
-                                ${(originalPrice + (includeParking ? 50000 : 0) + (includeStorage ? 30000 : 0) + Math.round(originalPrice * 0.21) + (guaranteeInInstallments ? Math.round(originalPrice * 0.22) : 0)).toLocaleString('es-CL')}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
 
                   {/* Botón enviar cotización */}
                   <button
