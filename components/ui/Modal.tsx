@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, RefObject } from 'react';
+import { useEffect, useRef, RefObject, forwardRef } from 'react';
 import { createPortal } from 'react-dom';
 
 let Motion: typeof import('framer-motion') | null = null;
@@ -24,17 +24,29 @@ interface ModalProps {
   initialFocusRef?: RefObject<HTMLElement>;
 }
 
-export function Modal({ 
-  open, 
-  onClose, 
-  title, 
-  description, 
-  children, 
-  initialFocusRef 
-}: ModalProps) {
+export const Modal = forwardRef<HTMLDivElement, ModalProps>(({
+  open,
+  onClose,
+  title,
+  description,
+  children,
+  initialFocusRef
+}, ref) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const previousActiveElement = useRef<HTMLElement | null>(null);
   const reducedMotion = useRef(false);
+
+  // Combinar refs
+  const combinedRef = (node: HTMLDivElement) => {
+    if (modalRef) {
+      (modalRef as any).current = node;
+    }
+    if (typeof ref === 'function') {
+      ref(node);
+    } else if (ref) {
+      ref.current = node;
+    }
+  };
 
   // Load motion lazily when modal first opens
   useEffect(() => {
@@ -108,14 +120,14 @@ export function Modal({
     };
 
     // Pequeño delay para asegurar que el modal esté renderizado
-    const timeoutId = setTimeout(focusInitial, 100);
+    const focusTimer = setTimeout(focusInitial, 10);
 
     return () => {
-      clearTimeout(timeoutId);
+      clearTimeout(focusTimer);
       document.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = originalOverflow;
-      
-      // Restaurar foco al elemento previo
+
+      // Restaurar focus al elemento previo
       if (previousActiveElement.current) {
         previousActiveElement.current.focus();
       }
@@ -137,7 +149,7 @@ export function Modal({
   const modalContent = (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Overlay */}
-      <Overlay 
+      <Overlay
         className="fixed inset-0 bg-black/60 backdrop-blur-sm"
         {...(motion ? { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 }, transition: { duration: 0.2 } } : {})}
         onClick={handleOverlayClick}
@@ -145,7 +157,7 @@ export function Modal({
 
       {/* Panel */}
       <Panel
-        ref={modalRef as any}
+        ref={combinedRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
@@ -171,4 +183,4 @@ export function Modal({
   );
 
   return createPortal(modalContent, document.body);
-}
+});

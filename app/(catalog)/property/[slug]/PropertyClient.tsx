@@ -62,6 +62,7 @@ import { buildWaLink } from "@lib/whatsapp";
 import { track } from "@lib/analytics";
 import { PromotionType } from "@schemas/models";
 import type { Unit, Building, PromotionBadge as PromotionBadgeType } from "@schemas/models";
+import VisitSchedulerWrapper from "@components/forms/VisitSchedulerWrapper";
 
 type PropertyClientProps = {
   building: Building & { precioDesde: number | null };
@@ -293,6 +294,8 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
       property_id: building.id,
       property_name: building.name,
     });
+    // Disparar evento personalizado para abrir el modal de agendamiento
+    window.dispatchEvent(new CustomEvent('openVisitScheduler'));
   };
 
   const handleFAQToggle = (faqId: string) => {
@@ -531,37 +534,113 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
             </nav>
           </motion.div>
 
-          {/* PASO 1: HERO SECTION REESTRUCTURADO - 2 COLUMNAS */}
-          <div className="mb-8">
+          {/* HERO SECTION REDISEÑADO - JERARQUÍA VISUAL MEJORADA */}
+          <motion.div
+            className="mb-8"
+            variants={heroVariants}
+            initial="hidden"
+            animate="visible"
+          >
             {/* Availability Banner compacto */}
             {availableCount > 0 && (
-              <div className="mb-4">
+              <motion.div
+                className="mb-4"
+                variants={heroItemVariants}
+              >
                 <div className="inline-flex items-center px-3 py-1.5 bg-orange-500/90 text-white text-xs rounded-lg font-medium">
                   <span className="animate-pulse mr-2">●</span>
                   {availabilityText}
                 </div>
-              </div>
+              </motion.div>
             )}
-          </div>
+          </motion.div>
 
-          {/* NÚMERO DEL DEPARTAMENTO */}
-          <div className="mb-4">
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
-              Departamento {selectedUnit?.id || '207'}
-            </h1>
-          </div>
+          {/* HERO PRINCIPAL - JERARQUÍA VISUAL OPTIMIZADA */}
+          <motion.div
+            className="mb-8"
+            variants={heroItemVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            {/* Nivel 1: Título Principal */}
+            <div className="mb-6">
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">
+                Departamento {selectedUnit?.id || '207'}
+              </h1>
+              <div className="flex items-center gap-2 text-lg text-gray-600 dark:text-gray-400">
+                <Home className="w-5 h-5" />
+                <span className="font-medium">{building.name}</span>
+                <span>•</span>
+                <span>{building.comuna}</span>
+              </div>
+            </div>
 
-          {/* BADGES PRINCIPALES - ESTILO SOBRIO */}
-          <div className="flex flex-wrap gap-2 mb-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-green-500 text-white text-xs font-medium rounded-lg border border-green-400 shadow-md">
-              <DollarSign className="w-3 h-3" />
-              Comisión gratis
+            {/* Nivel 2: Precio Principal y Promociones */}
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-2xl p-6 mb-6 border border-blue-200 dark:border-blue-800">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                {/* Precio Principal */}
+                <div className="flex-1">
+                  <div className="flex items-baseline gap-3 mb-2">
+                    <span className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
+                      ${originalPrice.toLocaleString('es-CL')}
+                    </span>
+                    <span className="text-lg text-gray-600 dark:text-gray-400">/mes</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-lg font-semibold text-orange-600 dark:text-orange-400">
+                    <Flame className="w-5 h-5" />
+                    <span>50% OFF = ${discountPrice.toLocaleString('es-CL')} primer mes</span>
+                  </div>
+                </div>
+
+                {/* Badge Principal de Promoción */}
+                <motion.div
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white text-sm font-bold rounded-xl shadow-lg"
+                  variants={badgeVariants}
+                  custom={0}
+                  whileHover="hover"
+                >
+                  <Zap className="w-4 h-4" />
+                  ¡OFERTA LIMITADA!
+                </motion.div>
+              </div>
             </div>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-lg border border-blue-500 shadow-md">
-              <Star className="w-3 h-3" />
-              Administración Pro
-            </div>
-          </div>
+
+            {/* Nivel 3: Badges Secundarios */}
+            <motion.div
+              className="flex flex-wrap gap-3 mb-6"
+              variants={heroItemVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              <motion.div
+                className="inline-flex items-center gap-2 px-4 py-2 bg-green-500 text-white text-sm font-semibold rounded-lg border border-green-400 shadow-md"
+                variants={badgeVariants}
+                custom={1}
+                whileHover="hover"
+              >
+                <DollarSign className="w-4 h-4" />
+                Comisión gratis
+              </motion.div>
+              <motion.div
+                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg border border-blue-500 shadow-md"
+                variants={badgeVariants}
+                custom={2}
+                whileHover="hover"
+              >
+                <Star className="w-4 h-4" />
+                Administración Pro
+              </motion.div>
+              <motion.div
+                className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white text-sm font-semibold rounded-lg border border-purple-500 shadow-md"
+                variants={badgeVariants}
+                custom={3}
+                whileHover="hover"
+              >
+                <Shield className="w-4 h-4" />
+                Garantía en cuotas
+              </motion.div>
+            </motion.div>
+          </motion.div>
 
           {/* LAYOUT 2 COLUMNAS - DISEÑO MINIMALISTA OPTIMIZADO */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
@@ -628,17 +707,17 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                   </div>
                 </div>
 
-                {/* CTAS INTEGRADOS - ANIMADOS */}
-                <div className="space-y-2">
+                {/* CTAs PRINCIPALES - JERARQUÍA VISUAL MEJORADA */}
+                <div className="space-y-3">
                   <motion.button
                     onClick={handleBookingClick}
                     variants={ctaVariants}
                     whileHover="hover"
                     whileTap="tap"
-                    className="w-full inline-flex items-center justify-center px-3 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500 transition-colors min-h-[40px]"
+                    className="w-full inline-flex items-center justify-center px-6 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-lg font-bold rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500 transition-all duration-200 shadow-lg hover:shadow-xl min-h-[56px]"
                     aria-label="Agendar visita a la propiedad"
                   >
-                    <Phone className="w-4 h-4 mr-2" />
+                    <Phone className="w-5 h-5 mr-3" />
                     Agendar visita
                   </motion.button>
 
@@ -651,10 +730,10 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                       variants={ctaVariants}
                       whileHover="hover"
                       whileTap="tap"
-                      className="w-full inline-flex items-center justify-center px-3 py-2.5 bg-green-600 text-white text-sm font-semibold rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500 transition-colors min-h-[40px]"
+                      className="w-full inline-flex items-center justify-center px-6 py-4 bg-gradient-to-r from-green-600 to-green-700 text-white text-lg font-bold rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500 transition-all duration-200 shadow-lg hover:shadow-xl min-h-[56px]"
                       aria-label="Contactar por WhatsApp sobre esta propiedad"
                     >
-                      <MessageCircle className="w-4 h-4 mr-2" />
+                      <MessageCircle className="w-5 h-5 mr-3" />
                       Hablar por WhatsApp
                     </motion.a>
                   )}
@@ -864,23 +943,28 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                 </div>
               </div>
 
-              {/* Metro cercano - Información de ubicación */}
-              <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+              {/* Metro cercano - JERARQUÍA VISUAL MEJORADA */}
+              <div className="mt-6 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    {/* Ícono de metro con SVG */}
-                    <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                      <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                  <div className="flex items-center gap-4">
+                    {/* Ícono de Metro de Santiago - MÁS PROMINENTE */}
+                    <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                      <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 920 400" preserveAspectRatio="xMidYMid meet">
+                        <g transform="translate(0.000000,400.000000) scale(0.100000,-0.100000)" fill="currentColor" stroke="none">
+                          <path d="M4220 3926 c-616 -71 -1141 -313 -1522 -702 -295 -301 -452 -614 -513 -1023 -20 -140 -19 -252 5 -407 33 -220 90 -395 187 -574 318 -589 990 -1018 1750 -1116 65 -8 154 -20 198 -26 157 -21 478 4 740 57 854 173 1534 750 1715 1455 76 294 77 540 5 821 -130 502 -497 943 -1016 1217 -272 145 -542 233 -864 282 -177 28 -515 35 -685 16z m700 -274 c265 -50 431 -103 645 -206 533 -259 880 -666 990 -1166 26 -118 31 -343 11 -475 -113 -729 -788 -1307 -1691 -1447 -199 -31 -539 -30 -740 0 -265 41 -470 105 -700 217 -301 147 -527 330 -709 572 -196 261 -295 550 -296 858 0 309 104 612 298 870 67 88 235 258 327 330 294 230 656 385 1036 444 74 11 148 23 164 25 17 2 149 3 295 1 210 -3 287 -8 370 -23z" />
+                          <path d="M3150 2544 c-213 -387 -271 -500 -264 -513 6 -9 129 -231 274 -493 l264 -478 24 43 c13 23 136 245 274 494 l250 452 -273 493 c-149 271 -273 494 -273 495 -1 1 -125 -221 -276 -493z" />
+                          <path d="M4510 3011 c0 -5 -77 -148 -171 -317 -94 -170 -211 -382 -261 -472 -49 -89 -92 -170 -95 -180 -3 -12 71 -154 194 -378 110 -197 231 -416 269 -486 38 -70 71 -128 74 -128 4 0 369 655 519 932 14 26 28 48 31 47 3 0 58 -98 124 -217 242 -442 421 -762 426 -762 3 0 12 15 21 33 9 17 129 236 268 486 138 250 251 459 251 464 0 5 -26 57 -59 116 -142 259 -378 684 -428 774 l-55 99 -92 -165 c-50 -90 -172 -311 -271 -490 -99 -180 -182 -327 -185 -327 -3 0 -127 220 -275 490 -149 269 -273 490 -277 490 -5 0 -8 -4 -8 -9z" />
+                        </g>
                       </svg>
                     </div>
                     <div>
-                      <div className="text-sm font-semibold text-gray-900 dark:text-white">Metro Ecuador</div>
-                      <div className="text-xs text-gray-600 dark:text-gray-400">Línea 1 • 5 minutos, 450 metros</div>
+                      <div className="text-lg font-bold text-gray-900 dark:text-white">Metro Ecuador</div>
+                      <div className="text-sm text-gray-600 dark:text-gray-400">Línea 1 • 5 minutos, 450 metros</div>
+                      <div className="text-xs text-blue-600 dark:text-blue-400 font-medium mt-1">🚶‍♂️ Caminata rápida</div>
                     </div>
                   </div>
-                  <button className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-lg hover:bg-blue-700 transition-colors">
-                    <MapPin className="w-3 h-3" />
+                  <button className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-md hover:shadow-lg">
+                    <MapPin className="w-4 h-4" />
                     Ver mapa
                   </button>
                 </div>
@@ -1674,6 +1758,13 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
           <StickyMobileCTA />
         </div>
       </main>
+
+      {/* Visit Scheduler Modal */}
+      <VisitSchedulerWrapper
+        buildingName={building.name}
+        buildingId={building.id}
+        unitId={selectedUnit?.id}
+      />
     </div>
   );
 }
