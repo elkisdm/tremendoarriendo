@@ -15,13 +15,11 @@ export interface JsonLdSchema {
  * @returns true si es válido, false en caso contrario
  */
 function validateJsonLdStructure(obj: unknown): obj is JsonLdSchema {
-  return Boolean(
-    obj &&
-    typeof obj === "object" &&
-    (obj as any)["@context"] === "https://schema.org" &&
-    typeof (obj as any)["@type"] === "string" &&
-    (obj as any)["@type"].length > 0
-  );
+  if (!obj || typeof obj !== "object") return false;
+  const rec = obj as Record<string, unknown>;
+  const context = rec["@context"];
+  const typeVal = rec["@type"];
+  return context === "https://schema.org" && typeof typeVal === "string" && typeVal.length > 0;
 }
 
 /**
@@ -47,7 +45,6 @@ function escapeJsonString(jsonString: string): string {
 export function safeJsonLd(obj: unknown): string {
   // Validación básica de estructura
   if (!validateJsonLdStructure(obj)) {
-    // console.warn("JSON-LD structure validation failed:", obj);
     // Retorna objeto vacío pero válido en caso de error
     return '{"@context":"https://schema.org","@type":"Thing"}';
   }
@@ -59,7 +56,6 @@ export function safeJsonLd(obj: unknown): string {
     // Escapa caracteres peligrosos
     return escapeJsonString(jsonString);
   } catch (_error) {
-    // console.error("Error serializing JSON-LD:", _error);
     // Retorna objeto vacío pero válido en caso de error
     return '{"@context":"https://schema.org","@type":"Thing"}';
   }
