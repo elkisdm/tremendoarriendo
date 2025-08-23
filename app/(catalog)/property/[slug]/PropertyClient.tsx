@@ -503,15 +503,14 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
 
       <main id="main-content" role="main" className="min-h-screen bg-bg text-text">
         <div className="container mx-auto px-4 py-6 max-w-7xl">
-          {/* Header Section */}
+          {/* Header Section Mejorado */}
           <motion.div
-            className="mb-8"
+            className="mb-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
             <Header />
-            <div className="border-b border-border/50 my-6"></div>
           </motion.div>
 
           {/* Breadcrumbs estratégicos */}
@@ -541,51 +540,96 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
             initial="hidden"
             animate="visible"
           >
-            {/* Availability Banner compacto */}
-            {availableCount > 0 && (
-              <motion.div
-                className="mb-4"
-                variants={heroItemVariants}
-              >
-                <div className="inline-flex items-center px-3 py-1.5 bg-orange-500/90 text-white text-xs rounded-lg font-medium">
-                  <span className="animate-pulse mr-2">●</span>
-                  {availabilityText}
+            {/* Nuevo Header Mejorado con Opciones */}
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-6">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                {/* Información Principal */}
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-purple-600">
+                      <span className="text-sm font-bold text-white">E</span>
+                    </div>
+                    <div>
+                      <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+                        {building.name}
+                      </h1>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        {building.comuna} • {selectedUnit?.tipologia}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  {/* Badges de Promociones */}
+                  <div className="flex flex-wrap gap-2">
+                    <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm font-semibold rounded-lg shadow-md">
+                      <Shield className="w-4 h-4" />
+                      <span>Administración Pro</span>
+                    </div>
+                    <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-green-600 to-green-700 text-white text-sm font-semibold rounded-lg shadow-md">
+                      <DollarSign className="w-4 h-4" />
+                      <span>Comisión Gratis</span>
+                    </div>
+                    <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-sm font-semibold rounded-lg shadow-md">
+                      <Flame className="w-4 h-4" />
+                      <span>50% OFF Primer Mes</span>
+                    </div>
+                  </div>
                 </div>
-              </motion.div>
-            )}
-          </motion.div>
 
-          {/* HERO PRINCIPAL - SIMPLIFICADO */}
-          {/* Badges destacados arriba */}
-          <motion.div
-            className="mb-6"
-            variants={heroItemVariants}
-            initial="hidden"
-            animate="visible"
-          >
-            <div className="flex flex-wrap gap-2">
-              <motion.div
-                variants={badgeVariants}
-                initial="hidden"
-                animate="visible"
-                custom={0}
-                className="inline-flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm font-semibold rounded-lg shadow-md"
-              >
-                <Shield className="w-4 h-4" />
-                <span>Administración Pro</span>
-              </motion.div>
-              <motion.div
-                variants={badgeVariants}
-                initial="hidden"
-                animate="visible"
-                custom={1}
-                className="inline-flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-green-600 to-green-700 text-white text-sm font-semibold rounded-lg shadow-md"
-              >
-                <DollarSign className="w-4 h-4" />
-                <span>Comisión Gratis</span>
-              </motion.div>
+                {/* Opciones de Acción */}
+                <div className="flex flex-col sm:flex-row gap-3">
+                  {/* Botón de Favoritos */}
+                  <button className="inline-flex items-center justify-center p-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                    <Heart className="w-5 h-5" />
+                  </button>
+                  
+                  {/* Botón de Compartir */}
+                  <button className="inline-flex items-center justify-center p-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                    <ExternalLink className="w-5 h-5" />
+                  </button>
+                  
+                  {/* Botón de Contacto Rápido */}
+                  <button className="inline-flex items-center gap-2 px-4 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+                    <Phone className="w-4 h-4" />
+                    <span className="hidden sm:inline">Contacto Rápido</span>
+                    <span className="sm:hidden">Llamar</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Información Adicional */}
+              <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-600">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-gray-500" />
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                      {building.address}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Bed className="w-4 h-4 text-gray-500" />
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                      {selectedUnit?.tipologia}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Square className="w-4 h-4 text-gray-500" />
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                      {selectedUnit?.m2} m²
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Building2 className="w-4 h-4 text-gray-500" />
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                      Piso {selectedUnit?.piso}
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
           </motion.div>
+
+
 
           {/* LAYOUT 2 COLUMNAS - DISEÑO MINIMALISTA OPTIMIZADO */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
