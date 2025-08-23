@@ -318,41 +318,6 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
-      {/* Banner de urgencia */}
-      <AnimatePresence>
-        {showUrgencyBanner && (
-          <motion.div
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -50 }}
-            className="bg-gradient-to-r from-red-500 via-orange-500 to-amber-500 text-white py-3 relative overflow-hidden"
-          >
-            <div className="container mx-auto max-w-7xl px-4">
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 text-xs sm:text-sm font-medium">
-                <motion.div
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 1, repeat: Infinity }}
-                  className="w-4 h-4 sm:w-5 sm:h-5 bg-white/20 rounded-full flex items-center justify-center"
-                >
-                  <Zap className="w-3 h-3 sm:w-4 sm:h-4" />
-                </motion.div>
-                <span>🔥 {recentVisitors} personas viendo</span>
-                <span className="hidden sm:inline">•</span>
-                <span>⏰ Última reserva hace {lastReservation} min</span>
-                <span className="hidden sm:inline">•</span>
-                <span>🎯 {availableCount} unidades disponibles</span>
-                <button
-                  onClick={() => setShowUrgencyBanner(false)}
-                  className="absolute right-4 text-white/80 hover:text-white transition-colors"
-                >
-                  ✕
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       <main id="main-content" role="main" className="min-h-screen bg-bg text-text">
         <div className="container mx-auto px-4 py-6 max-w-7xl">
           {/* Header Section */}
@@ -477,8 +442,8 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                       onClick={handleWhatsAppClick}
                       target="_blank"
                       rel="noopener noreferrer"
-                      
-                      
+
+
                       whileTap="tap"
                       className="w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500 transition-all duration-200 shadow-sm hover:shadow-md"
                       aria-label="Contactar por WhatsApp sobre esta propiedad"
@@ -521,8 +486,8 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
           {/* CARACTERÍSTICAS PRINCIPALES - ANCHURA COMPLETA - ANIMADA */}
           <motion.div
             className="mb-8"
-            
-            
+
+
             whileInView="animate"
             viewport={{ once: true, amount: 0.3 }}
           >
@@ -532,9 +497,9 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                 {/* Dormitorios */}
                 <motion.div
                   className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
-                  
-                  
-                  
+
+
+
                 >
                   <Bed className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                   <div>
@@ -546,9 +511,9 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                 {/* Baños */}
                 <motion.div
                   className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
-                  
-                  
-                  
+
+
+
                 >
                   <Bath className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                   <div>
@@ -560,9 +525,9 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                 {/* Metros cuadrados interior */}
                 <motion.div
                   className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
-                  
-                  
-                  
+
+
+
                 >
                   <Square className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                   <div>
@@ -574,9 +539,9 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                 {/* Metros cuadrados exterior */}
                 <motion.div
                   className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
-                  
-                  
-                  
+
+
+
                 >
                   <Layers className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                   <div>
@@ -588,9 +553,9 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                 {/* Piso */}
                 <motion.div
                   className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
-                  
-                  
-                  
+
+
+
                 >
                   <Building2 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                   <div>
@@ -602,9 +567,9 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                 {/* Orientación */}
                 <motion.div
                   className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
-                  
-                  
-                  
+
+
+
                 >
                   <Compass className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
                   <div>
@@ -616,9 +581,9 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                 {/* Mascotas */}
                 <motion.div
                   className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
-                  
-                  
-                  
+
+
+
                 >
                   <PawPrint className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                   <div>
@@ -630,9 +595,9 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                 {/* Tipo de amoblado */}
                 <motion.div
                   className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
-                  
-                  
-                  
+
+
+
                 >
                   <Refrigerator className="w-5 h-5 text-green-600 dark:text-green-400" />
                   <div>
@@ -644,9 +609,9 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                 {/* Estacionamiento */}
                 <motion.div
                   className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
-                  
-                  
-                  
+
+
+
                 >
                   <Car className="w-5 h-5 text-orange-600 dark:text-orange-400" />
                   <div>
@@ -658,9 +623,9 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                 {/* Bodega */}
                 <motion.div
                   className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
-                  
-                  
-                  
+
+
+
                 >
                   <Package className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                   <div>
@@ -672,9 +637,9 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                 {/* Habitantes */}
                 <motion.div
                   className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
-                  
+
                   custom={10}
-                  
+
                 >
                   <Users className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                   <div>
@@ -727,9 +692,9 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
             {showStickyCTA && (
               <motion.div
                 className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50"
-                
-                
-                
+
+
+
                 exit="exit"
               >
                 <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-white/20 dark:border-gray-700/50 max-w-sm">
@@ -762,8 +727,8 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                   <div className="space-y-2">
                     <motion.button
                       onClick={handleBookingClick}
-                      
-                      
+
+
                       whileTap="tap"
                       className="w-full inline-flex items-center justify-center px-4 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm font-medium rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-sm"
                       aria-label="Agendar visita a la propiedad"
@@ -778,8 +743,8 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                         onClick={handleWhatsAppClick}
                         target="_blank"
                         rel="noopener noreferrer"
-                        
-                        
+
+
                         whileTap="tap"
                         className="w-full inline-flex items-center justify-center px-4 py-2.5 bg-gradient-to-r from-green-600 to-green-700 text-white text-sm font-medium rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200 shadow-sm"
                         aria-label="Contactar por WhatsApp sobre esta propiedad"
