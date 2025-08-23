@@ -4,3 +4,4 @@ export { default as SlotPicker } from "./SlotPicker";
 export { default as AvailabilitySection } from "./AvailabilitySection";
 export { default as VisitPanel } from "./VisitPanel";
 export { default as VisitQuoteModal } from "./VisitQuoteModal";
+export { default as CalendarVisitFlow } from "./CalendarVisitFlow";
