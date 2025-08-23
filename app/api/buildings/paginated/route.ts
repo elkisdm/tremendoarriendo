@@ -4,6 +4,7 @@ import { getAllBuildings } from "@lib/data";
 import type { Building, Unit, TypologySummary } from "@schemas/models";
 import { computeUnitTotalArea } from "@lib/derive";
 import { createRateLimiter } from "@lib/rate-limit";
+import { logger } from "@lib/logger";
 
 // Force dynamic rendering to avoid static generation issues
 export const dynamic = 'force-dynamic';
@@ -107,7 +108,7 @@ export async function GET(request: Request) {
       );
     }
 
-    // console.log("API /buildings/paginated called");
+    logger.debug("API /buildings/paginated called");
     
     const { searchParams } = new URL(request.url);
     const parsed = PaginatedQuerySchema.safeParse({
@@ -121,7 +122,7 @@ export async function GET(request: Request) {
     });
 
     if (!parsed.success) {
-      // console.error("Query validation failed:", parsed.error);
+      logger.warn("Query validation failed on /api/buildings/paginated", parsed.error.flatten());
       return NextResponse.json(
         { error: "Parámetros inválidos", details: parsed.error.flatten() },
         { status: 400 }
@@ -129,10 +130,11 @@ export async function GET(request: Request) {
     }
 
     const { page, limit, ...filters } = parsed.data;
-    // console.log("Calling getAllBuildings with filters:", filters, "page:", page, "limit:", limit);
+    logger.debug("Calling getAllBuildings with filters", { filters, page, limit });
     
     // Obtener todos los buildings y aplicar filtros
     const allBuildings = await getAllBuildings(filters);
+    logger.debug("Got buildings from getAllBuildings", { count: allBuildings.length });
     
     // Convertir a BuildingListItem
     const buildingItems: BuildingListItem[] = allBuildings.map((b) => {
@@ -186,10 +188,10 @@ export async function GET(request: Request) {
       },
     };
 
-    // console.log("Returning paginated buildings:", paginatedBuildings.length, "of", totalCount);
+    logger.debug("Returning paginated buildings", { page, limit, pageCount: paginatedBuildings.length, totalCount });
     return NextResponse.json(response);
   } catch (error) {
-    // console.error("API Error:", error);
+    logger.error("API Error on /api/buildings/paginated", error);
     return NextResponse.json(
       { 
         error: "Error inesperado", 

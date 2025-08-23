@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { metadata } from './metadata';
 
 export { metadata };
