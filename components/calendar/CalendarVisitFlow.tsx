@@ -13,10 +13,12 @@ export type CalendarVisitFlowProps = {
   unit: Unit;
   date: string; // YYYY-MM-DD
   slots?: AvailabilitySlot[]; // opcional si se inyectan; si no, se hace fetch
+  googleCalendarId?: string;
+  icsUrl?: string;
   className?: string;
 };
 
-export default function CalendarVisitFlow({ building, unit, date, slots: initialSlots, className }: CalendarVisitFlowProps){
+export default function CalendarVisitFlow({ building, unit, date, slots: initialSlots, googleCalendarId, icsUrl, className }: CalendarVisitFlowProps){
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<AvailabilitySlot | null>(null);
   const [slots, setSlots] = useState<AvailabilitySlot[]>(initialSlots ?? []);
@@ -35,7 +37,12 @@ export default function CalendarVisitFlow({ building, unit, date, slots: initial
         const res = await fetch('/api/calendar/availability', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ date, visibleHours: { start: '09:00', end: '18:00' } })
+          body: JSON.stringify({
+            date,
+            visibleHours: { start: '09:00', end: '18:00' },
+            googleCalendarId,
+            icsUrl
+          })
         });
         if (!res.ok) throw new Error(String(res.status));
         const data = await res.json();
@@ -48,7 +55,7 @@ export default function CalendarVisitFlow({ building, unit, date, slots: initial
     }
     load();
     return () => { cancelled = true; };
-  }, [date, initialSlots]);
+  }, [date, initialSlots, googleCalendarId, icsUrl]);
 
   function handleSelect(slot: AvailabilitySlot){
     setSelected(slot);
