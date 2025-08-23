@@ -1,0 +1,113 @@
+import { clx } from "@lib/utils";
+
+export type CalendarEvent = {
+  id: string;
+  title: string;
+  start: string; // ISO string
+  end: string; // ISO string
+  location?: string;
+  description?: string;
+  busy?: boolean;
+};
+
+export type TimeRange = {
+  start: string; // '08:00'
+  end: string;   // '18:00'
+};
+
+export type MobileSchedulerProps = {
+  date: string; // YYYY-MM-DD (local)
+  events?: CalendarEvent[];
+  visibleHours?: TimeRange;
+  className?: string;
+  /**
+   * Texto de cabecera (p.ej., nombre de propiedad o contexto)
+   */
+  headerTitle?: string;
+};
+
+// RSC, no estado/efectos. Interactividad vendrá en cliente.
+export default function MobileScheduler({ date, events = [], visibleHours = { start: "08:00", end: "20:00" }, className, headerTitle }: MobileSchedulerProps) {
+  const hours = computeHourSlots(visibleHours);
+
+  return (
+    <section aria-label="Calendario de agendamiento" className={clx(
+      "w-full max-w-md mx-auto rounded-2xl border border-[var(--ring)]/20 bg-white/80 dark:bg-zinc-900/70 backdrop-blur",
+      "shadow-sm",
+      className
+    )}>
+      <header className="px-4 pt-4 pb-3">
+        <p className="text-xs text-zinc-500 dark:text-zinc-400">{formatReadableDate(date)}</p>
+        <h2 className="mt-1 text-base font-semibold text-zinc-900 dark:text-zinc-50">
+          {headerTitle ?? "Disponibilidad"}
+        </h2>
+      </header>
+      <div className="divide-y divide-zinc-200 dark:divide-zinc-800">
+        {hours.map((h) => (
+          <div key={h}
+            className="grid grid-cols-[64px_1fr] items-start gap-3 px-4 py-3">
+            <time className="mt-0.5 text-[11px] tabular-nums text-zinc-500 dark:text-zinc-400" dateTime={`${date}T${h}:00`}>
+              {h}
+            </time>
+            <div className="relative">
+              <div className="h-10 rounded-xl bg-zinc-100 dark:bg-zinc-800/70 ring-1 ring-inset ring-[var(--ring)]/10" />
+              {/* Eventos que caen en este bloque (placeholder visual) */}
+              <div className="absolute inset-0 pointer-events-none">
+                {renderEventsForHour(events, date, h)}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <footer className="px-4 py-3">
+        <p className="text-xs text-zinc-500 dark:text-zinc-400">
+          Seleccione un horario disponible para agendar una visita.
+        </p>
+      </footer>
+    </section>
+  );
+}
+
+function computeHourSlots(range: TimeRange): string[] {
+  const [startH] = range.start.split(":").map(Number);
+  const [endH] = range.end.split(":").map(Number);
+  const output: string[] = [];
+  for (let h = startH; h <= endH; h++) {
+    output.push(`${String(h).padStart(2, "0")}:00`);
+  }
+  return output;
+}
+
+function formatReadableDate(yyyyMmDd: string): string {
+  const [y, m, d] = yyyyMmDd.split("-").map(Number);
+  const date = new Date(Date.UTC(y, (m - 1), d));
+  return date.toLocaleDateString("es-CL", { weekday: "long", day: "2-digit", month: "long" });
+}
+
+function renderEventsForHour(events: CalendarEvent[], day: string, hour: string) {
+  const items = events.filter((ev) => isEventInHour(ev, day, hour));
+  if (items.length === 0) return null;
+  return (
+    <ul className="flex h-full gap-1 p-0.5">
+      {items.map((ev) => (
+        <li key={ev.id} className={clx(
+          "flex-1 rounded-lg border text-[10px] leading-tight px-2 py-1",
+          "bg-violet-50 text-violet-900 border-violet-200 dark:bg-violet-900/30 dark:text-violet-100 dark:border-violet-700",
+          ev.busy && "opacity-60"
+        )}>
+          <span className="block truncate">{ev.title}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function isEventInHour(ev: CalendarEvent, day: string, hour: string): boolean {
+  const start = new Date(ev.start);
+  const end = new Date(ev.end);
+  const [y, m, d] = day.split("-").map(Number);
+  const hourNum = Number(hour.split(":")[0]);
+  const slotStart = new Date(Date.UTC(y, m - 1, d, hourNum, 0, 0));
+  const slotEnd = new Date(Date.UTC(y, m - 1, d, hourNum, 59, 59));
+  return end > slotStart && start < slotEnd;
+}
