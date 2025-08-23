@@ -4,6 +4,7 @@ import { getAllBuildings } from "@lib/data";
 import type { Building, Unit, TypologySummary } from "@schemas/models";
 import { computeUnitTotalArea } from "@lib/derive";
 import { createRateLimiter } from "@lib/rate-limit";
+import { logger } from "@lib/logger";
 
 // Force dynamic rendering to avoid static generation issues
 export const dynamic = 'force-dynamic';
@@ -78,6 +79,7 @@ export async function GET(request: Request) {
     const rateLimitResult = await rateLimiter.check(ip);
     
     if (!rateLimitResult.ok) {
+      logger.warn("Rate limit exceeded on /api/buildings", { ip, retryAfter: rateLimitResult.retryAfter });
       return NextResponse.json(
         { error: "Rate limit exceeded", retryAfter: rateLimitResult.retryAfter },
         { 
@@ -91,7 +93,7 @@ export async function GET(request: Request) {
       );
     }
 
-    // console.log("API /buildings called");
+    // logger.debug("API /buildings called");
     
     const { searchParams } = new URL(request.url);
     // Simulate API failure to verify error boundaries and client retry behavior
@@ -106,7 +108,7 @@ export async function GET(request: Request) {
     });
 
     if (!parsed.success) {
-      // console.error("Query validation failed:", parsed.error);
+      logger.warn("Query validation failed on /api/buildings", parsed.error.flatten());
       return NextResponse.json(
         { error: "Parámetros inválidos", details: parsed.error.flatten() },
         { status: 400 }
@@ -114,10 +116,10 @@ export async function GET(request: Request) {
     }
 
     const filters = parsed.data;
-    // console.log("Calling getAllBuildings with filters:", filters);
+    logger.debug("Calling getAllBuildings with filters", filters);
     
     const list = await getAllBuildings(filters);
-    // console.log("Got buildings from getAllBuildings:", list.length);
+    logger.debug("Got buildings from getAllBuildings", { count: list.length });
 
     const buildings: BuildingListItem[] = list.map((b) => {
       const available = b.units.filter((u) => u.disponible);
@@ -152,10 +154,10 @@ export async function GET(request: Request) {
       } satisfies BuildingListItem;
     });
 
-    // console.log("Returning buildings:", buildings.length);
+    logger.debug("Returning buildings", { count: buildings.length });
     return NextResponse.json({ buildings });
   } catch (error) {
-    // console.error("API Error:", error);
+    logger.error("API Error on /api/buildings", error);
     return NextResponse.json(
       { 
         error: "Error inesperado", 

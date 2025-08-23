@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { WaitlistRequestSchema } from '@schemas/models';
 import { createRateLimiter } from '@lib/rate-limit';
 import { createSupabaseClient } from '@lib/supabase.mock';
+import { logger } from '@lib/logger';
 
 // Rate limiter: 20 requests per 60 seconds
 const rateLimiter = createRateLimiter({ windowMs: 60_000, max: 20 });
@@ -43,7 +44,7 @@ export async function POST(request: NextRequest) {
     const rateLimitResult = await rateLimiter.check(clientIP);
     
     if (!rateLimitResult.ok) {
-      // console.log(`Rate limit exceeded for IP: ${clientIP.substring(0, 8)}...`);
+      logger.warn('Waitlist rate limit exceeded', { ip: clientIP, retryAfter: rateLimitResult.retryAfter });
       return NextResponse.json(
         { 
           success: false, 
@@ -64,7 +65,7 @@ export async function POST(request: NextRequest) {
     const parsed = WaitlistRequestSchema.safeParse(json);
     
     if (!parsed.success) {
-      // console.log(`Validation failed for IP: ${clientIP.substring(0, 8)}...`);
+      logger.warn('Waitlist validation failed', parsed.error.flatten());
       return NextResponse.json(
         { 
           success: false, 
@@ -83,7 +84,7 @@ export async function POST(request: NextRequest) {
       supabase = createSupabaseClient();
     } catch (error) {
       if (error instanceof Error && error.message === 'server_misconfigured') {
-        // console.error('❌ Supabase no configurado en producción');
+        logger.error('Supabase no configurado en producción');
         return NextResponse.json(
           { success: false, error: 'server_misconfigured' },
           { status: 500 }
@@ -103,7 +104,7 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (_error) {
-      // console.error(`DB insert failed for IP: ${clientIP.substring(0, 8)}..., code: ${_error.code}`);
+      logger.error('Waitlist DB insert failed', { code: _error.code });
       
       // Si es un email duplicado, no es un error crítico
       if (_error.code === '23505') { // unique_violation
@@ -119,14 +120,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // console.log(`Waitlist insert successful for IP: ${clientIP.substring(0, 8)}...`);
+    logger.info('Waitlist insert successful');
     return NextResponse.json(
       { success: true, message: '¡Te agregamos a la lista de espera!' },
       { status: 200 }
     );
 
   } catch {
-    // console.error(`Unexpected error for IP: ${getClientIP(request).substring(0, 8)}...`);
+    logger.error('Unexpected waitlist error');
     return NextResponse.json(
       { success: false, error: 'Tuvimos un problema, intenta de nuevo' },
       { status: 500 }

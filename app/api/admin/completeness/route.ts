@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createRateLimiter } from "@lib/rate-limit";
 import { createSupabaseClient } from "@lib/supabase.mock";
+import { logger } from "@lib/logger";
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -80,7 +81,7 @@ function calculateCompletenessStats(buildings: unknown[]): CompletenessStats {
 
 export async function GET(request: Request) {
   try {
-    // console.log("🔍 Admin completeness endpoint called");
+    logger.debug("Admin completeness endpoint called");
 
     // Rate limiting
     const ipHeader = request.headers.get("x-forwarded-for");
@@ -88,7 +89,7 @@ export async function GET(request: Request) {
     
     const rateLimitResult = await limiter.check(ip);
     if (!rateLimitResult.ok) {
-      // console.warn(`Rate limit exceeded for IP: ${ip}`);
+      logger.warn("Admin completeness rate limit exceeded", { ip });
       return NextResponse.json(
         { error: "rate_limited" },
         { status: 429, headers: { "Retry-After": String(rateLimitResult.retryAfter ?? 60) } }
@@ -104,7 +105,7 @@ export async function GET(request: Request) {
       .order('completeness_percentage', { ascending: true });
 
     if (error) {
-      // console.error('Error fetching completeness data:', error);
+      logger.error('Error fetching completeness data', { message: error.message });
       return NextResponse.json(
         { error: "database_error", details: error.message },
         { status: 500 }
@@ -114,7 +115,7 @@ export async function GET(request: Request) {
     // Calculate statistics
     const stats = calculateCompletenessStats(buildings);
 
-    // console.log(`📊 Completeness data fetched: ${buildings?.length || 0} buildings`);
+    logger.info("Completeness data fetched", { count: buildings?.length || 0 });
 
     return NextResponse.json({
       success: true,
@@ -124,7 +125,7 @@ export async function GET(request: Request) {
     });
 
   } catch {
-    // console.error("API Error");
+    logger.error("Admin completeness API error");
     return NextResponse.json(
       { error: "internal_error", message: "Error interno del servidor" },
       { status: 500 }
