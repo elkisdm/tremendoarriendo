@@ -8,9 +8,10 @@ interface PropertyQuotationPanelProps {
   building: Building;
   selectedUnit: Unit;
   isAdmin?: boolean;
+  initialStartDate?: string; // YYYY-MM-DD para prefijar fecha
 }
 
-export function PropertyQuotationPanel({ building, selectedUnit, isAdmin = false }: PropertyQuotationPanelProps) {
+export function PropertyQuotationPanel({ building, selectedUnit, isAdmin = false, initialStartDate }: PropertyQuotationPanelProps) {
   const [quotationResult, setQuotationResult] = useState<QuotationResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -25,11 +26,23 @@ export function PropertyQuotationPanel({ building, selectedUnit, isAdmin = false
   // Set default date on client side to avoid hydration mismatch
   useEffect(() => {
     if (!startDate) {
-      const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      setStartDate(tomorrow.toISOString().split('T')[0]);
+      const base = initialStartDate ? new Date(initialStartDate + 'T00:00:00') : new Date();
+      if (!initialStartDate) {
+        base.setDate(base.getDate() + 1);
+      }
+      const yyyy = base.getFullYear();
+      const mm = String(base.getMonth() + 1).padStart(2, '0');
+      const dd = String(base.getDate()).padStart(2, '0');
+      setStartDate(`${yyyy}-${mm}-${dd}`);
     }
-  }, [startDate]);
+  }, [startDate, initialStartDate]);
+
+  // Update when initialStartDate changes (e.g., al elegir un slot)
+  useEffect(() => {
+    if (initialStartDate) {
+      setStartDate(initialStartDate);
+    }
+  }, [initialStartDate]);
 
   const handleGenerateQuotation = async (e: React.FormEvent) => {
     e.preventDefault();
