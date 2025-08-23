@@ -71,7 +71,13 @@ export default function CalendarVisitFlow({ building, unit, date, slots: initial
       ) : (
         <SlotPicker slots={slots} onSelect={handleSelect} />
       )}
-      <VisitQuoteModal building={building} unit={unit} open={open} onClose={() => setOpen(false)} />
+      <VisitQuoteModal
+        building={building}
+        unit={unit}
+        open={open}
+        onClose={() => setOpen(false)}
+        initialStartDate={selected ? new Date(selected.start).toISOString().slice(0,10) : undefined}
+      />
     </div>
   );
 }

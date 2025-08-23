@@ -10,9 +10,10 @@ export type VisitQuoteModalProps = {
   unit: Unit;
   open: boolean;
   onClose: () => void;
+  initialStartDate?: string; // YYYY-MM-DD
 };
 
-export default function VisitQuoteModal({ building, unit, open, onClose }: VisitQuoteModalProps){
+export default function VisitQuoteModal({ building, unit, open, onClose, initialStartDate }: VisitQuoteModalProps){
   const [initialFocus, setInitialFocus] = useState<HTMLButtonElement | null>(null);
   return (
     <Modal
@@ -23,7 +24,7 @@ export default function VisitQuoteModal({ building, unit, open, onClose }: Visit
       initialFocusRef={{ current: initialFocus }}
     >
       <div className="p-2">
-        <PropertyQuotationPanel building={building} selectedUnit={unit} />
+        <PropertyQuotationPanel building={building} selectedUnit={unit} initialStartDate={initialStartDate} />
         <div className="mt-4 flex justify-end">
           <button ref={setInitialFocus as any} onClick={onClose} className="rounded-xl px-4 py-2 text-sm border border-[var(--ring)]/20">Cerrar</button>
         </div>
