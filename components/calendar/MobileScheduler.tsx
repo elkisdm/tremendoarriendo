@@ -1,5 +1,8 @@
 import { clx } from "@lib/utils";
 import type { CalendarEvent, TimeRange, MobileSchedulerProps } from "@/types/calendar";
+import dynamic from "next/dynamic";
+
+const SlotPicker = dynamic(() => import("./SlotPicker"), { ssr: false });
 
 // RSC, no estado/efectos. Interactividad vendrá en cliente.
 export default function MobileScheduler({ date, events = [], visibleHours = { start: "08:00", end: "20:00" }, className, headerTitle }: MobileSchedulerProps) {
@@ -34,6 +37,8 @@ export default function MobileScheduler({ date, events = [], visibleHours = { st
           </div>
         ))}
       </div>
+      {/* SlotPicker se usará cuando recibamos slots desde server */}
+      {/* <SlotPicker slots={slots} onSelect={(slot) => {...}} /> */}
       <footer className="px-4 py-3">
         <p className="text-xs text-zinc-500 dark:text-zinc-400">
           Seleccione un horario disponible para agendar una visita.
