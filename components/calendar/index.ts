@@ -3,3 +3,4 @@ export type { CalendarEvent, MobileSchedulerProps, TimeRange } from "@/types/cal
 export { default as SlotPicker } from "./SlotPicker";
 export { default as AvailabilitySection } from "./AvailabilitySection";
 export { default as VisitPanel } from "./VisitPanel";
+export { default as VisitQuoteModal } from "./VisitQuoteModal";
