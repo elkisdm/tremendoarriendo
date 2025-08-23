@@ -32,7 +32,7 @@ export function FilterChips({
         {visibleChips.map((chip) => (
           <motion.div
             key={chip.id}
-            layout
+            layout="position"
             initial={{ opacity: 0, scale: 0.8, x: -20 }}
             animate={{ opacity: 1, scale: 1, x: 0 }}
             exit={{ opacity: 0, scale: 0.8, x: -20 }}
@@ -133,7 +133,7 @@ export function SingleChip({
 
   return (
     <motion.div
-      layout
+      layout="position"
       initial={{ opacity: 0, scale: 0.8, x: -20 }}
       animate={{ opacity: 1, scale: 1, x: 0 }}
       exit={{ opacity: 0, scale: 0.8, x: -20 }}

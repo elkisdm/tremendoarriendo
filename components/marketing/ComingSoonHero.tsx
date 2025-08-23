@@ -1,10 +1,10 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
-import { 
-  ShieldCheck, 
-  Sparkles, 
-  Clock, 
-  Building, 
+import {
+  ShieldCheck,
+  Sparkles,
+  Clock,
+  Building,
   Building2,
   MessageCircle,
   MessageSquare,
@@ -133,7 +133,7 @@ export function ComingSoonHero() {
             className="space-y-8"
           >
             {/* Título principal con gradiente violeta→aqua y tipografía headline */}
-            <motion.h1 
+            <motion.h1
               variants={itemVariants}
               className="text-5xl md:text-6xl font-extrabold leading-tight tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-[--brand-violet,#7C3AED] via-fuchsia-400 to-[--brand-aqua,#22D3EE] drop-shadow-sm"
             >
@@ -146,7 +146,7 @@ export function ComingSoonHero() {
             </motion.div>
 
             {/* Legal breve - mejorado contraste */}
-            <motion.p 
+            <motion.p
               variants={itemVariants}
               className="text-sm text-slate-300 max-w-lg mx-auto leading-relaxed"
             >
@@ -154,7 +154,7 @@ export function ComingSoonHero() {
             </motion.p>
 
             {/* CTAs */}
-            <motion.div 
+            <motion.div
               variants={itemVariants}
               className="flex flex-col sm:flex-row justify-center gap-3 md:gap-4 mt-6"
             >
@@ -195,7 +195,7 @@ export function ComingSoonHero() {
             </motion.div>
 
             {/* Subtítulo */}
-            <motion.p 
+            <motion.p
               variants={itemVariants}
               className="text-lg md:text-xl text-slate-100 max-w-2xl mx-auto leading-relaxed drop-shadow-sm"
             >
@@ -252,11 +252,10 @@ export function ComingSoonHero() {
             <p className="text-sm text-slate-300 max-w-lg mx-auto leading-relaxed">
               Arriendos desde $210.000 pesos. Sin costos ocultos ni sorpresas.
             </p>
-            
+
             {/* CTAs - Static version */}
             <div className="flex flex-col sm:flex-row justify-center gap-3 md:gap-4 mt-6">
               <button
-                ref={triggerButtonRef}
                 onClick={handleWaitlistClick}
                 className="rounded-2xl px-6 py-3 font-semibold bg-gradient-to-r from-[--brand-violet,#7C3AED] to-[--brand-aqua,#22D3EE] text-white shadow-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-violet-400/40 hover:shadow-xl transition-all duration-200 min-h-[44px] flex items-center justify-center"
                 aria-label="Notificarme cuando esté listo"

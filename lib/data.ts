@@ -259,16 +259,232 @@ export async function getRelatedBuildings(slug: string, n = 3): Promise<(Buildin
   if (simulateLatency) {
     await delay(200 + Math.floor(Math.random() * 200));
   }
+  
+  let current: Building | null = null;
+  
+  // Si es home-amengual, usar el mock específico
+  if (slug === "home-amengual") {
+    current = HOME_AMENGUAL_WITH_UNIT_207;
+  } else {
+    const all = await readAll();
+    current = all.find((b) => b.slug === slug) || null;
+  }
+  
+  if (!current) {
+    console.log(`❌ No se encontró el edificio actual: ${slug}`);
+    return [];
+  }
+  
+  // Obtener todos los edificios para buscar relacionados
   const all = await readAll();
-  const current = all.find((b) => b.slug === slug);
-  if (!current) return [];
+  
+  // Calcular precio desde para todas las propiedades
   const withPrecio = all
     .filter((b) => b.slug !== slug)
     .map((b) => ({ ...b, precioDesde: calculatePrecioDesde(b.units) }));
 
-  const sameComuna = withPrecio.filter((b) => b.comuna === current.comuna);
-  const others = withPrecio.filter((b) => b.comuna !== current.comuna);
-  return [...sameComuna, ...others].slice(0, n);
+  // Función para calcular similitud entre propiedades
+  const calculateSimilarity = (building: Building & { precioDesde: number | null }): number => {
+    let score = 0;
+    
+    // Misma comuna (peso alto)
+    if (building.comuna === current.comuna) {
+      score += 50;
+    }
+    
+    // Rango de precio similar (peso medio)
+    const currentPrice = calculatePrecioDesde(current.units);
+    if (currentPrice !== null && building.precioDesde !== null) {
+      const priceDiff = Math.abs(building.precioDesde - currentPrice);
+      const priceSimilarity = Math.max(0, 100 - (priceDiff / currentPrice) * 100);
+      score += priceSimilarity * 0.3;
+    }
+    
+    // Mismo nivel de servicio (peso medio)
+    if (building.serviceLevel === current.serviceLevel) {
+      score += 20;
+    }
+    
+    // Tipologías similares (peso bajo)
+    const currentTypologies = current.typologySummary?.map((t: any) => t.key) || [];
+    const buildingTypologies = building.typologySummary?.map((t: any) => t.key) || [];
+    const commonTypologies = currentTypologies.filter((t: string) => buildingTypologies.includes(t));
+    score += commonTypologies.length * 5;
+    
+    // Disponibilidad (peso bajo)
+    const availableUnits = building.units.filter((u: Unit) => u.disponible);
+    if (availableUnits.length > 0) {
+      score += 10;
+    }
+    
+    return score;
+  };
+
+  // Ordenar por similitud y tomar las mejores
+  const sortedBySimilarity = withPrecio
+    .map(building => ({
+      ...building,
+      similarityScore: calculateSimilarity(building)
+    }))
+    .sort((a, b) => b.similarityScore - a.similarityScore)
+    .slice(0, n * 2) // Tomar más propiedades para tener más opciones
+    .map(({ similarityScore, ...building }) => building);
+
+  // Si no hay suficientes propiedades relacionadas, agregar mocks
+  if (sortedBySimilarity.length < n) {
+    const mockBuildings = generateMockRelatedBuildings(current, n - sortedBySimilarity.length);
+    return [...sortedBySimilarity, ...mockBuildings];
+  }
+
+  // Si hay pocas propiedades reales, usar mocks
+  if (sortedBySimilarity.length < 2) {
+    const mockBuildings = generateMockRelatedBuildings(current, n);
+    return mockBuildings;
+  }
+
+  // Retornar solo las primeras n propiedades
+  return sortedBySimilarity.slice(0, n);
+}
+
+// Función para generar mocks de propiedades relacionadas
+function generateMockRelatedBuildings(current: Building, count: number): (Building & { precioDesde: number | null })[] {
+  const mockBuildings: (Building & { precioDesde: number | null })[] = [];
+  
+  const mockData = [
+    {
+      id: "mock-1",
+      slug: "edificio-mock-1",
+      name: "Residencial Las Condes Premium",
+      comuna: "Las Condes",
+      address: "Av. Apoquindo 1234, Las Condes",
+      coverImage: "/images/edificio/original_79516B40-7BA9-4F4E-4F7D-7BA4C0A2A938-mg0578.jpg",
+      gallery: [
+        "/images/edificio/original_79516B40-7BA9-4F4E-4F7D-7BA4C0A2A938-mg0578.jpg",
+        "/images/edificio/original_05CC1BCB-6719-A6F3-4299-F6078DC02E05-mg0345.jpg"
+      ],
+      amenities: ["Piscina", "Gimnasio", "Seguridad 24/7", "Estacionamiento"],
+      badges: [
+        { type: PromotionType.FREE_COMMISSION, label: "Comisión gratis", tag: "Exclusivo" },
+        { type: PromotionType.NO_AVAL, label: "Sin aval", tag: "Flexible" }
+      ],
+      units: [
+        {
+          id: "101",
+          tipologia: "1D1B",
+          m2: 45,
+          price: 350000,
+          disponible: true,
+          petFriendly: true,
+          estacionamiento: true,
+          bodega: false,
+          piso: 1,
+          orientacion: "N" as const,
+          parkingOptions: ["Estacionamiento incluido"],
+          storageOptions: []
+        }
+      ],
+      serviceLevel: "pro" as const,
+      typologySummary: [{ key: "1D1B", label: "1 Dormitorio 1 Baño", count: 1, minPrice: 350000 }],
+      precioDesde: 350000,
+      precio_hasta: 350000,
+      hasAvailability: true
+    },
+    {
+      id: "mock-2",
+      slug: "edificio-mock-2",
+      name: "Torre Providencia Central",
+      comuna: "Providencia",
+      address: "Av. Providencia 5678, Providencia",
+      coverImage: "/images/edificio/original_05CC1BCB-6719-A6F3-4299-F6078DC02E05-mg0345.jpg",
+      gallery: [
+        "/images/edificio/original_05CC1BCB-6719-A6F3-4299-F6078DC02E05-mg0345.jpg",
+        "/images/edificio/original_79516B40-7BA9-4F4E-4F7D-7BA4C0A2A938-mg0578.jpg"
+      ],
+      amenities: ["Terraza", "Sala de eventos", "Bicicletero", "Lavandería"],
+      badges: [
+        { type: PromotionType.NO_GUARANTEE, label: "Precio fijo", tag: "Estable" },
+        { type: PromotionType.FREE_COMMISSION, label: "50% OFF", tag: "Primer mes" }
+      ],
+      units: [
+        {
+          id: "205",
+          tipologia: "2D1B",
+          m2: 65,
+          price: 480000,
+          disponible: true,
+          petFriendly: false,
+          estacionamiento: true,
+          bodega: true,
+          piso: 2,
+          orientacion: "E" as const,
+          parkingOptions: ["Estacionamiento incluido"],
+          storageOptions: ["Bodega incluida"]
+        }
+      ],
+      serviceLevel: "standard" as const,
+      typologySummary: [{ key: "2D1B", label: "2 Dormitorios 1 Baño", count: 1, minPrice: 480000 }],
+      precioDesde: 480000,
+      precio_hasta: 480000,
+      hasAvailability: true
+    },
+    {
+      id: "mock-3",
+      slug: "edificio-mock-3",
+      name: "Complejo Ñuñoa Residencial",
+      comuna: "Ñuñoa",
+      address: "Av. Grecia 9012, Ñuñoa",
+      coverImage: "/images/edificio/original_311AE0D8-2A11-2E32-04F0-829F5F46775F-mg0348.jpg",
+      gallery: [
+        "/images/edificio/original_311AE0D8-2A11-2E32-04F0-829F5F46775F-mg0348.jpg",
+        "/images/edificio/original_58D0B1B6-BDBF-2FEB-A92F-82493157ADA7-mg0731.jpg"
+      ],
+      amenities: ["Quincho", "Sala gourmet", "Conserjería", "Ascensor"],
+      badges: [
+        { type: PromotionType.NO_AVAL, label: "Opción sin aval", tag: "Sin aval" },
+        { type: PromotionType.FREE_COMMISSION, label: "Comisión gratis", tag: "Exclusivo" }
+      ],
+      units: [
+        {
+          id: "301",
+          tipologia: "3D2B",
+          m2: 85,
+          price: 650000,
+          disponible: true,
+          petFriendly: true,
+          estacionamiento: true,
+          bodega: true,
+          piso: 3,
+          orientacion: "S" as const,
+          parkingOptions: ["Estacionamiento incluido", "Estacionamiento adicional"],
+          storageOptions: ["Bodega incluida"]
+        }
+      ],
+      serviceLevel: "pro" as const,
+      typologySummary: [{ key: "3D2B", label: "3 Dormitorios 2 Baños", count: 1, minPrice: 650000 }],
+      precioDesde: 650000,
+      precio_hasta: 650000,
+      hasAvailability: true
+    }
+  ];
+
+  for (let i = 0; i < count && i < mockData.length; i++) {
+    const mock = mockData[i];
+    // Ajustar el precio para que sea similar al edificio actual
+    const currentPrice = calculatePrecioDesde(current.units);
+    const adjustedPrice = currentPrice ? currentPrice * (0.8 + Math.random() * 0.4) : mock.precioDesde;
+    
+    mockBuildings.push({
+      ...mock,
+      precioDesde: Math.round(adjustedPrice),
+      precio_hasta: Math.round(adjustedPrice),
+      units: mock.units.map(unit => ({
+        ...unit,
+        price: Math.round(adjustedPrice)
+      }))
+    });
+  }
+
+  return mockBuildings;
 }
 
 export async function createBooking(payload: BookingRequest): Promise<{ id: string }>{
