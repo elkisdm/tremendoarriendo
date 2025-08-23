@@ -128,155 +128,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Variantes de animación para badges escalonados - MEJORADAS
-  const badgeVariants = {
-    hidden: { opacity: 0, y: -20, scale: 0.8, rotateX: -15 },
-    visible: (i: number) => ({
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      rotateX: 0,
-      transition: {
-        delay: i * 0.08,
-        duration: 0.5,
-        ease: [0.25, 0.46, 0.45, 0.94],
-        type: "spring",
-        stiffness: 100
-      }
-    }),
-    hover: {
-      scale: 1.05,
-      y: -2,
-      transition: {
-        duration: 0.2,
-        ease: "easeOut"
-      }
-    }
-  };
 
-  // Variantes para sticky top - MEJORADAS
-  const stickyVariants = {
-    hidden: {
-      opacity: 0,
-      y: -30,
-      scale: 0.9,
-      filter: "blur(8px)",
-      rotateX: -10
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      filter: "blur(0px)",
-      rotateX: 0,
-      transition: {
-        duration: 0.4,
-        ease: [0.25, 0.46, 0.45, 0.94],
-        type: "spring",
-        stiffness: 120
-      }
-    },
-    exit: {
-      opacity: 0,
-      y: -20,
-      scale: 0.95,
-      transition: {
-        duration: 0.3,
-        ease: "easeIn"
-      }
-    }
-  };
-
-  // Variantes para CTAs premium - MEJORADAS
-  const ctaVariants = {
-    hover: {
-      scale: 1.03,
-      y: -2,
-      boxShadow: "0 20px 25px -5px rgba(59, 130, 246, 0.25), 0 10px 10px -5px rgba(0, 0, 0, 0.1)",
-      transition: {
-        duration: 0.3,
-        ease: [0.25, 0.46, 0.45, 0.94]
-      }
-    },
-    tap: {
-      scale: 0.97,
-      y: 0,
-      transition: {
-        duration: 0.1,
-        ease: "easeOut"
-      }
-    }
-  };
-
-  // Variantes para scroll animations - MEJORADAS
-  const scrollVariants = {
-    hidden: {
-      opacity: 0,
-      y: 60,
-      scale: 0.95
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: {
-        duration: 0.7,
-        ease: [0.25, 0.46, 0.45, 0.94],
-        type: "spring",
-        stiffness: 80
-      }
-    }
-  };
-
-  // NUEVAS VARIANTES PARA MEJORAR LA EXPERIENCIA
-  // Variantes para hero section
-  const heroVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.8,
-        ease: [0.25, 0.46, 0.45, 0.94],
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  // Variantes para elementos de hero
-  const heroItemVariants = {
-    hidden: { opacity: 0, x: -20 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: {
-        duration: 0.6,
-        ease: [0.25, 0.46, 0.45, 0.94]
-      }
-    }
-  };
-
-  // Variantes para características principales
-  const featureVariants = {
-    hidden: { opacity: 0, scale: 0.9 },
-    visible: (i: number) => ({
-      opacity: 1,
-      scale: 1,
-      transition: {
-        delay: i * 0.05,
-        duration: 0.5,
-        ease: [0.25, 0.46, 0.45, 0.94]
-      }
-    }),
-    hover: {
-      scale: 1.02,
-      y: -2,
-      transition: {
-        duration: 0.2,
-        ease: "easeOut"
-      }
-    }
-  };
 
   const handleUnitChange = (unit: Unit) => {
     setSelectedUnit(unit);
@@ -503,23 +355,13 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
 
       <main id="main-content" role="main" className="min-h-screen bg-bg text-text">
         <div className="container mx-auto px-4 py-6 max-w-7xl">
-          {/* Header Section Mejorado */}
-          <motion.div
-            className="mb-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
+          {/* Header Section */}
+          <div className="mb-6">
             <Header />
-          </motion.div>
+          </div>
 
           {/* Breadcrumbs estratégicos */}
-          <motion.div
-            className="mb-4"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
-          >
+          <div className="mb-4">
             <nav className="flex items-center space-x-2 text-sm text-muted-foreground">
               <a href="/" className="hover:text-foreground transition-colors">Home</a>
               <ChevronRight className="w-4 h-4" />
@@ -531,105 +373,22 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
               <ChevronRight className="w-4 h-4" />
               <span className="text-foreground font-medium">{selectedUnit?.tipologia}</span>
             </nav>
-          </motion.div>
+          </div>
 
-          {/* HERO SECTION REDISEÑADO - JERARQUÍA VISUAL MEJORADA */}
-          <motion.div
-            className="mb-8"
-            variants={heroVariants}
-            initial="hidden"
-            animate="visible"
-          >
-            {/* Nuevo Header Mejorado con Opciones */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-6">
-              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                {/* Información Principal */}
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-purple-600">
-                      <span className="text-sm font-bold text-white">E</span>
-                    </div>
-                    <div>
-                      <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-                        {building.name}
-                      </h1>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        {building.comuna} • {selectedUnit?.tipologia}
-                      </p>
-                    </div>
-                  </div>
-                  
-                  {/* Badges de Promociones */}
-                  <div className="flex flex-wrap gap-2">
-                    <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm font-semibold rounded-lg shadow-md">
-                      <Shield className="w-4 h-4" />
-                      <span>Administración Pro</span>
-                    </div>
-                    <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-green-600 to-green-700 text-white text-sm font-semibold rounded-lg shadow-md">
-                      <DollarSign className="w-4 h-4" />
-                      <span>Comisión Gratis</span>
-                    </div>
-                    <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-sm font-semibold rounded-lg shadow-md">
-                      <Flame className="w-4 h-4" />
-                      <span>50% OFF Primer Mes</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Opciones de Acción */}
-                <div className="flex flex-col sm:flex-row gap-3">
-                  {/* Botón de Favoritos */}
-                  <button className="inline-flex items-center justify-center p-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
-                    <Heart className="w-5 h-5" />
-                  </button>
-                  
-                  {/* Botón de Compartir */}
-                  <button className="inline-flex items-center justify-center p-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
-                    <ExternalLink className="w-5 h-5" />
-                  </button>
-                  
-                  {/* Botón de Contacto Rápido */}
-                  <button className="inline-flex items-center gap-2 px-4 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
-                    <Phone className="w-4 h-4" />
-                    <span className="hidden sm:inline">Contacto Rápido</span>
-                    <span className="sm:hidden">Llamar</span>
-                  </button>
-                </div>
+          {/* HERO PRINCIPAL - SIMPLIFICADO */}
+          {/* Badges destacados arriba */}
+          <div className="mb-6">
+            <div className="flex flex-wrap gap-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm font-semibold rounded-lg shadow-md">
+                <Shield className="w-4 h-4" />
+                <span>Administración Pro</span>
               </div>
-
-              {/* Información Adicional */}
-              <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-600">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-gray-500" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
-                      {building.address}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Bed className="w-4 h-4 text-gray-500" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
-                      {selectedUnit?.tipologia}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Square className="w-4 h-4 text-gray-500" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
-                      {selectedUnit?.m2} m²
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Building2 className="w-4 h-4 text-gray-500" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
-                      Piso {selectedUnit?.piso}
-                    </span>
-                  </div>
-                </div>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-green-600 to-green-700 text-white text-sm font-semibold rounded-lg shadow-md">
+                <DollarSign className="w-4 h-4" />
+                <span>Comisión Gratis</span>
               </div>
             </div>
-          </motion.div>
-
-
+          </div>
 
           {/* LAYOUT 2 COLUMNAS - DISEÑO MINIMALISTA OPTIMIZADO */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
@@ -681,47 +440,36 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                       { icon: CheckCircle, label: "Opción sin aval" },
                       { icon: DollarSign, label: "Comisión gratis" }
                     ].map((badge, i) => (
-                      <motion.div
+                      <div
                         key={badge.label}
-                        custom={i}
-                        variants={badgeVariants}
-                        initial="hidden"
-                        animate="visible"
-                        whileHover="hover"
                         className="flex items-center gap-1.5 p-1.5 bg-orange-500 text-white rounded-md border border-orange-400 shadow-md cursor-pointer hover:bg-orange-600 transition-colors"
                       >
                         <badge.icon className="w-3 h-3" />
                         <span className="text-xs font-medium">{badge.label}</span>
-                      </motion.div>
+                      </div>
                     ))}
                   </div>
                 </div>
 
                 {/* CTAs */}
                 <div className="space-y-3 pt-2">
-                  <motion.button
+                  <button
                     onClick={handleBookingClick}
-                    variants={ctaVariants}
-                    whileHover="hover"
-                    whileTap="tap"
-                    className="w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500 transition-all duration-200 shadow-sm hover:shadow-md"
+                    className="w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500 transition-all duration-200 shadow-sm hover:shadow-md hover:scale-[1.02] active:scale-[0.98]"
                     aria-label="Agendar visita a la propiedad"
                   >
                     <Phone className="w-4 h-4 mr-2" />
                     Agendar visita
-                  </motion.button>
+                  </button>
 
-                  <motion.button
+                  <button
                     onClick={handleWhatsAppClick}
-                    variants={ctaVariants}
-                    whileHover="hover"
-                    whileTap="tap"
-                    className="w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500 transition-all duration-200 shadow-sm hover:shadow-md"
+                    className="w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500 transition-all duration-200 shadow-sm hover:shadow-md hover:scale-[1.02] active:scale-[0.98]"
                     aria-label="Contactar por WhatsApp"
                   >
                     <MessageCircle className="w-4 h-4 mr-2" />
                     Hablar por WhatsApp
-                  </motion.button>
+                  </button>
 
                   {whatsappUrl && (
                     <motion.a
@@ -729,8 +477,8 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                       onClick={handleWhatsAppClick}
                       target="_blank"
                       rel="noopener noreferrer"
-                      variants={ctaVariants}
-                      whileHover="hover"
+                      
+                      
                       whileTap="tap"
                       className="w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500 transition-all duration-200 shadow-sm hover:shadow-md"
                       aria-label="Contactar por WhatsApp sobre esta propiedad"
@@ -773,9 +521,9 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
           {/* CARACTERÍSTICAS PRINCIPALES - ANCHURA COMPLETA - ANIMADA */}
           <motion.div
             className="mb-8"
-            variants={scrollVariants}
-            initial="hidden"
-            whileInView="visible"
+            
+            
+            whileInView="animate"
             viewport={{ once: true, amount: 0.3 }}
           >
             <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
@@ -784,9 +532,9 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                 {/* Dormitorios */}
                 <motion.div
                   className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
-                  variants={featureVariants}
-                  custom={0}
-                  whileHover="hover"
+                  
+                  
+                  
                 >
                   <Bed className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                   <div>
@@ -798,9 +546,9 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                 {/* Baños */}
                 <motion.div
                   className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
-                  variants={featureVariants}
-                  custom={1}
-                  whileHover="hover"
+                  
+                  
+                  
                 >
                   <Bath className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                   <div>
@@ -812,9 +560,9 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                 {/* Metros cuadrados interior */}
                 <motion.div
                   className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
-                  variants={featureVariants}
-                  custom={2}
-                  whileHover="hover"
+                  
+                  
+                  
                 >
                   <Square className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                   <div>
@@ -826,9 +574,9 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                 {/* Metros cuadrados exterior */}
                 <motion.div
                   className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
-                  variants={featureVariants}
-                  custom={3}
-                  whileHover="hover"
+                  
+                  
+                  
                 >
                   <Layers className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                   <div>
@@ -840,9 +588,9 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                 {/* Piso */}
                 <motion.div
                   className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
-                  variants={featureVariants}
-                  custom={4}
-                  whileHover="hover"
+                  
+                  
+                  
                 >
                   <Building2 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                   <div>
@@ -854,9 +602,9 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                 {/* Orientación */}
                 <motion.div
                   className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
-                  variants={featureVariants}
-                  custom={5}
-                  whileHover="hover"
+                  
+                  
+                  
                 >
                   <Compass className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
                   <div>
@@ -868,9 +616,9 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                 {/* Mascotas */}
                 <motion.div
                   className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
-                  variants={featureVariants}
-                  custom={6}
-                  whileHover="hover"
+                  
+                  
+                  
                 >
                   <PawPrint className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                   <div>
@@ -882,9 +630,9 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                 {/* Tipo de amoblado */}
                 <motion.div
                   className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
-                  variants={featureVariants}
-                  custom={7}
-                  whileHover="hover"
+                  
+                  
+                  
                 >
                   <Refrigerator className="w-5 h-5 text-green-600 dark:text-green-400" />
                   <div>
@@ -896,9 +644,9 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                 {/* Estacionamiento */}
                 <motion.div
                   className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
-                  variants={featureVariants}
-                  custom={8}
-                  whileHover="hover"
+                  
+                  
+                  
                 >
                   <Car className="w-5 h-5 text-orange-600 dark:text-orange-400" />
                   <div>
@@ -910,9 +658,9 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                 {/* Bodega */}
                 <motion.div
                   className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
-                  variants={featureVariants}
-                  custom={9}
-                  whileHover="hover"
+                  
+                  
+                  
                 >
                   <Package className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                   <div>
@@ -924,9 +672,9 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                 {/* Habitantes */}
                 <motion.div
                   className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
-                  variants={featureVariants}
+                  
                   custom={10}
-                  whileHover="hover"
+                  
                 >
                   <Users className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                   <div>
@@ -979,9 +727,9 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
             {showStickyCTA && (
               <motion.div
                 className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50"
-                variants={stickyVariants}
-                initial="hidden"
-                animate="visible"
+                
+                
+                
                 exit="exit"
               >
                 <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-white/20 dark:border-gray-700/50 max-w-sm">
@@ -1014,8 +762,8 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                   <div className="space-y-2">
                     <motion.button
                       onClick={handleBookingClick}
-                      variants={ctaVariants}
-                      whileHover="hover"
+                      
+                      
                       whileTap="tap"
                       className="w-full inline-flex items-center justify-center px-4 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm font-medium rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-sm"
                       aria-label="Agendar visita a la propiedad"
@@ -1030,8 +778,8 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                         onClick={handleWhatsAppClick}
                         target="_blank"
                         rel="noopener noreferrer"
-                        variants={ctaVariants}
-                        whileHover="hover"
+                        
+                        
                         whileTap="tap"
                         className="w-full inline-flex items-center justify-center px-4 py-2.5 bg-gradient-to-r from-green-600 to-green-700 text-white text-sm font-medium rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200 shadow-sm"
                         aria-label="Contactar por WhatsApp sobre esta propiedad"
