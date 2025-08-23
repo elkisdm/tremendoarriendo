@@ -29,6 +29,7 @@ export default function VisitSchedulerWrapper({
     // Escuchar eventos personalizados para abrir el modal desde otros componentes
     useEffect(() => {
         const handleOpenModal = () => {
+            console.log('Evento openVisitScheduler recibido, abriendo modal');
             openModal();
         };
 

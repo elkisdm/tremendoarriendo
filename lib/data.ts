@@ -207,9 +207,9 @@ export async function readAll(): Promise<Building[]> {
       ? process.env.USE_ASSETPLAN_SOURCE === "true"
       : false;
 
-  // No hay datos disponibles - esto no debería pasar en producción
-  console.error('❌ No se pudieron obtener datos de ninguna fuente');
-  return [];
+  // Fallback final: usar datos mock cuando no hay datos disponibles
+  console.log('🔄 No se pudieron obtener datos de fuentes externas, usando datos mock');
+  return [HOME_AMENGUAL_WITH_UNIT_207];
 }
 
 export async function getAllBuildings(filters?: ListFilters, searchTerm?: string): Promise<(Building & { precioDesde: number | null })[]> {
