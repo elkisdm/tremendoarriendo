@@ -50,17 +50,15 @@ export function BookingForm({ buildingId, buildingName, defaultUnitId }: Booking
   }, []);
 
   const validateField = (field: keyof FormData, value: string): string | null => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^[+]?[\d\s-()]{8,}$/;
     switch (field) {
       case "name":
         return value.trim().length < 2 ? "El nombre debe tener al menos 2 caracteres" : null;
-      case "email": {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      case "email":
         return !emailRegex.test(value) ? "Ingresa un email válido" : null;
-      }
-      case "phone": {
-        const phoneRegex = /^[+]?[\d\s-()]{8,}$/;
+      case "phone":
         return !phoneRegex.test(value.replace(/\s/g, "")) ? "Ingresa un teléfono válido" : null;
-      }
       default:
         return null;
     }
