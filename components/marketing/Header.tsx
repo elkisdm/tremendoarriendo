@@ -3,7 +3,7 @@
 import { clx } from '@lib/utils';
 import { ThemeToggle } from '@components/ui/ThemeToggle';
 import { ContactDropdown } from './ContactDropdown';
-import { Heart, Bell, User, Search, Menu, MapPin, Phone } from 'lucide-react';
+import { Heart, Bell, User, Search, Menu } from 'lucide-react';
 
 export function Header() {
   return (
@@ -119,24 +119,6 @@ export function Header() {
             >
               <Menu className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
             </button>
-          </div>
-        </div>
-
-        {/* Información de contacto rápida */}
-        <div className="hidden lg:flex items-center justify-center mt-4 pt-4 border-t border-gray-200/50 dark:border-gray-700/50">
-          <div className="flex items-center space-x-6 text-sm">
-            <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-400">
-              <MapPin className="w-4 h-4 text-blue-600" />
-              <span className="font-medium">Santiago, Chile</span>
-            </div>
-            <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-400">
-              <Phone className="w-4 h-4 text-green-600" />
-              <span className="font-medium">+56 9 1234 5678</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-              <span className="text-green-600 font-semibold">Disponible 24/7</span>
-            </div>
           </div>
         </div>
       </div>
