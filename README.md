@@ -1,5 +1,7 @@
 ## Sistema de Feature Flags - Coming Soon
 
+[![CI](https://github.com/OWNER/REPO/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/REPO/actions/workflows/ci.yml)
+
 El proyecto usa un sistema de feature flags unificado que permite activar/desactivar el modo "coming soon" simplemente con commit & push.
 
 ### Toggle Unificado por Archivo
