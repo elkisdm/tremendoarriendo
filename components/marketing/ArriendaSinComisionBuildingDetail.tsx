@@ -7,6 +7,8 @@ import { ImageGallery } from "@components/gallery/ImageGallery";
 import { AmenityList } from "@components/ui/AmenityList";
 import { PromotionBadge } from "@components/ui/PromotionBadge";
 import { Header } from "@components/marketing/Header";
+import { CommuneLifeSection } from "@components/commune/CommuneLifeSection";
+import { getFlagValue } from "@lib/flags";
 import { ArrowLeft, MapPin, Users, Home, Sparkles, ExternalLink, Calendar, MessageCircle, Clock, Star, CheckCircle, Zap, TrendingUp, Eye, Wifi, Car, Dumbbell, Waves, Shield, Coffee, WashingMachine, AirVent, ParkingCircle, TreePine, Camera, Lock, Wrench, ChevronLeft, ChevronRight, Building2, Bed, Bath, Sofa, Utensils, Baby, Dog, Bike, Percent, CreditCard, Heart, Award, Gift, Tag, DollarSign, ShoppingCart, CalendarDays, Gamepad2, Tv, Music, BookOpen, Palette, Globe, Phone, Mail, Smartphone, Monitor, Printer, Projector, Headphones, Speaker, Lightbulb, Fan, Thermometer, Snowflake, Sun, Moon, Cloud, CloudRain, CloudLightning, CloudSnow, Wind, Umbrella, ChevronUp, ChevronDown, Key, Bell, Flame, Droplets, Trash2, Layers, Pill, Cat, Video, Image as ImageIcon } from "lucide-react";
 
 // Función local para obtener el badge principal
@@ -18,7 +20,7 @@ function getPrimaryBadge(badges?: Array<{ label: string; tag?: string; type: str
 // Función para obtener colores sobrios y consistentes
 const getBadgeColor = (label: string) => {
   const labelLower = label.toLowerCase();
-  
+
   // Solo destacar lo más importante con colores llamativos
   if (labelLower.includes('off') || labelLower.includes('%') || labelLower.includes('descuento')) {
     return "bg-orange-500 text-white border-orange-400 hover:bg-orange-600 shadow-lg";
@@ -26,7 +28,7 @@ const getBadgeColor = (label: string) => {
   if (labelLower.includes('sin comisión') || labelLower.includes('comisión gratis')) {
     return "bg-green-500 text-white border-green-400 hover:bg-green-600 shadow-lg";
   }
-  
+
   // El resto en un color unificado pero destacado
   return "bg-blue-600 text-white border-blue-500 hover:bg-blue-700 shadow-md";
 };
@@ -34,7 +36,7 @@ const getBadgeColor = (label: string) => {
 // Función para acortar texto de badges y mantener armonía visual
 const getShortBadgeText = (label: string) => {
   const labelLower = label.toLowerCase();
-  
+
   if (labelLower.includes('precio fijo 12 meses')) {
     return "Precio fijo";
   }
@@ -53,14 +55,14 @@ const getShortBadgeText = (label: string) => {
   if (labelLower.includes('off') || labelLower.includes('%')) {
     return label; // Mantener descuentos como están
   }
-  
+
   return label; // Mantener otros textos como están
 };
 
 // Función para obtener icono de badge de promoción
 const getBadgeIcon = (label: string) => {
   const labelLower = label.toLowerCase();
-  
+
   if (labelLower.includes('sin comisión') || labelLower.includes('comisión gratis')) {
     return DollarSign;
   }
@@ -91,14 +93,14 @@ const getBadgeIcon = (label: string) => {
   if (labelLower.includes('nuevo')) {
     return Sparkles;
   }
-  
+
   return Sparkles; // Icono por defecto
 };
 
 // Función para obtener icono de amenidad
 const getAmenityIcon = (amenity: string) => {
   const amenityLower = amenity.toLowerCase();
-  
+
   // Comunicación y Tecnología
   if (amenityLower.includes('wifi') || amenityLower.includes('internet')) return Wifi;
   if (amenityLower.includes('cito') || amenityLower.includes('citófono') || amenityLower.includes('citefono') || amenityLower.includes('intercom') || amenityLower.includes('interfono')) return Phone;
@@ -111,13 +113,13 @@ const getAmenityIcon = (amenity: string) => {
   if (amenityLower.includes('audífonos') || amenityLower.includes('headphones')) return Headphones;
   if (amenityLower.includes('altavoces') || amenityLower.includes('speaker')) return Speaker;
   if (amenityLower.includes('música') || amenityLower.includes('music')) return Music;
-  
+
   // Transporte y Acceso
   if (amenityLower.includes('estacionamiento') || amenityLower.includes('parking')) return Car;
   if (amenityLower.includes('bicicletas') || amenityLower.includes('bike')) return Bike;
   if (amenityLower.includes('ascensor') || amenityLower.includes('elevator')) return ChevronUp;
   if (amenityLower.includes('escalera') || amenityLower.includes('stairs')) return ChevronDown;
-  
+
   // Deportes y Recreación
   if (amenityLower.includes('gimnasio') || amenityLower.includes('gym')) return Dumbbell;
   if (amenityLower.includes('piscina') || amenityLower.includes('pool')) return Waves;
@@ -125,14 +127,14 @@ const getAmenityIcon = (amenity: string) => {
   if (amenityLower.includes('juegos') || amenityLower.includes('games')) return Gamepad2;
   if (amenityLower.includes('tenis') || amenityLower.includes('deportes')) return Dumbbell;
   if (amenityLower.includes('yoga') || amenityLower.includes('meditación')) return Heart;
-  
+
   // Seguridad y Control
   if (amenityLower.includes('seguridad') || amenityLower.includes('security')) return Shield;
   if (amenityLower.includes('cctv') || amenityLower.includes('cámara') || amenityLower.includes('camera')) return Camera;
   if (amenityLower.includes('portero') || amenityLower.includes('doorman') || amenityLower.includes('concierge')) return Lock;
   if (amenityLower.includes('control de acceso') || amenityLower.includes('access control')) return Key;
   if (amenityLower.includes('alarma') || amenityLower.includes('alarm')) return Bell;
-  
+
   // Servicios Básicos
   if (amenityLower.includes('aire acondicionado') || amenityLower.includes('ac') || amenityLower.includes('clima')) return AirVent;
   if (amenityLower.includes('calefacción') || amenityLower.includes('heating')) return Thermometer;
@@ -140,19 +142,19 @@ const getAmenityIcon = (amenity: string) => {
   if (amenityLower.includes('ventilador') || amenityLower.includes('fan')) return Fan;
   if (amenityLower.includes('agua') || amenityLower.includes('water')) return Droplets;
   if (amenityLower.includes('gas') || amenityLower.includes('gas')) return Flame;
-  
+
   // Limpieza y Mantenimiento
   if (amenityLower.includes('lavandería') || amenityLower.includes('laundry')) return WashingMachine;
   if (amenityLower.includes('mantenimiento')) return Wrench;
   if (amenityLower.includes('limpieza') || amenityLower.includes('cleaning')) return Sparkles;
   if (amenityLower.includes('basura') || amenityLower.includes('trash')) return Trash2;
-  
+
   // Alimentación y Comercio
   if (amenityLower.includes('café') || amenityLower.includes('cafe')) return Coffee;
   if (amenityLower.includes('restaurante') || amenityLower.includes('restaurant')) return Utensils;
   if (amenityLower.includes('supermercado') || amenityLower.includes('supermarket')) return ShoppingCart;
   if (amenityLower.includes('farmacia') || amenityLower.includes('pharmacy')) return Pill;
-  
+
   // Espacios Comunes
   if (amenityLower.includes('parque') || amenityLower.includes('garden') || amenityLower.includes('jardín')) return TreePine;
   if (amenityLower.includes('terraza') || amenityLower.includes('terrace') || amenityLower.includes('balcón')) return Sun;
@@ -161,7 +163,7 @@ const getAmenityIcon = (amenity: string) => {
   if (amenityLower.includes('biblioteca') || amenityLower.includes('library')) return BookOpen;
   if (amenityLower.includes('sala de estudio') || amenityLower.includes('study room')) return BookOpen;
   if (amenityLower.includes('sala de reuniones') || amenityLower.includes('meeting room')) return Users;
-  
+
   // Habitaciones
   if (amenityLower.includes('dormitorio') || amenityLower.includes('bedroom')) return Bed;
   if (amenityLower.includes('baño') || amenityLower.includes('bathroom')) return Bath;
@@ -169,22 +171,22 @@ const getAmenityIcon = (amenity: string) => {
   if (amenityLower.includes('cocina') || amenityLower.includes('kitchen')) return Utensils;
   if (amenityLower.includes('comedor') || amenityLower.includes('dining')) return Utensils;
   if (amenityLower.includes('oficina') || amenityLower.includes('office')) return Building2;
-  
+
   // Mascotas y Familia
   if (amenityLower.includes('niños') || amenityLower.includes('kids') || amenityLower.includes('children')) return Baby;
   if (amenityLower.includes('mascotas') || amenityLower.includes('pet') || amenityLower.includes('perros')) return Dog;
   if (amenityLower.includes('gatos') || amenityLower.includes('cats')) return Cat;
-  
+
   // Arte y Cultura
   if (amenityLower.includes('arte') || amenityLower.includes('art')) return Palette;
   if (amenityLower.includes('galería') || amenityLower.includes('gallery')) return ImageIcon;
   if (amenityLower.includes('teatro') || amenityLower.includes('theater')) return Video;
-  
+
   // Negocios y Trabajo
   if (amenityLower.includes('coworking') || amenityLower.includes('espacio de trabajo')) return Building2;
   if (amenityLower.includes('internacional') || amenityLower.includes('international')) return Globe;
   if (amenityLower.includes('email') || amenityLower.includes('mail')) return Mail;
-  
+
   // Clima y Ambiente
   if (amenityLower.includes('temperatura') || amenityLower.includes('thermometer')) return Thermometer;
   if (amenityLower.includes('clima') || amenityLower.includes('weather')) return Cloud;
@@ -193,12 +195,12 @@ const getAmenityIcon = (amenity: string) => {
   if (amenityLower.includes('viento') || amenityLower.includes('wind')) return Wind;
   if (amenityLower.includes('sol') || amenityLower.includes('sun')) return Sun;
   if (amenityLower.includes('luna') || amenityLower.includes('moon')) return Moon;
-  
+
   // Edificio y Estructura
   if (amenityLower.includes('edificio') || amenityLower.includes('building')) return Building2;
   if (amenityLower.includes('torre') || amenityLower.includes('tower')) return Building2;
   if (amenityLower.includes('piso') || amenityLower.includes('floor')) return Layers;
-  
+
   return Sparkles; // Icono por defecto
 };
 
@@ -250,9 +252,9 @@ interface ArriendaSinComisionBuildingDetailProps {
 export default function ArriendaSinComisionBuildingDetail({ building }: ArriendaSinComisionBuildingDetailProps) {
   const [hoveredTypology, setHoveredTypology] = useState<string | null>(null);
   const [showUrgencyBanner, setShowUrgencyBanner] = useState(true);
-  
+
   const primaryBadge = getPrimaryBadge(building.badges);
-  
+
   // Memoizar cálculos costosos
   const {
     availableUnits,
@@ -263,10 +265,10 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
     maxPrice,
     avgPrice
   } = useMemo(() => {
-    const availableUnits = building.unidades.filter(unit => 
+    const availableUnits = building.unidades.filter(unit =>
       !unit.estado || unit.estado.toLowerCase() === 'disponible'
     );
-    
+
     const typologyGroups = availableUnits.reduce((acc, unit) => {
       const key = unit.tipologia;
       if (!acc[key]) {
@@ -275,13 +277,13 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
       acc[key].push(unit);
       return acc;
     }, {} as Record<string, typeof availableUnits>);
-    
+
     const availableTypologies = Object.keys(typologyGroups);
     const totalAvailableUnits = availableUnits.length;
     const minPrice = Math.min(...availableUnits.map(u => u.precio));
     const maxPrice = Math.max(...availableUnits.map(u => u.precio));
     const avgPrice = Math.round(availableUnits.reduce((sum, u) => sum + u.precio, 0) / totalAvailableUnits);
-    
+
     return {
       availableUnits,
       typologyGroups,
@@ -338,19 +340,19 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
             className="bg-gradient-to-r from-red-500 via-orange-500 to-amber-500 text-white py-4 relative overflow-hidden"
           >
             <div className="container mx-auto max-w-7xl px-4">
-                          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 text-xs sm:text-sm font-medium">
-              <motion.div
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 1, repeat: Infinity }}
-                className="w-5 h-5 sm:w-6 sm:h-6 bg-white/20 rounded-full flex items-center justify-center"
-              >
-                <Zap className="w-3 h-3 sm:w-4 sm:h-4" />
-              </motion.div>
-              <span>🔥 {recentVisitors} personas viendo</span>
-              <span className="hidden sm:inline">•</span>
-              <span>⏰ Última reserva hace {lastReservation} min</span>
-              <span className="hidden sm:inline">•</span>
-              <span>🎯 {totalAvailableUnits} unidades disponibles</span>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 text-xs sm:text-sm font-medium">
+                <motion.div
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 1, repeat: Infinity }}
+                  className="w-5 h-5 sm:w-6 sm:h-6 bg-white/20 rounded-full flex items-center justify-center"
+                >
+                  <Zap className="w-3 h-3 sm:w-4 sm:h-4" />
+                </motion.div>
+                <span>🔥 {recentVisitors} personas viendo</span>
+                <span className="hidden sm:inline">•</span>
+                <span>⏰ Última reserva hace {lastReservation} min</span>
+                <span className="hidden sm:inline">•</span>
+                <span>🎯 {totalAvailableUnits} unidades disponibles</span>
                 <button
                   onClick={() => setShowUrgencyBanner(false)}
                   className="absolute right-4 text-white/80 hover:text-white transition-colors"
@@ -365,7 +367,7 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
 
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Header Section - Redistribuido para mejor aprovechamiento */}
-        <motion.div 
+        <motion.div
           className="mb-16"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -373,13 +375,13 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
         >
           {/* Header heredado de la landing */}
           <Header />
-          
+
           {/* Separador visual entre header y contenido */}
           <div className="border-b border-border/50 my-8"></div>
-          
+
           {/* Navegación integrada y mejorada */}
           <div className="mb-12 flex items-center justify-between">
-            <button 
+            <button
               onClick={() => {
                 sessionStorage.setItem('from-building-details', 'true');
                 window.location.href = '/arrienda-sin-comision';
@@ -389,7 +391,7 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
               <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
               Volver a edificios
             </button>
-            
+
             {/* Breadcrumb sutil para mejor UX */}
             <div className="text-xs text-muted-foreground">
               <span className="hover:text-foreground transition-colors cursor-pointer">Edificios</span>
@@ -403,14 +405,14 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
             {/* GALERÍA - MÓVIL: ARRIBA, DESKTOP: DERECHA */}
             <div className="order-1 lg:order-2">
               {/* Galería con protagonismo */}
-              <motion.div 
+              <motion.div
                 className="relative bg-gray-50 dark:bg-gray-700 rounded-lg overflow-hidden"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.2, duration: 0.6 }}
               >
-                <ImageGallery 
-                  images={building.gallery} 
+                <ImageGallery
+                  images={building.gallery}
                   coverImage={building.coverImage}
                   autoPlay={true}
                   autoPlayInterval={4000}
@@ -429,7 +431,7 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
                   <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground dark:text-white leading-tight">
                     {building.name}
                   </h1>
-                  
+
                   {/* Ubicación mejorada - Layout horizontal optimizado */}
                   <div className="space-y-3">
                     {/* Comuna prominente */}
@@ -437,7 +439,7 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
                       <MapPin className="h-5 w-5 sm:h-6 sm:w-6 text-blue-500 flex-shrink-0" />
                       <span className="font-semibold text-foreground">{building.comuna}</span>
                     </div>
-                    
+
                     {/* Dirección y botón mapa en línea */}
                     <div className="flex items-center justify-between gap-3">
                       <span className="text-sm sm:text-base text-muted-foreground flex-1">
@@ -455,9 +457,9 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
                       </motion.button>
                     </div>
                   </div>
-                  
+
                   {/* Precio destacado - POSICIÓN ESTRATÉGICA PARA CONVERSIÓN */}
-                  <motion.div 
+                  <motion.div
                     className="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -511,7 +513,7 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
           </div>
 
           {/* Secciones unificadas - Layout de 2 columnas */}
-          <motion.div 
+          <motion.div
             className="mt-8 sm:mt-12 mb-16"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -519,7 +521,7 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
           >
             <div className="max-w-7xl mx-auto">
               <div className="grid lg:grid-cols-2 gap-8 lg:items-start">
-                
+
                 {/* Columna Izquierda - Tipologías */}
                 {availableTypologies.length > 0 && (
                   <div className="space-y-6 h-full flex flex-col">
@@ -535,7 +537,7 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
                         Selecciona la que mejor se adapte a tu estilo de vida
                       </p>
                     </div>
-                    
+
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
                       {availableTypologies.map((typology, index) => {
                         const units = typologyGroups[typology];
@@ -543,13 +545,13 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
                         const maxM2 = Math.max(...units.map(u => u.m2));
                         const minM2 = Math.min(...units.map(u => u.m2));
                         const isHovered = hoveredTypology === typology;
-                        
+
                         return (
                           <motion.div
                             key={typology}
                             className="group relative bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 transition-all duration-300 cursor-pointer overflow-hidden hover:bg-gray-100 dark:hover:bg-gray-600"
-                            whileHover={{ 
-                              scale: 1.02, 
+                            whileHover={{
+                              scale: 1.02,
                               y: -2,
                               boxShadow: "0 8px 25px rgba(0, 0, 0, 0.1)"
                             }}
@@ -626,7 +628,7 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
                         Descubre todas las amenidades disponibles
                       </p>
                     </div>
-                    
+
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
                       {building.amenities.map((amenity, index) => {
                         // Función para obtener el icono apropiado según la comodidad
@@ -674,6 +676,62 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
           </motion.div>
         </motion.div>
       </div>
+
+      {/* Commune Life Section */}
+      {getFlagValue('COMMUNE_SECTION') && building.comuna && (
+        <CommuneLifeSection
+          data={{
+            name: building.comuna,
+            slug: building.comuna.toLowerCase().replace(/\s+/g, '-'),
+            hero: {
+              image: building.coverImage || building.gallery?.[0] || "/images/estacioncentral-cover.jpg",
+              title: `Cómo es vivir en ${building.comuna}`,
+              subtitle: "Descubre la vida urbana en esta comuna estratégicamente ubicada"
+            },
+            highlights: [
+              {
+                icon: "🚇",
+                title: "Conectividad Total",
+                description: "Metro y múltiples líneas de buses te conectan con toda la ciudad en minutos"
+              },
+              {
+                icon: "🏪",
+                title: "Comercio Local",
+                description: "Mercados tradicionales, supermercados y tiendas de barrio a pasos de tu hogar"
+              },
+              {
+                icon: "🌳",
+                title: "Parques Cercanos",
+                description: "Áreas verdes y parques para disfrutar del aire libre"
+              },
+              {
+                icon: "🎓",
+                title: "Educación Superior",
+                description: "Universidades y centros de estudio a pocas cuadras de distancia"
+              }
+            ],
+            map: {
+              image: "/images/estacion-central-map.jpg",
+              pins: [
+                { label: "Metro", position: { x: 45, y: 60 } },
+                { label: "Parque", position: { x: 75, y: 30 } },
+                { label: "Mercado", position: { x: 25, y: 40 } },
+                { label: "Universidad", position: { x: 60, y: 45 } }
+              ]
+            },
+            testimonial: {
+              avatar: "/images/testimonial-avatar.jpg",
+              quote: `Vivir en ${building.comuna} me ha dado la libertad de moverme por toda la ciudad sin problemas. Todo está cerca y bien conectado.`,
+              author: "María González",
+              role: "Arrendataria desde 2022"
+            },
+            cta: {
+              text: `Ver propiedades en ${building.comuna}`,
+              href: `/arrienda-sin-comision?comuna=${building.comuna.toLowerCase().replace(/\s+/g, '-')}`
+            }
+          }}
+        />
+      )}
     </div>
   );
 }

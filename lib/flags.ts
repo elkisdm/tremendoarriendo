@@ -4,7 +4,7 @@ import { featureFlags } from '../config/feature-flags';
 const overrideStore = new Map<string, { value: boolean; expiresAt: number }>();
 
 // Tipos para flags soportados
-export type SupportedFlag = 'comingSoon' | 'CARD_V2' | 'VIRTUAL_GRID' | 'pagination';
+export type SupportedFlag = 'comingSoon' | 'CARD_V2' | 'VIRTUAL_GRID' | 'pagination' | 'COMMUNE_SECTION' | 'FOOTER_ENABLED';
 
 // Interface para override
 export interface FlagOverride {
@@ -37,6 +37,10 @@ export function getFlagValue(flag: SupportedFlag): boolean {
       return process.env.NEXT_PUBLIC_FLAG_VIRTUAL_GRID === "1";
     case 'pagination':
       return Boolean(featureFlags.pagination);
+    case 'COMMUNE_SECTION':
+      return process.env.NEXT_PUBLIC_COMMUNE_SECTION === "1";
+    case 'FOOTER_ENABLED':
+      return process.env.NEXT_PUBLIC_FOOTER_ENABLED !== "0";
     default:
       return false;
   }
@@ -47,7 +51,7 @@ export function applyOverride(override: FlagOverride): { success: boolean; messa
   const { flag, value, duration } = override;
   
   // Validar flag soportado
-  if (!['comingSoon', 'CARD_V2', 'VIRTUAL_GRID', 'pagination'].includes(flag)) {
+  if (!['comingSoon', 'CARD_V2', 'VIRTUAL_GRID', 'pagination', 'COMMUNE_SECTION', 'FOOTER_ENABLED'].includes(flag)) {
     throw new Error(`Flag no soportado: ${flag}`);
   }
   
@@ -81,6 +85,14 @@ export function getFlagsStatus(): Record<SupportedFlag, { value: boolean; overri
     },
     pagination: {
       value: getFlagValue('pagination'),
+      overridden: false
+    },
+    FOOTER_ENABLED: {
+      value: getFlagValue('FOOTER_ENABLED'),
+      overridden: false
+    },
+    COMMUNE_SECTION: {
+      value: getFlagValue('COMMUNE_SECTION'),
       overridden: false
     }
   };

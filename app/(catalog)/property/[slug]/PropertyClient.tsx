@@ -555,141 +555,87 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
             )}
           </motion.div>
 
-          {/* HERO PRINCIPAL - JERARQUÍA VISUAL OPTIMIZADA */}
+          {/* HERO PRINCIPAL - SIMPLIFICADO */}
+          {/* Badges destacados arriba */}
           <motion.div
-            className="mb-8"
+            className="mb-6"
             variants={heroItemVariants}
             initial="hidden"
             animate="visible"
           >
-            {/* Nivel 1: Título Principal */}
-            <div className="mb-6">
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">
-                Departamento {selectedUnit?.id || '207'}
-              </h1>
-              <div className="flex items-center gap-2 text-lg text-gray-600 dark:text-gray-400">
-                <Home className="w-5 h-5" />
-                <span className="font-medium">{building.name}</span>
-                <span>•</span>
-                <span>{building.comuna}</span>
-              </div>
-            </div>
-
-            {/* Nivel 2: Precio Principal y Promociones */}
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-2xl p-6 mb-6 border border-blue-200 dark:border-blue-800">
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                {/* Precio Principal */}
-                <div className="flex-1">
-                  <div className="flex items-baseline gap-3 mb-2">
-                    <span className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
-                      ${originalPrice.toLocaleString('es-CL')}
-                    </span>
-                    <span className="text-lg text-gray-600 dark:text-gray-400">/mes</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-lg font-semibold text-orange-600 dark:text-orange-400">
-                    <Flame className="w-5 h-5" />
-                    <span>50% OFF = ${discountPrice.toLocaleString('es-CL')} primer mes</span>
-                  </div>
-                </div>
-
-                {/* Badge Principal de Promoción */}
-                <motion.div
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white text-sm font-bold rounded-xl shadow-lg"
-                  variants={badgeVariants}
-                  custom={0}
-                  whileHover="hover"
-                >
-                  <Zap className="w-4 h-4" />
-                  ¡OFERTA LIMITADA!
-                </motion.div>
-              </div>
-            </div>
-
-            {/* Nivel 3: Badges Secundarios */}
-            <motion.div
-              className="flex flex-wrap gap-3 mb-6"
-              variants={heroItemVariants}
-              initial="hidden"
-              animate="visible"
-            >
+            <div className="flex flex-wrap gap-2">
               <motion.div
-                className="inline-flex items-center gap-2 px-4 py-2 bg-green-500 text-white text-sm font-semibold rounded-lg border border-green-400 shadow-md"
                 variants={badgeVariants}
-                custom={1}
-                whileHover="hover"
-              >
-                <DollarSign className="w-4 h-4" />
-                Comisión gratis
-              </motion.div>
-              <motion.div
-                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg border border-blue-500 shadow-md"
-                variants={badgeVariants}
-                custom={2}
-                whileHover="hover"
-              >
-                <Star className="w-4 h-4" />
-                Administración Pro
-              </motion.div>
-              <motion.div
-                className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white text-sm font-semibold rounded-lg border border-purple-500 shadow-md"
-                variants={badgeVariants}
-                custom={3}
-                whileHover="hover"
+                initial="hidden"
+                animate="visible"
+                custom={0}
+                className="inline-flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm font-semibold rounded-lg shadow-md"
               >
                 <Shield className="w-4 h-4" />
-                Garantía en cuotas
+                <span>Administración Pro</span>
               </motion.div>
-            </motion.div>
+              <motion.div
+                variants={badgeVariants}
+                initial="hidden"
+                animate="visible"
+                custom={1}
+                className="inline-flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-green-600 to-green-700 text-white text-sm font-semibold rounded-lg shadow-md"
+              >
+                <DollarSign className="w-4 h-4" />
+                <span>Comisión Gratis</span>
+              </motion.div>
+            </div>
           </motion.div>
 
           {/* LAYOUT 2 COLUMNAS - DISEÑO MINIMALISTA OPTIMIZADO */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             {/* COLUMNA IZQUIERDA - INFORMACIÓN PRINCIPAL INTEGRADA */}
             <div>
-              {/* CONTENEDOR PRINCIPAL INTEGRADO - PRECIOS, PROMOCIONES Y CTAS */}
-              <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 space-y-5">
-                {/* UBICACIÓN */}
-                <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    {building.name} - {building.address}, {building.comuna}
-                  </p>
-                </div>
 
-                {/* PRECIOS */}
+
+              {/* INFORMACIÓN DE VALOR Y PROMOCIONES - COMPACTA */}
+              <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700 space-y-4">
+                {/* Título de la propiedad */}
                 <div>
-                  <h2 className="text-base font-semibold text-gray-900 dark:text-white mb-3">Valor arriendo</h2>
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600 dark:text-gray-400">Arriendo mensual:</span>
-                      <span className="text-sm font-medium text-gray-900 dark:text-white">${originalPrice.toLocaleString('es-CL')}</span>
-                    </div>
-                    <div className="flex justify-between items-center bg-orange-50 dark:bg-orange-900/20 p-2 rounded-lg border border-orange-200 dark:border-orange-800">
-                      <span className="text-sm text-orange-700 dark:text-orange-300 font-medium">¡50% OFF primer mes!</span>
-                      <span className="text-lg font-bold text-orange-600 dark:text-orange-400">${discountPrice.toLocaleString('es-CL')}</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600 dark:text-gray-400">Gasto común fijo:</span>
-                      <span className="text-sm font-medium text-gray-900 dark:text-white">${Math.round(originalPrice * 0.21).toLocaleString('es-CL')}</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600 dark:text-gray-400">Garantía:</span>
-                      <span className="text-sm font-medium text-gray-900 dark:text-white">${originalPrice.toLocaleString('es-CL')}</span>
-                    </div>
-                    <div className="flex justify-between items-center bg-green-50 dark:bg-green-900/20 p-2 rounded-lg border border-green-200 dark:border-green-800">
-                      <span className="text-sm text-green-700 dark:text-green-300 font-medium">¡Comisión corretaje GRATIS!</span>
-                      <span className="text-lg font-bold text-green-600 dark:text-green-400 line-through">${Math.round((originalPrice * 0.5) * 1.19).toLocaleString('es-CL')}</span>
-                    </div>
+                  <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                    Departamento {selectedUnit?.id || '207'}
+                  </h1>
+                  <div className="flex items-center gap-2 text-base text-gray-600 dark:text-gray-400">
+                    <Home className="w-4 h-4" />
+                    <span className="font-medium">{building.name}</span>
+                    <span>•</span>
+                    <span>{building.comuna}</span>
+                  </div>
+                </div>
+                {/* Precios principales */}
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Arriendo mensual:</span>
+                    <span className="text-sm font-medium text-gray-900 dark:text-white">${originalPrice.toLocaleString('es-CL')}</span>
+                  </div>
+                  <div className="flex justify-between items-center bg-orange-50 dark:bg-orange-900/20 p-2 rounded-lg border border-orange-200 dark:border-orange-800">
+                    <span className="text-sm text-orange-700 dark:text-orange-300 font-medium">¡50% OFF primer mes!</span>
+                    <span className="text-sm font-bold text-orange-600 dark:text-orange-400">${discountPrice.toLocaleString('es-CL')}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Gasto común:</span>
+                    <span className="text-sm font-medium text-gray-900 dark:text-white">${Math.round(originalPrice * 0.21).toLocaleString('es-CL')}</span>
+                  </div>
+                  <div className="flex justify-between items-center bg-green-50 dark:bg-green-900/20 p-2 rounded-lg border border-green-200 dark:border-green-800">
+                    <span className="text-sm text-green-700 dark:text-green-300 font-medium">¡Comisión GRATIS!</span>
+                    <span className="text-sm font-bold text-green-600 dark:text-green-400 line-through">${Math.round((originalPrice * 0.5) * 1.19).toLocaleString('es-CL')}</span>
                   </div>
                 </div>
 
-                {/* BADGES DE PROMOCIÓN INTEGRADOS - ANIMADOS */}
+                {/* Badges de promociones */}
                 <div>
                   <h3 className="text-xs font-semibold text-gray-900 dark:text-white mb-2">Promociones actuales</h3>
                   <div className="grid grid-cols-2 gap-1.5">
                     {[
                       { icon: Flame, label: "50% OFF primer mes" },
                       { icon: Calendar, label: "Precio fijo 12 meses" },
-                      { icon: CheckCircle, label: "Opción sin aval" }
+                      { icon: CheckCircle, label: "Opción sin aval" },
+                      { icon: DollarSign, label: "Comisión gratis" }
                     ].map((badge, i) => (
                       <motion.div
                         key={badge.label}
@@ -707,18 +653,30 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                   </div>
                 </div>
 
-                {/* CTAs PRINCIPALES - JERARQUÍA VISUAL MEJORADA */}
-                <div className="space-y-3">
+                {/* CTAs */}
+                <div className="space-y-3 pt-2">
                   <motion.button
                     onClick={handleBookingClick}
                     variants={ctaVariants}
                     whileHover="hover"
                     whileTap="tap"
-                    className="w-full inline-flex items-center justify-center px-6 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-lg font-bold rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500 transition-all duration-200 shadow-lg hover:shadow-xl min-h-[56px]"
+                    className="w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500 transition-all duration-200 shadow-sm hover:shadow-md"
                     aria-label="Agendar visita a la propiedad"
                   >
-                    <Phone className="w-5 h-5 mr-3" />
+                    <Phone className="w-4 h-4 mr-2" />
                     Agendar visita
+                  </motion.button>
+
+                  <motion.button
+                    onClick={handleWhatsAppClick}
+                    variants={ctaVariants}
+                    whileHover="hover"
+                    whileTap="tap"
+                    className="w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500 transition-all duration-200 shadow-sm hover:shadow-md"
+                    aria-label="Contactar por WhatsApp"
+                  >
+                    <MessageCircle className="w-4 h-4 mr-2" />
+                    Hablar por WhatsApp
                   </motion.button>
 
                   {whatsappUrl && (
@@ -730,10 +688,10 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                       variants={ctaVariants}
                       whileHover="hover"
                       whileTap="tap"
-                      className="w-full inline-flex items-center justify-center px-6 py-4 bg-gradient-to-r from-green-600 to-green-700 text-white text-lg font-bold rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500 transition-all duration-200 shadow-lg hover:shadow-xl min-h-[56px]"
+                      className="w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500 transition-all duration-200 shadow-sm hover:shadow-md"
                       aria-label="Contactar por WhatsApp sobre esta propiedad"
                     >
-                      <MessageCircle className="w-5 h-5 mr-3" />
+                      <MessageCircle className="w-4 h-4 mr-2" />
                       Hablar por WhatsApp
                     </motion.a>
                   )}
@@ -742,7 +700,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
             </div>
 
             {/* COLUMNA DERECHA - GALERÍA */}
-            <div>
+            <div className="pt-0">
               <section aria-label="Galería de imágenes">
                 <ImageGallery
                   images={building.gallery}
@@ -1753,6 +1711,8 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
             <h2 className="text-2xl font-bold mb-6">Propiedades relacionadas</h2>
             <RelatedList buildings={relatedBuildings} />
           </section>
+
+
 
           {/* Sticky Mobile CTA */}
           <StickyMobileCTA />

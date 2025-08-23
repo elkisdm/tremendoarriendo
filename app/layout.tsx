@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@lib/theme-context";
+import { Footer } from "@components/marketing/Footer";
+import { getFlagValue } from "@lib/flags";
 
 export const metadata: Metadata = {
   title: {
@@ -11,7 +13,7 @@ export const metadata: Metadata = {
   description: "Arrienda departamentos con 0% de comisión. Compara, agenda visita y arrienda fácil.",
 };
 
-const inter = Inter({ 
+const inter = Inter({
   subsets: ["latin"],
   display: 'swap',
   preload: true,
@@ -38,7 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body 
+      <body
         className="min-h-screen bg-bg text-text"
         suppressHydrationWarning={true}
       >
@@ -46,9 +48,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <a href="#main-content" className="skip-link">
             Saltar al contenido principal
           </a>
-          <main className="min-h-screen bg-background text-foreground">
-            {children}
-          </main>
+          <div className="flex flex-col min-h-screen">
+            <main className="flex-1 bg-background text-foreground">
+              {children}
+            </main>
+            {getFlagValue('FOOTER_ENABLED') && <Footer />}
+          </div>
         </ThemeProvider>
       </body>
     </html>

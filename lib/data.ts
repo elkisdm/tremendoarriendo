@@ -266,84 +266,89 @@ export async function getRelatedBuildings(slug: string, n = 3): Promise<(Buildin
   if (slug === "home-amengual") {
     current = HOME_AMENGUAL_WITH_UNIT_207;
   } else {
-    const all = await readAll();
-    current = all.find((b) => b.slug === slug) || null;
+    try {
+      const all = await readAll();
+      current = all.find((b) => b.slug === slug) || null;
+    } catch (error) {
+      console.log(`⚠️ Error obteniendo edificio ${slug}, usando mocks`);
+      current = null;
+    }
   }
   
   if (!current) {
-    console.log(`❌ No se encontró el edificio actual: ${slug}`);
-    return [];
+    console.log(`❌ No se encontró el edificio actual: ${slug}, usando mocks`);
+    // Usar mocks cuando no hay datos disponibles
+    return generateMockRelatedBuildings(HOME_AMENGUAL_WITH_UNIT_207, n);
   }
   
-  // Obtener todos los edificios para buscar relacionados
-  const all = await readAll();
-  
-  // Calcular precio desde para todas las propiedades
-  const withPrecio = all
-    .filter((b) => b.slug !== slug)
-    .map((b) => ({ ...b, precioDesde: calculatePrecioDesde(b.units) }));
+  try {
+    // Obtener todos los edificios para buscar relacionados
+    const all = await readAll();
+    
+    // Calcular precio desde para todas las propiedades
+    const withPrecio = all
+      .filter((b) => b.slug !== slug)
+      .map((b) => ({ ...b, precioDesde: calculatePrecioDesde(b.units) }));
 
-  // Función para calcular similitud entre propiedades
-  const calculateSimilarity = (building: Building & { precioDesde: number | null }): number => {
-    let score = 0;
-    
-    // Misma comuna (peso alto)
-    if (building.comuna === current.comuna) {
-      score += 50;
-    }
-    
-    // Rango de precio similar (peso medio)
-    const currentPrice = calculatePrecioDesde(current.units);
-    if (currentPrice !== null && building.precioDesde !== null) {
-      const priceDiff = Math.abs(building.precioDesde - currentPrice);
-      const priceSimilarity = Math.max(0, 100 - (priceDiff / currentPrice) * 100);
-      score += priceSimilarity * 0.3;
-    }
-    
-    // Mismo nivel de servicio (peso medio)
-    if (building.serviceLevel === current.serviceLevel) {
-      score += 20;
-    }
-    
-    // Tipologías similares (peso bajo)
-    const currentTypologies = current.typologySummary?.map((t: any) => t.key) || [];
-    const buildingTypologies = building.typologySummary?.map((t: any) => t.key) || [];
-    const commonTypologies = currentTypologies.filter((t: string) => buildingTypologies.includes(t));
-    score += commonTypologies.length * 5;
-    
-    // Disponibilidad (peso bajo)
-    const availableUnits = building.units.filter((u: Unit) => u.disponible);
-    if (availableUnits.length > 0) {
-      score += 10;
-    }
-    
-    return score;
-  };
+    // Función para calcular similitud entre propiedades
+    const calculateSimilarity = (building: Building & { precioDesde: number | null }): number => {
+      let score = 0;
+      
+      // Misma comuna (peso alto)
+      if (building.comuna === current.comuna) {
+        score += 50;
+      }
+      
+      // Rango de precio similar (peso medio)
+      const currentPrice = calculatePrecioDesde(current.units);
+      if (currentPrice !== null && building.precioDesde !== null) {
+        const priceDiff = Math.abs(building.precioDesde - currentPrice);
+        const priceSimilarity = Math.max(0, 100 - (priceDiff / currentPrice) * 100);
+        score += priceSimilarity * 0.3;
+      }
+      
+      // Mismo nivel de servicio (peso medio)
+      if (building.serviceLevel === current.serviceLevel) {
+        score += 20;
+      }
+      
+      // Tipologías similares (peso bajo)
+      const currentTypologies = current.typologySummary?.map((t: any) => t.key) || [];
+      const buildingTypologies = building.typologySummary?.map((t: any) => t.key) || [];
+      const commonTypologies = currentTypologies.filter((t: string) => buildingTypologies.includes(t));
+      score += commonTypologies.length * 5;
+      
+      // Disponibilidad (peso bajo)
+      const availableUnits = building.units.filter((u: Unit) => u.disponible);
+      if (availableUnits.length > 0) {
+        score += 10;
+      }
+      
+      return score;
+    };
 
-  // Ordenar por similitud y tomar las mejores
-  const sortedBySimilarity = withPrecio
-    .map(building => ({
-      ...building,
-      similarityScore: calculateSimilarity(building)
-    }))
-    .sort((a, b) => b.similarityScore - a.similarityScore)
-    .slice(0, n * 2) // Tomar más propiedades para tener más opciones
-    .map(({ similarityScore, ...building }) => building);
+    // Ordenar por similitud y tomar las mejores
+    const sortedBySimilarity = withPrecio
+      .map(building => ({
+        ...building,
+        similarityScore: calculateSimilarity(building)
+      }))
+      .sort((a, b) => b.similarityScore - a.similarityScore)
+      .slice(0, n * 2) // Tomar más propiedades para tener más opciones
+      .map(({ similarityScore, ...building }) => building);
 
-  // Si no hay suficientes propiedades relacionadas, agregar mocks
-  if (sortedBySimilarity.length < n) {
-    const mockBuildings = generateMockRelatedBuildings(current, n - sortedBySimilarity.length);
-    return [...sortedBySimilarity, ...mockBuildings];
+    // Si no hay suficientes propiedades relacionadas, agregar mocks
+    if (sortedBySimilarity.length < n) {
+      const mockBuildings = generateMockRelatedBuildings(current, n - sortedBySimilarity.length);
+      return [...sortedBySimilarity, ...mockBuildings];
+    }
+
+    return sortedBySimilarity.slice(0, n);
+  } catch (error) {
+    console.log(`⚠️ Error obteniendo propiedades relacionadas, usando mocks`);
+    // Usar mocks cuando hay error
+    return generateMockRelatedBuildings(current, n);
   }
-
-  // Si hay pocas propiedades reales, usar mocks
-  if (sortedBySimilarity.length < 2) {
-    const mockBuildings = generateMockRelatedBuildings(current, n);
-    return mockBuildings;
-  }
-
-  // Retornar solo las primeras n propiedades
-  return sortedBySimilarity.slice(0, n);
 }
 
 // Función para generar mocks de propiedades relacionadas
