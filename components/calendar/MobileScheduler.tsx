@@ -1,30 +1,5 @@
 import { clx } from "@lib/utils";
-
-export type CalendarEvent = {
-  id: string;
-  title: string;
-  start: string; // ISO string
-  end: string; // ISO string
-  location?: string;
-  description?: string;
-  busy?: boolean;
-};
-
-export type TimeRange = {
-  start: string; // '08:00'
-  end: string;   // '18:00'
-};
-
-export type MobileSchedulerProps = {
-  date: string; // YYYY-MM-DD (local)
-  events?: CalendarEvent[];
-  visibleHours?: TimeRange;
-  className?: string;
-  /**
-   * Texto de cabecera (p.ej., nombre de propiedad o contexto)
-   */
-  headerTitle?: string;
-};
+import type { CalendarEvent, TimeRange, MobileSchedulerProps } from "@/types/calendar";
 
 // RSC, no estado/efectos. Interactividad vendrá en cliente.
 export default function MobileScheduler({ date, events = [], visibleHours = { start: "08:00", end: "20:00" }, className, headerTitle }: MobileSchedulerProps) {
@@ -90,7 +65,7 @@ function renderEventsForHour(events: CalendarEvent[], day: string, hour: string)
   return (
     <ul className="flex h-full gap-1 p-0.5">
       {items.map((ev) => (
-        <li key={ev.id} className={clx(
+        <li key={String(ev.id)} className={clx(
           "flex-1 rounded-lg border text-[10px] leading-tight px-2 py-1",
           "bg-violet-50 text-violet-900 border-violet-200 dark:bg-violet-900/30 dark:text-violet-100 dark:border-violet-700",
           ev.busy && "opacity-60"
