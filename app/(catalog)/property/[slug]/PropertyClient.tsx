@@ -659,11 +659,11 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
               </div>
 
               {/* Metro cercano - JERARQUÍA VISUAL MEJORADA */}
-              <div className="mt-6 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
+              <div className="mt-6 p-6 bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-900/20 dark:to-pink-900/20 rounded-xl border border-red-200 dark:border-red-800">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     {/* Ícono de Metro de Santiago - MÁS PROMINENTE */}
-                    <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <div className="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center shadow-lg">
                       <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 920 400" preserveAspectRatio="xMidYMid meet">
                         <g transform="translate(0.000000,400.000000) scale(0.100000,-0.100000)" fill="currentColor" stroke="none">
                           <path d="M4220 3926 c-616 -71 -1141 -313 -1522 -702 -295 -301 -452 -614 -513 -1023 -20 -140 -19 -252 5 -407 33 -220 90 -395 187 -574 318 -589 990 -1018 1750 -1116 65 -8 154 -20 198 -26 157 -21 478 4 740 57 854 173 1534 750 1715 1455 76 294 77 540 5 821 -130 502 -497 943 -1016 1217 -272 145 -542 233 -864 282 -177 28 -515 35 -685 16z m700 -274 c265 -50 431 -103 645 -206 533 -259 880 -666 990 -1166 26 -118 31 -343 11 -475 -113 -729 -788 -1307 -1691 -1447 -199 -31 -539 -30 -740 0 -265 41 -470 105 -700 217 -301 147 -527 330 -709 572 -196 261 -295 550 -296 858 0 309 104 612 298 870 67 88 235 258 327 330 294 230 656 385 1036 444 74 11 148 23 164 25 17 2 149 3 295 1 210 -3 287 -8 370 -23z" />
@@ -674,11 +674,13 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                     </div>
                     <div>
                       <div className="text-lg font-bold text-gray-900 dark:text-white">Metro Ecuador</div>
-                      <div className="text-sm text-gray-600 dark:text-gray-400">Línea 1 • 5 minutos, 450 metros</div>
-                      <div className="text-xs text-blue-600 dark:text-blue-400 font-medium mt-1">🚶‍♂️ Caminata rápida</div>
+                      <div className="text-sm text-gray-600 dark:text-gray-400">
+                        <span className="text-red-600 dark:text-red-400 font-semibold">Línea 1</span> • 5 minutos, 450 metros
+                      </div>
+                      <div className="text-xs text-red-600 dark:text-red-400 font-medium mt-1">🚶‍♂️ Caminata rápida</div>
                     </div>
                   </div>
-                  <button className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-md hover:shadow-lg">
+                  <button className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white text-sm font-semibold rounded-lg hover:bg-red-700 transition-all duration-200 shadow-md hover:shadow-lg">
                     <MapPin className="w-4 h-4" />
                     Ver mapa
                   </button>
