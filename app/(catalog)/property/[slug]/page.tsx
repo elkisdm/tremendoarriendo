@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { notFound } from "next/navigation";
 import { getBuildingBySlug, getRelatedBuildings } from "@lib/data";
 import { PropertyClient } from "./PropertyClient";
