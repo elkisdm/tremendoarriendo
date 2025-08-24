@@ -22,8 +22,7 @@ import {
   Wifi,
   Dumbbell,
   Coffee,
-  Calendar,
-  MessageCircle
+  Calendar
 } from "lucide-react";
 import { ImageGallery } from "@components/gallery/ImageGallery";
 import { StickyMobileCTA } from "@components/StickyMobileCTA";
@@ -125,14 +124,18 @@ const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
-    <div
+    <motion.div
       className="border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-shadow duration-300"
+      whileHover={{ scale: 1.01 }}
+      transition={{ duration: 0.2 }}
     >
-      <button
+      <motion.button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full px-6 py-5 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 hover:from-gray-100 hover:to-gray-200 dark:hover:from-gray-700 dark:hover:to-gray-600 transition-all duration-300 flex items-center justify-between text-left group"
         aria-expanded={isOpen}
         aria-controls={`collapsible-${title.toLowerCase().replace(/\s+/g, '-')}`}
+        whileHover={{ backgroundColor: "rgba(59, 130, 246, 0.05)" }}
+        whileTap={{ scale: 0.98 }}
       >
         <div className="flex items-center gap-4">
           {Icon && (
@@ -147,24 +150,32 @@ const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({
             {title}
           </h3>
         </div>
-        <div
+        <motion.div
+          animate={{ rotate: isOpen ? 180 : 0 }}
+          transition={{ duration: 0.3, ease: "easeInOut" }}
           className="p-2 rounded-lg bg-white dark:bg-gray-600 shadow-sm"
         >
           <ChevronDown className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-        </div>
-      </button>
+        </motion.div>
+      </motion.button>
 
-      {isOpen && (
-        <div
-          id={`collapsible-${title.toLowerCase().replace(/\s+/g, '-')}`}
-          className="overflow-hidden"
-        >
-          <div className="px-6 py-6 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-700">
-            {children}
-          </div>
-        </div>
-      )}
-    </div>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.4, ease: "easeInOut" }}
+            id={`collapsible-${title.toLowerCase().replace(/\s+/g, '-')}`}
+            className="overflow-hidden"
+          >
+            <div className="px-6 py-6 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-700">
+              {children}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 };
 
@@ -202,14 +213,6 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedUnit, setSelectedUnit] = useState<Unit | null>(null);
-  const [moveInDate, setMoveInDate] = useState<Date>(() => {
-    const today = new Date();
-    const firstDayNextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1);
-    return firstDayNextMonth;
-  });
-  const [includeParking, setIncludeParking] = useState(false);
-  const [includeStorage, setIncludeStorage] = useState(false);
-  const [isCalculationExpanded, setIsCalculationExpanded] = useState(false);
 
   // Seleccionar unidad por defecto basada en defaultUnitId o la primera disponible
   const getDefaultUnit = useCallback(() => {
@@ -281,116 +284,6 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
     renta_minima: selectedUnit?.renta_minima
   };
 
-  // Función para calcular el primer pago optimizada
-  const calculateFirstPayment = (startDate: Date) => {
-    const RENT = originalPrice;
-    const PARKING_RENT = includeParking ? 50000 : 0;
-    const STORAGE_RENT = includeStorage ? 30000 : 0;
-    const GC_RENT = Math.round(originalPrice * 0.21);
-    const PROMO_RATE = 0.50;
-    const DEPOSIT_MONTHS = 1;
-    const DEPOSIT_INIT_PCT = 0.33;
-    const COMMISSION_RATE = 0.50;
-    const VAT = 0.19;
-    const COMMISSION_BONIF_RATE = 1;
-
-    const daysInMonth = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0).getDate();
-    const daysCharged = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0).getTime() - startDate.getTime() + (24 * 60 * 60 * 1000);
-    const daysChargedCount = Math.ceil(daysCharged / (24 * 60 * 60 * 1000));
-    const prorateFactor = daysChargedCount / daysInMonth;
-
-    const promoDays = Math.min(30, daysChargedCount);
-    const regularDays = Math.max(0, daysChargedCount - 30);
-
-    const dailyRent = RENT / 30;
-    const dailyParking = PARKING_RENT / 30;
-    const dailyStorage = STORAGE_RENT / 30;
-
-    const promoRent = Math.round(dailyRent * promoDays * (1 - PROMO_RATE));
-    const regularRent = Math.round(dailyRent * regularDays);
-    const totalRent = promoRent + regularRent;
-
-    const promoParking = Math.round(dailyParking * promoDays * (1 - PROMO_RATE));
-    const regularParking = Math.round(dailyParking * regularDays);
-    const totalParking = promoParking + regularParking;
-
-    const promoStorage = Math.round(dailyStorage * promoDays * (1 - PROMO_RATE));
-    const regularStorage = Math.round(dailyStorage * regularDays);
-    const totalStorage = promoStorage + regularStorage;
-
-    const netRentStorage = totalRent + totalParking + totalStorage;
-    const proratedGC = Math.round(GC_RENT * prorateFactor);
-    const totalDeposit = Math.round(DEPOSIT_MONTHS * (RENT + PARKING_RENT + STORAGE_RENT));
-    const initialDeposit = Math.round(totalDeposit * DEPOSIT_INIT_PCT);
-
-    const commissionBase = Math.round(COMMISSION_RATE * (RENT + PARKING_RENT + STORAGE_RENT));
-    const commissionVAT = Math.round(commissionBase * VAT);
-    const totalCommission = commissionBase + commissionVAT;
-    const commissionToPay = Math.max(0, Math.round(totalCommission * (1 - COMMISSION_BONIF_RATE)));
-
-    const totalFirstPayment = netRentStorage + proratedGC + initialDeposit + commissionToPay;
-
-    return {
-      netRentStorage,
-      proratedGC,
-      initialDeposit,
-      commissionToPay,
-      totalFirstPayment,
-      daysChargedCount,
-      daysInMonth,
-      prorateFactor,
-      promoDays,
-      regularDays,
-      totalRent,
-      totalParking,
-      totalStorage
-    };
-  };
-
-  const firstPaymentCalculation = calculateFirstPayment(moveInDate);
-
-  // Función para formatear fecha
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('es-CL', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    });
-  };
-
-  const formatDateForSummary = (date: Date) => {
-    return date.toLocaleDateString('es-CL', {
-      day: 'numeric',
-      month: 'short'
-    });
-  };
-
-  const getSummaryText = () => {
-    const dateText = formatDateForSummary(moveInDate);
-    const total = firstPaymentCalculation.totalFirstPayment.toLocaleString('es-CL');
-    return `Te mudas con $${total} el ${dateText}`;
-  };
-
-  const getSummaryPrice = () => {
-    return firstPaymentCalculation.totalFirstPayment.toLocaleString('es-CL');
-  };
-
-  // Función para manejar cambio de fecha
-  const handleDateChange = (date: Date) => {
-    setMoveInDate(date);
-  };
-
-  // Función para enviar cotización
-  const handleSendQuotation = () => {
-    track("quotation_sent", {
-      property_id: building.id,
-      property_name: building.name,
-      move_in_date: moveInDate.toISOString(),
-      total_amount: firstPaymentCalculation.totalFirstPayment
-    });
-    alert(`Cotización enviada por email para mudanza el ${formatDate(moveInDate)}`);
-  };
-
   // Amenidades del edificio
   const amenidades = [
     { nombre: "WiFi incluido", icon: Wifi, disponible: true },
@@ -440,14 +333,22 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
     <ErrorBoundary>
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
         <main id="main-content" role="main" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Header */}
-          <div className="mb-8">
+          {/* Header con animación de entrada */}
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="mb-8"
+          >
             <Header />
-          </div>
+          </motion.div>
 
           {/* Breadcrumb accesible */}
-          <nav
+          <motion.nav
             aria-label="Navegación de migas de pan"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.4, delay: 0.2, ease: "easeOut" }}
             className="mb-6"
           >
             <ol className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
@@ -475,14 +376,19 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                 {building.name}
               </li>
             </ol>
-          </nav>
+          </motion.nav>
 
           {/* Layout principal: 3 columnas */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Columna principal (2/3) */}
             <div className="lg:col-span-2 space-y-8">
               {/* Hero minimalista */}
-              <section className="space-y-4">
+              <motion.section
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
+                className="space-y-4"
+              >
                 <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">
                   {building.name}
                 </h1>
@@ -494,33 +400,81 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                 {/* Badges principales mejorados */}
                 <div className="flex flex-wrap gap-3 mb-8" role="group" aria-label="Características destacadas">
                   {primaryBadges.map((badge, index) => (
-                    <div
+                    <motion.div
                       key={badge.label}
+                      initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      transition={{
+                        duration: 0.5,
+                        delay: 0.5 + index * 0.1,
+                        type: "spring",
+                        stiffness: 200
+                      }}
+                      whileHover={{
+                        scale: 1.05,
+                        y: -2,
+                        transition: { duration: 0.2 }
+                      }}
+                      whileTap={{ scale: 0.95 }}
                       className={`relative inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r ${badge.bgColor} text-white text-sm font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20`}
                       tabIndex={0}
                       onKeyDown={(e) => handleKeyDown(e, () => { })}
                       role="button"
                       aria-label={badge.label}
                     >
-                      <badge.icon className="w-5 h-5" aria-hidden="true" />
-                      <span>{badge.label}</span>
-                    </div>
+                      {/* Efecto de brillo */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 rounded-2xl opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
+
+                      <badge.icon className="w-5 h-5 relative z-10" aria-hidden="true" />
+                      <span className="relative z-10">{badge.label}</span>
+
+                      {/* Indicador de animación */}
+                      <motion.div
+                        className="absolute -top-1 -right-1 w-3 h-3 bg-white rounded-full"
+                        animate={{
+                          scale: [1, 1.2, 1],
+                          opacity: [0.7, 1, 0.7]
+                        }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity,
+                          delay: index * 0.5
+                        }}
+                      />
+                    </motion.div>
                   ))}
                 </div>
-              </section>
+              </motion.section>
 
               {/* Galería de imágenes */}
-              <section aria-label="Galería de imágenes de la propiedad">
+              <motion.section
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
+                aria-label="Galería de imágenes de la propiedad"
+              >
                 <ImageGallery images={building.gallery} />
-              </section>
+              </motion.section>
+
+
 
               {/* Secciones desplegables */}
-              <section className="space-y-4">
+              <motion.section
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.5, ease: "easeOut" }}
+                className="space-y-4"
+              >
                 {/* Detalles de la unidad mejorados */}
                 <CollapsibleSection title="Detalles de la unidad" icon={Info} defaultOpen={true}>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {/* Información básica */}
-                    <div className="flex items-center gap-3 p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl border border-indigo-200 dark:border-indigo-700">
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: 0.1 }}
+                      className="flex items-center gap-3 p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl border border-indigo-200 dark:border-indigo-700"
+                    >
                       <div className="p-2 bg-indigo-100 dark:bg-indigo-800 rounded-lg">
                         <Star className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                       </div>
@@ -528,9 +482,12 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                         <div className="font-bold text-gray-900 dark:text-white">{unitDetails.tipologia}</div>
                         <div className="text-sm text-gray-600 dark:text-gray-400">Tipología</div>
                       </div>
-                    </div>
+                    </motion.div>
 
-                    <div
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: 0.2 }}
                       className="flex items-center gap-3 p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl border border-indigo-200 dark:border-indigo-700"
                     >
                       <div className="p-2 bg-indigo-100 dark:bg-indigo-800 rounded-lg">
@@ -540,9 +497,12 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                         <div className="font-bold text-gray-900 dark:text-white">{unitDetails.m2}</div>
                         <div className="text-sm text-gray-600 dark:text-gray-400">Metros cuadrados</div>
                       </div>
-                    </div>
+                    </motion.div>
 
-                    <div
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: 0.3 }}
                       className="flex items-center gap-3 p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl border border-indigo-200 dark:border-indigo-700"
                     >
                       <div className="p-2 bg-indigo-100 dark:bg-indigo-800 rounded-lg">
@@ -552,9 +512,12 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                         <div className="font-bold text-gray-900 dark:text-white">{unitDetails.piso}</div>
                         <div className="text-sm text-gray-600 dark:text-gray-400">Piso</div>
                       </div>
-                    </div>
+                    </motion.div>
 
-                    <div
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: 0.4 }}
                       className="flex items-center gap-3 p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl border border-indigo-200 dark:border-indigo-700"
                     >
                       <div className="p-2 bg-indigo-100 dark:bg-indigo-800 rounded-lg">
@@ -564,11 +527,14 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                         <div className="font-bold text-gray-900 dark:text-white">{unitDetails.orientacion}</div>
                         <div className="text-sm text-gray-600 dark:text-gray-400">Orientación</div>
                       </div>
-                    </div>
+                    </motion.div>
 
                     {/* Áreas específicas */}
                     {unitDetails.area_interior && (
-                      <div
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4, delay: 0.5 }}
                         className="flex items-center gap-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-700"
                       >
                         <div className="p-2 bg-green-100 dark:bg-green-800 rounded-lg">
@@ -578,11 +544,14 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                           <div className="font-bold text-gray-900 dark:text-white">{unitDetails.area_interior}m²</div>
                           <div className="text-sm text-gray-600 dark:text-gray-400">Área interior</div>
                         </div>
-                      </div>
+                      </motion.div>
                     )}
 
                     {unitDetails.area_exterior && (
-                      <div
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4, delay: 0.6 }}
                         className="flex items-center gap-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-700"
                       >
                         <div className="p-2 bg-green-100 dark:bg-green-800 rounded-lg">
@@ -592,11 +561,14 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                           <div className="font-bold text-gray-900 dark:text-white">{unitDetails.area_exterior}m²</div>
                           <div className="text-sm text-gray-600 dark:text-gray-400">Área exterior</div>
                         </div>
-                      </div>
+                      </motion.div>
                     )}
 
                     {/* Servicios y opciones */}
-                    <div
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: 0.7 }}
                       className="flex items-center gap-3 p-3 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-700"
                     >
                       <div className="p-2 bg-red-100 dark:bg-red-800 rounded-lg">
@@ -606,9 +578,12 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                         <div className="font-bold text-gray-900 dark:text-white">No disponible</div>
                         <div className="text-sm text-gray-600 dark:text-gray-400">Estacionamiento</div>
                       </div>
-                    </div>
+                    </motion.div>
 
-                    <div
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: 0.8 }}
                       className="flex items-center gap-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-700"
                     >
                       <div className="p-2 bg-green-100 dark:bg-green-800 rounded-lg">
@@ -618,10 +593,13 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                         <div className="font-bold text-gray-900 dark:text-white">Desde $30.000</div>
                         <div className="text-sm text-gray-600 dark:text-gray-400">Bodega</div>
                       </div>
-                    </div>
+                    </motion.div>
 
                     {/* Características especiales */}
-                    <div
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: 0.9 }}
                       className={`flex items-center gap-3 p-3 rounded-xl border ${unitDetails.amoblado
                         ? 'bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-700'
                         : 'bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600'}`}
@@ -637,9 +615,12 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                         </div>
                         <div className="text-sm text-gray-600 dark:text-gray-400">Estado</div>
                       </div>
-                    </div>
+                    </motion.div>
 
-                    <div
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: 1.0 }}
                       className={`flex items-center gap-3 p-3 rounded-xl border ${unitDetails.petFriendly
                         ? 'bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-700'
                         : 'bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600'}`}
@@ -655,11 +636,14 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                         </div>
                         <div className="text-sm text-gray-600 dark:text-gray-400">Mascotas</div>
                       </div>
-                    </div>
+                    </motion.div>
 
                     {/* Información de garantía */}
                     {unitDetails.garantia_cuotas && (
-                      <div
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4, delay: 1.1 }}
                         className="flex items-center gap-3 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-xl border border-yellow-200 dark:border-yellow-700"
                       >
                         <div className="p-2 bg-yellow-100 dark:bg-yellow-800 rounded-lg">
@@ -669,11 +653,14 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                           <div className="font-bold text-gray-900 dark:text-white">{unitDetails.garantia_cuotas} cuotas</div>
                           <div className="text-sm text-gray-600 dark:text-gray-400">Garantía</div>
                         </div>
-                      </div>
+                      </motion.div>
                     )}
 
                     {unitDetails.renta_minima && (
-                      <div
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4, delay: 1.2 }}
                         className="flex items-center gap-3 p-3 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-700"
                       >
                         <div className="p-2 bg-red-100 dark:bg-red-800 rounded-lg">
@@ -683,12 +670,15 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                           <div className="font-bold text-gray-900 dark:text-white">${unitDetails.renta_minima.toLocaleString('es-CL')}</div>
                           <div className="text-sm text-gray-600 dark:text-gray-400">Renta mínima</div>
                         </div>
-                      </div>
+                      </motion.div>
                     )}
 
                     {/* Código interno */}
                     {unitDetails.codigoInterno && (
-                      <div
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4, delay: 1.3 }}
                         className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600"
                       >
                         <div className="p-2 bg-gray-100 dark:bg-gray-600 rounded-lg">
@@ -698,7 +688,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                           <div className="font-bold text-gray-900 dark:text-white">{unitDetails.codigoInterno}</div>
                           <div className="text-sm text-gray-600 dark:text-gray-400">Código interno</div>
                         </div>
-                      </div>
+                      </motion.div>
                     )}
                   </div>
                 </CollapsibleSection>
@@ -707,8 +697,11 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                 <CollapsibleSection title="Amenidades del edificio" icon={Star}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {amenidades.map((amenidad, index) => (
-                      <div
+                      <motion.div
                         key={amenidad.nombre}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.4, delay: index * 0.1 }}
                         className={`flex items-center gap-3 p-3 rounded-xl transition-all duration-300 ${amenidad.disponible
                           ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700'
                           : 'bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600'
@@ -727,12 +720,15 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                           {amenidad.nombre}
                         </span>
                         {amenidad.disponible && (
-                          <div
+                          <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            transition={{ delay: index * 0.1 + 0.2 }}
                           >
                             <CheckCircle className="w-5 h-5 text-green-600" />
-                          </div>
+                          </motion.div>
                         )}
-                      </div>
+                      </motion.div>
                     ))}
                   </div>
                 </CollapsibleSection>
@@ -747,15 +743,18 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                         "Cocina equipada",
                         "Seguridad 24/7"
                       ].map((feature, index) => (
-                        <div
+                        <motion.div
                           key={feature}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.4, delay: index * 0.1 }}
                           className="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-700"
                         >
                           <div className="p-1.5 bg-blue-100 dark:bg-blue-800 rounded-lg">
                             <CheckCircle className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                           </div>
                           <span className="font-medium text-gray-900 dark:text-white">{feature}</span>
-                        </div>
+                        </motion.div>
                       ))}
                     </div>
                     <div className="space-y-3">
@@ -765,110 +764,57 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                         "Closet empotrado",
                         "Vista despejada"
                       ].map((feature, index) => (
-                        <div
+                        <motion.div
                           key={feature}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.4, delay: (index + 4) * 0.1 }}
                           className="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-700"
                         >
                           <div className="p-1.5 bg-blue-100 dark:bg-blue-800 rounded-lg">
                             <CheckCircle className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                           </div>
                           <span className="font-medium text-gray-900 dark:text-white">{feature}</span>
-                        </div>
+                        </motion.div>
                       ))}
                     </div>
                   </div>
                 </CollapsibleSection>
 
-                {/* Requisitos completos optimizados */}
-                <CollapsibleSection title="Requisitos para arrendar" icon={Shield}>
-                  <div className="space-y-6">
-                    {/* Requisitos Generales */}
-                    <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-700">
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="p-2 bg-blue-100 dark:bg-blue-800 rounded-lg">
-                          <Shield className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                {/* Requisitos básicos mejorados */}
+                <CollapsibleSection title="Requisitos básicos" icon={Shield}>
+                  <div className="space-y-4">
+                    {[
+                      `Renta mínima ${((building.precio_desde || 290000) * 3).toLocaleString('es-CL')}`,
+                      "Sin deudas vencidas",
+                      "Documentación al día",
+                      "Garantía o codeudor",
+                      "Antecedentes comerciales limpios",
+                      "Capacidad de pago demostrable"
+                    ].map((requirement, index) => (
+                      <motion.div
+                        key={requirement}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.4, delay: index * 0.1 }}
+                        className="flex items-center gap-3 p-3 bg-orange-50 dark:bg-orange-900/20 rounded-xl border border-orange-200 dark:border-orange-700"
+                      >
+                        <div className="p-1.5 bg-orange-100 dark:bg-orange-800 rounded-lg">
+                          <Shield className="w-4 h-4 text-orange-600 dark:text-orange-400" />
                         </div>
-                        <h3 className="font-semibold text-gray-900 dark:text-white">Requisitos Generales</h3>
-                      </div>
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
-                          <CheckCircle className="w-4 h-4 text-blue-500 flex-shrink-0" />
-                          <span className="text-sm text-gray-900 dark:text-white">Cédula de identidad chilena vigente</span>
-                        </div>
-                        <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
-                          <CheckCircle className="w-4 h-4 text-blue-500 flex-shrink-0" />
-                          <span className="text-sm text-gray-900 dark:text-white">Puntaje financiero 999 titular y aval(es)</span>
-                        </div>
-                        <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
-                          <CheckCircle className="w-4 h-4 text-blue-500 flex-shrink-0" />
-                          <span className="text-sm text-gray-900 dark:text-white">
-                            Renta líquida igual o mayor a <span className="font-semibold text-blue-600 dark:text-blue-400">${(originalPrice * 3).toLocaleString('es-CL')}</span>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Tipos de Trabajador */}
-                    <div className="grid md:grid-cols-2 gap-4">
-                      {/* Trabajador Dependiente */}
-                      <div className="bg-green-50 dark:bg-green-900/20 rounded-xl p-4 border border-green-200 dark:border-green-700">
-                        <div className="flex items-center gap-3 mb-4">
-                          <div className="p-2 bg-green-100 dark:bg-green-800 rounded-lg">
-                            <Users className="w-5 h-5 text-green-600 dark:text-green-400" />
-                          </div>
-                          <h3 className="font-semibold text-gray-900 dark:text-white">Trabajador Dependiente</h3>
-                        </div>
-                        <div className="space-y-3">
-                          <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
-                            <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                            <span className="text-sm text-gray-900 dark:text-white">Tres últimas liquidaciones de sueldo</span>
-                          </div>
-                          <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
-                            <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                            <span className="text-sm text-gray-900 dark:text-white">Certificado de cotizaciones de AFP</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Trabajador Independiente */}
-                      <div className="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-4 border border-purple-200 dark:border-purple-700">
-                        <div className="flex items-center gap-3 mb-4">
-                          <div className="p-2 bg-purple-100 dark:bg-purple-800 rounded-lg">
-                            <Square className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-                          </div>
-                          <h3 className="font-semibold text-gray-900 dark:text-white">Trabajador Independiente</h3>
-                        </div>
-                        <div className="space-y-3">
-                          <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
-                            <CheckCircle className="w-4 h-4 text-purple-500 flex-shrink-0" />
-                            <span className="text-sm text-gray-900 dark:text-white">Informe mensual de boletas de honorario (6 meses)</span>
-                          </div>
-                          <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
-                            <CheckCircle className="w-4 h-4 text-purple-500 flex-shrink-0" />
-                            <span className="text-sm text-gray-900 dark:text-white">Carpeta tributaria o formulario 29 (6 meses)</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Nota para Extranjeros */}
-                    <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-xl p-4">
-                      <div className="flex items-start gap-3">
-                        <div className="p-2 bg-blue-100 dark:bg-blue-800 rounded-lg flex-shrink-0">
-                          <MessageCircle className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                        </div>
-                        <p className="text-sm font-medium text-blue-800 dark:text-blue-200">
-                          Si eres extranjero y tienes cédula vencida puedes solicitar visita y/o postular presentando tu visa en trámite.
-                        </p>
-                      </div>
-                    </div>
+                        <span className="font-medium text-gray-900 dark:text-white">{requirement}</span>
+                      </motion.div>
+                    ))}
                   </div>
                 </CollapsibleSection>
 
                 {/* Información del edificio mejorada */}
                 <CollapsibleSection title="Información del edificio" icon={Info}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: 0.1 }}
                       className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-xl border border-purple-200 dark:border-purple-700"
                     >
                       <div className="flex items-center gap-3 mb-2">
@@ -878,9 +824,12 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                         <h4 className="font-bold text-gray-900 dark:text-white">Ubicación</h4>
                       </div>
                       <p className="text-gray-700 dark:text-gray-300 font-medium">{building.comuna}, Santiago</p>
-                    </div>
+                    </motion.div>
 
-                    <div
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: 0.2 }}
                       className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-xl border border-purple-200 dark:border-purple-700"
                     >
                       <div className="flex items-center gap-3 mb-2">
@@ -890,9 +839,12 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                         <h4 className="font-bold text-gray-900 dark:text-white">Construcción</h4>
                       </div>
                       <p className="text-gray-700 dark:text-gray-300 font-medium">2020</p>
-                    </div>
+                    </motion.div>
 
-                    <div
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: 0.3 }}
                       className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-xl border border-purple-200 dark:border-purple-700"
                     >
                       <div className="flex items-center gap-3 mb-2">
@@ -902,9 +854,12 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                         <h4 className="font-bold text-gray-900 dark:text-white">Unidades</h4>
                       </div>
                       <p className="text-gray-700 dark:text-gray-300 font-medium">{building.units.length} departamentos</p>
-                    </div>
+                    </motion.div>
 
-                    <div
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: 0.4 }}
                       className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-xl border border-purple-200 dark:border-purple-700"
                     >
                       <div className="flex items-center gap-3 mb-2">
@@ -914,13 +869,16 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                         <h4 className="font-bold text-gray-900 dark:text-white">Administración</h4>
                       </div>
                       <p className="text-gray-700 dark:text-gray-300 font-medium">Profesional con conserjería 24/7</p>
-                    </div>
+                    </motion.div>
                   </div>
                 </CollapsibleSection>
-              </section>
+              </motion.section>
 
               {/* Propiedades relacionadas */}
-              <section
+              <motion.section
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.6, ease: "easeOut" }}
                 aria-label="Propiedades relacionadas"
                 className="mt-16"
               >
@@ -936,14 +894,19 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                 }>
                   <RelatedList buildings={relatedBuildings as (Building & { precioDesde: number | null })[]} />
                 </Suspense>
-              </section>
+              </motion.section>
 
               {/* Sticky Mobile CTA */}
               <StickyMobileCTA />
             </div>
 
             {/* Sidebar sticky (1/3) */}
-            <aside className="lg:col-span-1">
+            <motion.aside
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
+              className="lg:col-span-1"
+            >
               <div className="sticky top-8">
                 <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 space-y-6">
                   {/* Título de la unidad */}
@@ -1002,223 +965,14 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                     </div>
                   </div>
 
-                  {/* Cálculo del primer pago - Rediseñado */}
-                  <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-xl border border-green-200 dark:border-green-700 p-4">
-                    {/* Header principal */}
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="p-2 bg-green-100 dark:bg-green-800 rounded-lg">
-                        <DollarSign className="w-5 h-5 text-green-600 dark:text-green-400" />
-                      </div>
-                      <h3 className="font-semibold text-gray-900 dark:text-white">
-                        Cálculo del primer pago
-                      </h3>
-                    </div>
-
-                    {/* Resumen destacado */}
-                    <div className="ml-11 mb-4">
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-sm text-gray-600 dark:text-gray-400">
-                          Te mudas con
-                        </span>
-                        <span className="text-xl font-bold text-green-600 dark:text-green-400">
-                          ${getSummaryPrice()}
-                        </span>
-                      </div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                        el {formatDateForSummary(moveInDate)}
-                      </div>
-                    </div>
-
-                    {/* Botón ver más detalles */}
-                    <button
-                      onClick={() => setIsCalculationExpanded(!isCalculationExpanded)}
-                      className="w-full flex items-center justify-center gap-2 py-2 px-4 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors duration-75"
-                    >
-                      {isCalculationExpanded ? (
-                        <>
-                          <ChevronUp className="w-4 h-4" />
-                          Ocultar detalles
-                        </>
-                      ) : (
-                        <>
-                          <ChevronDown className="w-4 h-4" />
-                          Ver más detalles
-                        </>
-                      )}
-                    </button>
-
-                    {/* Contenido desplegable con animación */}
-                    <AnimatePresence>
-                      {isCalculationExpanded && (
-                        <motion.div
-                          initial={{ height: 0 }}
-                          animate={{ height: "auto" }}
-                          exit={{ height: 0 }}
-                          transition={{
-                            duration: 0.1,
-                            ease: "linear"
-                          }}
-                          className="overflow-hidden"
-                        >
-                          <div className="pt-4 space-y-4">
-                            {/* Fecha de mudanza */}
-                            <div>
-                              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Fecha de mudanza
-                              </label>
-                              <div className="relative">
-                                <input
-                                  type="date"
-                                  value={moveInDate.toISOString().split('T')[0]}
-                                  onChange={(e) => handleDateChange(new Date(e.target.value))}
-                                  min={new Date().toISOString().split('T')[0]}
-                                  max={new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}
-                                  className="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                                />
-                              </div>
-                              <p className="text-xs text-gray-500 mt-1">
-                                {firstPaymentCalculation.daysChargedCount} días del mes ({firstPaymentCalculation.daysInMonth} días totales)
-                              </p>
-                            </div>
-
-                            {/* Servicios adicionales */}
-                            <div className="space-y-2">
-                              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Servicios adicionales
-                              </label>
-
-                              {/* Estacionamiento */}
-                              <div className="flex items-center justify-between p-2 bg-white dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
-                                <div className="flex items-center gap-2">
-                                  <Car className="w-4 h-4 text-orange-600" />
-                                  <span className="text-sm text-gray-900 dark:text-white">Estacionamiento</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  <span className="text-sm font-medium text-gray-900 dark:text-white">$50.000</span>
-                                  <input
-                                    type="checkbox"
-                                    checked={includeParking}
-                                    onChange={(e) => setIncludeParking(e.target.checked)}
-                                    className="w-4 h-4 rounded border-gray-300 text-orange-600 focus:ring-orange-500"
-                                  />
-                                </div>
-                              </div>
-
-                              {/* Bodega */}
-                              <div className="flex items-center justify-between p-2 bg-white dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
-                                <div className="flex items-center gap-2">
-                                  <Square className="w-4 h-4 text-purple-600" />
-                                  <span className="text-sm text-gray-900 dark:text-white">Bodega</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  <span className="text-sm font-medium text-gray-900 dark:text-white">$30.000</span>
-                                  <input
-                                    type="checkbox"
-                                    checked={includeStorage}
-                                    onChange={(e) => setIncludeStorage(e.target.checked)}
-                                    className="w-4 h-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
-                                  />
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* Detalle del cálculo */}
-                            <div className="space-y-2">
-                              <div className="flex justify-between items-center text-sm">
-                                <span className="text-gray-600 dark:text-gray-400">Arriendo prorrateado:</span>
-                                <span className="font-medium text-gray-900 dark:text-white">
-                                  ${firstPaymentCalculation.netRentStorage.toLocaleString('es-CL')}
-                                </span>
-                              </div>
-                              <div className="text-xs text-gray-500 pl-2">
-                                • {firstPaymentCalculation.promoDays} días con 50% OFF: ${Math.round((originalPrice / 30) * firstPaymentCalculation.promoDays * 0.5).toLocaleString('es-CL')}
-                                {firstPaymentCalculation.regularDays > 0 && (
-                                  <span>
-                                    <br />• {firstPaymentCalculation.regularDays} días precio normal: ${Math.round((originalPrice / 30) * firstPaymentCalculation.regularDays).toLocaleString('es-CL')}
-                                  </span>
-                                )}
-                              </div>
-                              {includeParking && (
-                                <div className="flex justify-between items-center text-sm">
-                                  <span className="text-gray-600 dark:text-gray-400">Estacionamiento:</span>
-                                  <span className="font-medium text-orange-600">
-                                    ${firstPaymentCalculation.totalParking.toLocaleString('es-CL')}
-                                  </span>
-                                </div>
-                              )}
-                              {includeStorage && (
-                                <div className="flex justify-between items-center text-sm">
-                                  <span className="text-gray-600 dark:text-gray-400">Bodega:</span>
-                                  <span className="font-medium text-purple-600">
-                                    ${firstPaymentCalculation.totalStorage.toLocaleString('es-CL')}
-                                  </span>
-                                </div>
-                              )}
-                              <div className="flex justify-between items-center text-sm">
-                                <span className="text-gray-600 dark:text-gray-400">Gastos comunes:</span>
-                                <span className="font-medium text-gray-900 dark:text-white">
-                                  ${firstPaymentCalculation.proratedGC.toLocaleString('es-CL')}
-                                </span>
-                              </div>
-                              <div className="flex justify-between items-center text-sm">
-                                <span className="text-gray-600 dark:text-gray-400">Garantía inicial (33%):</span>
-                                <span className="font-medium text-gray-900 dark:text-white">
-                                  ${firstPaymentCalculation.initialDeposit.toLocaleString('es-CL')}
-                                </span>
-                              </div>
-                              <div className="flex justify-between items-center text-sm">
-                                <span className="text-gray-600 dark:text-gray-400">Comisión corretaje:</span>
-                                <span className="font-medium text-green-600">
-                                  ${firstPaymentCalculation.commissionToPay.toLocaleString('es-CL')}
-                                </span>
-                              </div>
-                              <div className="border-t border-gray-200 dark:border-gray-600 pt-2">
-                                <div className="flex justify-between items-center">
-                                  <span className="font-semibold text-gray-900 dark:text-white">Total primer pago:</span>
-                                  <span className="text-lg font-bold text-green-600">
-                                    ${firstPaymentCalculation.totalFirstPayment.toLocaleString('es-CL')}
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* Ahorros */}
-                            <div className="bg-green-100 dark:bg-green-900/30 rounded-lg p-3">
-                              <h4 className="text-sm font-semibold text-green-800 dark:text-green-200 mb-2">
-                                ¡Te estás ahorrando!
-                              </h4>
-                              <div className="space-y-1 text-xs">
-                                <div className="flex justify-between">
-                                  <span className="text-green-700 dark:text-green-300">50% OFF primer mes:</span>
-                                  <span className="font-semibold text-green-800 dark:text-green-200">
-                                    ${Math.round((originalPrice / 30) * firstPaymentCalculation.promoDays * 0.5 + (includeParking ? (50000 / 30) * firstPaymentCalculation.promoDays * 0.5 : 0) + (includeStorage ? (30000 / 30) * firstPaymentCalculation.promoDays * 0.5 : 0)).toLocaleString('es-CL')}
-                                  </span>
-                                </div>
-                                <div className="flex justify-between">
-                                  <span className="text-green-700 dark:text-green-300">Comisión gratis:</span>
-                                  <span className="font-semibold text-green-800 dark:text-green-200">
-                                    ${Math.round((originalPrice * 0.5) * 1.19).toLocaleString('es-CL')}
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* Botón enviar cotización */}
-                            <button
-                              onClick={handleSendQuotation}
-                              className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-75 text-sm"
-                            >
-                              Enviar cotización por email
-                            </button>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-
                   {/* CTA principal mejorado */}
-                  <button
-                    className="w-full bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 hover:from-blue-700 hover:via-blue-800 hover:to-blue-900 text-white font-bold py-4 px-6 rounded-xl shadow-lg transition-colors duration-100 border border-blue-500/20"
+                  <motion.button
+                    whileHover={{
+                      scale: 1.02,
+                      boxShadow: "0 10px 25px rgba(59, 130, 246, 0.3)"
+                    }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 hover:from-blue-700 hover:via-blue-800 hover:to-blue-900 text-white font-bold py-4 px-6 rounded-xl shadow-lg transition-all duration-300 border border-blue-500/20"
                     tabIndex={0}
                     onClick={() => {
                       // Disparar evento personalizado para abrir el modal
@@ -1235,11 +989,16 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                       <Calendar className="w-5 h-5" />
                       <span>Agendar visita</span>
                     </div>
-                  </button>
+                  </motion.button>
 
                   {/* CTA secundario mejorado */}
-                  <button
-                    className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition-colors duration-100 flex items-center justify-center gap-2 border border-green-500/20"
+                  <motion.button
+                    whileHover={{
+                      scale: 1.02,
+                      boxShadow: "0 10px 25px rgba(34, 197, 94, 0.3)"
+                    }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition-all duration-300 flex items-center justify-center gap-2 border border-green-500/20"
                     tabIndex={0}
                     onClick={() => {
                       const waLink = `https://wa.me/56912345678?text=Hola! Me interesa el departamento ${selectedUnit?.tipologia} en ${building.name}. ¿Podrías darme más información?`;
@@ -1254,12 +1013,12 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                   >
                     <Phone className="w-4 h-4" aria-hidden="true" />
                     <span>WhatsApp</span>
-                  </button>
+                  </motion.button>
 
 
                 </div>
               </div>
-            </aside>
+            </motion.aside>
           </div>
         </main>
 
