@@ -23,7 +23,8 @@ import {
   Dumbbell,
   Coffee,
   Calendar,
-  MessageCircle
+  MessageCircle,
+  Package
 } from "lucide-react";
 import { ImageGallery } from "@components/gallery/ImageGallery";
 import { StickyMobileCTA } from "@components/StickyMobileCTA";
@@ -84,7 +85,7 @@ class ErrorBoundary extends React.Component<
 // Loading Skeleton Component
 const PropertySkeleton = () => (
   <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-8">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main content skeleton */}
         <div className="lg:col-span-2 space-y-6">
@@ -439,16 +440,16 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
   return (
     <ErrorBoundary>
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
-        <main id="main-content" role="main" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main id="main-content" role="main" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-8">
           {/* Header */}
-          <div className="mb-8">
+          <div className="mb-4 lg:mb-8">
             <Header />
           </div>
 
           {/* Breadcrumb accesible */}
           <nav
             aria-label="Navegación de migas de pan"
-            className="mb-6"
+            className="mb-4 lg:mb-6"
           >
             <ol className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
               <li>
@@ -478,12 +479,12 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
           </nav>
 
           {/* Layout principal: 3 columnas */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-8">
             {/* Columna principal (2/3) */}
-            <div className="lg:col-span-2 space-y-8">
+            <div className="lg:col-span-2 space-y-6 lg:space-y-8">
               {/* Hero minimalista */}
-              <section className="space-y-4">
-                <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">
+              <section className="space-y-3 lg:space-y-4">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">
                   {building.name}
                 </h1>
                 <div className="flex items-center gap-2 text-lg text-gray-600 dark:text-gray-400">
@@ -492,11 +493,11 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                 </div>
 
                 {/* Badges principales mejorados */}
-                <div className="flex flex-wrap gap-3 mb-8" role="group" aria-label="Características destacadas">
+                <div className="flex flex-wrap gap-2 lg:gap-3 mb-6 lg:mb-8" role="group" aria-label="Características destacadas">
                   {primaryBadges.map((badge, index) => (
                     <div
                       key={badge.label}
-                      className={`relative inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r ${badge.bgColor} text-white text-sm font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20`}
+                      className={`relative inline-flex items-center gap-2 lg:gap-3 px-4 lg:px-6 py-2 lg:py-3 bg-gradient-to-r ${badge.bgColor} text-white text-xs lg:text-sm font-bold rounded-xl lg:rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20`}
                       tabIndex={0}
                       onKeyDown={(e) => handleKeyDown(e, () => { })}
                       role="button"
@@ -514,43 +515,346 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                 <ImageGallery images={building.gallery} />
               </section>
 
+              {/* Sección de Precios y Promociones - Optimizada para móviles */}
+              <section className="lg:hidden">
+                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-4 space-y-4">
+                  {/* Título de la unidad */}
+                  <div className="text-center">
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
+                      Departamento {selectedUnit?.id || 'N/A'}
+                    </h2>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      {selectedUnit?.tipologia} • Piso {unitDetails.piso}
+                    </p>
+                  </div>
+
+                  {/* Precio destacado - Ultra optimizado para móviles */}
+                  <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl border border-blue-200 dark:border-blue-700">
+                    <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                      ${originalPrice.toLocaleString('es-CL')}
+                    </div>
+                    <div className="text-lg text-green-600 font-bold mb-1">
+                      50% OFF primer mes
+                    </div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                      ${discountPrice.toLocaleString('es-CL')} primer mes
+                    </div>
+                    <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">
+                      Sin comisión de arriendo
+                    </div>
+                  </div>
+
+                  {/* Características principales compactas */}
+                  <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-3">
+                    <h3 className="font-semibold text-gray-900 dark:text-white text-center mb-3 text-sm">
+                      Características principales
+                    </h3>
+                    <div className="grid grid-cols-3 gap-3 text-center">
+                      <div className="bg-white dark:bg-gray-600 rounded-lg p-2">
+                        <Bed className="w-5 h-5 text-blue-600 mx-auto mb-1" />
+                        <div className="text-sm font-semibold text-gray-900 dark:text-white">
+                          {unitDetails.dormitorios}
+                        </div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">Dorm.</div>
+                      </div>
+                      <div className="bg-white dark:bg-gray-600 rounded-lg p-2">
+                        <Bath className="w-5 h-5 text-blue-600 mx-auto mb-1" />
+                        <div className="text-sm font-semibold text-gray-900 dark:text-white">
+                          {unitDetails.banos}
+                        </div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">Baños</div>
+                      </div>
+                      <div className="bg-white dark:bg-gray-600 rounded-lg p-2">
+                        <Square className="w-5 h-5 text-blue-600 mx-auto mb-1" />
+                        <div className="text-sm font-semibold text-gray-900 dark:text-white">
+                          {unitDetails.m2}
+                        </div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">m²</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Cálculo del primer pago compacto */}
+                  <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-xl border border-green-200 dark:border-green-700 p-4">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="p-2 bg-green-100 dark:bg-green-800 rounded-lg">
+                        <DollarSign className="w-5 h-5 text-green-600 dark:text-green-400" />
+                      </div>
+                      <h3 className="font-semibold text-gray-900 dark:text-white">
+                        Cálculo del primer pago
+                      </h3>
+                    </div>
+
+                    <div className="ml-11 mb-4">
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-sm text-gray-600 dark:text-gray-400">
+                          Te mudas con
+                        </span>
+                        <span className="text-xl font-bold text-green-600 dark:text-green-400">
+                          ${getSummaryPrice()}
+                        </span>
+                      </div>
+                      <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                        el {formatDateForSummary(moveInDate)}
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => setIsCalculationExpanded(!isCalculationExpanded)}
+                      className="w-full flex items-center justify-center gap-2 py-2 px-4 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors duration-75"
+                    >
+                      {isCalculationExpanded ? (
+                        <>
+                          <ChevronUp className="w-4 h-4" />
+                          Ocultar detalles
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown className="w-4 h-4" />
+                          Ver más detalles
+                        </>
+                      )}
+                    </button>
+
+                    {/* Contenido desplegable con animación */}
+                    <AnimatePresence>
+                      {isCalculationExpanded && (
+                        <motion.div
+                          initial={{ height: 0 }}
+                          animate={{ height: "auto" }}
+                          exit={{ height: 0 }}
+                          transition={{
+                            duration: 0.1,
+                            ease: "linear"
+                          }}
+                          className="overflow-hidden"
+                        >
+                          <div className="pt-4 space-y-4">
+                            {/* Fecha de mudanza */}
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Fecha de mudanza
+                              </label>
+                              <div className="relative">
+                                <input
+                                  type="date"
+                                  value={moveInDate.toISOString().split('T')[0]}
+                                  onChange={(e) => handleDateChange(new Date(e.target.value))}
+                                  min={new Date().toISOString().split('T')[0]}
+                                  max={new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}
+                                  className="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                />
+                              </div>
+                              <p className="text-xs text-gray-500 mt-1">
+                                {firstPaymentCalculation.daysChargedCount} días del mes ({firstPaymentCalculation.daysInMonth} días totales)
+                              </p>
+                            </div>
+
+                            {/* Servicios adicionales */}
+                            <div className="space-y-2">
+                              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Servicios adicionales
+                              </label>
+
+                              {/* Estacionamiento */}
+                              <div className="flex items-center justify-between p-2 bg-white dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+                                <div className="flex items-center gap-2">
+                                  <Car className="w-4 h-4 text-orange-600" />
+                                  <span className="text-sm text-gray-900 dark:text-white">Estacionamiento</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-sm font-medium text-gray-900 dark:text-white">$50.000</span>
+                                  <input
+                                    type="checkbox"
+                                    checked={includeParking}
+                                    onChange={(e) => setIncludeParking(e.target.checked)}
+                                    className="w-4 h-4 rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                                  />
+                                </div>
+                              </div>
+
+                              {/* Bodega */}
+                              <div className="flex items-center justify-between p-2 bg-white dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+                                <div className="flex items-center gap-2">
+                                  <Package className="w-4 h-4 text-purple-600" />
+                                  <span className="text-sm text-gray-900 dark:text-white">Bodega</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-sm font-medium text-gray-900 dark:text-white">$30.000</span>
+                                  <input
+                                    type="checkbox"
+                                    checked={includeStorage}
+                                    onChange={(e) => setIncludeStorage(e.target.checked)}
+                                    className="w-4 h-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Desglose detallado */}
+                            <div className="space-y-2">
+                              <h4 className="font-semibold text-gray-900 dark:text-white text-sm">Desglose del primer pago</h4>
+
+                              <div className="space-y-1 text-sm">
+                                <div className="flex justify-between">
+                                  <span className="text-gray-600 dark:text-gray-400">Renta del mes</span>
+                                  <span className="font-medium text-gray-900 dark:text-white">
+                                    ${originalPrice.toLocaleString('es-CL')}
+                                  </span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="text-gray-600 dark:text-gray-400">Días adicionales</span>
+                                  <span className="font-medium text-gray-900 dark:text-white">
+                                    ${(originalPrice * (firstPaymentCalculation.daysChargedCount / firstPaymentCalculation.daysInMonth) - originalPrice).toLocaleString('es-CL')}
+                                  </span>
+                                </div>
+                                {includeParking && (
+                                  <div className="flex justify-between">
+                                    <span className="text-gray-600 dark:text-gray-400">Estacionamiento</span>
+                                    <span className="font-medium text-gray-900 dark:text-white">$50.000</span>
+                                  </div>
+                                )}
+                                {includeStorage && (
+                                  <div className="flex justify-between">
+                                    <span className="text-gray-600 dark:text-gray-400">Bodega</span>
+                                    <span className="font-medium text-gray-900 dark:text-white">$30.000</span>
+                                  </div>
+                                )}
+                                <div className="border-t border-gray-200 dark:border-gray-600 pt-1">
+                                  <div className="flex justify-between font-bold text-green-600 dark:text-green-400">
+                                    <span>Total primer pago</span>
+                                    <span>${firstPaymentCalculation.totalFirstPayment.toLocaleString('es-CL')}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Sección de ahorros */}
+                            <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-3">
+                              <h4 className="font-semibold text-green-800 dark:text-green-200 text-sm mb-2">¡Ahorras con nosotros!</h4>
+                              <div className="space-y-1 text-sm">
+                                <div className="flex justify-between">
+                                  <span className="text-green-700 dark:text-green-300">Comisión tradicional</span>
+                                  <span className="font-medium text-green-800 dark:text-green-200">$150.000</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="text-green-700 dark:text-green-300">Nuestra comisión</span>
+                                  <span className="font-medium text-green-800 dark:text-green-200">$0</span>
+                                </div>
+                                <div className="border-t border-green-200 dark:border-green-700 pt-1">
+                                  <div className="flex justify-between font-bold text-green-800 dark:text-green-200">
+                                    <span>Total ahorro</span>
+                                    <span>$150.000</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Botón enviar cotización */}
+                            <button
+                              onClick={handleSendQuotation}
+                              className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-75 text-sm"
+                            >
+                              Enviar cotización por email
+                            </button>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+
+                  {/* CTAs principales */}
+                  <div className="space-y-3">
+                    <button
+                      className="w-full bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 hover:from-blue-700 hover:via-blue-800 hover:to-blue-900 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition-colors duration-100 border border-blue-500/20 text-sm"
+                      tabIndex={0}
+                      onClick={() => {
+                        const bookingForm = document.getElementById("booking-form");
+                        if (bookingForm) {
+                          bookingForm.scrollIntoView({ behavior: "smooth", block: "start" });
+                          window.history.pushState(null, "", "#booking-form");
+                          window.dispatchEvent(new HashChangeEvent("hashchange"));
+                        }
+                      }}
+                      onKeyDown={(e) => handleKeyDown(e, () => {
+                        const bookingForm = document.getElementById("booking-form");
+                        if (bookingForm) {
+                          bookingForm.scrollIntoView({ behavior: "smooth", block: "start" });
+                          window.history.pushState(null, "", "#booking-form");
+                          window.dispatchEvent(new HashChangeEvent("hashchange"));
+                        }
+                      })}
+                      role="button"
+                      aria-label="Agendar visita a la propiedad"
+                    >
+                      <Calendar className="w-5 h-5 inline mr-2" aria-hidden="true" />
+                      Agendar visita
+                    </button>
+
+                    <button
+                      className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-bold py-2.5 px-4 rounded-xl shadow-lg transition-colors duration-100 flex items-center justify-center gap-2 border border-green-500/20 text-sm"
+                      tabIndex={0}
+                      onClick={() => {
+                        const link = buildWhatsAppUrl({ url: typeof window !== "undefined" ? window.location.href : undefined });
+                        track("cta_whatsapp_click", { context: "property_sidebar" });
+                        if (link) {
+                          window.open(link, "_blank", "noopener,noreferrer");
+                        }
+                      }}
+                      onKeyDown={(e) => handleKeyDown(e, () => {
+                        const link = buildWhatsAppUrl({ url: typeof window !== "undefined" ? window.location.href : undefined });
+                        track("cta_whatsapp_click", { context: "property_sidebar" });
+                        if (link) {
+                          window.open(link, "_blank", "noopener,noreferrer");
+                        }
+                      })}
+                      role="button"
+                      aria-label="Contactar por WhatsApp"
+                    >
+                      <MessageCircle className="w-5 h-5" aria-hidden="true" />
+                      WhatsApp
+                    </button>
+                  </div>
+                </div>
+              </section>
+
               {/* Secciones desplegables */}
-              <section className="space-y-4">
+              <section className="space-y-3 lg:space-y-4">
                 {/* Detalles de la unidad mejorados */}
                 <CollapsibleSection title="Detalles de la unidad" icon={Info} defaultOpen={true}>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-4">
                     {/* Información básica */}
-                    <div className="flex items-center gap-3 p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl border border-indigo-200 dark:border-indigo-700">
+                    <div className="flex items-center gap-2 lg:gap-3 p-2 lg:p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg lg:rounded-xl border border-indigo-200 dark:border-indigo-700">
                       <div className="p-2 bg-indigo-100 dark:bg-indigo-800 rounded-lg">
                         <Star className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                       </div>
                       <div>
-                        <div className="font-bold text-gray-900 dark:text-white">{unitDetails.tipologia}</div>
-                        <div className="text-sm text-gray-600 dark:text-gray-400">Tipología</div>
+                        <div className="font-bold text-gray-900 dark:text-white text-sm lg:text-base">{unitDetails.tipologia}</div>
+                        <div className="text-xs lg:text-sm text-gray-600 dark:text-gray-400">Tipología</div>
                       </div>
                     </div>
 
                     <div
-                      className="flex items-center gap-3 p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl border border-indigo-200 dark:border-indigo-700"
+                      className="flex items-center gap-2 lg:gap-3 p-2 lg:p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg lg:rounded-xl border border-indigo-200 dark:border-indigo-700"
                     >
                       <div className="p-2 bg-indigo-100 dark:bg-indigo-800 rounded-lg">
                         <Square className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                       </div>
                       <div>
-                        <div className="font-bold text-gray-900 dark:text-white">{unitDetails.m2}</div>
-                        <div className="text-sm text-gray-600 dark:text-gray-400">Metros cuadrados</div>
+                        <div className="font-bold text-gray-900 dark:text-white text-sm lg:text-base">{unitDetails.m2}</div>
+                        <div className="text-xs lg:text-sm text-gray-600 dark:text-gray-400">Metros cuadrados</div>
                       </div>
                     </div>
 
                     <div
-                      className="flex items-center gap-3 p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl border border-indigo-200 dark:border-indigo-700"
+                      className="flex items-center gap-2 lg:gap-3 p-2 lg:p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg lg:rounded-xl border border-indigo-200 dark:border-indigo-700"
                     >
                       <div className="p-2 bg-indigo-100 dark:bg-indigo-800 rounded-lg">
                         <MapPin className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                       </div>
                       <div>
-                        <div className="font-bold text-gray-900 dark:text-white">{unitDetails.piso}</div>
-                        <div className="text-sm text-gray-600 dark:text-gray-400">Piso</div>
+                        <div className="font-bold text-gray-900 dark:text-white text-sm lg:text-base">{unitDetails.piso}</div>
+                        <div className="text-xs lg:text-sm text-gray-600 dark:text-gray-400">Piso</div>
                       </div>
                     </div>
 
@@ -922,9 +1226,9 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
               {/* Propiedades relacionadas */}
               <section
                 aria-label="Propiedades relacionadas"
-                className="mt-16"
+                className="mt-12 lg:mt-16"
               >
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+                <h2 className="text-xl lg:text-2xl font-bold text-gray-900 dark:text-white mb-4 lg:mb-6">
                   Propiedades relacionadas
                 </h2>
                 <Suspense fallback={
@@ -942,59 +1246,59 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
               <StickyMobileCTA />
             </div>
 
-            {/* Sidebar sticky (1/3) */}
-            <aside className="lg:col-span-1">
+            {/* Sidebar sticky (1/3) - Oculto en móviles */}
+            <aside className="hidden lg:block lg:col-span-1">
               <div className="sticky top-8">
-                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 space-y-6">
+                <div className="bg-white dark:bg-gray-800 rounded-xl lg:rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-4 lg:p-6 space-y-4 lg:space-y-6">
                   {/* Título de la unidad */}
                   <div className="text-center">
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+                    <h2 className="text-xl lg:text-2xl font-bold text-gray-900 dark:text-white mb-1">
                       Departamento {selectedUnit?.id || 'N/A'}
                     </h2>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                    <p className="text-xs lg:text-sm text-gray-600 dark:text-gray-400">
                       {selectedUnit?.tipologia} • Piso {unitDetails.piso}
                     </p>
                   </div>
 
-                  {/* Precio destacado mejorado */}
-                  <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl border border-blue-200 dark:border-blue-700">
-                    <div className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+                  {/* Precio destacado mejorado - Ultra compacto */}
+                  <div className="text-center p-3 lg:p-4 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-lg lg:rounded-xl border border-blue-200 dark:border-blue-700">
+                    <div className="text-2xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-1 lg:mb-2">
                       ${originalPrice.toLocaleString('es-CL')}
                     </div>
-                    <div className="text-lg text-green-600 font-bold mb-1">
+                    <div className="text-sm lg:text-lg text-green-600 font-bold mb-1">
                       50% OFF primer mes
                     </div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                    <div className="text-xs lg:text-sm text-gray-600 dark:text-gray-400">
                       ${discountPrice.toLocaleString('es-CL')} primer mes
                     </div>
-                    <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">
+                    <div className="mt-2 lg:mt-3 text-xs text-gray-500 dark:text-gray-400">
                       Sin comisión de arriendo
                     </div>
                   </div>
 
                   {/* Información rápida de la unidad */}
-                  <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-4 space-y-3">
-                    <h3 className="font-semibold text-gray-900 dark:text-white text-center mb-3">
+                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg lg:rounded-xl p-3 lg:p-4 space-y-2 lg:space-y-3">
+                    <h3 className="font-semibold text-gray-900 dark:text-white text-center mb-2 lg:mb-3 text-sm lg:text-base">
                       Características principales
                     </h3>
-                    <div className="grid grid-cols-3 gap-3 text-center">
-                      <div className="bg-white dark:bg-gray-600 rounded-lg p-2">
-                        <Bed className="w-5 h-5 text-blue-600 mx-auto mb-1" />
-                        <div className="text-sm font-semibold text-gray-900 dark:text-white">
+                    <div className="grid grid-cols-3 gap-2 lg:gap-3 text-center">
+                      <div className="bg-white dark:bg-gray-600 rounded-lg p-1.5 lg:p-2">
+                        <Bed className="w-4 h-4 lg:w-5 lg:h-5 text-blue-600 mx-auto mb-1" />
+                        <div className="text-xs lg:text-sm font-semibold text-gray-900 dark:text-white">
                           {unitDetails.dormitorios}
                         </div>
                         <div className="text-xs text-gray-500 dark:text-gray-400">Dorm.</div>
                       </div>
-                      <div className="bg-white dark:bg-gray-600 rounded-lg p-2">
-                        <Bath className="w-5 h-5 text-blue-600 mx-auto mb-1" />
-                        <div className="text-sm font-semibold text-gray-900 dark:text-white">
+                      <div className="bg-white dark:bg-gray-600 rounded-lg p-1.5 lg:p-2">
+                        <Bath className="w-4 h-4 lg:w-5 lg:h-5 text-blue-600 mx-auto mb-1" />
+                        <div className="text-xs lg:text-sm font-semibold text-gray-900 dark:text-white">
                           {unitDetails.banos}
                         </div>
                         <div className="text-xs text-gray-500 dark:text-gray-400">Baños</div>
                       </div>
-                      <div className="bg-white dark:bg-gray-600 rounded-lg p-2">
-                        <Square className="w-5 h-5 text-blue-600 mx-auto mb-1" />
-                        <div className="text-sm font-semibold text-gray-900 dark:text-white">
+                      <div className="bg-white dark:bg-gray-600 rounded-lg p-1.5 lg:p-2">
+                        <Square className="w-4 h-4 lg:w-5 lg:h-5 text-blue-600 mx-auto mb-1" />
+                        <div className="text-xs lg:text-sm font-semibold text-gray-900 dark:text-white">
                           {unitDetails.m2}
                         </div>
                         <div className="text-xs text-gray-500 dark:text-gray-400">m²</div>
@@ -1003,28 +1307,28 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                   </div>
 
                   {/* Cálculo del primer pago - Rediseñado */}
-                  <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-xl border border-green-200 dark:border-green-700 p-4">
+                  <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-lg lg:rounded-xl border border-green-200 dark:border-green-700 p-3 lg:p-4">
                     {/* Header principal */}
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="p-2 bg-green-100 dark:bg-green-800 rounded-lg">
-                        <DollarSign className="w-5 h-5 text-green-600 dark:text-green-400" />
+                    <div className="flex items-center gap-2 lg:gap-3 mb-2 lg:mb-3">
+                      <div className="p-1.5 lg:p-2 bg-green-100 dark:bg-green-800 rounded-lg">
+                        <DollarSign className="w-4 h-4 lg:w-5 lg:h-5 text-green-600 dark:text-green-400" />
                       </div>
-                      <h3 className="font-semibold text-gray-900 dark:text-white">
+                      <h3 className="font-semibold text-gray-900 dark:text-white text-sm lg:text-base">
                         Cálculo del primer pago
                       </h3>
                     </div>
 
                     {/* Resumen destacado */}
-                    <div className="ml-11 mb-4">
+                    <div className="ml-8 lg:ml-11 mb-3 lg:mb-4">
                       <div className="flex items-baseline gap-2">
-                        <span className="text-sm text-gray-600 dark:text-gray-400">
+                        <span className="text-xs lg:text-sm text-gray-600 dark:text-gray-400">
                           Te mudas con
                         </span>
-                        <span className="text-xl font-bold text-green-600 dark:text-green-400">
+                        <span className="text-lg lg:text-xl font-bold text-green-600 dark:text-green-400">
                           ${getSummaryPrice()}
                         </span>
                       </div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                      <div className="text-xs lg:text-sm text-gray-500 dark:text-gray-400 mt-1">
                         el {formatDateForSummary(moveInDate)}
                       </div>
                     </div>
@@ -1218,7 +1522,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
 
                   {/* CTA principal mejorado */}
                   <button
-                    className="w-full bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 hover:from-blue-700 hover:via-blue-800 hover:to-blue-900 text-white font-bold py-4 px-6 rounded-xl shadow-lg transition-colors duration-100 border border-blue-500/20"
+                    className="w-full bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 hover:from-blue-700 hover:via-blue-800 hover:to-blue-900 text-white font-bold py-3 lg:py-4 px-4 lg:px-6 rounded-lg lg:rounded-xl shadow-lg transition-colors duration-100 border border-blue-500/20 text-sm lg:text-base"
                     tabIndex={0}
                     onClick={() => {
                       // Disparar evento personalizado para abrir el modal
@@ -1239,7 +1543,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
 
                   {/* CTA secundario mejorado */}
                   <button
-                    className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition-colors duration-100 flex items-center justify-center gap-2 border border-green-500/20"
+                    className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-bold py-2.5 lg:py-3 px-4 lg:px-6 rounded-lg lg:rounded-xl shadow-lg transition-colors duration-100 flex items-center justify-center gap-2 border border-green-500/20 text-sm lg:text-base"
                     tabIndex={0}
                     onClick={() => {
                       const waLink = `https://wa.me/56912345678?text=Hola! Me interesa el departamento ${selectedUnit?.tipologia} en ${building.name}. ¿Podrías darme más información?`;
