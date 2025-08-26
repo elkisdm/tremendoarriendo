@@ -29,7 +29,16 @@ export const BuildingLinkCard: React.FC<BuildingLinkCardProps> = ({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+      whileHover={{ 
+        y: -4,
+        scale: 1.02,
+        transition: { duration: 0.3, ease: [0.4, 0, 0.2, 1] }
+      }}
+      whileTap={{ 
+        scale: 0.98,
+        transition: { duration: 0.1, ease: [0.4, 0, 0.2, 1] }
+      }}
       className={`group relative overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-all duration-300 ${className}`}
     >
       <Link href={href} className="block">

@@ -45,7 +45,7 @@ const RelatedList = lazy(() => import("@components/lists/RelatedList").then(modu
 const ImageGallery = lazy(() => import("@components/gallery/ImageGallery").then(module => ({ default: module.ImageGallery })));
 const VisitSchedulerWrapper = lazy(() => import("@components/forms/VisitSchedulerWrapper").then(module => ({ default: module.default })));
 
-// Design tokens for consistent styling
+// Design tokens for consistent styling - V3 Enhanced
 const DESIGN_TOKENS = {
   spacing: {
     xs: '0.5rem',
@@ -92,6 +92,12 @@ const DESIGN_TOKENS = {
     md: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
     lg: '0 10px 15px -3px rgb(0 0 0 / 0.1)',
     xl: '0 20px 25px -5px rgb(0 0 0 / 0.1)'
+  },
+  animations: {
+    stagger: { delay: 0.1, duration: 0.6, ease: [0.4, 0, 0.2, 1] },
+    fadeIn: { duration: 0.4, ease: [0.4, 0, 0.2, 1] },
+    slideUp: { duration: 0.5, ease: [0.4, 0, 0.2, 1] },
+    scale: { duration: 0.2, ease: [0.4, 0, 0.2, 1] }
   }
 } as const;
 
@@ -534,23 +540,56 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                   </div>
                 </div>
 
-                {/* Badges ultra-compactos - Una sola línea fija */}
-                <div className="flex gap-1 lg:gap-3 mb-3 lg:mb-8" role="group" aria-label="Características destacadas">
+                {/* Badges ultra-compactos - Una sola línea fija con animación stagger */}
+                <motion.div 
+                  className="flex gap-1 lg:gap-3 mb-3 lg:mb-8" 
+                  role="group" 
+                  aria-label="Características destacadas"
+                  initial="hidden"
+                  animate="visible"
+                  variants={{
+                    hidden: { opacity: 0 },
+                    visible: {
+                      opacity: 1,
+                      transition: {
+                        staggerChildren: DESIGN_TOKENS.animations.stagger.delay,
+                        delayChildren: 0.2
+                      }
+                    }
+                  }}
+                >
                   {primaryBadges.slice(0, 3).map((badge, index) => (
-                    <div
+                    <motion.div
                       key={badge.label}
                       className={`flex-1 lg:flex-none inline-flex items-center justify-center gap-1 lg:gap-3 px-2 lg:px-6 py-1.5 lg:py-3 bg-gradient-to-r ${badge.bgColor} text-white text-xs lg:text-sm font-bold rounded-lg lg:rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20`}
                       tabIndex={0}
                       onKeyDown={(e) => handleKeyDown(e, () => { })}
                       role="button"
                       aria-label={badge.label}
+                      variants={{
+                        hidden: { opacity: 0, y: 20, scale: 0.9 },
+                        visible: { 
+                          opacity: 1, 
+                          y: 0, 
+                          scale: 1,
+                          transition: DESIGN_TOKENS.animations.fadeIn
+                        }
+                      }}
+                      whileHover={{ 
+                        scale: 1.05, 
+                        transition: DESIGN_TOKENS.animations.scale 
+                      }}
+                      whileTap={{ 
+                        scale: 0.95, 
+                        transition: DESIGN_TOKENS.animations.scale 
+                      }}
                     >
                       <badge.icon className="w-3 h-3 lg:w-5 lg:h-5" aria-hidden="true" />
                       <span className="whitespace-nowrap hidden sm:inline">{badge.label}</span>
                       <span className="whitespace-nowrap sm:hidden">{badge.label.split(' ')[0]}</span>
-                    </div>
+                    </motion.div>
                   ))}
-                </div>
+                </motion.div>
               </section>
 
               {/* Galería de imágenes */}
@@ -570,7 +609,13 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
               </section>
 
               {/* V3 Price Breakdown para móvil */}
-              <section className="lg:hidden">
+              <motion.section 
+                className="lg:hidden"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={DESIGN_TOKENS.animations.slideUp}
+              >
                 <PriceBreakdown
                   rent={originalPrice}
                   commonExpenses={102000}
@@ -578,17 +623,27 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                   fee={0}
                   currency="CLP"
                 />
-              </section>
+              </motion.section>
 
               {/* V3 Amenity Chips */}
-              <section>
+              <motion.section
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={DESIGN_TOKENS.animations.slideUp}
+              >
                 <Suspense fallback={<AmenityChipsSkeleton count={6} />}>
                   <AmenityChips items={amenityChips} maxVisible={6} />
                 </Suspense>
-              </section>
+              </motion.section>
 
               {/* V3 Building Link Card */}
-              <section>
+              <motion.section
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={DESIGN_TOKENS.animations.slideUp}
+              >
                 <Suspense fallback={<BuildingLinkCardSkeleton />}>
                   <BuildingLinkCard
                     buildingName={building.name}
@@ -599,7 +654,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                     description={`Edificio moderno en ${building.comuna} con ${building.units.length} unidades disponibles`}
                   />
                 </Suspense>
-              </section>
+              </motion.section>
 
               {/* Propiedades relacionadas */}
               <section aria-label="Propiedades relacionadas" className="mt-12 lg:mt-16">

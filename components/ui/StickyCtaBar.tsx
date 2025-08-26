@@ -106,23 +106,39 @@ export const StickyCtaBar: React.FC<StickyCtaBarProps> = ({
 
                 {/* Botones de acción */}
                 <div className="flex gap-2 flex-1">
-                  <button
+                  <motion.button
                     onClick={handleBookClick}
-                    className="flex-1 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900"
+                    className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900 relative overflow-hidden group shadow-lg hover:shadow-xl"
                     aria-label="Agendar visita a la propiedad"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                   >
-                    <Calendar className="w-4 h-4" aria-hidden="true" />
-                    <span className="text-sm">Agendar visita</span>
-                  </button>
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0"
+                      initial={{ x: "-100%" }}
+                      whileHover={{ x: "100%" }}
+                      transition={{ duration: 0.6, ease: "easeInOut" }}
+                    />
+                    <Calendar className="w-4 h-4 relative z-10" aria-hidden="true" />
+                    <span className="text-sm relative z-10">Agendar visita</span>
+                  </motion.button>
                   
-                  <button
+                  <motion.button
                     onClick={handleWhatsAppClick}
-                    className="flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900"
+                    className="flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900 relative overflow-hidden group shadow-lg hover:shadow-xl"
                     aria-label="Contactar por WhatsApp"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                   >
-                    <MessageCircle className="w-4 h-4" aria-hidden="true" />
-                    <span className="sr-only">WhatsApp</span>
-                  </button>
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0"
+                      initial={{ x: "-100%" }}
+                      whileHover={{ x: "100%" }}
+                      transition={{ duration: 0.6, ease: "easeInOut" }}
+                    />
+                    <MessageCircle className="w-4 h-4 relative z-10" aria-hidden="true" />
+                    <span className="sr-only relative z-10">WhatsApp</span>
+                  </motion.button>
                 </div>
               </div>
             </div>

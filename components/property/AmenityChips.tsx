@@ -105,14 +105,23 @@ export const AmenityChips: React.FC<AmenityChipsProps> = ({
               onHoverEnd={() => setHoveredChip(null)}
               className="relative group"
             >
-              <div
-                className={`flex items-center gap-2 px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 cursor-pointer transition-all duration-200 ${getCategoryColor(item.category)}`}
+              <motion.div
+                className={`flex items-center gap-2 px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 cursor-pointer transition-all duration-300 ${getCategoryColor(item.category)}`}
+                whileHover={{ 
+                  scale: 1.05, 
+                  y: -2,
+                  transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] }
+                }}
+                whileTap={{ 
+                  scale: 0.95,
+                  transition: { duration: 0.1, ease: [0.4, 0, 0.2, 1] }
+                }}
               >
                 <Icon className="w-4 h-4 flex-shrink-0" />
                 <span className="text-sm font-medium truncate">
                   {item.label}
                 </span>
-              </div>
+              </motion.div>
 
               {/* Tooltip */}
               {hoveredChip === item.label && item.description && (
