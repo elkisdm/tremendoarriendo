@@ -218,10 +218,10 @@ const PropertySkeleton = () => (
               ))}
             </div>
           </div>
-          
+
           {/* Gallery skeleton */}
           <div className="aspect-video bg-white/10 rounded-2xl animate-pulse"></div>
-          
+
           {/* Content sections skeleton */}
           <div className="space-y-6">
             {[1, 2, 3].map((i) => (
@@ -233,7 +233,7 @@ const PropertySkeleton = () => (
             ))}
           </div>
         </div>
-        
+
         {/* Sidebar skeleton */}
         <div className="lg:col-span-1">
           <div className="space-y-4">
@@ -269,12 +269,11 @@ const CollapsibleSection: React.FC<{
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{title}</h3>
         </div>
         <ChevronRight
-          className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${
-            isExpanded ? 'rotate-90' : ''
-          }`}
+          className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''
+            }`}
         />
       </button>
-      
+
       <AnimatePresence>
         {isExpanded && (
           <motion.div
@@ -411,16 +410,16 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
     const moveIn = new Date(moveInDate);
     const daysInMonth = new Date(moveIn.getFullYear(), moveIn.getMonth() + 1, 0).getDate();
     const daysChargedCount = daysInMonth - moveIn.getDate() + 1;
-    
+
     const proratedRent = (originalPrice / daysInMonth) * daysChargedCount;
     const proratedGC = (102000 / daysInMonth) * daysChargedCount;
     const parkingCost = includeParking ? 50000 : 0;
     const storageCost = includeStorage ? 30000 : 0;
     const initialDeposit = originalPrice * 0.33; // 33% de garantía
     const commissionToPay = 0; // 0% comisión
-    
+
     const totalFirstPayment = proratedRent + proratedGC + parkingCost + storageCost + initialDeposit + commissionToPay;
-    
+
     return {
       proratedRent,
       proratedGC,
@@ -517,7 +516,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
     <ErrorBoundary>
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
         <Header />
-        
+
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Main content (2/3) */}
