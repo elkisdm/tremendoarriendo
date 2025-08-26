@@ -1,41 +1,58 @@
 import 'server-only';
 
-type RateLimiterOptions = {
-  windowMs?: number;
-  max?: number;
-};
+interface RateLimitConfig {
+  windowMs: number;
+  max: number;
+}
 
-type RateLimitEntry = {
-  count: number;
-  resetAt: number;
-};
+interface RateLimitResult {
+  ok: boolean;
+  retryAfter?: number;
+}
 
-export function createRateLimiter(options: RateLimiterOptions = {}) {
-  const windowMs = options.windowMs ?? 60_000;
-  const max = options.max ?? 20;
+class RateLimiter {
+  private store = new Map<string, { count: number; resetTime: number }>();
+  private config: RateLimitConfig;
 
-  const store = new Map<string, RateLimitEntry>();
-
-  async function check(ip: string): Promise<{ ok: boolean; retryAfter?: number }> {
-    const now = Date.now();
-    const current = store.get(ip);
-
-    if (!current || now >= current.resetAt) {
-      store.set(ip, { count: 1, resetAt: now + windowMs });
-      return { ok: true };
-    }
-
-    if (current.count < max) {
-      current.count += 1;
-      store.set(ip, current);
-      return { ok: true };
-    }
-
-    const retryAfterSeconds = Math.ceil((current.resetAt - now) / 1000);
-    return { ok: false, retryAfter: Math.max(retryAfterSeconds, 1) };
+  constructor(config: RateLimitConfig) {
+    this.config = config;
   }
 
-  return { check };
+  async check(identifier: string): Promise<RateLimitResult> {
+    const now = Date.now();
+    const key = identifier;
+    const record = this.store.get(key);
+
+    if (!record || now > record.resetTime) {
+      // First request or window expired
+      this.store.set(key, {
+        count: 1,
+        resetTime: now + this.config.windowMs,
+      });
+      return { ok: true };
+    }
+
+    if (record.count >= this.config.max) {
+      // Rate limit exceeded
+      return {
+        ok: false,
+        retryAfter: Math.ceil((record.resetTime - now) / 1000),
+      };
+    }
+
+    // Increment count
+    record.count++;
+    this.store.set(key, record);
+    return { ok: true };
+  }
+
+  async reset(identifier: string): Promise<void> {
+    this.store.delete(identifier);
+  }
+}
+
+export function createRateLimiter(config: RateLimitConfig): RateLimiter {
+  return new RateLimiter(config);
 }
 
 

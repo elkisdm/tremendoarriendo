@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getBuildingBySlug, getRelatedBuildings } from "@lib/data";
-import { PropertyClient } from "./PropertyClient";
+import { PropertyClient } from "./PropertyClientV3";
 import { safeJsonLd } from "@lib/seo/jsonld";
 import { PROPERTY_PAGE_CONSTANTS } from "./constants";
 
@@ -10,7 +10,7 @@ type PropertyPageProps = {
 
 export const revalidate = 3600; // 1 hour
 
-export default async function PropertyPage({ params, searchParams }: PropertyPageProps & { searchParams?: Promise<{ fail?: string }> }) {
+export default async function PropertyPage({ params, searchParams }: PropertyPageProps & { searchParams?: Promise<{ fail?: string; unit?: string }> }) {
   const { slug } = await params;
   const resolvedSearchParams = await searchParams;
   // Simulate a failure to verify error.tsx boundary
@@ -59,7 +59,11 @@ export default async function PropertyPage({ params, searchParams }: PropertyPag
       <script type="application/ld+json">
         {safeJsonLd(jsonLd)}
       </script>
-      <PropertyClient building={building} relatedBuildings={relatedBuildings} />
+      <PropertyClient 
+        building={building} 
+        relatedBuildings={relatedBuildings} 
+        defaultUnitId={resolvedSearchParams?.unit}
+      />
     </>
   );
 }
@@ -75,7 +79,7 @@ export async function generateMetadata({ params }: PropertyPageProps) {
   }
 
   return {
-    title: `${building.name} - 0% Comisión | Hommie`,
+    title: `${building.name} - 0% Comisión | Elkis Realtor`,
     description: `Arrienda ${building.name} en ${building.comuna} sin comisión de corretaje. ${building.amenities.join(", ")}.`,
     alternates: { canonical: `/property/${slug}` },
     openGraph: {

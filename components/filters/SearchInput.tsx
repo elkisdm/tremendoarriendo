@@ -17,10 +17,10 @@ export interface SearchInputProps {
   maxSuggestions?: number;
 }
 
-export function SearchInput({ 
-  value, 
-  onChange, 
-  placeholder = "Buscar por dirección, comuna, tipología...", 
+export function SearchInput({
+  value,
+  onChange,
+  placeholder = "Buscar por dirección, comuna, tipología...",
   className = "",
   debounceMs = 300,
   suggestions = [],
@@ -41,7 +41,7 @@ export function SearchInput({
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
-    
+
     timeoutRef.current = setTimeout(() => {
       onChange(newValue);
     }, debounceMs);
@@ -65,7 +65,7 @@ export function SearchInput({
 
   // Handle key press
   const handleKeyPress = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-    const filteredSuggestions = suggestions.filter(s => 
+    const filteredSuggestions = suggestions.filter(s =>
       s.toLowerCase().includes(localValue.toLowerCase())
     ).slice(0, maxSuggestions);
 
@@ -88,10 +88,9 @@ export function SearchInput({
     } else if (e.key === "Escape") {
       setShowSuggestions(false);
       setSelectedSuggestionIndex(-1);
-      handleClear();
     } else if (e.key === "ArrowDown") {
       e.preventDefault();
-      setSelectedSuggestionIndex(prev => 
+      setSelectedSuggestionIndex(prev =>
         prev < filteredSuggestions.length - 1 ? prev + 1 : prev
       );
     } else if (e.key === "ArrowUp") {
@@ -191,13 +190,13 @@ export function SearchInput({
           aria-haspopup="listbox"
           aria-activedescendant={selectedSuggestionIndex >= 0 ? `suggestion-${selectedSuggestionIndex}` : undefined}
         />
-        
+
         {/* Search icon */}
-        <MagnifyingGlassIcon 
+        <MagnifyingGlassIcon
           className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"
           aria-hidden="true"
         />
-        
+
         {/* Loading indicator or Clear button */}
         {isLoading ? (
           <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
@@ -226,14 +225,14 @@ export function SearchInput({
           </button>
         )}
       </div>
-      
+
       {/* Suggestions dropdown */}
       {showSuggestions && (
         (() => {
           const filteredSuggestions = suggestions
             .filter(s => s.toLowerCase().includes(localValue.toLowerCase()))
             .slice(0, maxSuggestions);
-          
+
           return filteredSuggestions.length > 0 ? (
             <div className="absolute top-full left-0 right-0 mt-1 bg-gray-800 border border-gray-600 rounded-xl shadow-lg z-50">
               <ul role="listbox" className="py-2">
@@ -245,8 +244,8 @@ export function SearchInput({
                     aria-selected={index === selectedSuggestionIndex}
                     className={`
                       px-4 py-2 cursor-pointer transition-colors
-                      ${index === selectedSuggestionIndex 
-                        ? 'bg-blue-600 text-white' 
+                      ${index === selectedSuggestionIndex
+                        ? 'bg-blue-600 text-white'
                         : 'text-gray-200 hover:bg-gray-700'
                       }
                     `}

@@ -25,7 +25,7 @@ export default function MiBioPage() {
               href="/" 
               className="text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg px-2 py-1"
             >
-              Hommie
+              Elkis Realtor
             </a>
             {/* TODO: Menú de navegación */}
           </div>

@@ -97,7 +97,8 @@ export async function POST(request: NextRequest) {
       .from('waitlist')
       .insert({
         email,
-        phone: phone || null
+        phone: phone || null,
+        source: 'how-it-works'
       })
       .select()
       .single();
