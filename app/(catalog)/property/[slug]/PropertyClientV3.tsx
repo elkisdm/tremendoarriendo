@@ -395,7 +395,9 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
     { icon: Users, label: "Conserjería", category: "basic" },
     { icon: Package, label: "Bodega", category: "basic" },
     { icon: Star, label: "Terraza", category: "outdoor" }
-  ], []);
+  ].filter((item, index, self) =>
+    index === self.findIndex(t => t.label === item.label)
+  ), []);
 
   // Loading state - removed unused isLoading check and console.log
 
@@ -608,14 +610,18 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
           propertyId={building.id}
           propertyName={building.name}
           propertyAddress={`${building.address}, ${building.comuna}`}
-          onConfirm={(date, time) => {
-            // console.log('Visita confirmada:', { date, time, property: building.name });
+          onConfirm={(date, time, leadData) => {
+            // console.log('Visita confirmada:', { date, time, property: building.name, leadData });
             // Aquí se podría integrar con la API real
             track('visit_confirmed', {
               propertyId: building.id,
               propertyName: building.name,
               date,
-              time
+              time,
+              hasLeadData: !!leadData,
+              hasName: !!leadData?.name,
+              hasEmail: !!leadData?.email,
+              hasPhone: !!leadData?.phone
             });
           }}
         />

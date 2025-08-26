@@ -10,7 +10,7 @@ interface VisitSchedulerModalProps {
     propertyId: string;
     propertyName: string;
     propertyAddress: string;
-    onConfirm: (date: string, time: string) => void;
+    onConfirm: (date: string, time: string, leadData?: { name: string; email: string; phone: string }) => void;
 }
 
 export function VisitSchedulerModal({
@@ -21,8 +21,8 @@ export function VisitSchedulerModal({
     propertyAddress,
     onConfirm
 }: VisitSchedulerModalProps) {
-    const handleConfirm = (date: string, time: string) => {
-        onConfirm(date, time);
+    const handleConfirm = (date: string, time: string, leadData?: { name: string; email: string; phone: string }) => {
+        onConfirm(date, time, leadData);
         onClose();
     };
 

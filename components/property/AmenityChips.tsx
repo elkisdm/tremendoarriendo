@@ -54,9 +54,9 @@ export const AmenityChips: React.FC<AmenityChipsProps> = ({
 
   const chipVariants = {
     hidden: { opacity: 0, scale: 0.8, y: 20 },
-    visible: { 
-      opacity: 1, 
-      scale: 1, 
+    visible: {
+      opacity: 1,
+      scale: 1,
       y: 0,
       transition: {
         type: "spring",
@@ -98,7 +98,7 @@ export const AmenityChips: React.FC<AmenityChipsProps> = ({
           const Icon = item.icon;
           return (
             <motion.div
-              key={`${item.label}-${index}`}
+              key={`amenity-${item.label}-${index}`}
               variants={chipVariants}
               whileHover="hover"
               onHoverStart={() => setHoveredChip(item.label)}
@@ -107,12 +107,12 @@ export const AmenityChips: React.FC<AmenityChipsProps> = ({
             >
               <motion.div
                 className={`flex items-center gap-2 px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 cursor-pointer transition-all duration-300 ${getCategoryColor(item.category)}`}
-                whileHover={{ 
-                  scale: 1.05, 
+                whileHover={{
+                  scale: 1.05,
                   y: -2,
                   transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] }
                 }}
-                whileTap={{ 
+                whileTap={{
                   scale: 0.95,
                   transition: { duration: 0.1, ease: [0.4, 0, 0.2, 1] }
                 }}
@@ -183,7 +183,7 @@ export const AmenityChips: React.FC<AmenityChipsProps> = ({
               {Object.entries(categoryColors).map(([category, colorClass]) => {
                 const categoryItems = items.filter(item => item.category === category);
                 if (categoryItems.length === 0) return null;
-                
+
                 return (
                   <div
                     key={category}
@@ -210,7 +210,7 @@ export const AmenityChipsSkeleton: React.FC<{ count?: number }> = ({ count = 8 }
         <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-48 animate-pulse"></div>
         <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-20 animate-pulse"></div>
       </div>
-      
+
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
         {Array.from({ length: count }).map((_, index) => (
           <div

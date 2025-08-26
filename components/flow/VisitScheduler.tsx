@@ -4,6 +4,7 @@ import React, { useState, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Calendar, Clock, MapPin, CheckCircle, X, ChevronLeft, Phone, MessageCircle, Shield } from "lucide-react";
 import { track } from "@lib/analytics";
+import { LeadLiteForm } from "./LeadLiteForm";
 
 interface TimeSlot {
     id: string;
@@ -24,7 +25,7 @@ interface VisitSchedulerProps {
     propertyId: string;
     propertyName: string;
     propertyAddress: string;
-    onConfirm: (date: string, time: string) => void;
+    onConfirm: (date: string, time: string, leadData?: { name: string; email: string; phone: string }) => void;
     onCancel: () => void;
     className?: string;
 }
@@ -58,8 +59,9 @@ export function VisitScheduler({
 }: VisitSchedulerProps) {
     const [selectedDate, setSelectedDate] = useState<string>("");
     const [selectedTime, setSelectedTime] = useState<string>("");
-    const [currentStep, setCurrentStep] = useState<"date" | "time" | "confirm">("date");
+    const [currentStep, setCurrentStep] = useState<"date" | "time" | "confirm" | "form">("date");
     const [isLoading, setIsLoading] = useState(false);
+    const [leadData, setLeadData] = useState<{ name: string; email: string; phone: string } | null>(null);
 
     // Generar fechas disponibles para los próximos 5 días (QuintoAndar pattern)
     const availableDates = useMemo(() => {
@@ -124,7 +126,12 @@ export function VisitScheduler({
     }, [propertyId, selectedDate]);
 
     const handleConfirm = useCallback(async () => {
+        setCurrentStep("form");
+    }, []);
+
+    const handleFormComplete = useCallback(async (formData: { name: string; email: string; phone: string }) => {
         setIsLoading(true);
+        setLeadData(formData);
 
         try {
             // Simular llamada a API
@@ -133,10 +140,13 @@ export function VisitScheduler({
             track('visit_scheduler_confirmed', {
                 propertyId,
                 date: selectedDate,
-                time: selectedTime
+                time: selectedTime,
+                hasName: !!formData.name,
+                hasEmail: !!formData.email,
+                hasPhone: !!formData.phone
             });
 
-            onConfirm(selectedDate, selectedTime);
+            onConfirm(selectedDate, selectedTime, formData);
         } catch (_error) {
             // console.error('Error confirming visit:', error);
         } finally {
@@ -440,9 +450,29 @@ export function VisitScheduler({
                                         <span>Confirmando...</span>
                                     </div>
                                 ) : (
-                                    "Confirmar visita"
+                                    "Completar datos"
                                 )}
                             </button>
+                        </motion.div>
+                    )}
+
+                    {currentStep === "form" && (
+                        <motion.div
+                            key="form"
+                            variants={stepVariants}
+                            initial="hidden"
+                            animate="visible"
+                            exit="exit"
+                            className="space-y-6"
+                        >
+                            <LeadLiteForm
+                                propertyId={propertyId}
+                                propertyName={propertyName}
+                                selectedDate={selectedDate}
+                                selectedTime={selectedTime}
+                                onComplete={handleFormComplete}
+                                onBack={() => setCurrentStep("confirm")}
+                            />
                         </motion.div>
                     )}
                 </AnimatePresence>

@@ -31,7 +31,7 @@ import { StickyMobileCTA } from "@components/StickyMobileCTA";
 import { Header } from "@components/marketing/Header";
 import { track } from "@lib/analytics";
 import type { Unit, Building } from "@schemas/models";
-import VisitSchedulerWrapper from "@components/forms/VisitSchedulerWrapper";
+// import VisitSchedulerWrapper from "@components/forms/VisitSchedulerWrapper";
 
 // Lazy load components for better performance
 const RelatedList = lazy(() => import("@components/lists/RelatedList").then(module => ({ default: module.RelatedList })));
@@ -1607,11 +1607,11 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
         </main>
 
         {/* Visit Scheduler Modal */}
-        <VisitSchedulerWrapper
+        {/* <VisitSchedulerWrapper
           buildingName={building.name}
           buildingId={building.id}
           unitId={selectedUnit?.id}
-        />
+        /> */}
 
         {/* Structured Data for SEO */}
         <script
