@@ -9,7 +9,7 @@ import { PromotionBadge } from "@components/ui/PromotionBadge";
 import { Header } from "@components/marketing/Header";
 import { CommuneLifeSection } from "@components/commune/CommuneLifeSection";
 import { getFlagValue } from "@lib/flags";
-import { ArrowLeft, MapPin, Users, Home, Sparkles, ExternalLink, Calendar, MessageCircle, Clock, Star, CheckCircle, Zap, TrendingUp, Eye, Wifi, Car, Dumbbell, Waves, Shield, Coffee, WashingMachine, AirVent, ParkingCircle, TreePine, Camera, Lock, Wrench, ChevronLeft, ChevronRight, Building2, Bed, Bath, Sofa, Utensils, Baby, Dog, Bike, Percent, CreditCard, Heart, Award, Gift, Tag, DollarSign, ShoppingCart, CalendarDays, Gamepad2, Tv, Music, BookOpen, Palette, Globe, Phone, Mail, Smartphone, Monitor, Printer, Projector, Headphones, Speaker, Lightbulb, Fan, Thermometer, Snowflake, Sun, Moon, Cloud, CloudRain, CloudLightning, CloudSnow, Wind, Umbrella, ChevronUp, ChevronDown, Key, Bell, Flame, Droplets, Trash2, Layers, Pill, Cat, Video, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, MapPin, Users, Home, Sparkles, ExternalLink, Calendar, MessageCircle, Clock, Star, CheckCircle, Zap, TrendingUp, Eye, Wifi, Car, Dumbbell, Waves, Shield, Coffee, WashingMachine, AirVent, ParkingCircle, TreePine, Camera, Lock, Wrench, ChevronLeft, ChevronRight, Building2, Bed, Bath, Sofa, Utensils, Baby, Dog, Bike, Percent, CreditCard, Heart, Award, Gift, Tag, DollarSign, ShoppingCart, CalendarDays, Gamepad2, Tv, Music, BookOpen, Palette, Globe, Phone, Mail, Smartphone, Monitor, Printer, Projector, Headphones, Speaker, Lightbulb, Fan, Thermometer, Snowflake, Sun, Moon, Cloud, CloudRain, CloudLightning, CloudSnow, Wind, Umbrella, ChevronUp, ChevronDown, Key, Bell, Flame, Droplets, Trash2, Layers, Pill, Cat, Video, Image as ImageIcon, Leaf } from "lucide-react";
 
 // Función local para obtener el badge principal
 function getPrimaryBadge(badges?: Array<{ label: string; tag?: string; type: string }>) {
@@ -680,56 +680,41 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
       {/* Commune Life Section */}
       {getFlagValue('COMMUNE_SECTION') && building.comuna && (
         <CommuneLifeSection
-          data={{
-            name: building.comuna,
-            slug: building.comuna.toLowerCase().replace(/\s+/g, '-'),
-            hero: {
-              image: building.coverImage || building.gallery?.[0] || "/images/estacioncentral-cover.jpg",
-              title: `Cómo es vivir en ${building.comuna}`,
-              subtitle: "Descubre la vida urbana en esta comuna estratégicamente ubicada"
+          commune={building.comuna}
+          heroImage={building.coverImage || building.gallery?.[0] || "/images/estacioncentral-cover.jpg"}
+          highlights={[
+            {
+              icon: Car,
+              title: "Conectividad Total",
+              description: "Metro y múltiples líneas de buses te conectan con toda la ciudad en minutos"
             },
-            highlights: [
-              {
-                icon: "🚇",
-                title: "Conectividad Total",
-                description: "Metro y múltiples líneas de buses te conectan con toda la ciudad en minutos"
-              },
-              {
-                icon: "🏪",
-                title: "Comercio Local",
-                description: "Mercados tradicionales, supermercados y tiendas de barrio a pasos de tu hogar"
-              },
-              {
-                icon: "🌳",
-                title: "Parques Cercanos",
-                description: "Áreas verdes y parques para disfrutar del aire libre"
-              },
-              {
-                icon: "🎓",
-                title: "Educación Superior",
-                description: "Universidades y centros de estudio a pocas cuadras de distancia"
-              }
-            ],
-            map: {
-              image: "/images/estacion-central-map.jpg",
-              pins: [
-                { label: "Metro", position: { x: 45, y: 60 } },
-                { label: "Parque", position: { x: 75, y: 30 } },
-                { label: "Mercado", position: { x: 25, y: 40 } },
-                { label: "Universidad", position: { x: 60, y: 45 } }
-              ]
+            {
+              icon: Users,
+              title: "Comercio Local",
+              description: "Mercados tradicionales, supermercados y tiendas de barrio a pasos de tu hogar"
             },
-            testimonial: {
-              avatar: "/images/testimonial-avatar.jpg",
-              quote: `Vivir en ${building.comuna} me ha dado la libertad de moverme por toda la ciudad sin problemas. Todo está cerca y bien conectado.`,
-              author: "María González",
-              role: "Arrendataria desde 2022"
+            {
+              icon: Leaf,
+              title: "Parques Cercanos",
+              description: "Áreas verdes y parques para disfrutar del aire libre"
             },
-            cta: {
-              text: `Ver propiedades en ${building.comuna}`,
-              href: `/arrienda-sin-comision?comuna=${building.comuna.toLowerCase().replace(/\s+/g, '-')}`
+            {
+              icon: Star,
+              title: "Educación Superior",
+              description: "Universidades y centros de estudio a pocas cuadras de distancia"
             }
+          ]}
+          testimonial={{
+            text: `Vivir en ${building.comuna} me ha dado la libertad de moverme por toda la ciudad sin problemas. Todo está cerca y bien conectado.`,
+            author: "María González",
+            rating: 5
           }}
+          mapPins={[
+            { name: "Metro", type: "metro", coordinates: [-33.4489, -70.6693] },
+            { name: "Parque", type: "plaza", coordinates: [-33.4489, -70.6693] },
+            { name: "Mercado", type: "shopping", coordinates: [-33.4489, -70.6693] },
+            { name: "Universidad", type: "universidad", coordinates: [-33.4489, -70.6693] }
+          ]}
         />
       )}
     </div>

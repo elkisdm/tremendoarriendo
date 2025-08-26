@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from 'react';
-import { clx } from '@lib/utils';
 import type { VisitEvent } from '@/types/calendar';
 import { Modal } from '@/components/ui/Modal';
 import { PropertyQuotationPanel } from '@/components/quotation/PropertyQuotationPanel';
@@ -13,13 +12,13 @@ export type VisitQuoteModalProps = {
     className?: string;
 };
 
-export default function VisitQuoteModal({ visit, open, onClose, className }: VisitQuoteModalProps) {
+export default function VisitQuoteModal({ visit, open, onClose }: VisitQuoteModalProps) {
+    const [selectedUnitId, setSelectedUnitId] = useState<string>(visit?.unitId || '');
+
     // Protección contra visit undefined
     if (!visit) {
         return null;
     }
-    
-    const [selectedUnitId, setSelectedUnitId] = useState(visit.unitId);
 
     // Mock building data basado en la visita
     const building = {

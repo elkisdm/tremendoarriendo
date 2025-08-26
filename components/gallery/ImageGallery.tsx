@@ -16,11 +16,11 @@ type ImageGalleryProps = {
   compact?: boolean; // Para layouts más pequeños
 };
 
-export function ImageGallery({ 
-  images, 
-  media, 
-  coverImage, 
-  autoPlay = false, 
+export function ImageGallery({
+  images,
+  media,
+  coverImage,
+  autoPlay = false,
   autoPlayInterval = 5000,
   compact = false
 }: ImageGalleryProps) {
@@ -31,22 +31,22 @@ export function ImageGallery({
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  
+
   // Priority: media.images > images prop > fallback to coverImage
   const imageList = media?.images?.length ? media.images : images?.length ? images : coverImage ? [coverImage] : [];
-  
+
   useEffect(() => {
     // After first client render, disable priority to avoid multiple priority images after interactions
     isInitialRenderRef.current = false;
-    
+
     // Check for reduced motion preference
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     setPrefersReducedMotion(mediaQuery.matches);
-    
+
     const handleChange = (e: MediaQueryListEvent) => {
       setPrefersReducedMotion(e.matches);
     };
-    
+
     mediaQuery.addEventListener('change', handleChange);
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
@@ -87,18 +87,20 @@ export function ImageGallery({
       setIsPlaying(true);
     }
   }, [autoPlay, prefersReducedMotion]);
-  
-  if (!imageList || imageList.length === 0) {
-    return null;
-  }
 
   const nextImage = useCallback(() => {
+    if (!imageList || imageList.length === 0) return;
     setActive((prev) => (prev + 1) % imageList.length);
   }, [imageList.length]);
 
   const prevImage = useCallback(() => {
+    if (!imageList || imageList.length === 0) return;
     setActive((prev) => (prev - 1 + imageList.length) % imageList.length);
   }, [imageList.length]);
+
+  if (!imageList || imageList.length === 0) {
+    return null;
+  }
 
   const handleKeyDown = (event: React.KeyboardEvent, index?: number) => {
     switch (event.key) {
@@ -138,14 +140,14 @@ export function ImageGallery({
   };
 
   // Aspect ratios optimizados para imágenes de propiedades
-  const aspectRatioClass = compact 
-    ? "aspect-[4/3] md:aspect-[3/2]" 
+  const aspectRatioClass = compact
+    ? "aspect-[4/3] md:aspect-[3/2]"
     : "aspect-[4/3] md:aspect-[3/2] lg:aspect-[16/10]";
 
   return (
-    <div 
-      className="w-full space-y-3" 
-      role="region" 
+    <div
+      className="w-full space-y-3"
+      role="region"
       aria-label="Galería de imágenes de la propiedad"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -162,13 +164,13 @@ export function ImageGallery({
             <div className="w-8 h-8 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
           </div>
         )}
-        
+
         {/* Main Image */}
         <Image
           src={imageList[active]}
           alt={`Imagen ${active + 1} de ${imageList.length} de la galería`}
           fill
-          sizes={compact 
+          sizes={compact
             ? "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             : "(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
           }
@@ -251,11 +253,11 @@ export function ImageGallery({
               className={clx(
                 "shrink-0 aspect-video rounded-lg md:rounded-xl overflow-hidden ring-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)] transition-all duration-300 ease-out",
                 !prefersReducedMotion && "motion-reduce:transition-none",
-                compact 
-                  ? "w-16 md:w-20" 
+                compact
+                  ? "w-16 md:w-20"
                   : "w-20 md:w-24 lg:w-28",
-                i === active 
-                  ? "ring-[var(--ring)] scale-105" 
+                i === active
+                  ? "ring-[var(--ring)] scale-105"
                   : "ring-white/10 hover:ring-white/20 hover:scale-102"
               )}
               aria-label={`Ver imagen ${i + 1} de ${imageList.length}`}

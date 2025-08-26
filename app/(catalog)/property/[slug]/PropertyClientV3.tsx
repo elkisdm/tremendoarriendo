@@ -1,30 +1,19 @@
 "use client";
 
-import React, { useState, useEffect, Suspense, lazy, useCallback, useRef, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useEffect, Suspense, lazy, useCallback, useMemo } from "react";
+import { motion } from "framer-motion";
 import {
   Flame,
   DollarSign,
   Shield,
-  ChevronRight,
-  CheckCircle,
-  Phone,
   MapPin,
-  Bed,
-  Bath,
-  Square,
   AlertCircle,
-  ChevronDown,
-  ChevronUp,
-  Info,
   Star,
   Users,
   Car,
   Wifi,
   Dumbbell,
   Coffee,
-  Calendar,
-  MessageCircle,
   Package
 } from "lucide-react";
 
@@ -33,9 +22,9 @@ import { StickyCtaBar, StickyCtaSidebar } from "@components/ui/StickyCtaBar";
 import { PriceBreakdown } from "@components/property/PriceBreakdown";
 import { AmenityChips, AmenityChipsSkeleton, type AmenityChip } from "@components/property/AmenityChips";
 import { BuildingLinkCard, BuildingLinkCardSkeleton } from "@components/building/BuildingLinkCard";
+import { VisitSchedulerModal } from "@components/flow/VisitSchedulerModal";
 
-// Legacy components
-import { StickyMobileCTA } from "@components/StickyMobileCTA";
+// Legacy components - removed unused import
 import { Header } from "@components/marketing/Header";
 import { track } from "@lib/analytics";
 import type { Unit, Building } from "@schemas/models";
@@ -43,7 +32,6 @@ import type { Unit, Building } from "@schemas/models";
 // Lazy load components for better performance - V3 Optimized
 const RelatedList = lazy(() => import("@components/lists/RelatedList").then(module => ({ default: module.RelatedList })));
 const ImageGallery = lazy(() => import("@components/gallery/ImageGallery").then(module => ({ default: module.ImageGallery })));
-const VisitSchedulerWrapper = lazy(() => import("@components/forms/VisitSchedulerWrapper").then(module => ({ default: module.default })));
 
 // Design tokens for consistent styling - V3 Enhanced
 const DESIGN_TOKENS = {
@@ -101,65 +89,11 @@ const DESIGN_TOKENS = {
   }
 } as const;
 
-// Custom hooks for V3 optimizations
-const useIntersectionObserver = (callback: () => void, options = {}) => {
-  const observerRef = useCallback((node: HTMLElement | null) => {
-    if (node) {
-      const observer = new IntersectionObserver(callback, {
-        threshold: 0.1,
-        rootMargin: '50px',
-        ...options
-      });
-      observer.observe(node);
-      return () => observer.disconnect();
-    }
-  }, [callback, options]);
+// Custom hooks for V3 optimizations - removed unused hooks
 
-  return observerRef;
-};
+// Removed unused useLocalStorage hook
 
-const useThrottledCallback = (callback: Function, delay: number) => {
-  const lastRun = useRef(Date.now());
-
-  return useCallback((...args: any[]) => {
-    if (Date.now() - lastRun.current >= delay) {
-      callback(...args);
-      lastRun.current = Date.now();
-    }
-  }, [callback, delay]);
-};
-
-const useLocalStorage = <T,>(key: string, initialValue: T) => {
-  const [storedValue, setStoredValue] = useState<T>(() => {
-    if (typeof window === "undefined") return initialValue;
-    try {
-      const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
-    } catch (error) {
-      console.error(`Error reading localStorage key "${key}":`, error);
-      return initialValue;
-    }
-  });
-
-  const setValue = (value: T | ((val: T) => T)) => {
-    try {
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
-      setStoredValue(valueToStore);
-      if (typeof window !== "undefined") {
-        window.localStorage.setItem(key, JSON.stringify(valueToStore));
-      }
-    } catch (error) {
-      console.error(`Error setting localStorage key "${key}":`, error);
-    }
-  };
-
-  return [storedValue, setValue] as const;
-};
-
-// Performance utilities
-const memoizedCalculation = (fn: Function, deps: any[]) => {
-  return useMemo(() => fn(), deps);
-};
+// Performance utilities - removed problematic memoizedCalculation
 
 // Error Boundary Component
 class ErrorBoundary extends React.Component<
@@ -175,8 +109,8 @@ class ErrorBoundary extends React.Component<
     return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error("PropertyClient Error:", error, errorInfo);
+  componentDidCatch(error: Error, _errorInfo: React.ErrorInfo) {
+    // console.error("PropertyClient Error:", error, errorInfo);
     track("error", { error: error.message, component: "PropertyClient" });
   }
 
@@ -207,28 +141,23 @@ class ErrorBoundary extends React.Component<
   }
 }
 
-// Enhanced Loading Skeleton Component - V3
+// Enhanced Loading Skeleton Component - V3 (removed unused)
+/*
 const PropertySkeleton = () => (
   <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-8">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Main content skeleton */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Hero section skeleton */}
           <div className="space-y-4">
             <div className="h-8 bg-white/10 rounded-xl animate-pulse"></div>
             <div className="h-6 bg-white/10 rounded-lg animate-pulse w-3/4"></div>
             <div className="flex gap-2">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="h-8 bg-white/10 rounded-lg animate-pulse flex-1"></div>
-              ))}
+                               {[1, 2, 3].map((i) => (
+                   <div key={i} className="h-8 bg-white/10 rounded-lg animate-pulse flex-1"></div>
+                 ))}
             </div>
           </div>
-
-          {/* Gallery skeleton */}
           <div className="aspect-video bg-white/10 rounded-2xl animate-pulse"></div>
-
-          {/* Content sections skeleton */}
           <div className="space-y-6">
             {[1, 2, 3].map((i) => (
               <div key={i} className="space-y-3">
@@ -239,8 +168,6 @@ const PropertySkeleton = () => (
             ))}
           </div>
         </div>
-
-        {/* Sidebar skeleton */}
         <div className="lg:col-span-1">
           <div className="space-y-4">
             {[1, 2, 3, 4].map((i) => (
@@ -252,8 +179,10 @@ const PropertySkeleton = () => (
     </div>
   </div>
 );
+*/
 
-// Collapsible Section Component
+// Collapsible Section Component (removed unused)
+/*
 const CollapsibleSection: React.FC<{
   title: string;
   icon: React.ComponentType<{ className?: string }>;
@@ -299,6 +228,7 @@ const CollapsibleSection: React.FC<{
     </section>
   );
 };
+*/
 
 // SEO Optimizations
 const SEO_OPTIMIZATIONS = {
@@ -328,17 +258,16 @@ interface PropertyClientProps {
 
 export function PropertyClient({ building, relatedBuildings, defaultUnitId }: PropertyClientProps) {
   const availableUnits = building.units.filter(unit => unit.disponible);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedUnit, setSelectedUnit] = useState<Unit | null>(null);
-  const [moveInDate, setMoveInDate] = useState<Date>(() => {
-    const today = new Date();
-    const firstDayNextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1);
-    return firstDayNextMonth;
-  });
-  const [includeParking, setIncludeParking] = useState(false);
-  const [includeStorage, setIncludeStorage] = useState(false);
-  const [isCalculationExpanded, setIsCalculationExpanded] = useState(false);
+  // const [moveInDate] = useState<Date>(() => {
+  //   const today = new Date();
+  //   const firstDayNextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+  //   return firstDayNextMonth;
+  // });
+  // const [includeParking] = useState(false);
+  // const [includeStorage] = useState(false);
+  const [isVisitSchedulerOpen, setIsVisitSchedulerOpen] = useState(false);
 
   // Seleccionar unidad por defecto basada en defaultUnitId o la primera disponible
   const getDefaultUnit = useCallback(() => {
@@ -379,7 +308,6 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
 
   // Datos estratégicos basados en AssetPlan
   const originalPrice = selectedUnit?.price || building.precio_desde || 290000;
-  const discountPrice = Math.round(originalPrice * 0.5); // 50% OFF primer mes
 
   // PASO 4: Badges estratégicos simplificados (máximo 3 principales) - Memoizado
   const primaryBadges = useMemo(() => [
@@ -388,7 +316,8 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
     { label: "Garantía en cuotas", icon: Shield, color: "blue", bgColor: "from-indigo-500 to-blue-500" }
   ], []);
 
-  // Datos dinámicos de la unidad seleccionada
+  // Datos dinámicos de la unidad seleccionada (removed unused)
+  /*
   const unitDetails = {
     dormitorios: selectedUnit?.bedrooms || 1,
     banos: selectedUnit?.bathrooms || 1,
@@ -409,8 +338,10 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
     garantia_meses: selectedUnit?.guarantee_months,
     renta_minima: selectedUnit?.renta_minima
   };
+  */
 
-  // Cálculo del primer pago optimizado
+  // Cálculo del primer pago optimizado (removed unused)
+  /*
   const calculateFirstPayment = useCallback(() => {
     const today = new Date();
     const moveIn = new Date(moveInDate);
@@ -442,36 +373,10 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
     };
   }, [originalPrice, moveInDate, includeParking, includeStorage]);
 
-  const firstPaymentCalculation = memoizedCalculation(calculateFirstPayment, [originalPrice, moveInDate, includeParking, includeStorage]);
+  const firstPaymentCalculation = useMemo(() => calculateFirstPayment(), [originalPrice, moveInDate, includeParking, includeStorage]);
+  */
 
-  // Funciones auxiliares
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('es-CL', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    });
-  };
-
-  const formatDateForSummary = (date: Date) => {
-    return date.toLocaleDateString('es-CL', {
-      day: 'numeric',
-      month: 'short'
-    });
-  };
-
-  const getSummaryPrice = () => {
-    return firstPaymentCalculation.totalFirstPayment.toLocaleString('es-CL');
-  };
-
-  const handleDateChange = (date: Date) => {
-    setMoveInDate(date);
-  };
-
-  const handleSendQuotation = () => {
-    // Implementar envío de cotización
-    console.log('Enviando cotización...');
-  };
+  // Funciones auxiliares - removed unused functions
 
   const handleKeyDown = (e: React.KeyboardEvent, callback: () => void) => {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -492,10 +397,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
     { icon: Star, label: "Terraza", category: "outdoor" }
   ], []);
 
-  // Loading state
-  if (isLoading) {
-    return <PropertySkeleton />;
-  }
+  // Loading state - removed unused isLoading check and console.log
 
   // Error state
   if (error) {
@@ -541,9 +443,9 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                 </div>
 
                 {/* Badges ultra-compactos - Una sola línea fija con animación stagger */}
-                <motion.div 
-                  className="flex gap-1 lg:gap-3 mb-3 lg:mb-8" 
-                  role="group" 
+                <motion.div
+                  className="flex gap-1 lg:gap-3 mb-3 lg:mb-8"
+                  role="group"
                   aria-label="Características destacadas"
                   initial="hidden"
                   animate="visible"
@@ -568,20 +470,20 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                       aria-label={badge.label}
                       variants={{
                         hidden: { opacity: 0, y: 20, scale: 0.9 },
-                        visible: { 
-                          opacity: 1, 
-                          y: 0, 
+                        visible: {
+                          opacity: 1,
+                          y: 0,
                           scale: 1,
                           transition: DESIGN_TOKENS.animations.fadeIn
                         }
                       }}
-                      whileHover={{ 
-                        scale: 1.05, 
-                        transition: DESIGN_TOKENS.animations.scale 
+                      whileHover={{
+                        scale: 1.05,
+                        transition: DESIGN_TOKENS.animations.scale
                       }}
-                      whileTap={{ 
-                        scale: 0.95, 
-                        transition: DESIGN_TOKENS.animations.scale 
+                      whileTap={{
+                        scale: 0.95,
+                        transition: DESIGN_TOKENS.animations.scale
                       }}
                     >
                       <badge.icon className="w-3 h-3 lg:w-5 lg:h-5" aria-hidden="true" />
@@ -609,7 +511,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
               </section>
 
               {/* V3 Price Breakdown para móvil */}
-              <motion.section 
+              <motion.section
                 className="lg:hidden"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -675,10 +577,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
               {/* V3 Sticky CTA */}
               <StickyCtaBar
                 priceMonthly={originalPrice}
-                onBook={() => {
-                  console.log('Botón Agendar visita clickeado');
-                  window.dispatchEvent(new CustomEvent('openVisitScheduler'));
-                }}
+                onBook={() => setIsVisitSchedulerOpen(true)}
                 onWhatsApp={() => {
                   const waLink = `https://wa.me/56912345678?text=Hola! Me interesa el departamento ${selectedUnit?.tipologia} en ${building.name}. ¿Podrías darme más información?`;
                   window.open(waLink, "_blank");
@@ -691,10 +590,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
             {/* V3 Sticky CTA Sidebar for Desktop */}
             <StickyCtaSidebar
               priceMonthly={originalPrice}
-              onBook={() => {
-                console.log('Botón Agendar visita clickeado');
-                window.dispatchEvent(new CustomEvent('openVisitScheduler'));
-              }}
+              onBook={() => setIsVisitSchedulerOpen(true)}
               onWhatsApp={() => {
                 const waLink = `https://wa.me/56912345678?text=Hola! Me interesa el departamento ${selectedUnit?.tipologia} en ${building.name}. ¿Podrías darme más información?`;
                 window.open(waLink, "_blank");
@@ -706,13 +602,23 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
         </main>
 
         {/* Visit Scheduler Modal */}
-        <Suspense fallback={null}>
-          <VisitSchedulerWrapper
-            buildingName={building.name}
-            buildingId={building.id}
-            unitId={selectedUnit?.id}
-          />
-        </Suspense>
+        <VisitSchedulerModal
+          isOpen={isVisitSchedulerOpen}
+          onClose={() => setIsVisitSchedulerOpen(false)}
+          propertyId={building.id}
+          propertyName={building.name}
+          propertyAddress={`${building.address}, ${building.comuna}`}
+          onConfirm={(date, time) => {
+            // console.log('Visita confirmada:', { date, time, property: building.name });
+            // Aquí se podría integrar con la API real
+            track('visit_confirmed', {
+              propertyId: building.id,
+              propertyName: building.name,
+              date,
+              time
+            });
+          }}
+        />
 
         {/* Structured Data for SEO */}
         <script

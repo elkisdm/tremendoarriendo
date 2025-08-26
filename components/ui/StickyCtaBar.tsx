@@ -24,11 +24,11 @@ export const StickyCtaBar: React.FC<StickyCtaBarProps> = ({
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
 
-  // Intersection Observer para detectar scroll
+  // Intersection Observer para detectar scroll (QuintoAndar pattern: 100-150px)
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
-      setIsScrolled(scrollY > 120);
+      setIsScrolled(scrollY > 100); // Reducido de 120px a 100px para más urgencia
     };
 
     // Throttle scroll events for performance
@@ -48,21 +48,21 @@ export const StickyCtaBar: React.FC<StickyCtaBarProps> = ({
   }, []);
 
   const handleBookClick = useCallback(() => {
-    track("cta_book_click", { 
-      context: "sticky_bar", 
-      propertyId, 
+    track("cta_book_click", {
+      context: "sticky_bar",
+      propertyId,
       commune,
-      price: priceMonthly 
+      price: priceMonthly
     });
     onBook();
   }, [onBook, propertyId, commune, priceMonthly]);
 
   const handleWhatsAppClick = useCallback(() => {
-    track("cta_whatsapp_click", { 
-      context: "sticky_bar", 
-      propertyId, 
+    track("cta_whatsapp_click", {
+      context: "sticky_bar",
+      propertyId,
       commune,
-      price: priceMonthly 
+      price: priceMonthly
     });
     onWhatsApp();
   }, [onWhatsApp, propertyId, commune, priceMonthly]);
@@ -85,16 +85,16 @@ export const StickyCtaBar: React.FC<StickyCtaBarProps> = ({
           role="navigation"
           aria-label="Acciones rápidas para agendar visita"
         >
-          <div 
+          <div
             className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-t border-gray-200/50 dark:border-gray-700/50 shadow-lg shadow-black/10"
             style={{
               paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))"
             }}
           >
-            <div className="container mx-auto px-4 py-3">
-              <div className="flex items-center gap-3">
+            <div className="container mx-auto px-3 sm:px-4 py-2 sm:py-3">
+              <div className="flex items-center gap-2 sm:gap-3">
                 {/* Precio destacado */}
-                <div className="flex items-center gap-2 bg-green-50 dark:bg-green-900/20 rounded-lg px-3 py-2 flex-shrink-0">
+                <div className="flex items-center gap-2 bg-green-50 dark:bg-green-900/20 rounded-lg px-2 sm:px-3 py-2 flex-shrink-0">
                   <DollarSign className="w-4 h-4 text-green-600 dark:text-green-400" />
                   <span className="text-sm font-bold text-green-700 dark:text-green-300">
                     ${priceMonthly.toLocaleString('es-CL')}
@@ -108,7 +108,7 @@ export const StickyCtaBar: React.FC<StickyCtaBarProps> = ({
                 <div className="flex gap-2 flex-1">
                   <motion.button
                     onClick={handleBookClick}
-                    className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900 relative overflow-hidden group shadow-lg hover:shadow-xl"
+                    className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-2 sm:py-3 px-3 sm:px-4 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900 relative overflow-hidden group shadow-lg hover:shadow-xl"
                     aria-label="Agendar visita a la propiedad"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
@@ -122,10 +122,10 @@ export const StickyCtaBar: React.FC<StickyCtaBarProps> = ({
                     <Calendar className="w-4 h-4 relative z-10" aria-hidden="true" />
                     <span className="text-sm relative z-10">Agendar visita</span>
                   </motion.button>
-                  
+
                   <motion.button
                     onClick={handleWhatsAppClick}
-                    className="flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900 relative overflow-hidden group shadow-lg hover:shadow-xl"
+                    className="flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-semibold py-2 sm:py-3 px-3 sm:px-4 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900 relative overflow-hidden group shadow-lg hover:shadow-xl"
                     aria-label="Contactar por WhatsApp"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
@@ -158,21 +158,21 @@ export const StickyCtaSidebar: React.FC<StickyCtaBarProps> = ({
   commune
 }) => {
   const handleBookClick = useCallback(() => {
-    track("cta_book_click", { 
-      context: "sticky_sidebar", 
-      propertyId, 
+    track("cta_book_click", {
+      context: "sticky_sidebar",
+      propertyId,
       commune,
-      price: priceMonthly 
+      price: priceMonthly
     });
     onBook();
   }, [onBook, propertyId, commune, priceMonthly]);
 
   const handleWhatsAppClick = useCallback(() => {
-    track("cta_whatsapp_click", { 
-      context: "sticky_sidebar", 
-      propertyId, 
+    track("cta_whatsapp_click", {
+      context: "sticky_sidebar",
+      propertyId,
       commune,
-      price: priceMonthly 
+      price: priceMonthly
     });
     onWhatsApp();
   }, [onWhatsApp, propertyId, commune, priceMonthly]);
@@ -203,7 +203,7 @@ export const StickyCtaSidebar: React.FC<StickyCtaBarProps> = ({
             <Calendar className="w-5 h-5" aria-hidden="true" />
             <span>Agendar visita</span>
           </button>
-          
+
           <button
             onClick={handleWhatsAppClick}
             className="w-full flex items-center justify-center gap-3 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"

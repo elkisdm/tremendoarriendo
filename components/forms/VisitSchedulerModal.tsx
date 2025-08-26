@@ -172,7 +172,7 @@ export default function VisitSchedulerModal({
         setError('');
 
         switch (step) {
-            case 'data':
+            case 'data': {
                 if (!formData.name.trim()) {
                     setError('El nombre es requerido');
                     return false;
@@ -202,8 +202,9 @@ export default function VisitSchedulerModal({
                     return false;
                 }
                 break;
+            }
 
-            case 'schedule':
+            case 'schedule': {
                 if (!formData.selectedDate) {
                     setError('Por favor selecciona una fecha');
                     return false;
@@ -213,6 +214,7 @@ export default function VisitSchedulerModal({
                     return false;
                 }
                 break;
+            }
         }
 
         return true;
