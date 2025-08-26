@@ -9,7 +9,7 @@ export interface PropertyPageV3Props {
   propertyId: string;
   commune: string;
   priceMonthly: number;
-  amenities: AmenityChip[];
+  amenities: import('./AmenityChips').AmenityChip[];
   buildingData: {
     name: string;
     photo: string;
