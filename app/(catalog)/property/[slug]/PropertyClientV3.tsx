@@ -31,8 +31,8 @@ import {
 // V3 Components imports
 import { StickyCtaBar, StickyCtaSidebar } from "@components/ui/StickyCtaBar";
 import { PriceBreakdown } from "@components/property/PriceBreakdown";
-import { AmenityChips, type AmenityChip } from "@components/property/AmenityChips";
-import { BuildingLinkCard } from "@components/building/BuildingLinkCard";
+import { AmenityChips, AmenityChipsSkeleton, type AmenityChip } from "@components/property/AmenityChips";
+import { BuildingLinkCard, BuildingLinkCardSkeleton } from "@components/building/BuildingLinkCard";
 
 // Legacy components
 import { StickyMobileCTA } from "@components/StickyMobileCTA";
@@ -375,12 +375,12 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
   const originalPrice = selectedUnit?.price || building.precio_desde || 290000;
   const discountPrice = Math.round(originalPrice * 0.5); // 50% OFF primer mes
 
-  // PASO 4: Badges estratégicos simplificados (máximo 3 principales)
-  const primaryBadges = [
+  // PASO 4: Badges estratégicos simplificados (máximo 3 principales) - Memoizado
+  const primaryBadges = useMemo(() => [
     { label: "0% comisión", icon: DollarSign, color: "green", bgColor: "from-green-500 to-emerald-500" },
     { label: "50% OFF primer mes", icon: Flame, color: "orange", bgColor: "from-orange-500 to-red-500" },
     { label: "Garantía en cuotas", icon: Shield, color: "blue", bgColor: "from-indigo-500 to-blue-500" }
-  ];
+  ], []);
 
   // Datos dinámicos de la unidad seleccionada
   const unitDetails = {
@@ -474,8 +474,8 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
     }
   };
 
-  // Amenidades para el componente V3
-  const amenityChips: AmenityChip[] = [
+  // Amenidades para el componente V3 - Memoizado para performance
+  const amenityChips = useMemo((): AmenityChip[] => [
     { icon: Wifi, label: "WiFi", category: "basic" },
     { icon: Dumbbell, label: "Gimnasio", category: "luxury" },
     { icon: Coffee, label: "Cafetería", category: "luxury" },
@@ -484,7 +484,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
     { icon: Users, label: "Conserjería", category: "basic" },
     { icon: Package, label: "Bodega", category: "basic" },
     { icon: Star, label: "Terraza", category: "outdoor" }
-  ];
+  ], []);
 
   // Loading state
   if (isLoading) {
@@ -555,7 +555,16 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
 
               {/* Galería de imágenes */}
               <section aria-label="Galería de imágenes de la propiedad">
-                <Suspense fallback={<div className="aspect-video bg-gray-200 dark:bg-gray-700 rounded-2xl animate-pulse" />}>
+                <Suspense fallback={
+                  <div className="space-y-4">
+                    <div className="aspect-video bg-gray-200 dark:bg-gray-700 rounded-2xl animate-pulse" />
+                    <div className="flex gap-2 overflow-x-auto">
+                      {[1, 2, 3, 4].map(i => (
+                        <div key={i} className="w-20 h-16 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse flex-shrink-0" />
+                      ))}
+                    </div>
+                  </div>
+                }>
                   <ImageGallery images={building.gallery} />
                 </Suspense>
               </section>
@@ -573,19 +582,23 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
 
               {/* V3 Amenity Chips */}
               <section>
-                <AmenityChips items={amenityChips} maxVisible={6} />
+                <Suspense fallback={<AmenityChipsSkeleton count={6} />}>
+                  <AmenityChips items={amenityChips} maxVisible={6} />
+                </Suspense>
               </section>
 
               {/* V3 Building Link Card */}
               <section>
-                <BuildingLinkCard
-                  buildingName={building.name}
-                  photo={building.gallery[0] || "/images/edificio/original_79516B40-7BA9-4F4E-4F7D-7BA4C0A2A938-mg0578.jpg"}
-                  href={`/building/${building.slug}`}
-                  unitCount={building.units.length}
-                  commune={building.comuna}
-                  description={`Edificio moderno en ${building.comuna} con ${building.units.length} unidades disponibles`}
-                />
+                <Suspense fallback={<BuildingLinkCardSkeleton />}>
+                  <BuildingLinkCard
+                    buildingName={building.name}
+                    photo={building.gallery[0] || "/images/edificio/original_79516B40-7BA9-4F4E-4F7D-7BA4C0A2A938-mg0578.jpg"}
+                    href={`/building/${building.slug}`}
+                    unitCount={building.units.length}
+                    commune={building.comuna}
+                    description={`Edificio moderno en ${building.comuna} con ${building.units.length} unidades disponibles`}
+                  />
+                </Suspense>
               </section>
 
               {/* Propiedades relacionadas */}

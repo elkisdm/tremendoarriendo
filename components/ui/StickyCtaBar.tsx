@@ -67,7 +67,7 @@ export const StickyCtaBar: React.FC<StickyCtaBarProps> = ({
     onWhatsApp();
   }, [onWhatsApp, propertyId, commune, priceMonthly]);
 
-  const shouldShow = isVisible || isScrolled;
+  const shouldShow = isScrolled; // Solo mostrar después del scroll, no inmediatamente
 
   return (
     <AnimatePresence>
