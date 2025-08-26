@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getBuildingBySlug, getRelatedBuildings } from "@lib/data";
-import { PropertyClient } from "./PropertyClient";
+import { PropertyClient } from "./PropertyClientV3";
 import { safeJsonLd } from "@lib/seo/jsonld";
 import { PROPERTY_PAGE_CONSTANTS } from "./constants";
 
