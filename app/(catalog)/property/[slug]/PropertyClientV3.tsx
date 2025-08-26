@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, Suspense, lazy, useCallback } from "react";
+import React, { useState, useEffect, Suspense, lazy, useCallback, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Flame,
@@ -26,15 +26,209 @@ import {
   MessageCircle,
   Package
 } from "lucide-react";
-import { ImageGallery } from "@components/gallery/ImageGallery";
+// ImageGallery will be lazy loaded
 import { StickyMobileCTA } from "@components/StickyMobileCTA";
 import { Header } from "@components/marketing/Header";
 import { track } from "@lib/analytics";
 import type { Unit, Building } from "@schemas/models";
 import VisitSchedulerWrapper from "@components/forms/VisitSchedulerWrapper";
 
-// Lazy load components for better performance
+// Lazy load components for better performance - V3 Optimized
 const RelatedList = lazy(() => import("@components/lists/RelatedList").then(module => ({ default: module.RelatedList })));
+const ImageGallery = lazy(() => import("@components/gallery/ImageGallery").then(module => ({ default: module.ImageGallery })));
+const VisitSchedulerWrapper = lazy(() => import("@components/forms/VisitSchedulerWrapper").then(module => ({ default: module.default })));
+
+// Design tokens for consistent styling
+const DESIGN_TOKENS = {
+  spacing: {
+    xs: '0.5rem',
+    sm: '1rem',
+    md: '1.5rem',
+    lg: '2rem',
+    xl: '3rem'
+  },
+  colors: {
+    primary: {
+      50: '#eff6ff',
+      500: '#3b82f6',
+      600: '#2563eb',
+      700: '#1d4ed8'
+    },
+    success: {
+      50: '#f0fdf4',
+      500: '#22c55e',
+      600: '#16a34a',
+      700: '#15803d'
+    },
+    gray: {
+      50: '#f9fafb',
+      100: '#f3f4f6',
+      200: '#e5e7eb',
+      300: '#d1d5db',
+      400: '#9ca3af',
+      500: '#6b7280',
+      600: '#4b5563',
+      700: '#374151',
+      800: '#1f2937',
+      900: '#111827'
+    }
+  },
+  borderRadius: {
+    sm: '0.375rem',
+    md: '0.5rem',
+    lg: '0.75rem',
+    xl: '1rem',
+    '2xl': '1.5rem'
+  },
+  shadows: {
+    sm: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+    md: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+    lg: '0 10px 15px -3px rgb(0 0 0 / 0.1)',
+    xl: '0 20px 25px -5px rgb(0 0 0 / 0.1)'
+  }
+} as const;
+
+// Custom hooks for V3 optimizations
+const useIntersectionObserver = (callback: () => void, options = {}) => {
+  const observerRef = useCallback((node: HTMLElement | null) => {
+    if (node) {
+      const observer = new IntersectionObserver(callback, {
+        threshold: 0.1,
+        rootMargin: '50px',
+        ...options
+      });
+      observer.observe(node);
+      return () => observer.disconnect();
+    }
+  }, [callback, options]);
+
+  return observerRef;
+};
+
+const useThrottledCallback = (callback: Function, delay: number) => {
+  const lastRun = useRef(Date.now());
+
+  return useCallback((...args: any[]) => {
+    if (Date.now() - lastRun.current >= delay) {
+      callback(...args);
+      lastRun.current = Date.now();
+    }
+  }, [callback, delay]);
+};
+
+const useLocalStorage = <T>(key: string, initialValue: T) => {
+  const [storedValue, setStoredValue] = useState<T>(() => {
+    if (typeof window === "undefined") return initialValue;
+    try {
+      const item = window.localStorage.getItem(key);
+      return item ? JSON.parse(item) : initialValue;
+    } catch (error) {
+      console.error(`Error reading localStorage key "${key}":`, error);
+      return initialValue;
+    }
+  });
+
+  const setValue = (value: T | ((val: T) => T)) => {
+    try {
+      const valueToStore = value instanceof Function ? value(storedValue) : value;
+      setStoredValue(valueToStore);
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem(key, JSON.stringify(valueToStore));
+      }
+    } catch (error) {
+      console.error(`Error setting localStorage key "${key}":`, error);
+    }
+  };
+
+  return [storedValue, setValue] as const;
+};
+
+// Performance utilities
+const memoizedCalculation = (fn: Function, deps: any[]) => {
+  return useMemo(() => fn(), deps);
+};
+
+// Optimized Components for V3
+const OptimizedBadge = React.memo(({ 
+  icon: Icon, 
+  label, 
+  bgColor, 
+  onClick, 
+  className = "" 
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  bgColor: string;
+  onClick?: () => void;
+  className?: string;
+}) => (
+  <motion.div
+    whileHover={{ scale: 1.02 }}
+    whileTap={{ scale: 0.98 }}
+    className={`inline-flex items-center gap-1 lg:gap-3 px-2 lg:px-6 py-1.5 lg:py-3 bg-gradient-to-r ${bgColor} text-white text-xs lg:text-sm font-bold rounded-lg lg:rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20 ${className}`}
+    onClick={onClick}
+    role={onClick ? "button" : undefined}
+    tabIndex={onClick ? 0 : undefined}
+  >
+    <Icon className="w-3 h-3 lg:w-5 lg:h-5" aria-hidden="true" />
+    <span className="whitespace-nowrap hidden sm:inline">{label}</span>
+    <span className="whitespace-nowrap sm:hidden">{label.split(' ')[0]}</span>
+  </motion.div>
+));
+
+const OptimizedPriceCard = React.memo(({ 
+  originalPrice, 
+  discountPrice, 
+  className = "" 
+}: {
+  originalPrice: number;
+  discountPrice: number;
+  className?: string;
+}) => (
+  <div className={`bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-3 ${className}`}>
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <span className="text-sm text-gray-600 dark:text-gray-400">Valor arriendo</span>
+        <span className="text-sm line-through text-gray-500">${originalPrice.toLocaleString('es-CL')}</span>
+      </div>
+      
+      <div className="flex items-center justify-between">
+        <span className="text-sm font-semibold text-green-600">50% OFF primer mes</span>
+        <span className="text-lg font-bold text-gray-900 dark:text-white">${discountPrice.toLocaleString('es-CL')}</span>
+      </div>
+      
+      <div className="flex items-center justify-between">
+        <span className="text-sm text-gray-600 dark:text-gray-400">Gasto común fijo</span>
+        <span className="text-sm font-medium text-gray-900 dark:text-white">$102.000</span>
+      </div>
+      
+      <div className="flex items-center justify-between">
+        <span className="text-sm text-gray-600 dark:text-gray-400">Garantía</span>
+        <span className="text-sm font-medium text-gray-900 dark:text-white">${originalPrice.toLocaleString('es-CL')}</span>
+      </div>
+    </div>
+  </div>
+));
+
+const OptimizedPromoBadge = React.memo(({ 
+  label, 
+  color = "yellow" 
+}: {
+  label: string;
+  color?: "yellow" | "purple";
+}) => {
+  const colorClasses = {
+    yellow: "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200",
+    purple: "bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-200"
+  };
+
+  return (
+    <div className={`inline-flex items-center gap-1 px-2 py-1 ${colorClasses[color]} text-xs font-medium rounded-md`}>
+      <Info className="w-3 h-3" />
+      {label}
+    </div>
+  );
+});
 
 // Error Boundary Component
 class ErrorBoundary extends React.Component<
@@ -82,20 +276,39 @@ class ErrorBoundary extends React.Component<
   }
 }
 
-// Loading Skeleton Component
+// Enhanced Loading Skeleton Component - V3
 const PropertySkeleton = () => (
   <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-8">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main content skeleton */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="h-8 bg-white/10 rounded-xl animate-pulse"></div>
-          <div className="h-64 bg-white/10 rounded-2xl animate-pulse"></div>
+          {/* Hero section skeleton */}
           <div className="space-y-4">
-            <div className="h-6 bg-white/10 rounded animate-pulse"></div>
-            <div className="h-6 bg-white/10 rounded animate-pulse w-3/4"></div>
+            <div className="h-8 bg-white/10 rounded-xl animate-pulse"></div>
+            <div className="h-6 bg-white/10 rounded-lg animate-pulse w-3/4"></div>
+            <div className="flex gap-2">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="h-8 bg-white/10 rounded-lg animate-pulse flex-1"></div>
+              ))}
+            </div>
+          </div>
+          
+          {/* Gallery skeleton */}
+          <div className="aspect-video bg-white/10 rounded-2xl animate-pulse"></div>
+          
+          {/* Content sections skeleton */}
+          <div className="space-y-6">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="space-y-3">
+                <div className="h-6 bg-white/10 rounded animate-pulse w-1/3"></div>
+                <div className="h-4 bg-white/10 rounded animate-pulse"></div>
+                <div className="h-4 bg-white/10 rounded animate-pulse w-5/6"></div>
+              </div>
+            ))}
           </div>
         </div>
+        
         {/* Sidebar skeleton */}
         <div className="lg:col-span-1">
           <div className="bg-white/5 rounded-2xl p-6 space-y-4">
