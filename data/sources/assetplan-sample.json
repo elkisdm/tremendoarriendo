@@ -6,6 +6,12 @@
   "direccion": "Av. Demo 1234",
   "coverImage": "https://example.com/images/cover.jpg",
   "amenities": ["Piscina", "Gimnasio", "Cowork"],
+  "gallery": [
+    "https://example.com/images/1.jpg",
+    "https://example.com/images/2.jpg",
+    "https://example.com/images/3.jpg",
+    "https://example.com/images/4.jpg"
+  ],
   "media": {
     "images": [
       "https://example.com/images/1.jpg",
@@ -25,40 +31,45 @@
   "units": [
     {
       "id": "u1",
-      "codigoInterno": "A-101",
       "tipologia": "Studio",
-      "bathrooms": 1,
       "area_interior_m2": 25,
       "area_exterior_m2": 3,
-      "piso": 1,
+      "m2": 28,
       "price": 400000,
-      "disponible": true
+      "disponible": true,
+      "bathrooms": 1,
+      "piso": 1
     },
     {
       "id": "u2",
-      "codigoInterno": "B-502",
-      "tipologia": "1D/1B",
+      "tipologia": "1D1B",
       "bedrooms": 1,
       "bathrooms": 1,
       "m2": 35,
-      "piso": 5,
       "price": 480000,
       "disponible": true,
-      "promotions": ["50% OFF"]
+      "promotions": [
+        {
+          "label": "50% OFF",
+          "type": "discount_percent"
+        }
+      ]
     },
     {
       "id": "u3",
-      "codigoInterno": "C-802",
-      "tipologia": "2D/2B",
+      "tipologia": "2D2B",
       "bedrooms": 2,
       "bathrooms": 2,
       "area_interior_m2": 55,
       "area_exterior_m2": 5,
-      "piso": 8,
+      "m2": 60,
       "price": 650000,
       "disponible": false
     }
-  ]
+  ],
+  "typologySummary": {
+    "Studio": 1,
+    "1D1B": 1,
+    "2D1B": 1
+  }
 }
-
-

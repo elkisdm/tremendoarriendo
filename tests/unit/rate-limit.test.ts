@@ -41,7 +41,7 @@ describe('Rate Limiter', () => {
   });
 
   it('should use default values when not specified', async () => {
-    const limiter = createRateLimiter();
+    const limiter = createRateLimiter({ windowMs: 60000, max: 20 });
     
     // Should use default 20 requests per minute
     for (let i = 0; i < 20; i++) {
