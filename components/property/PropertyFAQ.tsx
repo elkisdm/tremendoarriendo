@@ -1,219 +1,182 @@
 "use client";
-
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ChevronUp, FileText, Shield, HelpCircle } from "lucide-react";
+import { ChevronDown, ChevronUp, HelpCircle, Phone, Calendar, DollarSign, Shield, Users } from "lucide-react";
+import type { Building } from "@schemas/models";
+
+interface PropertyFAQProps {
+    building: Building;
+    variant?: "catalog" | "marketing" | "admin";
+    className?: string;
+}
 
 interface FAQItem {
     question: string;
     answer: string;
+    category: string;
+    icon: React.ComponentType<{ className?: string }>;
 }
 
-interface PropertyFAQProps {
-    faqs?: FAQItem[];
-    className?: string;
-}
+export function PropertyFAQ({ building, variant = "catalog", className = "" }: PropertyFAQProps) {
+    const [openItems, setOpenItems] = useState<Set<number>>(new Set([0])); // Primer item abierto por defecto
 
-const DEFAULT_FAQS: FAQItem[] = [
-    {
-        question: "¿Qué documentos necesito para arrendar?",
-        answer: "Necesitarás tu cédula de identidad, comprobantes de ingresos (últimos 3 meses), aval con propiedades o garantía bancaria, y referencias personales y laborales."
-    },
-    {
-        question: "¿Se permiten mascotas en el edificio?",
-        answer: "Sí, el edificio es pet-friendly. Solo necesitas informar al administrador y cumplir con las normas de convivencia establecidas en el reglamento."
-    },
-    {
-        question: "¿Cuánto tiempo toma el proceso de arriendo?",
-        answer: "El proceso completo toma entre 3-5 días hábiles desde la aprobación hasta la firma del contrato, incluyendo la revisión de documentos y la evaluación crediticia."
-    }
-];
-
-export function PropertyFAQ({ faqs = DEFAULT_FAQS, className = "" }: PropertyFAQProps) {
-    const [openIndex, setOpenIndex] = useState<number | null>(null);
-
-    const toggleFAQ = (index: number) => {
-        setOpenIndex(openIndex === index ? null : index);
-    };
-
-    const containerVariants = {
-        hidden: { opacity: 0, y: 20 },
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: {
-                duration: 0.5,
-                ease: [0.4, 0, 0.2, 1],
-                staggerChildren: 0.1
-            }
+    const faqData: FAQItem[] = [
+        {
+            question: "¿Cuál es el proceso para arrendar esta propiedad?",
+            answer: "El proceso es simple: 1) Agenda una visita, 2) Completa la documentación (RUT, comprobantes de ingresos, aval), 3) Firma el contrato, 4) Paga el primer mes + garantía. Todo se puede hacer en línea o en persona.",
+            category: "Proceso",
+            icon: Calendar
+        },
+        {
+            question: "¿Qué incluye el precio del arriendo?",
+            answer: "El precio incluye el arriendo base de la unidad. Los gastos comunes (agua, luz, gas) se cobran por separado según el consumo real. La garantía equivale a un mes de arriendo y se devuelve al finalizar el contrato.",
+            category: "Precios",
+            icon: DollarSign
+        },
+        {
+            question: "¿Puedo tener mascotas en esta propiedad?",
+            answer: "Sí, esta propiedad es pet-friendly. Solo requerimos que las mascotas estén registradas y tengan sus vacunas al día. No hay restricciones de tamaño o raza.",
+            category: "Políticas",
+            icon: Users
+        },
+        {
+            question: "¿Qué tan segura es la zona?",
+            answer: "La zona cuenta con vigilancia privada 24/7, cámaras de seguridad, y está ubicada en un sector residencial tranquilo. Además, hay una comisaría a 3 cuadras y patrullas regulares de Carabineros.",
+            category: "Seguridad",
+            icon: Shield
+        },
+        {
+            question: "¿Cuáles son los horarios para visitar la propiedad?",
+            answer: "Ofrecemos visitas de lunes a domingo de 9:00 AM a 8:00 PM. Para horarios especiales o fuera de estos rangos, contáctanos directamente y coordinamos una visita personalizada.",
+            category: "Visitas",
+            icon: Phone
+        },
+        {
+            question: "¿Qué documentos necesito para arrendar?",
+            answer: "Necesitarás: RUT vigente, 3 últimas liquidaciones de sueldo, certificado de trabajo, aval con propiedades o ingresos, y antecedentes comerciales. Te ayudamos con todo el proceso.",
+            category: "Documentación",
+            icon: HelpCircle
         }
+    ];
+
+    const toggleItem = (index: number) => {
+        const newOpenItems = new Set(openItems);
+        if (newOpenItems.has(index)) {
+            newOpenItems.delete(index);
+        } else {
+            newOpenItems.add(index);
+        }
+        setOpenItems(newOpenItems);
     };
 
-    const itemVariants = {
-        hidden: { opacity: 0, x: -20, scale: 0.95 },
-        visible: {
-            opacity: 1,
-            x: 0,
-            scale: 1,
-            transition: {
-                duration: 0.4,
-                ease: [0.4, 0, 0.2, 1]
-            }
+    // Agrupar FAQs por categoría
+    const faqByCategory = faqData.reduce((acc, item) => {
+        if (!acc[item.category]) {
+            acc[item.category] = [];
         }
-    };
+        acc[item.category].push(item);
+        return acc;
+    }, {} as Record<string, FAQItem[]>);
+
+    const categories = Object.keys(faqByCategory);
 
     return (
-        <motion.section
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={containerVariants}
-            className={`space-y-8 ${className}`}
-        >
+        <section className={`bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 lg:p-8 ${className}`}>
             {/* Header */}
-            <div className="text-center">
-                <div className="flex items-center justify-center gap-3 mb-4">
-                    <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                        <HelpCircle className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                    </div>
-                    <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">
-                        Preguntas frecuentes
-                    </h2>
-                </div>
-                <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-                    Resolvemos las dudas más comunes sobre el proceso de arriendo
+            <div className="text-center mb-8">
+                <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                    Preguntas frecuentes
+                </h2>
+                <p className="text-base lg:text-lg text-gray-600 dark:text-gray-300">
+                    Resolvemos las dudas más comunes sobre esta propiedad
                 </p>
             </div>
 
-            {/* FAQ List */}
-            <div className="space-y-4">
-                {faqs.map((faq, index) => (
-                    <motion.div
-                        key={index}
-                        variants={itemVariants}
-                        className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300"
-                    >
-                        <button
-                            onClick={() => toggleFAQ(index)}
-                            className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset"
-                            aria-expanded={openIndex === index}
-                            aria-controls={`faq-answer-${index}`}
-                        >
-                            <span className="font-semibold text-gray-900 dark:text-white pr-4">
-                                {faq.question}
-                            </span>
-                            <div className="flex-shrink-0">
-                                {openIndex === index ? (
-                                    <ChevronUp className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                                ) : (
-                                    <ChevronDown className="w-5 h-5 text-gray-400" />
-                                )}
-                            </div>
-                        </button>
+            {/* FAQs organizadas por categoría */}
+            <div className="space-y-8">
+                {categories.map((category, categoryIndex) => (
+                    <div key={category} className="space-y-4">
+                        <h3 className="text-lg lg:text-xl font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2">
+                            {category}
+                        </h3>
 
-                        <AnimatePresence>
-                            {openIndex === index && (
-                                <motion.div
-                                    initial={{ height: 0, opacity: 0 }}
-                                    animate={{ height: "auto", opacity: 1 }}
-                                    exit={{ height: 0, opacity: 0 }}
-                                    transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-                                    id={`faq-answer-${index}`}
-                                    className="overflow-hidden"
-                                >
-                                    <div className="px-6 pb-4 text-gray-600 dark:text-gray-400 leading-relaxed">
-                                        {faq.answer}
+                        <div className="space-y-3">
+                            {faqByCategory[category].map((item, itemIndex) => {
+                                const globalIndex = faqData.findIndex(faq => faq.question === item.question);
+                                const isOpen = openItems.has(globalIndex);
+
+                                return (
+                                    <div key={globalIndex} className="bg-gray-50 dark:bg-gray-700 rounded-xl overflow-hidden">
+                                        {/* Pregunta clickeable */}
+                                        <button
+                                            onClick={() => toggleItem(globalIndex)}
+                                            className="w-full px-4 py-4 text-left flex items-center justify-between hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                                            aria-expanded={isOpen}
+                                            aria-controls={`faq-answer-${globalIndex}`}
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                                                    <item.icon className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                                                </div>
+                                                <span className="font-medium text-gray-900 dark:text-white text-sm lg:text-base">
+                                                    {item.question}
+                                                </span>
+                                            </div>
+                                            {isOpen ? (
+                                                <ChevronUp className="w-5 h-5 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+                                            ) : (
+                                                <ChevronDown className="w-5 h-5 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+                                            )}
+                                        </button>
+
+                                        {/* Respuesta colapsable */}
+                                        <AnimatePresence>
+                                            {isOpen && (
+                                                <motion.div
+                                                    id={`faq-answer-${globalIndex}`}
+                                                    initial={{ height: 0, opacity: 0 }}
+                                                    animate={{ height: "auto", opacity: 1 }}
+                                                    exit={{ height: 0, opacity: 0 }}
+                                                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                                                    className="overflow-hidden"
+                                                >
+                                                    <div className="px-4 pb-4">
+                                                        <p className="text-sm lg:text-base text-gray-600 dark:text-gray-300 leading-relaxed">
+                                                            {item.answer}
+                                                        </p>
+                                                    </div>
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
                                     </div>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </motion.div>
+                                );
+                            })}
+                        </div>
+                    </div>
                 ))}
             </div>
 
-            {/* Legal Links */}
-            <motion.div
-                variants={itemVariants}
-                className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-6 lg:p-8"
-            >
-                <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
-                        <Shield className="w-6 h-6 text-green-600 dark:text-green-400" />
-                    </div>
-                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                        Información legal
+            {/* CTA de contacto */}
+            <div className="mt-8 text-center">
+                <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-6 border border-blue-200 dark:border-blue-700">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                        ¿Tienes más preguntas?
                     </h3>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <a
-                        href="/legal/contrato-arriendo"
-                        className="flex items-center gap-3 p-4 bg-white dark:bg-gray-700 rounded-xl hover:shadow-md transition-all duration-300 border border-gray-200 dark:border-gray-600 group"
-                    >
-                        <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg group-hover:bg-blue-200 dark:group-hover:bg-blue-900/50 transition-colors">
-                            <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                        </div>
-                        <div>
-                            <h4 className="font-medium text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                                Contrato de arriendo
-                            </h4>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
-                                Descarga el modelo
-                            </p>
-                        </div>
-                    </a>
-
-                    <a
-                        href="/legal/terminos-condiciones"
-                        className="flex items-center gap-3 p-4 bg-white dark:bg-gray-700 rounded-xl hover:shadow-md transition-all duration-300 border border-gray-200 dark:border-gray-600 group"
-                    >
-                        <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg group-hover:bg-green-200 dark:group-hover:bg-green-900/50 transition-colors">
-                            <Shield className="w-5 h-5 text-green-600 dark:text-green-400" />
-                        </div>
-                        <div>
-                            <h4 className="font-medium text-gray-900 dark:text-white group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors">
-                                Términos y condiciones
-                            </h4>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
-                                Lee nuestros términos
-                            </p>
-                        </div>
-                    </a>
-
-                    <a
-                        href="/legal/politica-privacidad"
-                        className="flex items-center gap-3 p-4 bg-white dark:bg-gray-700 rounded-xl hover:shadow-md transition-all duration-300 border border-gray-200 dark:border-gray-600 group"
-                    >
-                        <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg group-hover:bg-purple-200 dark:group-hover:bg-purple-900/50 transition-colors">
-                            <Shield className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-                        </div>
-                        <div>
-                            <h4 className="font-medium text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
-                                Política de privacidad
-                            </h4>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
-                                Protección de datos
-                            </p>
-                        </div>
-                    </a>
-                </div>
-
-                <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
-                    <div className="flex items-start gap-3">
-                        <HelpCircle className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
-                        <div>
-                            <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-1">
-                                ¿Necesitas ayuda?
-                            </h4>
-                            <p className="text-sm text-blue-700 dark:text-blue-300">
-                                Si tienes más preguntas, no dudes en contactarnos por WhatsApp o llamarnos al +56 9 1234 5678
-                            </p>
-                        </div>
+                    <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+                        Nuestro equipo está disponible para ayudarte con cualquier consulta
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                        <button className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl transition-colors duration-200">
+                            <Phone className="w-4 h-4" />
+                            Llamar ahora
+                        </button>
+                        <button className="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-semibold px-6 py-3 rounded-xl transition-colors duration-200">
+                            <Calendar className="w-4 h-4" />
+                            Agendar visita
+                        </button>
                     </div>
                 </div>
-            </motion.div>
-        </motion.section>
+            </div>
+        </section>
     );
 }
-
-export default PropertyFAQ;
