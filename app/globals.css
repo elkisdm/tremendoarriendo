@@ -121,6 +121,35 @@ body {
   border-color: #e2e8f0;
 }
 
+/* Utilidades específicas para tema claro */
+.light .bg-surface {
+  background-color: #f8fafc;
+}
+
+.light .bg-muted {
+  background-color: #f1f5f9;
+}
+
+.light .text-muted {
+  color: #64748b;
+}
+
+.light .text-secondary {
+  color: #475569;
+}
+
+.light .border-subtle {
+  border-color: #e2e8f0;
+}
+
+.light .shadow-card {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.light .shadow-card-hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
 /* Utilidades de contraste mejorado para tema oscuro */
 .dark .text-contrast {
   color: #f8fafc;
@@ -132,6 +161,35 @@ body {
 
 .dark .border-contrast {
   border-color: #334155;
+}
+
+/* Utilidades específicas para tema oscuro */
+.dark .bg-surface {
+  background-color: #1e293b;
+}
+
+.dark .bg-muted {
+  background-color: #334155;
+}
+
+.dark .text-muted {
+  color: #94a3b8;
+}
+
+.dark .text-secondary {
+  color: #e2e8f0;
+}
+
+.dark .border-subtle {
+  border-color: #334155;
+}
+
+.dark .shadow-card {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+}
+
+.dark .shadow-card-hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
 }
 
 /* Transiciones suaves para cambios de tema */

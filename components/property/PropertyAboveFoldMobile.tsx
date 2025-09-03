@@ -77,15 +77,15 @@ export function PropertyAboveFoldMobile({
         <section aria-labelledby="af-title" className="relative">
                         {/* 1. Barra superior mínima (sticky, 56px) */}
             <div className="sticky top-0 z-30 h-14 backdrop-blur bg-white/80 dark:bg-black/30 border-b border-gray-200/50 dark:border-gray-700/50 flex items-center justify-between px-4">
-                <nav aria-label="breadcrumb" className="text-xs text-gray-700 dark:text-slate-300">
+                <nav aria-label="breadcrumb" className="text-xs text-gray-800 dark:text-slate-300">
                     <span className="font-medium">{building.comuna}</span>
-                    <span className="mx-2 text-gray-500 dark:text-slate-400">·</span>
-                    <span>{building.name}</span>
+                    <span className="mx-2 text-gray-600 dark:text-slate-400">·</span>
+                    <span className="text-gray-700 dark:text-slate-300">{building.name}</span>
                 </nav>
                 <div className="flex gap-3">
                     <button
                         onClick={onShare}
-                        className="w-8 h-8 flex items-center justify-center text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors"
+                        className="w-8 h-8 flex items-center justify-center text-gray-800 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors"
                         aria-label="Compartir propiedad"
                     >
                         <Share2 className="w-4 h-4" />
@@ -97,8 +97,8 @@ export function PropertyAboveFoldMobile({
                         }}
                         className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors ${
                             isSaved
-                                ? "text-red-500 bg-red-100 dark:text-red-400 dark:bg-red-400/20"
-                                : "text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10"
+                                ? "text-red-600 bg-red-100 dark:text-red-400 dark:bg-red-400/20"
+                                : "text-gray-800 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10"
                         }`}
                         aria-label={isSaved ? "Quitar de favoritos" : "Guardar en favoritos"}
                     >

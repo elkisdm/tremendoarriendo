@@ -3,7 +3,7 @@ import React, { useState, useEffect, Suspense, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AlertCircle } from "lucide-react";
 import { ImageGallery } from "@components/gallery/ImageGallery";
-import { StickyMobileCTA } from "@components/StickyMobileCTA";
+
 import { Header } from "@components/marketing/Header";
 import { track } from "@lib/analytics";
 import type { Unit, Building } from "@schemas/models";
@@ -243,8 +243,8 @@ export function PropertyClient({
                             />
 
                             {/* Acordeones optimizados para conversión */}
-                            <PropertyAccordion 
-                                building={building} 
+                            <PropertyAccordion
+                                building={building}
                                 selectedUnit={building.units.find(unit => unit.disponible) || null}
                                 onScheduleVisit={() => setIsModalOpen(true)}
                                 onPreapproval={() => {
@@ -278,12 +278,7 @@ export function PropertyClient({
                             {/* Preguntas frecuentes */}
                             <PropertyFAQ building={building} variant={variant} />
 
-                            {/* Sticky Mobile CTA */}
-                            <StickyMobileCTA
-                                onScheduleVisit={() => setIsModalOpen(true)}
-                                price={originalPrice}
-                                discountPrice={discountPrice}
-                            />
+                            {/* Sticky Mobile CTA ya está integrado en PropertyAboveFoldMobile */}
                         </div>
 
                         {/* Sidebar sticky (1/3) - Oculto en móviles */}
