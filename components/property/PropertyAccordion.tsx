@@ -74,8 +74,8 @@ function AccordionItem({ id, title, icon, summary, isOpen, onToggle, children, c
                                     <button
                                         onClick={cta.action}
                                         className={`w-full px-4 py-3 rounded-xl font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 ${cta.variant === "primary"
-                                                ? "bg-cyan-600 hover:bg-cyan-700 text-white shadow-lg hover:shadow-xl"
-                                                : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-white"
+                                            ? "bg-cyan-600 hover:bg-cyan-700 text-white shadow-lg hover:shadow-xl"
+                                            : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-white"
                                             }`}
                                     >
                                         {cta.text}
@@ -103,18 +103,47 @@ export function PropertyAccordion({
     onScheduleVisit,
     onPreapproval
 }: PropertyAccordionProps) {
-    const [openSections, setOpenSections] = useState<string[]>(["resumen-tecnico"]);
+    const [openSections, setOpenSections] = useState<string[]>(["caracteristicas"]);
 
     const toggleSection = (sectionId: string) => {
-        setOpenSections(prev =>
-            prev.includes(sectionId)
+        setOpenSections(prev => 
+            prev.includes(sectionId) 
                 ? prev.filter(id => id !== sectionId)
                 : [...prev, sectionId]
         );
     };
 
-    const openAll = () => setOpenSections(["resumen-tecnico", "requisitos", "info-edificio"]);
-    const closeAll = () => setOpenSections([]);
+    // Lógica inteligente: solo una sección abierta a la vez
+    const openSection = (sectionId: string) => {
+        setOpenSections([sectionId]);
+    };
+
+    const closeSection = (sectionId: string) => {
+        setOpenSections(prev => prev.filter(id => id !== sectionId));
+    };
+
+    const toggleSectionSmart = (sectionId: string) => {
+        if (openSections.includes(sectionId)) {
+            closeSection(sectionId);
+        } else {
+            openSection(sectionId);
+        }
+    };
+
+    const showCompleteInfo = () => {
+        // Abre la sección que no esté abierta
+        const closedSections = ["caracteristicas", "requisitos", "info-edificio"].filter(
+            id => !openSections.includes(id)
+        );
+        if (closedSections.length > 0) {
+            openSection(closedSections[0]);
+        }
+    };
+
+    const showLessInfo = () => {
+        // Cierra todas excepto la primera
+        setOpenSections(["caracteristicas"]);
+    };
 
     // Datos para el resumen técnico
     const tipologia = selectedUnit?.tipologia || "2D";
@@ -143,33 +172,52 @@ export function PropertyAccordion({
 
     return (
         <section className="space-y-4">
-            {/* Controles de acordeón */}
+            {/* Controles inteligentes de acordeón */}
             <div className="flex gap-2 justify-center mb-4">
                 <button
-                    onClick={openAll}
-                    className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-all duration-200"
+                    onClick={showCompleteInfo}
+                    className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 relative group"
+                    title="Abre la siguiente sección disponible para ver más información"
                 >
-                    Abrir todo
+                    Ver información completa
+                    <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs text-gray-500 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+                        Abre siguiente sección
+                    </span>
                 </button>
                 <button
-                    onClick={closeAll}
-                    className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-all duration-200"
+                    onClick={showLessInfo}
+                    className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 relative group"
+                    title="Cierra todas las secciones excepto características"
                 >
-                    Cerrar todo
+                    Ver menos
+                    <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs text-gray-500 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+                        Solo características
+                    </span>
                 </button>
             </div>
+            
+            {/* Indicador de sección activa */}
+            <div className="text-center mb-4">
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                    {openSections.length === 0 ? "Sin información visible" : 
+                     openSections.length === 1 ? "Viendo: " + 
+                     (openSections[0] === "caracteristicas" ? "Características" :
+                      openSections[0] === "requisitos" ? "Requisitos" : "Información del edificio")
+                     : "Múltiples secciones abiertas"}
+                </p>
+            </div>
 
-            {/* 1. Resumen Técnico (abierto por defecto) */}
+            {/* 1. Características (abierto por defecto) */}
             <AccordionItem
-                id="resumen-tecnico"
-                title="Resumen Técnico"
-                icon={<Zap className="w-5 h-5" />}
-                summary={`${tipologia} · ${m2} m² · ${orientacion} · ${petFriendly}`}
-                isOpen={openSections.includes("resumen-tecnico")}
-                onToggle={() => toggleSection("resumen-tecnico")}
+                id="caracteristicas"
+                title="Características"
+                icon={<CheckCircle className="w-5 h-5" />}
+                summary={`${tipologia} · ${m2} m² · ${orientacion} · ${selectedUnit?.dormitorios || 1}D${selectedUnit?.banos || 1}B`}
+                isOpen={openSections.includes("caracteristicas")}
+                onToggle={() => toggleSectionSmart("caracteristicas")}
             >
-                <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-2">
+                                <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-3">
                         <div className="flex items-center gap-2">
                             <CheckCircle className="w-4 h-4 text-green-500" />
                             <span className="text-sm text-gray-700 dark:text-gray-300">Tipología: {tipologia}</span>
@@ -182,12 +230,12 @@ export function PropertyAccordion({
                             <CheckCircle className="w-4 h-4 text-green-500" />
                             <span className="text-sm text-gray-700 dark:text-gray-300">Orientación: {orientacion}</span>
                         </div>
-                    </div>
-                    <div className="space-y-2">
                         <div className="flex items-center gap-2">
                             <CheckCircle className="w-4 h-4 text-green-500" />
                             <span className="text-sm text-gray-700 dark:text-gray-300">Calefacción: {calefaccion}</span>
                         </div>
+                    </div>
+                    <div className="space-y-3">
                         <div className="flex items-center gap-2">
                             <CheckCircle className="w-4 h-4 text-green-500" />
                             <span className="text-sm text-gray-700 dark:text-gray-300">{petFriendly}</span>
@@ -196,14 +244,41 @@ export function PropertyAccordion({
                             <CheckCircle className="w-4 h-4 text-green-500" />
                             <span className="text-sm text-gray-700 dark:text-gray-300">{estacionamiento}</span>
                         </div>
+                        {selectedUnit?.bodega && (
+                            <div className="flex items-center gap-2">
+                                <CheckCircle className="w-4 h-4 text-green-500" />
+                                <span className="text-sm text-gray-700 dark:text-gray-300">Bodega incluida</span>
+                            </div>
+                        )}
+                        {selectedUnit?.amoblado && (
+                            <div className="flex items-center gap-2">
+                                <CheckCircle className="w-4 h-4 text-green-500" />
+                                <span className="text-sm text-gray-700 dark:text-gray-300">Amoblado</span>
+                            </div>
+                        )}
                     </div>
                 </div>
-
-                {selectedUnit?.bodega && (
-                    <div className="pt-2">
-                        <div className="flex items-center gap-2">
-                            <CheckCircle className="w-4 h-4 text-green-500" />
-                            <span className="text-sm text-gray-700 dark:text-gray-300">Bodega incluida</span>
+                
+                {/* Información adicional de la unidad */}
+                {(selectedUnit?.dormitorios || selectedUnit?.banos) && (
+                    <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
+                        <div className="grid grid-cols-2 gap-4">
+                            {selectedUnit?.dormitorios && (
+                                <div className="flex items-center gap-2">
+                                    <CheckCircle className="w-4 h-4 text-blue-500" />
+                                    <span className="text-sm text-gray-700 dark:text-gray-300">
+                                        {selectedUnit.dormitorios} dormitorio{selectedUnit.dormitorios > 1 ? 's' : ''}
+                                    </span>
+                                </div>
+                            )}
+                            {selectedUnit?.banos && (
+                                <div className="flex items-center gap-2">
+                                    <CheckCircle className="w-4 h-4 text-blue-500" />
+                                    <span className="text-sm text-gray-700 dark:text-gray-300">
+                                        {selectedUnit.banos} baño{selectedUnit.banos > 1 ? 's' : ''}
+                                    </span>
+                                </div>
+                            )}
                         </div>
                     </div>
                 )}
@@ -216,7 +291,7 @@ export function PropertyAccordion({
                 icon={<Shield className="w-5 h-5" />}
                 summary={`Ingreso ≥ $${(ingresoMinimo / 1000000).toFixed(1)}M · Sin morosidad · 5 docs`}
                 isOpen={openSections.includes("requisitos")}
-                onToggle={() => toggleSection("requisitos")}
+                onToggle={() => toggleSectionSmart("requisitos")}
                 cta={{
                     text: "Preaprobación en 30s",
                     action: onPreapproval || (() => console.log("Preaprobación")),
@@ -260,7 +335,7 @@ export function PropertyAccordion({
                 icon={<Building2 className="w-5 h-5" />}
                 summary={`${amenities.length} amenidades · Metro a ${tiempoMetro}′ · ${administracion}`}
                 isOpen={openSections.includes("info-edificio")}
-                onToggle={() => toggleSection("info-edificio")}
+                onToggle={() => toggleSectionSmart("info-edificio")}
                 cta={{
                     text: "Ver todas las unidades del edificio",
                     action: () => console.log("Ver todas las unidades"),
