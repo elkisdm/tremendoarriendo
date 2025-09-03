@@ -57,7 +57,7 @@ export function PropertyAboveFoldMobile({
 
     const onTouchEnd = () => {
         if (!touchStart || !touchEnd) return;
-        
+
         const distance = touchStart - touchEnd;
         const isLeftSwipe = distance > 50;
         const isRightSwipe = distance < -50;
@@ -75,17 +75,17 @@ export function PropertyAboveFoldMobile({
 
     return (
         <section aria-labelledby="af-title" className="relative">
-            {/* 1. Barra superior mínima (sticky, 56px) */}
-            <div className="sticky top-0 z-30 h-14 backdrop-blur bg-black/30 flex items-center justify-between px-4">
-                <nav aria-label="breadcrumb" className="text-xs text-slate-300">
+                        {/* 1. Barra superior mínima (sticky, 56px) */}
+            <div className="sticky top-0 z-30 h-14 backdrop-blur bg-white/80 dark:bg-black/30 border-b border-gray-200/50 dark:border-gray-700/50 flex items-center justify-between px-4">
+                <nav aria-label="breadcrumb" className="text-xs text-gray-700 dark:text-slate-300">
                     <span className="font-medium">{building.comuna}</span>
-                    <span className="mx-2">·</span>
+                    <span className="mx-2 text-gray-500 dark:text-slate-400">·</span>
                     <span>{building.name}</span>
                 </nav>
                 <div className="flex gap-3">
                     <button
                         onClick={onShare}
-                        className="w-8 h-8 flex items-center justify-center text-white hover:bg-white/10 rounded-full transition-colors"
+                        className="w-8 h-8 flex items-center justify-center text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors"
                         aria-label="Compartir propiedad"
                     >
                         <Share2 className="w-4 h-4" />
@@ -95,10 +95,11 @@ export function PropertyAboveFoldMobile({
                             setIsSaved(!isSaved);
                             onSave?.();
                         }}
-                        className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors ${isSaved
-                                ? "text-red-400 bg-red-400/20"
-                                : "text-white hover:bg-white/10"
-                            }`}
+                        className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors ${
+                            isSaved
+                                ? "text-red-500 bg-red-100 dark:text-red-400 dark:bg-red-400/20"
+                                : "text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10"
+                        }`}
                         aria-label={isSaved ? "Quitar de favoritos" : "Guardar en favoritos"}
                     >
                         <Heart className={`w-4 h-4 ${isSaved ? "fill-current" : ""}`} />
@@ -106,13 +107,13 @@ export function PropertyAboveFoldMobile({
                 </div>
             </div>
 
-                         {/* 2. Hero visual (full-width, ratio estable 4:3) */}
-             <div 
-                 className="relative w-full aspect-[4/3] bg-gray-900"
-                 onTouchStart={onTouchStart}
-                 onTouchMove={onTouchMove}
-                 onTouchEnd={onTouchEnd}
-             >
+            {/* 2. Hero visual (full-width, ratio estable 4:3) */}
+            <div
+                className="relative w-full aspect-[4/3] bg-gray-900"
+                onTouchStart={onTouchStart}
+                onTouchMove={onTouchMove}
+                onTouchEnd={onTouchEnd}
+            >
                 <Image
                     src={heroImage}
                     alt={`${building.name} - ${tipologia} en ${building.comuna}`}
@@ -125,20 +126,20 @@ export function PropertyAboveFoldMobile({
                 {/* Overlay de degradado suave para legibilidad */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
 
-                                 {/* Indicador 1/N + controles de navegación */}
-                 <div className="absolute top-4 right-4 bg-black/50 text-white text-sm font-medium px-3 py-1.5 rounded-full backdrop-blur">
-                     {currentImageIndex + 1} / {totalImages}
-                 </div>
-                 
-                 {/* Barra de progreso sutil */}
-                 {totalImages > 1 && (
-                     <div className="absolute top-0 left-0 right-0 h-1 bg-black/20">
-                         <div 
-                             className="h-full bg-cyan-500 transition-all duration-300 ease-out"
-                             style={{ width: `${((currentImageIndex + 1) / totalImages) * 100}%` }}
-                         />
-                     </div>
-                 )}
+                {/* Indicador 1/N + controles de navegación */}
+                <div className="absolute top-4 right-4 bg-black/50 text-white text-sm font-medium px-3 py-1.5 rounded-full backdrop-blur">
+                    {currentImageIndex + 1} / {totalImages}
+                </div>
+
+                {/* Barra de progreso sutil */}
+                {totalImages > 1 && (
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-black/20">
+                        <div
+                            className="h-full bg-cyan-500 transition-all duration-300 ease-out"
+                            style={{ width: `${((currentImageIndex + 1) / totalImages) * 100}%` }}
+                        />
+                    </div>
+                )}
 
                 {/* Controles de navegación */}
                 {totalImages > 1 && (
@@ -160,32 +161,32 @@ export function PropertyAboveFoldMobile({
                     </>
                 )}
 
-                                 {/* Botón "Ver fotos" */}
-                 <button
-                     onClick={() => {/* TODO: Abrir galería fullscreen */ }}
-                     className="absolute bottom-4 left-4 bg-white/90 text-gray-900 px-4 py-2 rounded-full text-sm font-medium hover:bg-white transition-colors"
-                 >
-                     Ver fotos
-                 </button>
-                 
-                 {/* Indicador de gestos táctiles */}
-                 {totalImages > 1 && (
-                     <div className="absolute bottom-4 right-4 text-white/70 text-xs bg-black/30 px-2 py-1 rounded-full backdrop-blur">
-                         ← Desliza →
-                     </div>
-                 )}
+                {/* Botón "Ver fotos" */}
+                <button
+                    onClick={() => {/* TODO: Abrir galería fullscreen */ }}
+                    className="absolute bottom-4 left-4 bg-white/90 text-gray-900 px-4 py-2 rounded-full text-sm font-medium hover:bg-white transition-colors"
+                >
+                    Ver fotos
+                </button>
+
+                {/* Indicador de gestos táctiles */}
+                {totalImages > 1 && (
+                    <div className="absolute bottom-4 right-4 text-white/70 text-xs bg-black/30 px-2 py-1 rounded-full backdrop-blur">
+                        ← Desliza →
+                    </div>
+                )}
             </div>
 
             {/* Paginador visual (dots) - Solo si hay más de 1 imagen */}
             {totalImages > 1 && (
-                <div className="flex justify-center gap-2 mt-4 px-4">
+                <div className="flex justify-center gap-2 mt-4 px-4 py-2">
                     {Array.from({ length: totalImages }, (_, i) => (
                         <button
                             key={i}
                             onClick={() => setCurrentImageIndex(i)}
                             className={`w-2 h-2 rounded-full transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 ${
                                 i === currentImageIndex
-                                    ? "bg-cyan-600 w-4"
+                                    ? "bg-cyan-600 w-4 shadow-sm"
                                     : "bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500"
                             }`}
                             aria-label={`Ir a imagen ${i + 1}`}
@@ -196,7 +197,7 @@ export function PropertyAboveFoldMobile({
             )}
 
             {/* 3. Headline + Precio total/mes */}
-            <div className="px-4 py-6 bg-white dark:bg-gray-900">
+            <div className="px-4 py-6 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
                 <h1 id="af-title" className="text-xl font-semibold leading-tight text-gray-900 dark:text-white">
                     {tipologia} luminoso en {building.comuna}
                 </h1>
@@ -204,11 +205,11 @@ export function PropertyAboveFoldMobile({
                 <div className="mt-3">
                     <p className="text-2xl font-bold text-gray-900 dark:text-white">
                         ${precioTotalMes.toLocaleString('es-CL')}
-                        <span className="text-sm font-normal text-slate-400 ml-2">
+                        <span className="text-sm font-normal text-gray-500 dark:text-slate-400 ml-2">
                             / mes (arriendo + GGCC)
                         </span>
                     </p>
-                    <p className="text-xs text-slate-500 mt-1">
+                    <p className="text-xs text-gray-500 dark:text-slate-500 mt-1">
                         Respaldado por Assetplan
                     </p>
                 </div>
@@ -216,24 +217,24 @@ export function PropertyAboveFoldMobile({
                 {/* 4. Badges clave (scroll mínimo) */}
                 <div className="mt-4 flex flex-wrap items-center gap-2">
                     {/* Badge principal: 0% comisión */}
-                    <span className="px-3 py-1.5 rounded-full text-sm font-medium bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 border border-cyan-500/40">
+                    <span className="px-3 py-1.5 rounded-full text-sm font-medium bg-cyan-50 dark:bg-cyan-500/20 text-cyan-700 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-500/40 shadow-sm">
                         0% comisión
                     </span>
 
                     {/* Chips de características */}
-                    <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                    <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600 shadow-sm">
                         {m2} m²
                     </span>
-                    <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                    <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600 shadow-sm">
                         {petFriendly ? 'Pet-friendly' : 'No mascotas'}
                     </span>
-                    <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                    <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600 shadow-sm">
                         Metro {minutosMetro}'
                     </span>
 
                     {/* Badge de urgencia si stock bajo */}
                     {stock <= 3 && (
-                        <span className="px-2 py-1 rounded-full text-xs font-medium bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/40">
+                        <span className="px-2 py-1 rounded-full text-xs font-medium bg-amber-50 dark:bg-amber-500/20 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-500/40 shadow-sm">
                             Quedan {stock}
                         </span>
                     )}
@@ -272,30 +273,30 @@ function StickyCtaBar({ price, onScheduleVisit, onWhatsApp }: StickyCtaBarProps)
 
     if (!isVisible) return null;
 
-    return (
-        <div className="fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 px-4 py-3 safe-area-bottom">
+        return (
+        <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-gray-900/95 backdrop-blur border-t border-gray-200 dark:border-gray-700 shadow-lg px-4 py-3 safe-area-bottom">
             <div className="flex items-center justify-between gap-4">
                 {/* Mini precio a la izquierda */}
                 <div className="flex-shrink-0">
                     <p className="text-lg font-bold text-gray-900 dark:text-white">
                         ${price.toLocaleString('es-CL')}
                     </p>
-                    <p className="text-xs text-slate-500">/ mes</p>
+                    <p className="text-xs text-gray-500 dark:text-slate-500">/ mes</p>
                 </div>
 
                 {/* CTAs */}
                 <div className="flex gap-3 flex-1">
                     <button
                         onClick={onScheduleVisit}
-                        className="flex-1 bg-cyan-600 hover:bg-cyan-700 text-white font-semibold py-3 px-6 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
+                        className="flex-1 bg-cyan-600 hover:bg-cyan-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 shadow-lg hover:shadow-xl"
                     >
                         Agendar visita
                     </button>
-
+                    
                     {onWhatsApp && (
                         <button
                             onClick={onWhatsApp}
-                            className="w-12 h-12 bg-green-600 hover:bg-green-700 text-white rounded-xl flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                            className="w-12 h-12 bg-green-600 hover:bg-green-700 text-white rounded-xl flex items-center justify-center transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 shadow-lg hover:shadow-xl"
                             aria-label="Contactar por WhatsApp"
                         >
                             <MessageCircle className="w-5 h-5" />
