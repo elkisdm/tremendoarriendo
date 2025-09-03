@@ -222,7 +222,7 @@ export function PropertyClient({
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-8">
                         {/* Columna principal (2/3) */}
                         <div className="lg:col-span-2 space-y-6 lg:space-y-8">
-                            {/* Above the fold móvil optimizado para conversión */}
+                            {/* Above the fold móvil optimizado para conversión + Galería integrada */}
                             <PropertyAboveFoldMobile
                                 building={building}
                                 selectedUnit={building.units.find(unit => unit.disponible) || null}
@@ -241,11 +241,6 @@ export function PropertyClient({
                                     console.log("Share clicked");
                                 }}
                             />
-
-                            {/* Galería de imágenes */}
-                            <section aria-label="Galería de imágenes de la propiedad">
-                                <ImageGallery images={building.gallery} />
-                            </section>
 
                             {/* Secciones desplegables */}
                             <PropertySections
