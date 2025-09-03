@@ -9,3 +9,4 @@ export { PriceBreakdown } from "./PriceBreakdown";
 export { CommuneLifeSection } from "./CommuneLifeSection";
 export { PropertyFAQ } from "./PropertyFAQ";
 export { PropertyTestimonials } from "./PropertyTestimonials";
+export { PropertyAboveFoldMobile } from "./PropertyAboveFoldMobile";

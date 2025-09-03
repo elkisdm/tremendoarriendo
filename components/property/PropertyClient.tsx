@@ -10,9 +10,8 @@ import type { Unit, Building } from "@schemas/models";
 import { VisitSchedulerModal } from "@components/flow/VisitSchedulerModal";
 
 // Componentes de propiedad
-import { PropertyHero } from "./PropertyHero";
+import { PropertyAboveFoldMobile } from "./PropertyAboveFoldMobile";
 import { PropertyBreadcrumb } from "./PropertyBreadcrumb";
-import { PropertyMobilePricing } from "./PropertyMobilePricing";
 import { PropertySidebar } from "./PropertySidebar";
 import { PropertySections } from "./PropertySections";
 import { CommuneLifeSection } from "./CommuneLifeSection";
@@ -223,41 +222,30 @@ export function PropertyClient({
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-8">
                         {/* Columna principal (2/3) */}
                         <div className="lg:col-span-2 space-y-6 lg:space-y-8">
-                            {/* Hero ultra-optimizado para móvil */}
-                            <PropertyHero building={building} variant={variant} />
+                            {/* Above the fold móvil optimizado para conversión */}
+                            <PropertyAboveFoldMobile
+                                building={building}
+                                selectedUnit={building.units.find(unit => unit.disponible) || null}
+                                variant={variant}
+                                onScheduleVisit={() => setIsModalOpen(true)}
+                                onWhatsApp={() => {
+                                    // TODO: Implementar WhatsApp
+                                    console.log("WhatsApp clicked");
+                                }}
+                                onSave={() => {
+                                    // TODO: Implementar guardar en favoritos
+                                    console.log("Save clicked");
+                                }}
+                                onShare={() => {
+                                    // TODO: Implementar compartir
+                                    console.log("Share clicked");
+                                }}
+                            />
 
                             {/* Galería de imágenes */}
                             <section aria-label="Galería de imágenes de la propiedad">
                                 <ImageGallery images={building.gallery} />
                             </section>
-
-                            {/* Sección de Precios y Promociones - Solo en móviles */}
-                            <PropertyMobilePricing
-                                building={building}
-                                selectedUnit={building.units.find(unit => unit.disponible) || null}
-                                unitDetails={{
-                                    dormitorios: building.units.find(unit => unit.disponible)?.bedrooms || 1,
-                                    banos: building.units.find(unit => unit.disponible)?.bathrooms || 1,
-                                    m2: building.units.find(unit => unit.disponible)?.m2 || 45,
-                                    piso: building.units.find(unit => unit.disponible)?.piso || "N/A"
-                                }}
-                                originalPrice={building.precio_desde || 290000}
-                                discountPrice={Math.round((building.precio_desde || 290000) * 0.5)}
-                                firstPaymentCalculation={{
-                                    totalFirstPayment: Math.round((building.precio_desde || 290000) * 1.5),
-                                    daysChargedCount: 30,
-                                    daysInMonth: 30
-                                }}
-                                moveInDate={new Date()}
-                                includeParking={false}
-                                includeStorage={false}
-                                onDateChange={() => { }}
-                                onParkingChange={() => { }}
-                                onStorageChange={() => { }}
-                                onSendQuotation={handleSendQuotation}
-                                onScheduleVisit={() => setIsModalOpen(true)}
-                                variant={variant}
-                            />
 
                             {/* Secciones desplegables */}
                             <PropertySections

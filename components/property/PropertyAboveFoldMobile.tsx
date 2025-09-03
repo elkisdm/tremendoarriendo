@@ -1,0 +1,241 @@
+"use client";
+import React, { useState, useEffect } from "react";
+import Image from "next/image";
+import { Share2, Heart, ChevronLeft, ChevronRight, MessageCircle } from "lucide-react";
+import type { Building, Unit } from "@schemas/models";
+
+interface PropertyAboveFoldMobileProps {
+  building: Building;
+  selectedUnit: Unit;
+  variant?: "catalog" | "marketing" | "admin";
+  onScheduleVisit: () => void;
+  onWhatsApp?: () => void;
+  onSave?: () => void;
+  onShare?: () => void;
+}
+
+export function PropertyAboveFoldMobile({
+  building,
+  selectedUnit,
+  variant = "catalog",
+  onScheduleVisit,
+  onWhatsApp,
+  onSave,
+  onShare
+}: PropertyAboveFoldMobileProps) {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isSaved, setIsSaved] = useState(false);
+
+  // Calcular precio total por mes (arriendo + GGCC)
+  const arriendo = selectedUnit?.precio || building.precio_desde || 290000;
+  const ggcc = building.gastos_comunes || 45000;
+  const precioTotalMes = arriendo + ggcc;
+
+  // Datos para chips y badges
+  const tipologia = selectedUnit?.tipologia || "2D";
+  const m2 = selectedUnit?.area_interior_m2 || selectedUnit?.area_total_m2 || 48;
+  const petFriendly = building.pet_friendly || true;
+  const minutosMetro = building.tiempo_metro || 6;
+  const stock = building.units?.filter(u => u.disponible).length || 7;
+
+  // Navegación de imágenes
+  const totalImages = building.gallery?.length || 1;
+  const nextImage = () => setCurrentImageIndex((prev) => (prev + 1) % totalImages);
+  const prevImage = () => setCurrentImageIndex((prev) => (prev - 1 + totalImages) % totalImages);
+
+  // Hero image con fallback
+  const heroImage = building.gallery?.[0] || building.cover_image || "/images/lascondes-cover.jpg";
+
+  return (
+    <section aria-labelledby="af-title" className="relative">
+      {/* 1. Barra superior mínima (sticky, 56px) */}
+      <div className="sticky top-0 z-30 h-14 backdrop-blur bg-black/30 flex items-center justify-between px-4">
+        <nav aria-label="breadcrumb" className="text-xs text-slate-300">
+          <span className="font-medium">{building.comuna}</span>
+          <span className="mx-2">·</span>
+          <span>{building.name}</span>
+        </nav>
+        <div className="flex gap-3">
+          <button
+            onClick={onShare}
+            className="w-8 h-8 flex items-center justify-center text-white hover:bg-white/10 rounded-full transition-colors"
+            aria-label="Compartir propiedad"
+          >
+            <Share2 className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => {
+              setIsSaved(!isSaved);
+              onSave?.();
+            }}
+            className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors ${
+              isSaved 
+                ? "text-red-400 bg-red-400/20" 
+                : "text-white hover:bg-white/10"
+            }`}
+            aria-label={isSaved ? "Quitar de favoritos" : "Guardar en favoritos"}
+          >
+            <Heart className={`w-4 h-4 ${isSaved ? "fill-current" : ""}`} />
+          </button>
+        </div>
+      </div>
+
+      {/* 2. Hero visual (full-width, ratio estable 4:3) */}
+      <div className="relative w-full aspect-[4/3] bg-gray-900">
+        <Image
+          src={heroImage}
+          alt={`${building.name} - ${tipologia} en ${building.comuna}`}
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
+        
+        {/* Overlay de degradado suave para legibilidad */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+        
+        {/* Indicador 1/N + controles de navegación */}
+        <div className="absolute top-4 right-4 bg-black/50 text-white text-sm font-medium px-3 py-1.5 rounded-full">
+          {currentImageIndex + 1} / {totalImages}
+        </div>
+        
+        {/* Controles de navegación */}
+        {totalImages > 1 && (
+          <>
+            <button
+              onClick={prevImage}
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/50 text-white rounded-full flex items-center justify-center hover:bg-black/70 transition-colors"
+              aria-label="Imagen anterior"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button
+              onClick={nextImage}
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/50 text-white rounded-full flex items-center justify-center hover:bg-black/70 transition-colors"
+              aria-label="Imagen siguiente"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </>
+        )}
+        
+        {/* Botón "Ver fotos" */}
+        <button
+          onClick={() => {/* TODO: Abrir galería fullscreen */}}
+          className="absolute bottom-4 left-4 bg-white/90 text-gray-900 px-4 py-2 rounded-full text-sm font-medium hover:bg-white transition-colors"
+        >
+          Ver fotos
+        </button>
+      </div>
+
+      {/* 3. Headline + Precio total/mes */}
+      <div className="px-4 py-6 bg-white dark:bg-gray-900">
+        <h1 id="af-title" className="text-xl font-semibold leading-tight text-gray-900 dark:text-white">
+          {tipologia} luminoso en {building.comuna}
+        </h1>
+        
+        <div className="mt-3">
+          <p className="text-2xl font-bold text-gray-900 dark:text-white">
+            ${precioTotalMes.toLocaleString('es-CL')}
+            <span className="text-sm font-normal text-slate-400 ml-2">
+              / mes (arriendo + GGCC)
+            </span>
+          </p>
+          <p className="text-xs text-slate-500 mt-1">
+            Respaldado por Assetplan
+          </p>
+        </div>
+
+        {/* 4. Badges clave (scroll mínimo) */}
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          {/* Badge principal: 0% comisión */}
+          <span className="px-3 py-1.5 rounded-full text-sm font-medium bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 border border-cyan-500/40">
+            0% comisión
+          </span>
+          
+          {/* Chips de características */}
+          <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+            {m2} m²
+          </span>
+          <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+            {petFriendly ? 'Pet-friendly' : 'No mascotas'}
+          </span>
+          <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+            Metro {minutosMetro}'
+          </span>
+          
+          {/* Badge de urgencia si stock bajo */}
+          {stock <= 3 && (
+            <span className="px-2 py-1 rounded-full text-xs font-medium bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/40">
+              Quedan {stock}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* 5. Sticky CTA (aparece tras ~120px) */}
+      <StickyCtaBar
+        price={precioTotalMes}
+        onScheduleVisit={onScheduleVisit}
+        onWhatsApp={onWhatsApp}
+      />
+    </section>
+  );
+}
+
+// Componente StickyCtaBar separado para mejor organización
+interface StickyCtaBarProps {
+  price: number;
+  onScheduleVisit: () => void;
+  onWhatsApp?: () => void;
+}
+
+function StickyCtaBar({ price, onScheduleVisit, onWhatsApp }: StickyCtaBarProps) {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      setIsVisible(scrollY > 120);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  if (!isVisible) return null;
+
+  return (
+    <div className="fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 px-4 py-3 safe-area-bottom">
+      <div className="flex items-center justify-between gap-4">
+        {/* Mini precio a la izquierda */}
+        <div className="flex-shrink-0">
+          <p className="text-lg font-bold text-gray-900 dark:text-white">
+            ${price.toLocaleString('es-CL')}
+          </p>
+          <p className="text-xs text-slate-500">/ mes</p>
+        </div>
+
+        {/* CTAs */}
+        <div className="flex gap-3 flex-1">
+          <button
+            onClick={onScheduleVisit}
+            className="flex-1 bg-cyan-600 hover:bg-cyan-700 text-white font-semibold py-3 px-6 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
+          >
+            Agendar visita
+          </button>
+          
+          {onWhatsApp && (
+            <button
+              onClick={onWhatsApp}
+              className="w-12 h-12 bg-green-600 hover:bg-green-700 text-white rounded-xl flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+              aria-label="Contactar por WhatsApp"
+            >
+              <MessageCircle className="w-5 h-5" />
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
