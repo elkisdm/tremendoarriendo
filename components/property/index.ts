@@ -10,3 +10,4 @@ export { CommuneLifeSection } from "./CommuneLifeSection";
 export { PropertyFAQ } from "./PropertyFAQ";
 export { PropertyTestimonials } from "./PropertyTestimonials";
 export { PropertyAboveFoldMobile } from "./PropertyAboveFoldMobile";
+export { PropertyAccordion } from "./PropertyAccordion";

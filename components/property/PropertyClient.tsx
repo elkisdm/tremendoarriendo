@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, Suspense, lazy, useCallback } from "react";
+import React, { useState, useEffect, Suspense, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AlertCircle } from "lucide-react";
 import { ImageGallery } from "@components/gallery/ImageGallery";
@@ -13,12 +13,12 @@ import { VisitSchedulerModal } from "@components/flow/VisitSchedulerModal";
 import { PropertyAboveFoldMobile } from "./PropertyAboveFoldMobile";
 import { PropertyBreadcrumb } from "./PropertyBreadcrumb";
 import { PropertySidebar } from "./PropertySidebar";
-import { PropertySections } from "./PropertySections";
+import { PropertyAccordion } from "./PropertyAccordion";
 import { CommuneLifeSection } from "./CommuneLifeSection";
 import { PropertyFAQ } from "./PropertyFAQ";
 
-// Lazy load components for better performance
-const RelatedList = lazy(() => import("@components/lists/RelatedList").then(module => ({ default: module.RelatedList })));
+// Import directo para evitar problemas de lazy loading
+import { RelatedList } from "@components/lists/RelatedList";
 
 // Error Boundary Component
 class ErrorBoundary extends React.Component<
@@ -242,26 +242,15 @@ export function PropertyClient({
                                 }}
                             />
 
-                            {/* Secciones desplegables */}
-                            <PropertySections
-                                building={building}
-                                unitDetails={{
-                                    tipologia: building.units.find(unit => unit.disponible)?.tipologia || "1D1B",
-                                    m2: building.units.find(unit => unit.disponible)?.m2 || 45,
-                                    piso: building.units.find(unit => unit.disponible)?.piso || "N/A",
-                                    orientacion: building.units.find(unit => unit.disponible)?.orientacion || "N/A",
-                                    area_interior: building.units.find(unit => unit.disponible)?.area_interior_m2,
-                                    area_exterior: building.units.find(unit => unit.disponible)?.area_exterior_m2,
-                                    estacionamiento: building.units.find(unit => unit.disponible)?.estacionamiento || false,
-                                    bodega: building.units.find(unit => unit.disponible)?.bodega || false,
-                                    amoblado: building.units.find(unit => unit.disponible)?.amoblado || false,
-                                    petFriendly: building.units.find(unit => unit.disponible)?.petFriendly || false,
-                                    garantia_cuotas: building.units.find(unit => unit.disponible)?.guarantee_installments,
-                                    renta_minima: building.units.find(unit => unit.disponible)?.renta_minima,
-                                    codigoInterno: building.units.find(unit => unit.disponible)?.codigoInterno
+                            {/* Acordeones optimizados para conversión */}
+                            <PropertyAccordion 
+                                building={building} 
+                                selectedUnit={building.units.find(unit => unit.disponible) || null}
+                                onScheduleVisit={() => setIsModalOpen(true)}
+                                onPreapproval={() => {
+                                    // TODO: Implementar modal de preaprobación
+                                    console.log("Preaprobación iniciada");
                                 }}
-                                originalPrice={building.precio_desde || 290000}
-                                variant={variant}
                             />
 
                             {/* Cómo es vivir en la comuna */}
