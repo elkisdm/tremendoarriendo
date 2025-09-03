@@ -106,8 +106,8 @@ export function PropertyAccordion({
     const [openSections, setOpenSections] = useState<string[]>(["caracteristicas"]);
 
     const toggleSection = (sectionId: string) => {
-        setOpenSections(prev => 
-            prev.includes(sectionId) 
+        setOpenSections(prev =>
+            prev.includes(sectionId)
                 ? prev.filter(id => id !== sectionId)
                 : [...prev, sectionId]
         );
@@ -195,15 +195,15 @@ export function PropertyAccordion({
                     </span>
                 </button>
             </div>
-            
+
             {/* Indicador de sección activa */}
             <div className="text-center mb-4">
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                    {openSections.length === 0 ? "Sin información visible" : 
-                     openSections.length === 1 ? "Viendo: " + 
-                     (openSections[0] === "caracteristicas" ? "Características" :
-                      openSections[0] === "requisitos" ? "Requisitos" : "Información del edificio")
-                     : "Múltiples secciones abiertas"}
+                    {openSections.length === 0 ? "Sin información visible" :
+                        openSections.length === 1 ? "Viendo: " +
+                            (openSections[0] === "caracteristicas" ? "Características" :
+                                openSections[0] === "requisitos" ? "Requisitos" : "Información del edificio")
+                            : "Múltiples secciones abiertas"}
                 </p>
             </div>
 
@@ -216,7 +216,7 @@ export function PropertyAccordion({
                 isOpen={openSections.includes("caracteristicas")}
                 onToggle={() => toggleSectionSmart("caracteristicas")}
             >
-                                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-3">
                         <div className="flex items-center gap-2">
                             <CheckCircle className="w-4 h-4 text-green-500" />
@@ -258,7 +258,7 @@ export function PropertyAccordion({
                         )}
                     </div>
                 </div>
-                
+
                 {/* Información adicional de la unidad */}
                 {(selectedUnit?.dormitorios || selectedUnit?.banos) && (
                     <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
