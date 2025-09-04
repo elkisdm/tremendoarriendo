@@ -85,7 +85,7 @@ export function Header() {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
   return (
-    <header className="sticky top-0 z-40 w-full bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50 shadow-lg shadow-black/5">
+    <header className="sticky top-0 z-40 w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-lg shadow-black/5">
       <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 py-2 lg:py-4">
         <div className="flex items-center justify-between max-w-none">
           {/* Logo y Branding */}
@@ -232,7 +232,7 @@ export function Header() {
 
       {/* Breadcrumb Móvil */}
       {showBreadcrumb && (
-        <div className="lg:hidden border-b border-gray-200/50 dark:border-gray-700/50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl">
+        <div className="lg:hidden border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
           <div className="w-full px-4 sm:px-6 py-2">
             <nav className="flex items-center space-x-1 text-sm" aria-label="Breadcrumb">
               {breadcrumbs.map((crumb, index) => (
@@ -277,7 +277,7 @@ export function Header() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[55] lg:hidden"
               onClick={toggleMobileMenu}
               aria-hidden="true"
             />
@@ -293,7 +293,7 @@ export function Header() {
                 stiffness: 300,
                 damping: 30
               }}
-              className="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-white dark:bg-gray-900 shadow-2xl z-50 lg:hidden"
+              className="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-white dark:bg-gray-900 shadow-2xl z-[60] lg:hidden"
               role="dialog"
               aria-modal="true"
               aria-label="Menú de navegación móvil"

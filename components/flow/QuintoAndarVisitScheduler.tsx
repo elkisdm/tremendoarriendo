@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { motion, AnimatePresence, PanInfo, useMotionValue, useTransform } from 'framer-motion';
+import React, { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
     Calendar,
     Clock,
@@ -59,9 +59,9 @@ export function QuintoAndarVisitScheduler({
     const [step, setStep] = useState<'selection' | 'contact' | 'premium' | 'success'>('selection');
     const [contactData, setContactData] = useState<ContactData>({
         name: '',
+        email: '',
         rut: '',
-        phone: '',
-        email: ''
+        phone: ''
     });
     const [fieldValidation, setFieldValidation] = useState<FieldValidation>({
         name: { isValid: false, message: '' },
@@ -84,11 +84,6 @@ export function QuintoAndarVisitScheduler({
         userEngagement: 0
     });
 
-    // Refs para gestos
-    const containerRef = useRef<HTMLDivElement>(null);
-    const x = useMotionValue(0);
-    const opacity = useTransform(x, [-100, 0, 100], [0.5, 1, 0.5]);
-
     const {
         isLoading,
         error,
@@ -99,7 +94,6 @@ export function QuintoAndarVisitScheduler({
         fetchAvailability,
         selectDateTime,
         createVisit,
-        clearSelection,
         clearError
     } = useVisitScheduler({ listingId });
 
@@ -110,7 +104,6 @@ export function QuintoAndarVisitScheduler({
 
         const handleChange = (e: MediaQueryListEvent) => setIsDarkMode(e.matches);
         mediaQuery.addEventListener('change', handleChange);
-
         return () => mediaQuery.removeEventListener('change', handleChange);
     }, []);
 
@@ -118,165 +111,82 @@ export function QuintoAndarVisitScheduler({
     useEffect(() => {
         if (isOpen) {
             const startDate = new Date();
-            startDate.setDate(startDate.getDate() + 1);
-
             const endDate = new Date();
-            endDate.setDate(endDate.getDate() + 5);
-
+            endDate.setDate(endDate.getDate() + 7);
             fetchAvailability(startDate, endDate);
         }
     }, [isOpen, fetchAvailability]);
 
-    // Validar campos en tiempo real
+    // Validación en tiempo real
     useEffect(() => {
         const validateForm = () => {
-            const nameValid = contactData.name.trim().length >= 2;
-            const emailValid = contactData.email ? contactData.email.includes('@') && contactData.email.includes('.') : false;
-            const rutValid = contactData.rut.trim().length >= 8;
-            const phoneValid = contactData.phone.trim().length >= 9;
-
-            setFieldValidation({
+            const newValidation: FieldValidation = {
                 name: {
-                    isValid: nameValid,
-                    message: nameValid ? '' : 'El nombre debe tener al menos 2 caracteres'
+                    isValid: contactData.name.length >= 2,
+                    message: contactData.name.length > 0 && contactData.name.length < 2 ? 'Nombre muy corto' : ''
                 },
                 email: {
-                    isValid: emailValid,
-                    message: emailValid ? '' : 'Ingresa un email válido'
+                    isValid: contactData.email ? contactData.email.includes('@') && contactData.email.includes('.') : false,
+                    message: contactData.email && !contactData.email.includes('@') ? 'Email inválido' : ''
                 },
                 rut: {
-                    isValid: rutValid,
-                    message: rutValid ? '' : 'El RUT debe tener al menos 8 caracteres'
+                    isValid: contactData.rut.length >= 8,
+                    message: contactData.rut.length > 0 && contactData.rut.length < 8 ? 'RUT muy corto' : ''
                 },
                 phone: {
-                    isValid: phoneValid,
-                    message: phoneValid ? '' : 'El teléfono debe tener al menos 9 dígitos'
+                    isValid: contactData.phone.length >= 8,
+                    message: contactData.phone.length > 0 && contactData.phone.length < 8 ? 'Teléfono muy corto' : ''
                 }
-            });
+            };
 
-            setIsFormValid(nameValid && emailValid && rutValid && phoneValid);
+            setFieldValidation(newValidation);
+            setIsFormValid(
+                newValidation.name.isValid &&
+                newValidation.email.isValid &&
+                newValidation.rut.isValid &&
+                newValidation.phone.isValid
+            );
         };
 
         validateForm();
     }, [contactData]);
 
-    // Feedback háptico
-    const triggerHapticFeedback = useCallback((type: 'light' | 'medium' | 'heavy' = 'light') => {
-        if ('vibrate' in navigator) {
-            switch (type) {
-                case 'light':
-                    navigator.vibrate(50);
-                    break;
-                case 'medium':
-                    navigator.vibrate(100);
-                    break;
-                case 'heavy':
-                    navigator.vibrate(200);
-                    break;
-            }
-        }
-    }, []);
-
     // Funciones para características premium
-    const requestNotificationPermission = useCallback(async () => {
+    const requestNotificationPermission = useCallback(async (): Promise<boolean> => {
         if ('Notification' in window) {
             const permission = await Notification.requestPermission();
-            setNotificationsEnabled(permission === 'granted');
-            return permission === 'granted';
+            const granted = permission === 'granted';
+            setNotificationsEnabled(granted);
+            return granted;
         }
         return false;
     }, []);
 
-    const sendWhatsAppConfirmation = useCallback(async (visitData: any) => {
-        const message = `¡Hola! Tu visita ha sido confirmada para ${visitData.date} a las ${visitData.time}. 
-        
-📍 ${propertyName}
-🏠 ${propertyAddress}
-
-Te esperamos. ¡Gracias por elegirnos!`;
-
+    const sendWhatsAppConfirmation = useCallback((visitData: any) => {
+        const message = `Hola! Confirmo mi visita para ${visitData.date} a las ${visitData.time} en ${propertyName}.`;
         const whatsappUrl = `https://wa.me/56912345678?text=${encodeURIComponent(message)}`;
         window.open(whatsappUrl, '_blank');
-    }, [propertyName, propertyAddress]);
+    }, [propertyName]);
 
     const generateCalendarEvent = useCallback((visitData: any) => {
         const startDate = new Date(`${visitData.date}T${visitData.time}`);
         const endDate = new Date(startDate.getTime() + 60 * 60 * 1000); // 1 hora después
 
-        const event = {
-            title: `Visita - ${propertyName}`,
-            description: `Visita programada para ${propertyName}\nDirección: ${propertyAddress}`,
-            start: startDate.toISOString(),
-            end: endDate.toISOString(),
-            location: propertyAddress
-        };
-
-        // Google Calendar
-        const googleUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${startDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z/${endDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z&details=${encodeURIComponent(event.description)}&location=${encodeURIComponent(event.location)}`;
-
-        // Apple Calendar (ICS)
-        const icsContent = `BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//Hommie//Visit Scheduler//EN
-BEGIN:VEVENT
-UID:${Date.now()}@hommie.cl
-DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z
-DTSTART:${startDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z
-DTEND:${endDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z
-SUMMARY:${event.title}
-DESCRIPTION:${event.description}
-LOCATION:${event.location}
-END:VEVENT
-END:VCALENDAR`;
-
-        return { googleUrl, icsContent };
+        const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=Visita: ${propertyName}&dates=${startDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z/${endDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z&details=Visita programada para ${propertyName} en ${propertyAddress}`;
+        window.open(googleCalendarUrl, '_blank');
     }, [propertyName, propertyAddress]);
 
-    const trackAnalytics = useCallback((event: string, data?: any) => {
-        // Simular tracking de analytics
-        console.log(`Analytics: ${event}`, data);
-
-        // Actualizar métricas locales
+    const trackAnalytics = useCallback((event: string, data: any) => {
+        console.log('Analytics:', event, data);
         setAnalyticsData(prev => ({
             ...prev,
             userEngagement: prev.userEngagement + 1
         }));
     }, []);
 
-    // Manejar gestos de navegación
-    const handleDragEnd = useCallback((event: any, info: PanInfo) => {
-        const threshold = 100;
-
-        if (info.offset.x > threshold && step !== 'selection') {
-            // Swipe derecha - ir atrás
-            triggerHapticFeedback('medium');
-            if (step === 'contact') {
-                setStep('selection');
-            } else if (step === 'premium') {
-                setStep('contact');
-            } else if (step === 'success') {
-                setStep('premium');
-            }
-        } else if (info.offset.x < -threshold && step !== 'success' && selectedDate && selectedTime) {
-            // Swipe izquierda - ir adelante
-            triggerHapticFeedback('medium');
-            if (step === 'selection') {
-                setStep('contact');
-            } else if (step === 'contact' && isFormValid) {
-                setStep('premium');
-            } else if (step === 'premium') {
-                setStep('success');
-            }
-        }
-
-        x.set(0);
-    }, [step, selectedDate, selectedTime, isFormValid, x, triggerHapticFeedback]);
-
     // Manejar selección de fecha
     const handleDateSelect = (day: DaySlot) => {
         if (!day.available) return;
-
-        triggerHapticFeedback('light');
         selectDateTime(day.date, '');
         clearError();
     };
@@ -284,8 +194,6 @@ END:VCALENDAR`;
     // Manejar selección de hora
     const handleTimeSelect = (timeSlot: TimeSlot) => {
         if (!timeSlot.available) return;
-
-        triggerHapticFeedback('light');
         selectDateTime(selectedDate!, timeSlot.time);
         clearError();
     };
@@ -296,7 +204,6 @@ END:VCALENDAR`;
     // Continuar al formulario
     const handleContinue = () => {
         if (canContinue) {
-            triggerHapticFeedback('medium');
             setStep('contact');
         }
     };
@@ -304,15 +211,12 @@ END:VCALENDAR`;
     // Continuar al paso premium
     const handleContinueToPremium = () => {
         if (isFormValid) {
-            triggerHapticFeedback('medium');
             setStep('premium');
         }
     };
 
     // Continuar al éxito
     const handleContinueToSuccess = async () => {
-        triggerHapticFeedback('medium');
-
         // Simular envío de datos
         const result = await createVisit({
             name: contactData.name,
@@ -322,7 +226,6 @@ END:VCALENDAR`;
 
         if (result) {
             setStep('success');
-            onSuccess?.(result);
 
             // Características premium
             const visitData = {
@@ -333,24 +236,22 @@ END:VCALENDAR`;
                 email: contactData.email
             };
 
-            // Enviar confirmación por WhatsApp
             if (whatsappEnabled) {
-                await sendWhatsAppConfirmation(visitData);
+                sendWhatsAppConfirmation(visitData);
             }
 
-            // Programar notificación de recordatorio
-            if (notificationsEnabled) {
-                const visitDateTime = new Date(`${selectedDate}T${selectedTime}`);
-                const reminderTime = new Date(visitDateTime.getTime() - 24 * 60 * 60 * 1000);
+            if (calendarSyncEnabled) {
+                generateCalendarEvent(visitData);
+            }
 
-                if (reminderTime > new Date()) {
-                    setTimeout(() => {
-                        new Notification('Recordatorio de Visita', {
-                            body: `Tu visita a ${propertyName} es mañana a las ${selectedTime}`,
-                            icon: '/favicon.ico'
-                        });
-                    }, reminderTime.getTime() - Date.now());
-                }
+            if (notificationsEnabled) {
+                // Simular notificación programada
+                setTimeout(() => {
+                    new Notification('Recordatorio de visita', {
+                        body: `Tu visita a ${propertyName} es en 1 hora`,
+                        icon: propertyImage
+                    });
+                }, 1000);
             }
 
             trackAnalytics('visit_confirmed', visitData);
@@ -359,7 +260,6 @@ END:VCALENDAR`;
 
     // Regresar al paso anterior
     const handleBack = () => {
-        triggerHapticFeedback('medium');
         if (step === 'contact') {
             setStep('selection');
         } else if (step === 'premium') {
@@ -372,12 +272,7 @@ END:VCALENDAR`;
     // Manejar envío del formulario
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
-        if (!isFormValid) {
-            return;
-        }
-
-        trackAnalytics('form_submit_started', { step: 'contact' });
+        if (!isFormValid) return;
 
         const result = await createVisit({
             name: contactData.name,
@@ -386,7 +281,6 @@ END:VCALENDAR`;
         });
 
         if (result) {
-            triggerHapticFeedback('heavy');
             setShowConfetti(true);
             setStep('success');
             onSuccess?.(result);
@@ -400,299 +294,207 @@ END:VCALENDAR`;
                 email: contactData.email
             };
 
-            // Enviar confirmación por WhatsApp
             if (whatsappEnabled) {
-                await sendWhatsAppConfirmation(visitData);
+                sendWhatsAppConfirmation(visitData);
             }
 
-            // Programar notificación de recordatorio
-            if (notificationsEnabled) {
-                const visitDateTime = new Date(`${selectedDate}T${selectedTime}`);
-                const reminderTime = new Date(visitDateTime.getTime() - 24 * 60 * 60 * 1000); // 24 horas antes
-
-                if (reminderTime > new Date()) {
-                    setTimeout(() => {
-                        new Notification('Recordatorio de Visita', {
-                            body: `Tu visita a ${propertyName} es mañana a las ${selectedTime}`,
-                            icon: '/favicon.ico'
-                        });
-                    }, reminderTime.getTime() - Date.now());
-                }
-            }
-
-            // Generar evento de calendario
             if (calendarSyncEnabled) {
-                const calendarEvent = generateCalendarEvent(visitData);
-                // Aquí se podría mostrar un modal para elegir el calendario
+                generateCalendarEvent(visitData);
+            }
+
+            if (notificationsEnabled) {
+                setTimeout(() => {
+                    new Notification('Recordatorio de visita', {
+                        body: `Tu visita a ${propertyName} es en 1 hora`,
+                        icon: propertyImage
+                    });
+                }, 1000);
             }
 
             trackAnalytics('visit_confirmed', visitData);
-
-            // Ocultar confeti después de 3 segundos
-            setTimeout(() => setShowConfetti(false), 3000);
         }
     };
 
-    // Resetear al cerrar
+    // Manejar cierre
     const handleClose = () => {
         setStep('selection');
-        clearSelection();
-        clearError();
-        setContactData({ name: '', rut: '', phone: '', email: '' });
-        setFieldValidation({
-            name: { isValid: false, message: '' },
-            email: { isValid: false, message: '' },
-            rut: { isValid: false, message: '' },
-            phone: { isValid: false, message: '' }
-        });
-        setIsFormValid(false);
         setShowConfetti(false);
         onClose();
     };
 
-    // Obtener información del paso actual
-    const getStepInfo = () => {
+    // Información del paso actual
+    const getStepInfo = (step: string) => {
         switch (step) {
             case 'selection':
-                return { number: 1, title: 'Fecha y Hora', description: 'Selecciona cuándo quieres visitar' };
+                return { number: 1, title: 'Selecciona fecha y hora', description: 'Elige el mejor momento para tu visita' };
             case 'contact':
-                return { number: 2, title: 'Contacto', description: 'Completa tus datos' };
+                return { number: 2, title: 'Datos de contacto', description: 'Completa tu información' };
             case 'premium':
-                return { number: 3, title: 'Características Premium', description: 'Personaliza tu experiencia' };
+                return { number: 3, title: 'Características premium', description: 'Mejora tu experiencia' };
             case 'success':
-                return { number: 4, title: 'Confirmación', description: 'Visita agendada' };
+                return { number: 4, title: '¡Visita confirmada!', description: 'Todo listo para tu visita' };
             default:
-                return { number: 1, title: 'Fecha y Hora', description: 'Selecciona cuándo quieres visitar' };
+                return { number: 1, title: 'Agendar visita', description: 'Programa tu visita' };
         }
     };
 
-    // Obtener fecha actual para comparar
-    const today = new Date().toISOString().split('T')[0];
+    const stepInfo = getStepInfo(step);
 
     if (!isOpen) return null;
 
-    const stepInfo = getStepInfo();
-
     return (
-        <div className={`fixed inset-0 z-50 ${isDarkMode ? 'dark' : ''}`}>
-            <div className={`w-full h-full ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
-                {/* Header con indicador de progreso */}
-                <div className={`sticky top-0 z-10 ${isDarkMode ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-100'} border-b`}>
-                    {/* Barra de progreso */}
-                    <div className="px-4 py-3">
-                        <div className="flex items-center justify-between mb-3">
-                            <span className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                                Paso {stepInfo.number} de 4
-                            </span>
-                            <span className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>{stepInfo.title}</span>
-                        </div>
-                        <div className={`w-full ${isDarkMode ? 'bg-gray-700' : 'bg-gray-200'} rounded-full h-2`}>
-                            <div
-                                className="bg-blue-600 h-2 rounded-full transition-all duration-300 ease-out"
-                                style={{ width: `${(stepInfo.number / 4) * 100}%` }}
-                            />
-                        </div>
-                        <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'} mt-2 text-center`}>{stepInfo.description}</p>
-                    </div>
-
-                    {/* Header principal */}
-                    <div className={`flex items-center justify-between p-4 border-b ${isDarkMode ? 'border-gray-700' : 'border-gray-100'}`}>
-                        <div className="flex items-center gap-3">
-                            {/* Botón atrás solo en pasos 2 y 3 */}
-                            {step !== 'selection' && (
-                                <button
-                                    onClick={handleBack}
-                                    className={`p-3 ${isDarkMode ? 'hover:bg-gray-800' : 'hover:bg-gray-100'} rounded-2xl transition-colors touch-manipulation active:scale-95`}
-                                    aria-label="Volver al paso anterior"
-                                >
-                                    <ArrowLeft className={`w-5 h-5 ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`} />
-                                </button>
-                            )}
-
-                            <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center">
-                                <Calendar className="w-6 h-6 text-white" />
-                            </div>
-                            <div className="min-w-0 flex-1">
-                                <h2 className={`text-lg font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'} truncate`}>Agendar Visita</h2>
-                                <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-600'} truncate`}>{propertyName}</p>
-                            </div>
-                        </div>
-
-                        {/* Toggle modo oscuro */}
-                        <button
-                            onClick={() => setIsDarkMode(!isDarkMode)}
-                            className={`p-3 ${isDarkMode ? 'hover:bg-gray-800' : 'hover:bg-gray-100'} rounded-2xl transition-colors touch-manipulation active:scale-95 mr-2`}
-                            aria-label="Cambiar modo oscuro"
-                        >
-                            {isDarkMode ? (
-                                <Sun className="w-5 h-5 text-yellow-400" />
-                            ) : (
-                                <Moon className="w-5 h-5 text-gray-500" />
-                            )}
-                        </button>
-
-                        <button
-                            onClick={handleClose}
-                            className={`p-3 ${isDarkMode ? 'hover:bg-gray-800' : 'hover:bg-gray-100'} rounded-2xl transition-colors touch-manipulation active:scale-95`}
-                            aria-label="Cerrar modal"
-                        >
-                            <X className={`w-5 h-5 ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`} />
-                        </button>
-                    </div>
-                </div>
-
-                {/* Content con gestos */}
+        <AnimatePresence>
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+                onClick={handleClose}
+            >
                 <motion.div
-                    ref={containerRef}
-                    className="flex-1 p-4 overflow-y-auto"
-                    drag="x"
-                    dragConstraints={{ left: 0, right: 0 }}
-                    onDragEnd={handleDragEnd}
-                    style={{ x, opacity }}
-                    dragElastic={0.1}
+                    initial={{ scale: 0.95, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.95, opacity: 0 }}
+                    className={`relative w-full max-w-md h-[90vh] ${isDarkMode ? 'bg-gray-900' : 'bg-white'} rounded-2xl shadow-2xl overflow-hidden`}
+                    onClick={(e) => e.stopPropagation()}
                 >
-                    <AnimatePresence mode="wait">
+                    {/* Header */}
+                    <div className={`p-4 border-b ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+                        <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center gap-3">
+                                <button
+                                    onClick={handleClose}
+                                    className={`p-2 rounded-xl ${isDarkMode ? 'hover:bg-gray-800' : 'hover:bg-gray-100'} transition-colors`}
+                                    aria-label="Cerrar"
+                                >
+                                    <X className={`w-5 h-5 ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`} />
+                                </button>
+                                <div>
+                                    <h2 className={`text-lg font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                                        {propertyName}
+                                    </h2>
+                                    <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                        {propertyAddress}
+                                    </p>
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => setIsDarkMode(!isDarkMode)}
+                                className={`p-2 rounded-xl ${isDarkMode ? 'hover:bg-gray-800' : 'hover:bg-gray-100'} transition-colors`}
+                                aria-label="Cambiar tema"
+                            >
+                                {isDarkMode ? <Sun className="w-5 h-5 text-yellow-500" /> : <Moon className="w-5 h-5 text-gray-600" />}
+                            </button>
+                        </div>
+
+                        {/* Progress bar */}
+                        <div className="flex items-center gap-2 mb-2">
+                            {[1, 2, 3, 4].map((stepNumber) => (
+                                <div
+                                    key={stepNumber}
+                                    className={`flex-1 h-2 rounded-full ${
+                                        stepNumber <= stepInfo.number
+                                            ? 'bg-blue-600'
+                                            : isDarkMode
+                                            ? 'bg-gray-700'
+                                            : 'bg-gray-200'
+                                    }`}
+                                />
+                            ))}
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <h3 className={`text-base font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                                {stepInfo.title}
+                            </h3>
+                            <span className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                {stepInfo.number}/4
+                            </span>
+                        </div>
+                        <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                            {stepInfo.description}
+                        </p>
+                    </div>
+
+                    {/* Content */}
+                    <div className="flex-1 p-4 overflow-y-auto">
                         {/* Step 1: Selección de fecha y hora */}
                         {step === 'selection' && (
-                            <motion.div
-                                key="selection"
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                                transition={{ duration: 0.15, ease: "easeOut" }}
-                                className="h-full flex flex-col"
-                            >
-                                {/* Instrucciones */}
-                                <div className="text-center mb-6">
-                                    <motion.h3
-                                        className={`text-xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-2`}
-                                        initial={{ scale: 0.95 }}
-                                        animate={{ scale: 1 }}
-                                        transition={{ delay: 0.05, duration: 0.1 }}
-                                    >
-                                        Selecciona fecha y hora
-                                    </motion.h3>
-                                    <motion.p
-                                        className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'} px-4`}
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        transition={{ delay: 0.1, duration: 0.1 }}
-                                    >
-                                        Elige el día y horario que prefieras para tu visita
-                                    </motion.p>
-                                </div>
-
-                                {/* Selección de fecha - Grid responsivo */}
+                            <div className="h-full flex flex-col">
+                                {/* Selección de fecha */}
                                 <div className="mb-6">
                                     <h4 className={`text-base font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-4 flex items-center gap-2`}>
                                         <Calendar className="w-5 h-5 text-blue-600" />
                                         Fecha
                                     </h4>
-
-                                    {isLoading ? (
-                                        <div className="flex items-center justify-center py-8">
-                                            <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
-                                        </div>
-                                    ) : (
-                                        <div className="grid grid-cols-5 gap-3">
-                                            {availableDays.map((day, index) => (
-                                                <motion.button
-                                                    key={day.id}
-                                                    onClick={() => handleDateSelect(day)}
-                                                    disabled={!day.available}
-                                                    className={`
-                                                        relative flex flex-col items-center justify-center p-3 rounded-2xl border-2 transition-all
-                                                        min-h-[88px] touch-manipulation active:scale-95
-                                                    ${day.available
-                                                            ? selectedDate === day.date
-                                                                ? 'border-blue-600 bg-blue-50 text-blue-700 shadow-lg ring-2 ring-blue-200'
-                                                                : `${isDarkMode ? 'border-gray-600 hover:border-blue-400 hover:bg-blue-900/20' : 'border-gray-200 hover:border-blue-400 hover:bg-blue-50'}`
-                                                            : `${isDarkMode ? 'border-gray-700 bg-gray-800 text-gray-500' : 'border-gray-200 bg-gray-50 text-gray-400'} cursor-not-allowed`
-                                                        }
-                                                `}
-                                                    aria-label={`Seleccionar ${day.day} ${day.number}`}
-                                                    initial={{ opacity: 0, scale: 0.9 }}
-                                                    animate={{ opacity: 1, scale: 1 }}
-                                                    transition={{ delay: index * 0.02, duration: 0.1 }}
-                                                    whileHover={{ scale: 1.02 }}
-                                                    whileTap={{ scale: 0.98 }}
-                                                >
-                                                    <div className={`text-xs font-medium ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>{day.day}</div>
-                                                    <div className={`text-xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{day.number}</div>
-                                                    {day.date === today && (
-                                                        <div className="text-xs text-blue-600 font-medium">Hoy</div>
-                                                    )}
-                                                    {selectedDate === day.date && (
-                                                        <motion.div
-                                                            className="absolute top-2 right-2 w-4 h-4 bg-blue-600 rounded-full flex items-center justify-center"
-                                                            initial={{ scale: 0 }}
-                                                            animate={{ scale: 1 }}
-                                                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                                                        >
-                                                            <Check className="w-2.5 h-2.5 text-white" />
-                                                        </motion.div>
-                                                    )}
-                                                </motion.button>
-                                            ))}
-                                        </div>
-                                    )}
+                                    <div className="grid grid-cols-5 gap-2">
+                                        {availableDays.map((day, index) => (
+                                            <button
+                                                key={day.id}
+                                                onClick={() => handleDateSelect(day)}
+                                                disabled={!day.available}
+                                                className={`p-3 rounded-xl text-center transition-colors ${
+                                                    selectedDate === day.date
+                                                        ? 'bg-blue-600 text-white'
+                                                        : day.available
+                                                        ? isDarkMode
+                                                            ? 'bg-gray-800 text-white hover:bg-gray-700'
+                                                            : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                                                        : isDarkMode
+                                                        ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
+                                                        : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                                }`}
+                                            >
+                                                <div className="text-xs font-medium">{day.day}</div>
+                                                <div className="text-lg font-bold">{day.number}</div>
+                                                {day.available && (
+                                                    <div className="flex justify-center mt-1">
+                                                        <Check className="w-2.5 h-2.5 text-white" />
+                                                    </div>
+                                                )}
+                                            </button>
+                                        ))}
+                                    </div>
                                 </div>
 
-                                {/* Selección de hora - Grid responsivo */}
+                                {/* Selección de hora */}
                                 {selectedDate && (
                                     <div className="mb-6">
                                         <h4 className={`text-base font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-4 flex items-center gap-2`}>
                                             <Clock className="w-5 h-5 text-green-600" />
                                             Hora
                                         </h4>
-
-                                        <div className="grid grid-cols-3 gap-3">
-                                            {availableSlots.map((timeSlot, index) => (
-                                                <motion.button
+                                        <div className="grid grid-cols-2 gap-2">
+                                            {availableSlots.map((timeSlot) => (
+                                                <button
                                                     key={timeSlot.id}
                                                     onClick={() => handleTimeSelect(timeSlot)}
                                                     disabled={!timeSlot.available}
-                                                    className={`
-                                                        relative p-4 rounded-2xl border-2 transition-all text-center touch-manipulation
-                                                        min-h-[72px] flex items-center justify-center active:scale-95
-                                                    ${timeSlot.available
-                                                            ? selectedTime === timeSlot.time
-                                                                ? 'border-green-600 bg-green-50 text-green-700 shadow-lg ring-2 ring-green-200'
-                                                                : `${isDarkMode ? 'border-gray-600 hover:border-green-400 hover:bg-green-900/20' : 'border-gray-200 hover:border-green-400 hover:bg-green-50'}`
-                                                            : `${isDarkMode ? 'border-gray-700 bg-gray-800 text-gray-500' : 'border-gray-200 bg-gray-50 text-gray-400'} cursor-not-allowed`
-                                                        }
-                                                `}
-                                                    aria-label={`Seleccionar hora ${timeSlot.time}`}
-                                                    initial={{ opacity: 0, y: 10 }}
-                                                    animate={{ opacity: 1, y: 0 }}
-                                                    transition={{ delay: index * 0.03, duration: 0.1 }}
-                                                    whileHover={{ scale: 1.02 }}
-                                                    whileTap={{ scale: 0.98 }}
+                                                    className={`p-3 rounded-xl text-center transition-colors ${
+                                                        selectedTime === timeSlot.time
+                                                            ? 'bg-green-600 text-white'
+                                                            : timeSlot.available
+                                                            ? isDarkMode
+                                                                ? 'bg-gray-800 text-white hover:bg-gray-700'
+                                                                : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                                                            : isDarkMode
+                                                            ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
+                                                            : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                                    }`}
                                                 >
-                                                    <span className={`text-base font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{timeSlot.time}</span>
+                                                    {timeSlot.time}
                                                     {selectedTime === timeSlot.time && (
-                                                        <motion.div
-                                                            className="absolute top-2 right-2 w-4 h-4 bg-green-600 rounded-full flex items-center justify-center"
-                                                            initial={{ scale: 0 }}
-                                                            animate={{ scale: 1 }}
-                                                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                                                        >
+                                                        <div className="flex justify-center mt-1">
                                                             <Check className="w-2.5 h-2.5 text-white" />
-                                                        </motion.div>
+                                                        </div>
                                                     )}
-                                                </motion.button>
+                                                </button>
                                             ))}
                                         </div>
                                     </div>
                                 )}
 
                                 {/* Botón continuar */}
-                                <motion.div
-                                    className="mt-auto pt-4"
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.2, duration: 0.1 }}
-                                >
+                                <div className="mt-auto pt-4">
                                     <button
                                         onClick={handleContinue}
                                         disabled={!canContinue}
@@ -700,137 +502,181 @@ END:VCALENDAR`;
                                     >
                                         Continuar →
                                     </button>
-                                </motion.div>
-                            </motion.div>
+                                </div>
+                            </div>
                         )}
 
                         {/* Step 2: Formulario de contacto */}
                         {step === 'contact' && (
-                            <motion.div
-                                key="contact"
-                                initial={{ opacity: 0, x: 10 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -10 }}
-                                transition={{ duration: 0.15, ease: "easeOut" }}
-                                className="h-full flex flex-col"
-                            >
-                                {/* Header del paso */}
-                                <div className="text-center mb-6">
-                                    <motion.h3
-                                        className={`text-xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-2`}
-                                        initial={{ scale: 0.9 }}
-                                        animate={{ scale: 1 }}
-                                        transition={{ delay: 0.1 }}
-                                    >
-                                        Información de contacto
-                                    </motion.h3>
-                                    <motion.p
-                                        className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        transition={{ delay: 0.2 }}
-                                    >
-                                        Completa tus datos para confirmar la visita
-                                    </motion.p>
-                                </div>
-
-                                {/* Formulario */}
-                                <form onSubmit={handleSubmit} className="flex-1 flex flex-col space-y-5">
-                                    {[
-                                        { key: 'name', label: 'Nombre completo *', placeholder: 'Tu nombre completo', type: 'text' },
-                                        { key: 'email', label: 'Correo electrónico *', placeholder: 'tu@email.com', type: 'email' },
-                                        { key: 'rut', label: 'RUT *', placeholder: '12.345.678-9', type: 'text' },
-                                        { key: 'phone', label: 'Celular *', placeholder: '+56 9 1234 5678', type: 'tel' }
-                                    ].map((field, index) => (
-                                        <motion.div
-                                            key={field.key}
-                                            initial={{ opacity: 0, x: -10 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            transition={{ delay: index * 0.03, duration: 0.1 }}
-                                        >
-                                            <label htmlFor={field.key} className={`block text-sm font-medium ${isDarkMode ? 'text-gray-200' : 'text-gray-700'} mb-2`}>
-                                                {field.label}
+                            <div className="h-full flex flex-col">
+                                <form onSubmit={handleSubmit} className="flex-1 flex flex-col">
+                                    <div className="space-y-4 mb-6">
+                                        {/* Nombre */}
+                                        <div>
+                                            <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                                                Nombre completo *
                                             </label>
                                             <div className="relative">
                                                 <input
-                                                    type={field.type}
-                                                    id={field.key}
-                                                    value={contactData[field.key as keyof ContactData] || ''}
-                                                    onChange={(e) => setContactData(prev => ({ ...prev, [field.key]: e.target.value }))}
-                                                    className={`
-                                                        w-full px-4 py-4 border rounded-2xl text-base transition-all
-                                                        ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}
-                                                        ${fieldValidation[field.key as keyof FieldValidation].isValid
-                                                            ? 'border-green-300 bg-green-50 focus:border-green-500 focus:ring-green-200'
-                                                            : contactData[field.key as keyof ContactData]
-                                                                ? 'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-200'
-                                                                : `${isDarkMode ? 'border-gray-600 focus:border-blue-500 focus:ring-blue-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'}`
-                                                        }
-                                                        focus:ring-2 focus:ring-opacity-20
-                                                    `}
-                                                    placeholder={field.placeholder}
-                                                    required
-                                                    aria-required="true"
+                                                    type="text"
+                                                    value={contactData.name}
+                                                    onChange={(e) => setContactData(prev => ({ ...prev, name: e.target.value }))}
+                                                    className={`w-full p-3 rounded-xl border-2 transition-colors ${
+                                                        fieldValidation.name.isValid
+                                                            ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
+                                                            : fieldValidation.name.message
+                                                            ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
+                                                            : isDarkMode
+                                                            ? 'border-gray-600 bg-gray-800 text-white focus:border-blue-500'
+                                                            : 'border-gray-300 bg-white text-gray-900 focus:border-blue-500'
+                                                    }`}
+                                                    placeholder="Tu nombre completo"
                                                 />
-                                                {fieldValidation[field.key as keyof FieldValidation].isValid && (
-                                                    <motion.div
-                                                        className="absolute right-3 top-1/2 -translate-y-1/2"
-                                                        initial={{ scale: 0 }}
-                                                        animate={{ scale: 1 }}
-                                                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                                                    >
-                                                        <Check className="w-5 h-5 text-green-600" />
-                                                    </motion.div>
+                                                {fieldValidation.name.isValid && (
+                                                    <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-600" />
+                                                )}
+                                                {fieldValidation.name.message && (
+                                                    <AlertTriangle className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-red-500" />
                                                 )}
                                             </div>
-                                            {fieldValidation[field.key as keyof FieldValidation].message && (
-                                                <motion.p
-                                                    className="text-sm text-red-600 mt-1 flex items-center gap-1"
-                                                    initial={{ opacity: 0, y: -5 }}
-                                                    animate={{ opacity: 1, y: 0 }}
-                                                >
-                                                    <AlertTriangle className="w-4 h-4" />
-                                                    {fieldValidation[field.key as keyof FieldValidation].message}
-                                                </motion.p>
+                                            {fieldValidation.name.message && (
+                                                <p className="text-red-500 text-sm mt-1">{fieldValidation.name.message}</p>
                                             )}
-                                        </motion.div>
-                                    ))}
+                                        </div>
+
+                                        {/* Email */}
+                                        <div>
+                                            <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                                                Email *
+                                            </label>
+                                            <div className="relative">
+                                                <input
+                                                    type="email"
+                                                    value={contactData.email}
+                                                    onChange={(e) => setContactData(prev => ({ ...prev, email: e.target.value }))}
+                                                    className={`w-full p-3 rounded-xl border-2 transition-colors ${
+                                                        fieldValidation.email.isValid
+                                                            ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
+                                                            : fieldValidation.email.message
+                                                            ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
+                                                            : isDarkMode
+                                                            ? 'border-gray-600 bg-gray-800 text-white focus:border-blue-500'
+                                                            : 'border-gray-300 bg-white text-gray-900 focus:border-blue-500'
+                                                    }`}
+                                                    placeholder="tu@email.com"
+                                                />
+                                                {fieldValidation.email.isValid && (
+                                                    <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-600" />
+                                                )}
+                                                {fieldValidation.email.message && (
+                                                    <AlertTriangle className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-red-500" />
+                                                )}
+                                            </div>
+                                            {fieldValidation.email.message && (
+                                                <p className="text-red-500 text-sm mt-1">{fieldValidation.email.message}</p>
+                                            )}
+                                        </div>
+
+                                        {/* RUT */}
+                                        <div>
+                                            <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                                                RUT *
+                                            </label>
+                                            <div className="relative">
+                                                <input
+                                                    type="text"
+                                                    value={contactData.rut}
+                                                    onChange={(e) => setContactData(prev => ({ ...prev, rut: e.target.value }))}
+                                                    className={`w-full p-3 rounded-xl border-2 transition-colors ${
+                                                        fieldValidation.rut.isValid
+                                                            ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
+                                                            : fieldValidation.rut.message
+                                                            ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
+                                                            : isDarkMode
+                                                            ? 'border-gray-600 bg-gray-800 text-white focus:border-blue-500'
+                                                            : 'border-gray-300 bg-white text-gray-900 focus:border-blue-500'
+                                                    }`}
+                                                    placeholder="12.345.678-9"
+                                                />
+                                                {fieldValidation.rut.isValid && (
+                                                    <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-600" />
+                                                )}
+                                                {fieldValidation.rut.message && (
+                                                    <AlertTriangle className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-red-500" />
+                                                )}
+                                            </div>
+                                            {fieldValidation.rut.message && (
+                                                <p className="text-red-500 text-sm mt-1">{fieldValidation.rut.message}</p>
+                                            )}
+                                        </div>
+
+                                        {/* Teléfono */}
+                                        <div>
+                                            <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                                                Teléfono *
+                                            </label>
+                                            <div className="relative">
+                                                <input
+                                                    type="tel"
+                                                    value={contactData.phone}
+                                                    onChange={(e) => setContactData(prev => ({ ...prev, phone: e.target.value }))}
+                                                    className={`w-full p-3 rounded-xl border-2 transition-colors ${
+                                                        fieldValidation.phone.isValid
+                                                            ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
+                                                            : fieldValidation.phone.message
+                                                            ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
+                                                            : isDarkMode
+                                                            ? 'border-gray-600 bg-gray-800 text-white focus:border-blue-500'
+                                                            : 'border-gray-300 bg-white text-gray-900 focus:border-blue-500'
+                                                    }`}
+                                                    placeholder="+56 9 1234 5678"
+                                                />
+                                                {fieldValidation.phone.isValid && (
+                                                    <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-600" />
+                                                )}
+                                                {fieldValidation.phone.message && (
+                                                    <AlertTriangle className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-red-500" />
+                                                )}
+                                            </div>
+                                            {fieldValidation.phone.message && (
+                                                <p className="text-red-500 text-sm mt-1">{fieldValidation.phone.message}</p>
+                                            )}
+                                        </div>
+                                    </div>
 
                                     {/* Botones de navegación */}
-                                    <motion.div
-                                        className="flex gap-3 mt-6"
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 0.2, duration: 0.1 }}
-                                    >
+                                    <div className="mt-auto pt-4 space-y-3">
                                         <button
                                             type="button"
                                             onClick={handleBack}
-                                            className={`flex-1 px-6 py-4 border ${isDarkMode ? 'border-gray-600 text-gray-200 hover:bg-gray-800' : 'border-gray-300 text-gray-700 hover:bg-gray-50'} font-medium rounded-2xl transition-colors active:scale-95`}
+                                            className={`w-full py-3 px-6 rounded-xl font-semibold transition-colors ${
+                                                isDarkMode
+                                                    ? 'bg-gray-800 text-white hover:bg-gray-700'
+                                                    : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                                            }`}
                                         >
                                             ← Atrás
                                         </button>
                                         <button
-                                            type="button"
-                                            onClick={handleContinueToPremium}
+                                            type="submit"
                                             disabled={!isFormValid || isLoading}
-                                            className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-medium py-4 px-6 rounded-2xl transition-colors active:scale-95 shadow-lg"
+                                            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold py-4 px-6 rounded-2xl transition-colors text-lg touch-manipulation disabled:cursor-not-allowed active:scale-95 shadow-lg flex items-center justify-center gap-2"
                                         >
                                             {isLoading ? (
-                                                <div className="flex items-center justify-center gap-2">
+                                                <>
                                                     <Loader2 className="w-5 h-5 animate-spin" />
-                                                    Cargando...
-                                                </div>
+                                                    Procesando...
+                                                </>
                                             ) : (
                                                 'Continuar →'
                                             )}
                                         </button>
-                                    </motion.div>
+                                    </div>
                                 </form>
-                            </motion.div>
+                            </div>
                         )}
 
-                        {/* Step 3: Características Premium */}
+                        {/* Step 3: Características premium */}
                         {step === 'premium' && (
                             <PremiumFeaturesStep
                                 isDarkMode={isDarkMode}
@@ -848,34 +694,27 @@ END:VCALENDAR`;
 
                         {/* Step 4: Éxito */}
                         {step === 'success' && (
-                            <motion.div
-                                key="success"
-                                initial={{ opacity: 0, scale: 0.98 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                transition={{ duration: 0.2, ease: "easeOut" }}
-                                className="h-full flex flex-col items-center justify-center text-center px-4"
-                            >
+                            <div className="h-full flex flex-col items-center justify-center text-center">
                                 {/* Confeti animado */}
                                 {showConfetti && (
                                     <div className="absolute inset-0 pointer-events-none">
                                         {[...Array(20)].map((_, i) => (
                                             <motion.div
                                                 key={i}
-                                                className="absolute w-2 h-2 bg-gradient-to-r from-yellow-400 to-red-500 rounded-full"
+                                                className="absolute w-2 h-2 bg-yellow-400 rounded-full"
                                                 initial={{
                                                     x: Math.random() * window.innerWidth,
-                                                    y: -20,
+                                                    y: -10,
                                                     rotate: 0
                                                 }}
                                                 animate={{
-                                                    y: window.innerHeight + 20,
-                                                    rotate: 360,
-                                                    opacity: [1, 1, 0]
+                                                    y: window.innerHeight + 10,
+                                                    rotate: 360
                                                 }}
                                                 transition={{
                                                     duration: 1.5 + Math.random() * 0.5,
                                                     delay: Math.random() * 0.2,
-                                                    ease: "easeIn"
+                                                    ease: "easeOut"
                                                 }}
                                             />
                                         ))}
@@ -883,45 +722,59 @@ END:VCALENDAR`;
                                 )}
 
                                 <motion.div
-                                    className={`w-20 h-20 ${isDarkMode ? 'bg-green-900' : 'bg-green-100'} rounded-full flex items-center justify-center mb-6`}
-                                    initial={{ scale: 0 }}
+                                    initial={{ scale: 0.98 }}
                                     animate={{ scale: 1 }}
-                                    transition={{ delay: 0.1, type: "spring", stiffness: 300, damping: 20 }}
+                                    transition={{ duration: 0.2 }}
+                                    className="mb-6"
                                 >
-                                    <CheckCircle className="w-10 h-10 text-green-600" />
+                                    <CheckCircle className="w-16 h-16 text-green-600 mx-auto mb-4" />
                                 </motion.div>
-                                <motion.h3
-                                    className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-3`}
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.15, duration: 0.1 }}
-                                >
+
+                                <h3 className={`text-2xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                                     ¡Visita confirmada!
-                                </motion.h3>
-                                <motion.p
-                                    className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'} mb-8 max-w-md`}
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.2, duration: 0.1 }}
-                                >
-                                    Tu visita ha sido programada exitosamente. Te hemos enviado una confirmación por WhatsApp con todos los detalles.
-                                </motion.p>
-                                <motion.button
+                                </h3>
+                                <p className={`text-base mb-6 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                    Tu visita ha sido programada exitosamente. Te contactaremos pronto con los detalles.
+                                </p>
+
+                                <div className={`p-4 rounded-xl mb-6 w-full ${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
+                                    <h4 className={`font-semibold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                                        Detalles de la visita:
+                                    </h4>
+                                    <div className="space-y-1 text-sm">
+                                        <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>
+                                            <strong>Fecha:</strong> {selectedDate}
+                                        </p>
+                                        <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>
+                                            <strong>Hora:</strong> {selectedTime}
+                                        </p>
+                                        <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>
+                                            <strong>Propiedad:</strong> {propertyName}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <button
                                     onClick={handleClose}
-                                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-8 rounded-2xl transition-colors text-lg touch-manipulation active:scale-95 shadow-lg"
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.25, duration: 0.1 }}
-                                    whileHover={{ scale: 1.02 }}
-                                    whileTap={{ scale: 0.98 }}
+                                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-2xl transition-colors text-lg touch-manipulation active:scale-95 shadow-lg"
                                 >
                                     Cerrar
-                                </motion.button>
-                            </motion.div>
+                                </button>
+                            </div>
                         )}
-                    </AnimatePresence>
+                    </div>
+
+                    {/* Error message */}
+                    {error && (
+                        <div className={`p-4 border-t ${isDarkMode ? 'border-gray-700 bg-red-900/20' : 'border-gray-200 bg-red-50'}`}>
+                            <div className="flex items-center gap-2 text-red-600">
+                                <AlertCircle className="w-5 h-5" />
+                                <span className="text-sm">{error}</span>
+                            </div>
+                        </div>
+                    )}
                 </motion.div>
-            </div>
-        </div>
+            </motion.div>
+        </AnimatePresence>
     );
 }

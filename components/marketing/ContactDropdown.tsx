@@ -23,6 +23,28 @@ export function ContactDropdown() {
     }, 50); // Delay mínimo para fluidez
   };
 
+  // Manejar click para móvil
+  const handleClick = () => {
+    setIsOpen(!isOpen);
+  };
+
+  // Cerrar al hacer click fuera
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+
   // Cleanup del timeout al desmontar
   useEffect(() => {
     return () => {
@@ -35,29 +57,33 @@ export function ContactDropdown() {
   const handleWhatsApp = () => {
     const message = encodeURIComponent('Hola! Me interesa saber más sobre los departamentos disponibles.');
     window.open(`https://wa.me/56993481594?text=${message}`, '_blank');
+    setIsOpen(false);
   };
 
   const handleCall = () => {
     window.open('tel:+56993481594', '_self');
+    setIsOpen(false);
   };
 
   const handleContactModal = () => {
     // Disparar evento personalizado para abrir el modal
     window.dispatchEvent(new CustomEvent('openContactModal'));
+    setIsOpen(false);
   };
 
   return (
-    <div 
-      className="relative" 
+    <div
+      className="relative"
       ref={dropdownRef}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      {/* Botón principal con feedback visual */}
+      {/* Botón principal optimizado */}
       <motion.button
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
-        className="inline-flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm font-semibold transition-all duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900"
+        onClick={handleClick}
+        className="inline-flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm font-semibold transition-all duration-150 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900"
         aria-label="Opciones de contacto"
         aria-expanded={isOpen}
       >
@@ -65,134 +91,71 @@ export function ContactDropdown() {
         Contacto
         <motion.div
           animate={{ rotate: isOpen ? 180 : 0 }}
-          transition={{ duration: 0.2, ease: "easeInOut" }}
+          transition={{ duration: 0.15, ease: "easeOut" }}
         >
           <ChevronDown className="w-4 h-4" />
         </motion.div>
       </motion.button>
 
-      {/* Abanico de Paleta de Colores Mejorado */}
+      {/* Dropdown optimizado */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.4, rotateZ: -30 }}
-            animate={{ opacity: 1, scale: 1, rotateZ: 0 }}
-            exit={{ opacity: 0, scale: 0.4, rotateZ: -30 }}
-            transition={{ 
-              duration: 0.35, 
-              ease: [0.25, 0.46, 0.45, 0.94],
-              type: "spring",
-              stiffness: 300,
-              damping: 25
+            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+            transition={{
+              duration: 0.2,
+              ease: "easeOut"
             }}
-            className="absolute right-0 top-full mt-3 origin-bottom-right"
+            className="absolute right-0 top-full mt-2 origin-top-right"
           >
-            {/* Contenedor del abanico con espaciado natural */}
-            <div className="relative flex flex-col items-end space-y-1.5">
-              
-              {/* Opción WhatsApp - Primera paleta */}
+            {/* Contenedor simplificado */}
+            <div className="relative flex flex-col items-end space-y-2 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-2 min-w-[160px]">
+
+              {/* Opción WhatsApp */}
               <motion.button
-                initial={{ x: -50, rotateZ: -25, opacity: 0, scale: 0.8 }}
-                animate={{ x: 0, rotateZ: 0, opacity: 1, scale: 1 }}
-                exit={{ x: -50, rotateZ: -25, opacity: 0, scale: 0.8 }}
-                transition={{ 
-                  duration: 0.25, 
-                  delay: 0.05,
-                  ease: [0.25, 0.46, 0.45, 0.94]
-                }}
-                whileHover={{ 
-                  scale: 1.05, 
-                  y: -2,
-                  transition: { duration: 0.2 }
-                }}
-                whileTap={{ scale: 0.95 }}
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 10 }}
+                transition={{ duration: 0.15, delay: 0.05 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={handleWhatsApp}
-                className="group relative flex items-center gap-3 px-4 py-2.5 bg-gradient-to-r from-green-500 to-green-600 rounded-full shadow-lg hover:shadow-xl hover:shadow-green-500/30 transition-all duration-200 overflow-hidden"
+                className="w-full flex items-center gap-3 px-3 py-2.5 bg-green-500 hover:bg-green-600 rounded-lg text-white text-sm font-medium transition-colors duration-150"
               >
-                {/* Efecto de brillo en hover */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out"></div>
-                
-                {/* Efecto de borde brillante */}
-                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-green-400 via-green-300 to-green-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm scale-110 group-hover:scale-100"></div>
-                
-                <motion.div
-                  whileHover={{ rotate: 5, scale: 1.1 }}
-                  transition={{ duration: 0.2 }}
-                  className="relative z-10"
-                >
-                  <MessageCircle className="w-4 h-4 text-white" />
-                </motion.div>
-                <span className="relative z-10 text-white text-sm font-medium whitespace-nowrap group-hover:font-semibold transition-all duration-200">WhatsApp</span>
+                <MessageCircle className="w-4 h-4" />
+                WhatsApp
               </motion.button>
 
-              {/* Opción Llamada - Segunda paleta */}
+              {/* Opción Llamada */}
               <motion.button
-                initial={{ x: -35, rotateZ: -15, opacity: 0, scale: 0.8 }}
-                animate={{ x: 0, rotateZ: 0, opacity: 1, scale: 1 }}
-                exit={{ x: -35, rotateZ: -15, opacity: 0, scale: 0.8 }}
-                transition={{ 
-                  duration: 0.25, 
-                  delay: 0.1,
-                  ease: [0.25, 0.46, 0.45, 0.94]
-                }}
-                whileHover={{ 
-                  scale: 1.05, 
-                  y: -2,
-                  transition: { duration: 0.2 }
-                }}
-                whileTap={{ scale: 0.95 }}
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 10 }}
+                transition={{ duration: 0.15, delay: 0.1 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={handleCall}
-                className="group relative flex items-center gap-3 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full shadow-lg hover:shadow-xl hover:shadow-blue-500/30 transition-all duration-200 overflow-hidden"
+                className="w-full flex items-center gap-3 px-3 py-2.5 bg-blue-500 hover:bg-blue-600 rounded-lg text-white text-sm font-medium transition-colors duration-150"
               >
-                {/* Efecto de brillo en hover */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out"></div>
-                
-                {/* Efecto de borde brillante */}
-                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-400 via-blue-300 to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm scale-110 group-hover:scale-100"></div>
-                
-                <motion.div
-                  whileHover={{ rotate: 5, scale: 1.1 }}
-                  transition={{ duration: 0.2 }}
-                  className="relative z-10"
-                >
-                  <Phone className="w-4 h-4 text-white" />
-                </motion.div>
-                <span className="relative z-10 text-white text-sm font-medium whitespace-nowrap group-hover:font-semibold transition-all duration-200">Llamar</span>
+                <Phone className="w-4 h-4" />
+                Llamar
               </motion.button>
 
-              {/* Opción Contacto Modal - Tercera paleta */}
+              {/* Opción Contacto Modal */}
               <motion.button
-                initial={{ x: -20, rotateZ: -5, opacity: 0, scale: 0.8 }}
-                animate={{ x: 0, rotateZ: 0, opacity: 1, scale: 1 }}
-                exit={{ x: -20, rotateZ: -5, opacity: 0, scale: 0.8 }}
-                transition={{ 
-                  duration: 0.25, 
-                  delay: 0.15,
-                  ease: [0.25, 0.46, 0.45, 0.94]
-                }}
-                whileHover={{ 
-                  scale: 1.05, 
-                  y: -2,
-                  transition: { duration: 0.2 }
-                }}
-                whileTap={{ scale: 0.95 }}
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 10 }}
+                transition={{ duration: 0.15, delay: 0.15 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={handleContactModal}
-                className="group relative flex items-center gap-3 px-4 py-2.5 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full shadow-lg hover:shadow-xl hover:shadow-purple-500/30 transition-all duration-200 overflow-hidden"
+                className="w-full flex items-center gap-3 px-3 py-2.5 bg-purple-500 hover:bg-purple-600 rounded-lg text-white text-sm font-medium transition-colors duration-150"
               >
-                {/* Efecto de brillo en hover */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out"></div>
-                
-                {/* Efecto de borde brillante */}
-                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-400 via-purple-300 to-purple-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm scale-110 group-hover:scale-100"></div>
-                
-                <motion.div
-                  whileHover={{ rotate: 5, scale: 1.1 }}
-                  transition={{ duration: 0.2 }}
-                  className="relative z-10"
-                >
-                  <Mail className="w-4 h-4 text-white" />
-                </motion.div>
-                <span className="relative z-10 text-white text-sm font-medium whitespace-nowrap group-hover:font-semibold transition-all duration-200">Contacto</span>
+                <Mail className="w-4 h-4" />
+                Contacto
               </motion.button>
             </div>
           </motion.div>
