@@ -41,7 +41,7 @@ class ErrorBoundary extends React.Component<
     render() {
         if (this.state.hasError) {
             return (
-                <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 flex items-center justify-center p-6">
+                <div className="min-h-screen bg-bg flex items-center justify-center p-6">
                     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 max-w-md text-center">
                         <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
                         <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
@@ -67,7 +67,7 @@ class ErrorBoundary extends React.Component<
 
 // Loading Skeleton Component
 const PropertySkeleton = () => (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+    <div className="min-h-screen bg-bg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-8">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Main content skeleton */}
@@ -186,7 +186,7 @@ export function PropertyClient({
     // Show error state
     if (error) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 flex items-center justify-center p-6">
+            <div className="min-h-screen bg-bg flex items-center justify-center p-6">
                 <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 max-w-md text-center">
                     <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
                     <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
@@ -207,7 +207,7 @@ export function PropertyClient({
 
     return (
         <ErrorBoundary>
-            <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+            <div className="min-h-screen bg-bg">
                 <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-8">
                     {/* Breadcrumb accesible */}
                     <PropertyBreadcrumb building={building} variant={variant} />

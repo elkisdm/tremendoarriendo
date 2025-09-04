@@ -152,14 +152,11 @@ export function QuintoAndarVisitScheduler({
     }, [contactData]);
 
     // Funciones para características premium
-    const requestNotificationPermission = useCallback(async (): Promise<boolean> => {
+    const requestNotificationPermission = useCallback(async () => {
         if ('Notification' in window) {
             const permission = await Notification.requestPermission();
-            const granted = permission === 'granted';
-            setNotificationsEnabled(granted);
-            return granted;
+            setNotificationsEnabled(permission === 'granted');
         }
-        return false;
     }, []);
 
     const sendWhatsAppConfirmation = useCallback((visitData: any) => {
