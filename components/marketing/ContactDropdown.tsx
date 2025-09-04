@@ -20,7 +20,7 @@ export function ContactDropdown() {
   const handleMouseLeave = () => {
     timeoutRef.current = setTimeout(() => {
       setIsOpen(false);
-    }, 100); // Delay reducido para mayor fluidez
+    }, 50); // Delay mínimo para fluidez
   };
 
   // Cleanup del timeout al desmontar

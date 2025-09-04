@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { AlertCircle } from "lucide-react";
 import { ImageGallery } from "@components/gallery/ImageGallery";
 
-import { Header } from "@components/marketing/Header";
 import { track } from "@lib/analytics";
 import type { Unit, Building } from "@schemas/models";
 import { QuintoAndarVisitScheduler } from "@components/flow/QuintoAndarVisitScheduler";
@@ -209,12 +208,7 @@ export function PropertyClient({
     return (
         <ErrorBoundary>
             <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
-                <main id="main-content" role="main" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-8">
-                    {/* Header */}
-                    <div className="mb-4 lg:mb-8">
-                        <Header />
-                    </div>
-
+                <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-8">
                     {/* Breadcrumb accesible */}
                     <PropertyBreadcrumb building={building} variant={variant} />
 

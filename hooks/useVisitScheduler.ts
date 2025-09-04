@@ -47,36 +47,34 @@ export function useVisitScheduler({
   const [selectedSlot, setSelectedSlot] = useState<VisitSlot | null>(null);
   const [availabilityData, setAvailabilityData] = useState<AvailabilityResponse | null>(null);
 
-  // Generar días disponibles (próximos 5 días)
+  // Generar días disponibles (próximos 5 días consecutivos)
   const availableDays = useMemo((): DaySlot[] => {
     const days: DaySlot[] = [];
     const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
     
+    // Generar próximos 5 días consecutivos (incluyendo fines de semana)
     for (let i = 1; i <= 5; i++) {
       const date = new Date();
       date.setDate(date.getDate() + i);
       
-      // Solo días laborales (lunes a viernes)
+      const dateString = date.toISOString().split('T')[0];
       const dayOfWeek = date.getDay();
-      if (dayOfWeek >= 1 && dayOfWeek <= 5) {
-        const dateString = date.toISOString().split('T')[0];
-        
-        // Contar slots disponibles para este día
-        const slotsForDay = availabilityData?.slots.filter(slot => 
-          slot.startTime.startsWith(dateString)
-        ) || [];
-        
-        days.push({
-          id: `day-${i}`,
-          date: dateString,
-          day: dayNames[dayOfWeek],
-          number: date.getDate().toString(),
-          available: slotsForDay.length > 0,
-          premium: false, // Por ahora sin premium
-          price: undefined,
-          slotsCount: slotsForDay.length
-        });
-      }
+      
+      // Contar slots disponibles para este día
+      const slotsForDay = availabilityData?.slots.filter(slot => 
+        slot.startTime.startsWith(dateString)
+      ) || [];
+      
+      days.push({
+        id: `day-${i}`,
+        date: dateString,
+        day: dayNames[dayOfWeek],
+        number: date.getDate().toString(),
+        available: slotsForDay.length > 0,
+        premium: false, // Por ahora sin premium
+        price: undefined,
+        slotsCount: slotsForDay.length
+      });
     }
     
     return days;

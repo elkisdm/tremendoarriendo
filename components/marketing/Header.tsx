@@ -37,7 +37,7 @@ export function Header() {
   };
 
   const breadcrumbs = getBreadcrumbs();
-  const showBreadcrumb = pathname !== '/' && breadcrumbs.length > 1;
+  const showBreadcrumb = pathname !== '/' && breadcrumbs.length > 1 && !pathname.startsWith('/property/');
 
   // Cerrar menú al cambiar tamaño de pantalla
   useEffect(() => {

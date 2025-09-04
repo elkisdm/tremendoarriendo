@@ -6,7 +6,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ImageGallery } from "@components/gallery/ImageGallery";
 import { AmenityList } from "@components/ui/AmenityList";
 import { PromotionBadge } from "@components/ui/PromotionBadge";
-import { Header } from "@components/marketing/Header";
 import { CommuneLifeSection } from "@components/commune/CommuneLifeSection";
 import { getFlagValue } from "@lib/flags";
 import { ArrowLeft, MapPin, Users, Home, Sparkles, ExternalLink, Calendar, MessageCircle, Clock, Star, CheckCircle, Zap, TrendingUp, Eye, Wifi, Car, Dumbbell, Waves, Shield, Coffee, WashingMachine, AirVent, ParkingCircle, TreePine, Camera, Lock, Wrench, ChevronLeft, ChevronRight, Building2, Bed, Bath, Sofa, Utensils, Baby, Dog, Bike, Percent, CreditCard, Heart, Award, Gift, Tag, DollarSign, ShoppingCart, CalendarDays, Gamepad2, Tv, Music, BookOpen, Palette, Globe, Phone, Mail, Smartphone, Monitor, Printer, Projector, Headphones, Speaker, Lightbulb, Fan, Thermometer, Snowflake, Sun, Moon, Cloud, CloudRain, CloudLightning, CloudSnow, Wind, Umbrella, ChevronUp, ChevronDown, Key, Bell, Flame, Droplets, Trash2, Layers, Pill, Cat, Video, Image as ImageIcon, Leaf } from "lucide-react";
@@ -373,9 +372,6 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          {/* Header heredado de la landing */}
-          <Header />
-
           {/* Separador visual entre header y contenido */}
           <div className="border-b border-border/50 my-8"></div>
 
