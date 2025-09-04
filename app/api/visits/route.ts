@@ -153,6 +153,27 @@ class MockDatabase {
         });
       }
     }
+    
+    // Agregar slots de prueba para tests
+    const testDate = new Date('2025-01-15T09:00:00Z');
+    const testSlots = ['09:00', '10:00', '11:00', '15:00', '16:00', '17:00'];
+    
+    testSlots.forEach(time => {
+      const [hours, minutes] = time.split(':').map(Number);
+      const slotDate = new Date(testDate);
+      slotDate.setHours(hours, minutes, 0, 0);
+      
+      const slotId = `slot_${testDate.getTime()}_${time}`;
+      mockSlots[slotId] = {
+        id: slotId,
+        listingId: 'home-amengual',
+        startTime: slotDate.toISOString(),
+        endTime: new Date(slotDate.getTime() + 60 * 60 * 1000).toISOString(),
+        status: 'open',
+        source: 'system',
+        createdAt: new Date().toISOString()
+      };
+    });
   }
 }
 

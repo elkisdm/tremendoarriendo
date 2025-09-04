@@ -48,4 +48,76 @@ jest.mock('@lib/whatsapp', () => ({
   })
 }));
 
+// Mock Next.js server components - Solo para tests que lo necesiten
+// jest.mock('next/server', () => ({
+//   NextRequest: class MockNextRequest {
+//     public method: string;
+//     public headers: Headers;
+//     public body: string;
+//     public url: string;
+
+//     constructor(url: string, init?: RequestInit) {
+//       this.url = url;
+//       this.method = init?.method || 'GET';
+//       this.headers = new Headers(init?.headers);
+//       this.body = init?.body as string || '';
+//     }
+
+//     async json() {
+//       return JSON.parse(this.body);
+//     }
+//   },
+//   NextResponse: {
+//     json: jest.fn((data: any, init?: ResponseInit) => ({
+//       json: () => Promise.resolve(data),
+//       status: init?.status || 200,
+//       headers: new Headers(init?.headers),
+//     })),
+//   },
+// }));
+
+// Mock Next.js components - Comentado temporalmente
+// jest.mock('next/image', () => ({
+//   __esModule: true,
+//   default: ({ src, alt, ...props }: any) => {
+//     const React = require('react');
+//     return React.createElement('img', { src, alt, ...props });
+//   },
+// }));
+
+// jest.mock('next/navigation', () => ({
+//   useRouter: () => ({
+//     push: jest.fn(),
+//     replace: jest.fn(),
+//     back: jest.fn(),
+//     forward: jest.fn(),
+//     refresh: jest.fn(),
+//     prefetch: jest.fn(),
+//   }),
+//   useSearchParams: () => new URLSearchParams(),
+//   usePathname: () => '/',
+// }));
+
+// Mock del hook useVisitScheduler para evitar warnings de act()
+jest.mock('@/hooks/useVisitScheduler', () => ({
+  useVisitScheduler: jest.fn(() => ({
+    isLoading: false,
+    error: null,
+    selectedDate: null,
+    selectedTime: null,
+    availableDays: [
+      { id: 'day-1', date: '2025-01-15', day: 'Lun', number: '15', available: true, slotsCount: 3, premium: false },
+      { id: 'day-2', date: '2025-01-16', day: 'Mar', number: '16', available: true, slotsCount: 2, premium: false },
+    ],
+    availableSlots: [
+      { id: 'slot-1', time: '10:00', available: true, premium: false },
+      { id: 'slot-2', time: '14:00', available: true, premium: false },
+    ],
+    fetchAvailability: jest.fn(),
+    selectDateTime: jest.fn(),
+    createVisit: jest.fn().mockResolvedValue({ success: true, visitId: '123' }),
+    clearError: jest.fn(),
+  }))
+}));
+
 
