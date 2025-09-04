@@ -2,13 +2,42 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { usePathname } from 'next/navigation';
 import { clx } from '@lib/utils';
 import { ThemeToggle } from '@components/ui/ThemeToggle';
 import { ContactDropdown } from './ContactDropdown';
-import { Heart, Bell, User, Search, Menu, X } from 'lucide-react';
+import { Heart, Bell, User, Search, Menu, X, ChevronRight, Home } from 'lucide-react';
 
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  // Función para determinar si un enlace está activo
+  const isActiveLink = (href: string) => {
+    if (href === '/') return pathname === '/';
+    return pathname.startsWith(href);
+  };
+
+  // Función para generar breadcrumbs
+  const getBreadcrumbs = () => {
+    const segments = pathname.split('/').filter(Boolean);
+    const breadcrumbs = [{ label: 'Inicio', href: '/' }];
+
+    let currentPath = '';
+    segments.forEach(segment => {
+      currentPath += `/${segment}`;
+      const label = segment
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+      breadcrumbs.push({ label, href: currentPath });
+    });
+
+    return breadcrumbs;
+  };
+
+  const breadcrumbs = getBreadcrumbs();
+  const showBreadcrumb = pathname !== '/' && breadcrumbs.length > 1;
 
   // Cerrar menú al cambiar tamaño de pantalla
   useEffect(() => {
@@ -86,77 +115,94 @@ export function Header() {
             <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8">
               <a
                 href="/property"
-                className="text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 relative group"
+                className={clx(
+                  "text-sm font-semibold transition-colors duration-200 relative group",
+                  isActiveLink('/property')
+                    ? "text-blue-600 dark:text-blue-400"
+                    : "text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
+                )}
               >
                 Propiedades
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 group-hover:w-full transition-all duration-300"></span>
+                <span className={clx(
+                  "absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300",
+                  isActiveLink('/property') ? "w-full" : "w-0 group-hover:w-full"
+                )}></span>
               </a>
               <a
                 href="/arrienda-sin-comision"
-                className="text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 relative group"
+                className={clx(
+                  "text-sm font-semibold transition-colors duration-200 relative group",
+                  isActiveLink('/arrienda-sin-comision')
+                    ? "text-blue-600 dark:text-blue-400"
+                    : "text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
+                )}
               >
                 Sin Comisión
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 group-hover:w-full transition-all duration-300"></span>
+                <span className={clx(
+                  "absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300",
+                  isActiveLink('/arrienda-sin-comision') ? "w-full" : "w-0 group-hover:w-full"
+                )}></span>
               </a>
               <a
                 href="/cotizador"
-                className="text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 relative group"
+                className={clx(
+                  "text-sm font-semibold transition-colors duration-200 relative group",
+                  isActiveLink('/cotizador')
+                    ? "text-blue-600 dark:text-blue-400"
+                    : "text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
+                )}
               >
                 Cotizador
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 group-hover:w-full transition-all duration-300"></span>
+                <span className={clx(
+                  "absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300",
+                  isActiveLink('/cotizador') ? "w-full" : "w-0 group-hover:w-full"
+                )}></span>
               </a>
               <a
                 href="/mi-bio"
-                className="text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 relative group"
+                className={clx(
+                  "text-sm font-semibold transition-colors duration-200 relative group",
+                  isActiveLink('/mi-bio')
+                    ? "text-blue-600 dark:text-blue-400"
+                    : "text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
+                )}
               >
                 Sobre Mí
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 group-hover:w-full transition-all duration-300"></span>
+                <span className={clx(
+                  "absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300",
+                  isActiveLink('/mi-bio') ? "w-full" : "w-0 group-hover:w-full"
+                )}></span>
               </a>
             </nav>
           </div>
 
-          {/* Acciones y Controles */}
-          <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-3 xl:space-x-4">
-            {/* Botón de búsqueda */}
+          {/* Acciones y Controles - Optimizadas para conversión */}
+          <div className="flex items-center space-x-2 lg:space-x-3 xl:space-x-4">
+            {/* Búsqueda - Solo en desktop */}
             <button
-              className="hidden sm:block p-2 lg:p-3 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg lg:rounded-xl transition-all duration-200 group"
+              className="hidden lg:block p-2 lg:p-3 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg lg:rounded-xl transition-all duration-200 group"
               aria-label="Buscar propiedades"
             >
               <Search className="w-4 h-4 lg:w-5 lg:h-5 group-hover:scale-110 transition-transform duration-200" />
             </button>
 
-            {/* Botón de favoritos */}
+            {/* Favoritos - Con contador */}
             <button
               className="hidden sm:block p-2 lg:p-3 text-gray-600 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg lg:rounded-xl transition-all duration-200 group relative"
-              aria-label="Ver favoritos"
+              aria-label="Ver favoritos (3 propiedades guardadas)"
             >
               <Heart className="w-4 h-4 lg:w-5 lg:h-5 group-hover:scale-110 transition-transform duration-200" />
-              <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+              <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-xs text-white flex items-center justify-center font-medium shadow-sm">
+                3
+              </span>
             </button>
 
-            {/* Notificaciones */}
-            <button
-              className="hidden sm:block p-2 lg:p-3 text-gray-600 dark:text-gray-400 hover:text-yellow-600 dark:hover:text-yellow-400 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 rounded-lg lg:rounded-xl transition-all duration-200 group relative"
-              aria-label="Notificaciones"
-            >
-              <Bell className="w-4 h-4 lg:w-5 lg:h-5 group-hover:scale-110 transition-transform duration-200" />
-              <span className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></span>
-            </button>
-
-            {/* Theme Toggle */}
+            {/* Theme Toggle - Compacto */}
             <div className="p-1 bg-gray-100 dark:bg-gray-800 rounded-lg lg:rounded-xl">
               <ThemeToggle />
             </div>
 
-            {/* Perfil de usuario */}
-            <button
-              className="hidden sm:block p-2 lg:p-3 text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-lg lg:rounded-xl transition-all duration-200 group"
-              aria-label="Mi perfil"
-            >
-              <User className="w-4 h-4 lg:w-5 lg:h-5 group-hover:scale-110 transition-transform duration-200" />
-            </button>
-
-            {/* Dropdown de contacto */}
+            {/* CTA Principal - Contacto */}
             <div className="p-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg lg:rounded-xl shadow-lg shadow-blue-500/25">
               <ContactDropdown />
             </div>
@@ -184,6 +230,43 @@ export function Header() {
         </div>
       </div>
 
+      {/* Breadcrumb Móvil */}
+      {showBreadcrumb && (
+        <div className="lg:hidden border-b border-gray-200/50 dark:border-gray-700/50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl">
+          <div className="w-full px-4 sm:px-6 py-2">
+            <nav className="flex items-center space-x-1 text-sm" aria-label="Breadcrumb">
+              {breadcrumbs.map((crumb, index) => (
+                <div key={crumb.href} className="flex items-center">
+                  {index > 0 && (
+                    <ChevronRight className="w-3 h-3 text-gray-400 mx-1" />
+                  )}
+                  {index === 0 ? (
+                    <a
+                      href={crumb.href}
+                      className="flex items-center text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                    >
+                      <Home className="w-3 h-3 mr-1" />
+                      {crumb.label}
+                    </a>
+                  ) : index === breadcrumbs.length - 1 ? (
+                    <span className="text-gray-700 dark:text-gray-300 font-medium truncate">
+                      {crumb.label}
+                    </span>
+                  ) : (
+                    <a
+                      href={crumb.href}
+                      className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors truncate"
+                    >
+                      {crumb.label}
+                    </a>
+                  )}
+                </div>
+              ))}
+            </nav>
+          </div>
+        </div>
+      )}
+
       {/* Drawer Móvil */}
       <AnimatePresence>
         {isMobileMenuOpen && (
@@ -205,10 +288,10 @@ export function Header() {
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
-              transition={{ 
-                type: "spring", 
-                stiffness: 300, 
-                damping: 30 
+              transition={{
+                type: "spring",
+                stiffness: 300,
+                damping: 30
               }}
               className="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-white dark:bg-gray-900 shadow-2xl z-50 lg:hidden"
               role="dialog"
@@ -238,31 +321,63 @@ export function Header() {
               <nav className="p-4 space-y-2" role="navigation" aria-label="Navegación principal">
                 <a
                   href="/property"
-                  className="flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl transition-all duration-200 font-medium"
+                  className={clx(
+                    "flex items-center px-4 py-3 rounded-xl transition-all duration-200 font-medium",
+                    isActiveLink('/property')
+                      ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20"
+                      : "text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                  )}
                   onClick={toggleMobileMenu}
                 >
                   Propiedades
+                  {isActiveLink('/property') && (
+                    <div className="ml-auto w-2 h-2 bg-blue-600 rounded-full"></div>
+                  )}
                 </a>
                 <a
                   href="/arrienda-sin-comision"
-                  className="flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl transition-all duration-200 font-medium"
+                  className={clx(
+                    "flex items-center px-4 py-3 rounded-xl transition-all duration-200 font-medium",
+                    isActiveLink('/arrienda-sin-comision')
+                      ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20"
+                      : "text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                  )}
                   onClick={toggleMobileMenu}
                 >
                   Sin Comisión
+                  {isActiveLink('/arrienda-sin-comision') && (
+                    <div className="ml-auto w-2 h-2 bg-blue-600 rounded-full"></div>
+                  )}
                 </a>
                 <a
                   href="/cotizador"
-                  className="flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl transition-all duration-200 font-medium"
+                  className={clx(
+                    "flex items-center px-4 py-3 rounded-xl transition-all duration-200 font-medium",
+                    isActiveLink('/cotizador')
+                      ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20"
+                      : "text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                  )}
                   onClick={toggleMobileMenu}
                 >
                   Cotizador
+                  {isActiveLink('/cotizador') && (
+                    <div className="ml-auto w-2 h-2 bg-blue-600 rounded-full"></div>
+                  )}
                 </a>
                 <a
                   href="/mi-bio"
-                  className="flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl transition-all duration-200 font-medium"
+                  className={clx(
+                    "flex items-center px-4 py-3 rounded-xl transition-all duration-200 font-medium",
+                    isActiveLink('/mi-bio')
+                      ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20"
+                      : "text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                  )}
                   onClick={toggleMobileMenu}
                 >
                   Sobre Mí
+                  {isActiveLink('/mi-bio') && (
+                    <div className="ml-auto w-2 h-2 bg-blue-600 rounded-full"></div>
+                  )}
                 </a>
               </nav>
 
@@ -272,7 +387,7 @@ export function Header() {
                   <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Tema</span>
                   <ThemeToggle />
                 </div>
-                
+
                 <button className="w-full flex items-center justify-center px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-medium hover:shadow-lg transition-all duration-200">
                   <User className="w-4 h-4 mr-2" />
                   Mi Perfil

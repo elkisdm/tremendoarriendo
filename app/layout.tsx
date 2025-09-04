@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@lib/theme-context";
+import { Header } from "@components/marketing/Header";
 import { Footer } from "@components/marketing/Footer";
 import { getFlagValue } from "@lib/flags";
 
@@ -49,7 +50,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             Saltar al contenido principal
           </a>
           <div className="flex flex-col min-h-screen">
-            <main className="flex-1 bg-background text-foreground">
+            <Header />
+            <main id="main-content" className="flex-1 bg-background text-foreground" role="main">
               {children}
             </main>
             {getFlagValue('FOOTER_ENABLED') && <Footer />}

@@ -511,8 +511,8 @@ END:VCALENDAR`;
 
                             <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center">
                                 <Calendar className="w-6 h-6 text-white" />
-                            </div>
-                            <div className="min-w-0 flex-1">
+                    </div>
+                    <div className="min-w-0 flex-1">
                                 <h2 className={`text-lg font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'} truncate`}>Agendar Visita</h2>
                                 <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-600'} truncate`}>{propertyName}</p>
                             </div>
@@ -551,71 +551,71 @@ END:VCALENDAR`;
                     style={{ x, opacity }}
                     dragElastic={0.1}
                 >
-                    <AnimatePresence mode="wait">
-                        {/* Step 1: Selección de fecha y hora */}
-                        {step === 'selection' && (
-                            <motion.div
-                                key="selection"
-                                initial={{ opacity: 0, y: 20 }}
+                <AnimatePresence mode="wait">
+                    {/* Step 1: Selección de fecha y hora */}
+                    {step === 'selection' && (
+                        <motion.div
+                            key="selection"
+                                initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -20 }}
-                                transition={{ duration: 0.3, ease: "easeOut" }}
-                                className="h-full flex flex-col"
-                            >
-                                {/* Instrucciones */}
+                                exit={{ opacity: 0, y: -10 }}
+                                transition={{ duration: 0.15, ease: "easeOut" }}
+                            className="h-full flex flex-col"
+                        >
+                            {/* Instrucciones */}
                                 <div className="text-center mb-6">
                                     <motion.h3
                                         className={`text-xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-2`}
-                                        initial={{ scale: 0.9 }}
+                                        initial={{ scale: 0.95 }}
                                         animate={{ scale: 1 }}
-                                        transition={{ delay: 0.1 }}
+                                        transition={{ delay: 0.05, duration: 0.1 }}
                                     >
-                                        Selecciona fecha y hora
+                                    Selecciona fecha y hora
                                     </motion.h3>
                                     <motion.p
                                         className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'} px-4`}
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
-                                        transition={{ delay: 0.2 }}
+                                        transition={{ delay: 0.1, duration: 0.1 }}
                                     >
-                                        Elige el día y horario que prefieras para tu visita
+                                    Elige el día y horario que prefieras para tu visita
                                     </motion.p>
-                                </div>
+                            </div>
 
                                 {/* Selección de fecha - Grid responsivo */}
                                 <div className="mb-6">
                                     <h4 className={`text-base font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-4 flex items-center gap-2`}>
                                         <Calendar className="w-5 h-5 text-blue-600" />
-                                        Fecha
-                                    </h4>
+                                    Fecha
+                                </h4>
 
-                                    {isLoading ? (
-                                        <div className="flex items-center justify-center py-8">
-                                            <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
-                                        </div>
-                                    ) : (
+                                {isLoading ? (
+                                    <div className="flex items-center justify-center py-8">
+                                        <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
+                                    </div>
+                                ) : (
                                         <div className="grid grid-cols-5 gap-3">
                                             {availableDays.map((day, index) => (
                                                 <motion.button
-                                                    key={day.id}
-                                                    onClick={() => handleDateSelect(day)}
-                                                    disabled={!day.available}
-                                                    className={`
+                                                key={day.id}
+                                                onClick={() => handleDateSelect(day)}
+                                                disabled={!day.available}
+                                                className={`
                                                         relative flex flex-col items-center justify-center p-3 rounded-2xl border-2 transition-all
                                                         min-h-[88px] touch-manipulation active:scale-95
                                                     ${day.available
-                                                            ? selectedDate === day.date
+                                                        ? selectedDate === day.date
                                                                 ? 'border-blue-600 bg-blue-50 text-blue-700 shadow-lg ring-2 ring-blue-200'
                                                                 : `${isDarkMode ? 'border-gray-600 hover:border-blue-400 hover:bg-blue-900/20' : 'border-gray-200 hover:border-blue-400 hover:bg-blue-50'}`
                                                             : `${isDarkMode ? 'border-gray-700 bg-gray-800 text-gray-500' : 'border-gray-200 bg-gray-50 text-gray-400'} cursor-not-allowed`
-                                                        }
+                                                    }
                                                 `}
-                                                    aria-label={`Seleccionar ${day.day} ${day.number}`}
-                                                    initial={{ opacity: 0, scale: 0.8 }}
+                                                aria-label={`Seleccionar ${day.day} ${day.number}`}
+                                                    initial={{ opacity: 0, scale: 0.9 }}
                                                     animate={{ opacity: 1, scale: 1 }}
-                                                    transition={{ delay: index * 0.05, duration: 0.3 }}
-                                                    whileHover={{ scale: 1.05 }}
-                                                    whileTap={{ scale: 0.95 }}
+                                                    transition={{ delay: index * 0.02, duration: 0.1 }}
+                                                    whileHover={{ scale: 1.02 }}
+                                                    whileTap={{ scale: 0.98 }}
                                                 >
                                                     <div className={`text-xs font-medium ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>{day.day}</div>
                                                     <div className={`text-xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{day.number}</div>
@@ -627,53 +627,53 @@ END:VCALENDAR`;
                                                             className="absolute top-2 right-2 w-4 h-4 bg-blue-600 rounded-full flex items-center justify-center"
                                                             initial={{ scale: 0 }}
                                                             animate={{ scale: 1 }}
-                                                            transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                                                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
                                                         >
                                                             <Check className="w-2.5 h-2.5 text-white" />
                                                         </motion.div>
                                                     )}
                                                 </motion.button>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
 
                                 {/* Selección de hora - Grid responsivo */}
-                                {selectedDate && (
+                            {selectedDate && (
                                     <motion.div
                                         className="mb-6"
                                         initial={{ opacity: 0, height: 0 }}
                                         animate={{ opacity: 1, height: 'auto' }}
                                         exit={{ opacity: 0, height: 0 }}
-                                        transition={{ duration: 0.3 }}
+                                        transition={{ duration: 0.15 }}
                                     >
                                         <h4 className={`text-base font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-4 flex items-center gap-2`}>
                                             <Clock className="w-5 h-5 text-green-600" />
-                                            Hora
-                                        </h4>
+                                        Hora
+                                    </h4>
 
                                         <div className="grid grid-cols-3 gap-3">
                                             {availableSlots.map((timeSlot, index) => (
                                                 <motion.button
-                                                    key={timeSlot.id}
-                                                    onClick={() => handleTimeSelect(timeSlot)}
-                                                    disabled={!timeSlot.available}
-                                                    className={`
+                                                key={timeSlot.id}
+                                                onClick={() => handleTimeSelect(timeSlot)}
+                                                disabled={!timeSlot.available}
+                                                className={`
                                                         relative p-4 rounded-2xl border-2 transition-all text-center touch-manipulation
                                                         min-h-[72px] flex items-center justify-center active:scale-95
                                                     ${timeSlot.available
-                                                            ? selectedTime === timeSlot.time
+                                                        ? selectedTime === timeSlot.time
                                                                 ? 'border-green-600 bg-green-50 text-green-700 shadow-lg ring-2 ring-green-200'
                                                                 : `${isDarkMode ? 'border-gray-600 hover:border-green-400 hover:bg-green-900/20' : 'border-gray-200 hover:border-green-400 hover:bg-green-50'}`
                                                             : `${isDarkMode ? 'border-gray-700 bg-gray-800 text-gray-500' : 'border-gray-200 bg-gray-50 text-gray-400'} cursor-not-allowed`
-                                                        }
+                                                    }
                                                 `}
-                                                    aria-label={`Seleccionar hora ${timeSlot.time}`}
-                                                    initial={{ opacity: 0, y: 20 }}
+                                                aria-label={`Seleccionar hora ${timeSlot.time}`}
+                                                    initial={{ opacity: 0, y: 10 }}
                                                     animate={{ opacity: 1, y: 0 }}
-                                                    transition={{ delay: index * 0.1, duration: 0.3 }}
-                                                    whileHover={{ scale: 1.05 }}
-                                                    whileTap={{ scale: 0.95 }}
+                                                    transition={{ delay: index * 0.03, duration: 0.1 }}
+                                                    whileHover={{ scale: 1.02 }}
+                                                    whileTap={{ scale: 0.98 }}
                                                 >
                                                     <span className={`text-base font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{timeSlot.time}</span>
                                                     {selectedTime === timeSlot.time && (
@@ -681,46 +681,46 @@ END:VCALENDAR`;
                                                             className="absolute top-2 right-2 w-4 h-4 bg-green-600 rounded-full flex items-center justify-center"
                                                             initial={{ scale: 0 }}
                                                             animate={{ scale: 1 }}
-                                                            transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                                                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
                                                         >
                                                             <Check className="w-2.5 h-2.5 text-white" />
                                                         </motion.div>
                                                     )}
                                                 </motion.button>
-                                            ))}
-                                        </div>
+                                        ))}
+                                    </div>
                                     </motion.div>
-                                )}
+                            )}
 
-                                {/* Botón continuar */}
+                            {/* Botón continuar */}
                                 <motion.div
                                     className="mt-auto pt-4"
-                                    initial={{ opacity: 0, y: 20 }}
+                                    initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.5 }}
+                                    transition={{ delay: 0.2, duration: 0.1 }}
                                 >
-                                    <button
-                                        onClick={handleContinue}
-                                        disabled={!canContinue}
+                                <button
+                                    onClick={handleContinue}
+                                    disabled={!canContinue}
                                         className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold py-4 px-6 rounded-2xl transition-colors text-lg touch-manipulation disabled:cursor-not-allowed active:scale-95 shadow-lg"
-                                    >
+                                >
                                         Continuar →
-                                    </button>
+                                </button>
                                 </motion.div>
-                            </motion.div>
-                        )}
+                        </motion.div>
+                    )}
 
-                        {/* Step 2: Formulario de contacto */}
-                        {step === 'contact' && (
-                            <motion.div
-                                key="contact"
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -20 }}
-                                transition={{ duration: 0.3, ease: "easeOut" }}
-                                className="h-full flex flex-col"
-                            >
-                                {/* Header del paso */}
+                    {/* Step 2: Formulario de contacto */}
+                    {step === 'contact' && (
+                        <motion.div
+                            key="contact"
+                            initial={{ opacity: 0, x: 10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -10 }}
+                            transition={{ duration: 0.15, ease: "easeOut" }}
+                            className="h-full flex flex-col"
+                        >
+                            {/* Header del paso */}
                                 <div className="text-center mb-6">
                                     <motion.h3
                                         className={`text-xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-2`}
@@ -728,7 +728,7 @@ END:VCALENDAR`;
                                         animate={{ scale: 1 }}
                                         transition={{ delay: 0.1 }}
                                     >
-                                        Información de contacto
+                                    Información de contacto
                                     </motion.h3>
                                     <motion.p
                                         className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}
@@ -736,7 +736,7 @@ END:VCALENDAR`;
                                         animate={{ opacity: 1 }}
                                         transition={{ delay: 0.2 }}
                                     >
-                                        Completa tus datos para confirmar la visita
+                                    Completa tus datos para confirmar la visita
                                     </motion.p>
                                 </div>
 
@@ -750,15 +750,15 @@ END:VCALENDAR`;
                                     ].map((field, index) => (
                                         <motion.div
                                             key={field.key}
-                                            initial={{ opacity: 0, x: -20 }}
+                                            initial={{ opacity: 0, x: -10 }}
                                             animate={{ opacity: 1, x: 0 }}
-                                            transition={{ delay: index * 0.1, duration: 0.3 }}
+                                            transition={{ delay: index * 0.03, duration: 0.1 }}
                                         >
                                             <label htmlFor={field.key} className={`block text-sm font-medium ${isDarkMode ? 'text-gray-200' : 'text-gray-700'} mb-2`}>
                                                 {field.label}
-                                            </label>
+                                    </label>
                                             <div className="relative">
-                                                <input
+                                    <input
                                                     type={field.type}
                                                     id={field.key}
                                                     value={contactData[field.key as keyof ContactData] || ''}
@@ -775,24 +775,24 @@ END:VCALENDAR`;
                                                         focus:ring-2 focus:ring-opacity-20
                                                     `}
                                                     placeholder={field.placeholder}
-                                                    required
-                                                    aria-required="true"
-                                                />
+                                        required
+                                        aria-required="true"
+                                    />
                                                 {fieldValidation[field.key as keyof FieldValidation].isValid && (
                                                     <motion.div
                                                         className="absolute right-3 top-1/2 -translate-y-1/2"
                                                         initial={{ scale: 0 }}
                                                         animate={{ scale: 1 }}
-                                                        transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                                                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
                                                     >
                                                         <Check className="w-5 h-5 text-green-600" />
                                                     </motion.div>
                                                 )}
-                                            </div>
+                                </div>
                                             {fieldValidation[field.key as keyof FieldValidation].message && (
                                                 <motion.p
                                                     className="text-sm text-red-600 mt-1 flex items-center gap-1"
-                                                    initial={{ opacity: 0, y: -10 }}
+                                                    initial={{ opacity: 0, y: -5 }}
                                                     animate={{ opacity: 1, y: 0 }}
                                                 >
                                                     <AlertTriangle className="w-4 h-4" />
@@ -805,9 +805,9 @@ END:VCALENDAR`;
                                     {/* Botones de navegación */}
                                     <motion.div
                                         className="flex gap-3 mt-6"
-                                        initial={{ opacity: 0, y: 20 }}
+                                        initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 0.6 }}
+                                        transition={{ delay: 0.2, duration: 0.1 }}
                                     >
                                         <button
                                             type="button"
@@ -821,20 +821,20 @@ END:VCALENDAR`;
                                             onClick={handleContinueToPremium}
                                             disabled={!isFormValid || isLoading}
                                             className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-medium py-4 px-6 rounded-2xl transition-colors active:scale-95 shadow-lg"
-                                        >
-                                            {isLoading ? (
-                                                <div className="flex items-center justify-center gap-2">
-                                                    <Loader2 className="w-5 h-5 animate-spin" />
+                                    >
+                                        {isLoading ? (
+                                            <div className="flex items-center justify-center gap-2">
+                                                <Loader2 className="w-5 h-5 animate-spin" />
                                                     Cargando...
-                                                </div>
-                                            ) : (
+                                            </div>
+                                        ) : (
                                                 'Continuar →'
-                                            )}
-                                        </button>
+                                        )}
+                                    </button>
                                     </motion.div>
-                                </form>
-                            </motion.div>
-                        )}
+                            </form>
+                        </motion.div>
+                    )}
 
                         {/* Step 3: Características Premium */}
                         {step === 'premium' && (
@@ -853,14 +853,14 @@ END:VCALENDAR`;
                         )}
 
                         {/* Step 4: Éxito */}
-                        {step === 'success' && (
-                            <motion.div
-                                key="success"
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                transition={{ duration: 0.4, ease: "easeOut" }}
-                                className="h-full flex flex-col items-center justify-center text-center px-4"
-                            >
+                    {step === 'success' && (
+                        <motion.div
+                            key="success"
+                            initial={{ opacity: 0, scale: 0.98 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 0.2, ease: "easeOut" }}
+                            className="h-full flex flex-col items-center justify-center text-center px-4"
+                        >
                                 {/* Confeti animado */}
                                 {showConfetti && (
                                     <div className="absolute inset-0 pointer-events-none">
@@ -879,53 +879,53 @@ END:VCALENDAR`;
                                                     opacity: [1, 1, 0]
                                                 }}
                                                 transition={{
-                                                    duration: 3 + Math.random() * 2,
-                                                    delay: Math.random() * 0.5,
+                                                    duration: 1.5 + Math.random() * 0.5,
+                                                    delay: Math.random() * 0.2,
                                                     ease: "easeIn"
                                                 }}
                                             />
                                         ))}
-                                    </div>
+                            </div>
                                 )}
 
                                 <motion.div
                                     className={`w-20 h-20 ${isDarkMode ? 'bg-green-900' : 'bg-green-100'} rounded-full flex items-center justify-center mb-6`}
                                     initial={{ scale: 0 }}
                                     animate={{ scale: 1 }}
-                                    transition={{ delay: 0.2, type: "spring", stiffness: 500, damping: 30 }}
+                                    transition={{ delay: 0.1, type: "spring", stiffness: 300, damping: 20 }}
                                 >
                                     <CheckCircle className="w-10 h-10 text-green-600" />
                                 </motion.div>
                                 <motion.h3
                                     className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-3`}
-                                    initial={{ opacity: 0, y: 20 }}
+                                    initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.4 }}
+                                    transition={{ delay: 0.15, duration: 0.1 }}
                                 >
-                                    ¡Visita confirmada!
+                                ¡Visita confirmada!
                                 </motion.h3>
                                 <motion.p
                                     className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'} mb-8 max-w-md`}
-                                    initial={{ opacity: 0, y: 20 }}
+                                    initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.6 }}
+                                    transition={{ delay: 0.2, duration: 0.1 }}
                                 >
-                                    Tu visita ha sido programada exitosamente. Te hemos enviado una confirmación por WhatsApp con todos los detalles.
+                                Tu visita ha sido programada exitosamente. Te hemos enviado una confirmación por WhatsApp con todos los detalles.
                                 </motion.p>
                                 <motion.button
-                                    onClick={handleClose}
+                                onClick={handleClose}
                                     className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-8 rounded-2xl transition-colors text-lg touch-manipulation active:scale-95 shadow-lg"
-                                    initial={{ opacity: 0, y: 20 }}
+                                    initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.8 }}
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                >
-                                    Cerrar
+                                    transition={{ delay: 0.25, duration: 0.1 }}
+                                    whileHover={{ scale: 1.02 }}
+                                    whileTap={{ scale: 0.98 }}
+                            >
+                                Cerrar
                                 </motion.button>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
                 </motion.div>
             </div>
         </div>

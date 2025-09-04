@@ -96,19 +96,19 @@ export function PremiumFeaturesStep({
     return (
         <motion.div
             key="premium"
-            initial={{ opacity: 0, x: 20 }}
+            initial={{ opacity: 0, x: 10 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
+            exit={{ opacity: 0, x: -10 }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
             className="h-full flex flex-col"
         >
             {/* Header del paso */}
             <div className="text-center mb-6">
                 <motion.div
                     className="flex items-center justify-center gap-2 mb-3"
-                    initial={{ scale: 0.9 }}
+                    initial={{ scale: 0.95 }}
                     animate={{ scale: 1 }}
-                    transition={{ delay: 0.1 }}
+                    transition={{ delay: 0.05, duration: 0.1 }}
                 >
                     <Sparkles className="w-6 h-6 text-yellow-500" />
                     <h3 className={`text-xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
@@ -120,7 +120,7 @@ export function PremiumFeaturesStep({
                     className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ delay: 0.2 }}
+                    transition={{ delay: 0.1, duration: 0.1 }}
                 >
                     Personaliza tu experiencia de agendamiento
                 </motion.p>
@@ -131,9 +131,9 @@ export function PremiumFeaturesStep({
                 {features.map((feature, index) => (
                     <motion.div
                         key={feature.id}
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.3 + index * 0.1 }}
+                        transition={{ delay: 0.1 + index * 0.03, duration: 0.1 }}
                         className={`p-4 rounded-2xl border-2 transition-all ${
                             isDarkMode ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-200'
                         } hover:shadow-lg hover:scale-[1.02]`}
@@ -180,9 +180,9 @@ export function PremiumFeaturesStep({
 
                 {/* Badge de seguridad */}
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.8 }}
+                    transition={{ delay: 0.2, duration: 0.1 }}
                     className={`p-3 rounded-xl border ${isDarkMode ? 'bg-gray-800 border-gray-600' : 'bg-gray-50 border-gray-200'}`}
                 >
                     <div className="flex items-center gap-2">
@@ -197,9 +197,9 @@ export function PremiumFeaturesStep({
             {/* Botones de navegación */}
             <motion.div 
                 className="flex gap-3 mt-6"
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.9 }}
+                transition={{ delay: 0.25, duration: 0.1 }}
             >
                 <button
                     type="button"
