@@ -30,7 +30,10 @@
     "coming-soon:off": "node scripts/flags.mjs off",
     "deploy:staging": "node scripts/deploy-staging.mjs",
     "check:production": "node scripts/check-production-readiness.mjs",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "icon:generate": "ts-node --compiler-options '{\"module\":\"commonjs\",\"moduleResolution\":\"node\"}' -r tsconfig-paths/register scripts/icon-gen/cli-final.ts",
+    "icon:validate": "ts-node --compiler-options '{\"module\":\"commonjs\",\"moduleResolution\":\"node\"}' -r tsconfig-paths/register scripts/icon-gen/cli-final.ts --validate",
+    "icon:help": "ts-node --compiler-options '{\"module\":\"commonjs\",\"moduleResolution\":\"node\"}' -r tsconfig-paths/register scripts/icon-gen/cli-final.ts --help"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.7",

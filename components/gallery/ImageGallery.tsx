@@ -27,6 +27,7 @@ export function ImageGallery({
   const [active, setActive] = useState(0);
   const [isPlaying, setIsPlaying] = useState(autoPlay);
   const [isLoading, setIsLoading] = useState(true);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const isInitialRenderRef = useRef(true);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
@@ -97,6 +98,33 @@ export function ImageGallery({
     if (!imageList || imageList.length === 0) return;
     setActive((prev) => (prev - 1 + imageList.length) % imageList.length);
   }, [imageList.length]);
+
+  // Toggle fullscreen
+  const toggleFullscreen = useCallback(() => {
+    setIsFullscreen(!isFullscreen);
+  }, [isFullscreen]);
+
+  // Handle keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (isFullscreen) {
+        switch (e.key) {
+          case 'Escape':
+            setIsFullscreen(false);
+            break;
+          case 'ArrowLeft':
+            prevImage();
+            break;
+          case 'ArrowRight':
+            nextImage();
+            break;
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isFullscreen, prevImage, nextImage]);
 
   if (!imageList || imageList.length === 0) {
     return null;
@@ -216,6 +244,11 @@ export function ImageGallery({
               <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
             </button>
 
+            {/* Contador de imágenes */}
+            <div className="absolute top-4 right-4 bg-black/50 text-white text-sm font-medium px-3 py-1.5 rounded-full">
+              {active + 1} / {imageList.length}
+            </div>
+
             {/* Auto-play Toggle */}
             {autoPlay && (
               <button
@@ -274,6 +307,26 @@ export function ImageGallery({
                 blurDataURL={DEFAULT_BLUR}
               />
             </button>
+          ))}
+        </div>
+      )}
+
+      {/* Paginador visual (dots) */}
+      {imageList.length > 1 && (
+        <div className="flex justify-center gap-2 mt-4">
+          {imageList.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setActive(i)}
+              className={clx(
+                "w-2 h-2 rounded-full transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2",
+                i === active
+                  ? "bg-blue-600 w-4"
+                  : "bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500"
+              )}
+              aria-label={`Ir a imagen ${i + 1}`}
+              aria-current={i === active ? "true" : "false"}
+            />
           ))}
         </div>
       )}

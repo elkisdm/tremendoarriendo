@@ -34,17 +34,26 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setIsHydrated(true);
   }, []);
 
+  // Aplicar tema inmediatamente al montar para evitar flash
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const root = window.document.documentElement;
+      root.classList.remove('dark', 'light');
+      root.classList.add(theme);
+    }
+  }, [theme]);
+
   useEffect(() => {
     if (!isHydrated) return;
-    
+
     const root = window.document.documentElement;
-    
+
     // Remover todas las clases de tema existentes
     root.classList.remove('dark', 'light');
-    
+
     // Aplicar la clase del tema actual
     root.classList.add(theme);
-    
+
     try {
       localStorage.setItem('theme', theme);
     } catch (error) {

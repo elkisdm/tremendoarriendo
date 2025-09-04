@@ -84,7 +84,7 @@ async function readFromSupabase(): Promise<Building[] | null> {
     // console.log(`✅ Encontrados ${buildingsData.length} edificios en Supabase`);
 
     // Mantener edificios que al menos tengan unidades (aunque no estén disponibles)
-    const buildingsWithUnits = buildingsData.filter((building) => {
+    const buildingsWithUnits = buildingsData.filter((building: any) => {
       const units = building.units || [];
       return units.length > 0;
     });

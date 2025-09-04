@@ -58,6 +58,7 @@ import { RelatedList } from "@components/lists/RelatedList";
 import { StickyMobileCTA } from "@components/StickyMobileCTA";
 import { PropertyQuotationPanel } from "@components/quotation/PropertyQuotationPanel";
 import { Header } from "@components/marketing/Header";
+import { VisitSchedulerModal } from "@components/flow/VisitSchedulerModal";
 import { buildWaLink } from "@lib/whatsapp";
 import { track } from "@lib/analytics";
 import { PromotionType } from "@schemas/models";
@@ -98,6 +99,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
   const [guaranteeInInstallments, setGuaranteeInInstallments] = useState(true);
   const [showStickyCTA, setShowStickyCTA] = useState(false);
   const [urgencyData, setUrgencyData] = useState({ recentVisitors: 0, lastReservation: 0 });
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Analytics tracking on mount
   useEffect(() => {
@@ -107,6 +109,18 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
       property_slug: building.slug,
     });
   }, [building.id, building.name, building.slug]);
+
+  // Listen for custom event to open modal
+  useEffect(() => {
+    const handleOpenModal = () => {
+      setIsModalOpen(true);
+    };
+
+    window.addEventListener('openVisitScheduler', handleOpenModal);
+    return () => {
+      window.removeEventListener('openVisitScheduler', handleOpenModal);
+    };
+  }, []);
 
   // Generar datos de urgencia solo en el cliente
   useEffect(() => {
@@ -289,14 +303,30 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
   };
 
   const handleBookingClick = () => {
-    track("booking_submitted", {
+    setIsModalOpen(true);
+    track("cta_booking_click", {
       property_id: building.id,
       property_name: building.name,
+      context: "property_page"
     });
   };
 
   const handleFAQToggle = (faqId: string) => {
     setOpenFAQ(openFAQ === faqId ? null : faqId);
+  };
+
+  // Handle modal confirmation
+  const handleModalConfirm = (date: string, time: string, leadData: any) => {
+    console.log('Visita agendada:', { date, time, leadData, property: building.name });
+    track("visit_scheduled", {
+      property_id: building.id,
+      property_name: building.name,
+      unit_id: selectedUnit?.id,
+      date,
+      time,
+      lead_source: "property_page"
+    });
+    setIsModalOpen(false);
   };
 
   const whatsappUrl = buildWaLink({
@@ -1672,6 +1702,24 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
 
           {/* Sticky Mobile CTA */}
           <StickyMobileCTA />
+
+          {/* Visit Scheduler Modal Premium */}
+          <VisitSchedulerModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            propertyId={building.id}
+            propertyName={building.name}
+            propertyAddress={building.address}
+            propertyImage={building.coverImage}
+                          propertyDetails={{
+                bedrooms: selectedUnit?.bedrooms || 1,
+                bathrooms: selectedUnit?.bathrooms || 1,
+                parking: selectedUnit?.estacionamiento || false,
+                area: selectedUnit?.m2 || 45,
+                price: selectedUnit?.price || building.precioDesde || 290000
+              }}
+            onConfirm={handleModalConfirm}
+          />
         </div>
       </main>
     </div>

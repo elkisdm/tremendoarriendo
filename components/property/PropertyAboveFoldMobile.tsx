@@ -75,7 +75,7 @@ export function PropertyAboveFoldMobile({
 
     return (
         <section aria-labelledby="af-title" className="relative">
-                        {/* 1. Barra superior mínima (sticky, 56px) */}
+            {/* 1. Barra superior mínima (sticky, 56px) */}
             <div className="sticky top-0 z-30 h-14 backdrop-blur bg-white/80 dark:bg-black/30 border-b border-gray-200/50 dark:border-gray-700/50 flex items-center justify-between px-4">
                 <nav aria-label="breadcrumb" className="text-xs text-gray-800 dark:text-slate-300">
                     <span className="font-medium">{building.comuna}</span>
@@ -95,11 +95,10 @@ export function PropertyAboveFoldMobile({
                             setIsSaved(!isSaved);
                             onSave?.();
                         }}
-                        className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors ${
-                            isSaved
+                        className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors ${isSaved
                                 ? "text-red-600 bg-red-100 dark:text-red-400 dark:bg-red-400/20"
                                 : "text-gray-800 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10"
-                        }`}
+                            }`}
                         aria-label={isSaved ? "Quitar de favoritos" : "Guardar en favoritos"}
                     >
                         <Heart className={`w-4 h-4 ${isSaved ? "fill-current" : ""}`} />
@@ -184,11 +183,10 @@ export function PropertyAboveFoldMobile({
                         <button
                             key={i}
                             onClick={() => setCurrentImageIndex(i)}
-                            className={`w-2 h-2 rounded-full transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 ${
-                                i === currentImageIndex
+                            className={`w-2 h-2 rounded-full transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 ${i === currentImageIndex
                                     ? "bg-cyan-600 w-4 shadow-sm"
                                     : "bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500"
-                            }`}
+                                }`}
                             aria-label={`Ir a imagen ${i + 1}`}
                             aria-current={i === currentImageIndex ? "true" : "false"}
                         />
@@ -273,7 +271,7 @@ function StickyCtaBar({ price, onScheduleVisit, onWhatsApp }: StickyCtaBarProps)
 
     if (!isVisible) return null;
 
-        return (
+    return (
         <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-gray-900/95 backdrop-blur border-t border-gray-200 dark:border-gray-700 shadow-lg px-4 py-3 safe-area-bottom">
             <div className="flex items-center justify-between gap-4">
                 {/* Mini precio a la izquierda */}
@@ -292,7 +290,7 @@ function StickyCtaBar({ price, onScheduleVisit, onWhatsApp }: StickyCtaBarProps)
                     >
                         Agendar visita
                     </button>
-                    
+
                     {onWhatsApp && (
                         <button
                             onClick={onWhatsApp}

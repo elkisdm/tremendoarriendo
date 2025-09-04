@@ -54,8 +54,12 @@ export function CommuneLifeSection({
     commune,
     heroImage,
     highlights = DEFAULT_HIGHLIGHTS,
-    testimonial,
-    mapPins
+    testimonial = {
+        text: "Excelente lugar para vivir",
+        author: "Residente",
+        rating: 5
+    },
+    mapPins = []
 }: CommuneLifeSectionProps) {
     const containerVariants = {
         hidden: { opacity: 0, y: 20 },

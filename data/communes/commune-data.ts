@@ -85,3 +85,4 @@ export const communeData: Record<string, CommuneData> = {
 export function getCommuneData(communeName: string): CommuneData {
   return communeData[communeName] || communeData["Estación Central"];
 }
+

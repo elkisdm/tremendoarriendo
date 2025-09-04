@@ -18,10 +18,17 @@ import {
     Check,
     AlertTriangle,
     Sun,
-    Moon
+    Moon,
+    Bell,
+    MessageCircle,
+    Calendar as CalendarIcon,
+    BarChart3,
+    Smartphone,
+    Download
 } from 'lucide-react';
 import { useVisitScheduler } from '@/hooks/useVisitScheduler';
 import { DaySlot, TimeSlot, ContactData } from '@/types/visit';
+import { PremiumFeaturesStep } from './PremiumFeaturesStep';
 
 interface QuintoAndarVisitSchedulerProps {
     isOpen: boolean;
@@ -49,7 +56,7 @@ export function QuintoAndarVisitScheduler({
     propertyImage,
     onSuccess
 }: QuintoAndarVisitSchedulerProps) {
-    const [step, setStep] = useState<'selection' | 'contact' | 'success'>('selection');
+    const [step, setStep] = useState<'selection' | 'contact' | 'premium' | 'success'>('selection');
     const [contactData, setContactData] = useState<ContactData>({
         name: '',
         rut: '',
@@ -65,6 +72,17 @@ export function QuintoAndarVisitScheduler({
     const [isFormValid, setIsFormValid] = useState(false);
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [showConfetti, setShowConfetti] = useState(false);
+
+    // Estados para características premium
+    const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+    const [whatsappEnabled, setWhatsappEnabled] = useState(false);
+    const [calendarSyncEnabled, setCalendarSyncEnabled] = useState(false);
+    const [showPremiumFeatures, setShowPremiumFeatures] = useState(false);
+    const [analyticsData, setAnalyticsData] = useState({
+        conversionRate: 0,
+        avgTimeToComplete: 0,
+        userEngagement: 0
+    });
 
     // Refs para gestos
     const containerRef = useRef<HTMLDivElement>(null);
@@ -159,6 +177,72 @@ export function QuintoAndarVisitScheduler({
         }
     }, []);
 
+    // Funciones para características premium
+    const requestNotificationPermission = useCallback(async () => {
+        if ('Notification' in window) {
+            const permission = await Notification.requestPermission();
+            setNotificationsEnabled(permission === 'granted');
+            return permission === 'granted';
+        }
+        return false;
+    }, []);
+
+    const sendWhatsAppConfirmation = useCallback(async (visitData: any) => {
+        const message = `¡Hola! Tu visita ha sido confirmada para ${visitData.date} a las ${visitData.time}. 
+        
+📍 ${propertyName}
+🏠 ${propertyAddress}
+
+Te esperamos. ¡Gracias por elegirnos!`;
+
+        const whatsappUrl = `https://wa.me/56912345678?text=${encodeURIComponent(message)}`;
+        window.open(whatsappUrl, '_blank');
+    }, [propertyName, propertyAddress]);
+
+    const generateCalendarEvent = useCallback((visitData: any) => {
+        const startDate = new Date(`${visitData.date}T${visitData.time}`);
+        const endDate = new Date(startDate.getTime() + 60 * 60 * 1000); // 1 hora después
+
+        const event = {
+            title: `Visita - ${propertyName}`,
+            description: `Visita programada para ${propertyName}\nDirección: ${propertyAddress}`,
+            start: startDate.toISOString(),
+            end: endDate.toISOString(),
+            location: propertyAddress
+        };
+
+        // Google Calendar
+        const googleUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${startDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z/${endDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z&details=${encodeURIComponent(event.description)}&location=${encodeURIComponent(event.location)}`;
+
+        // Apple Calendar (ICS)
+        const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Hommie//Visit Scheduler//EN
+BEGIN:VEVENT
+UID:${Date.now()}@hommie.cl
+DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z
+DTSTART:${startDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z
+DTEND:${endDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z
+SUMMARY:${event.title}
+DESCRIPTION:${event.description}
+LOCATION:${event.location}
+END:VEVENT
+END:VCALENDAR`;
+
+        return { googleUrl, icsContent };
+    }, [propertyName, propertyAddress]);
+
+    const trackAnalytics = useCallback((event: string, data?: any) => {
+        // Simular tracking de analytics
+        console.log(`Analytics: ${event}`, data);
+
+        // Actualizar métricas locales
+        setAnalyticsData(prev => ({
+            ...prev,
+            userEngagement: prev.userEngagement + 1
+        }));
+    }, []);
+
     // Manejar gestos de navegación
     const handleDragEnd = useCallback((event: any, info: PanInfo) => {
         const threshold = 100;
@@ -166,17 +250,27 @@ export function QuintoAndarVisitScheduler({
         if (info.offset.x > threshold && step !== 'selection') {
             // Swipe derecha - ir atrás
             triggerHapticFeedback('medium');
-            setStep(step === 'contact' ? 'selection' : 'contact');
+            if (step === 'contact') {
+                setStep('selection');
+            } else if (step === 'premium') {
+                setStep('contact');
+            } else if (step === 'success') {
+                setStep('premium');
+            }
         } else if (info.offset.x < -threshold && step !== 'success' && selectedDate && selectedTime) {
             // Swipe izquierda - ir adelante
             triggerHapticFeedback('medium');
             if (step === 'selection') {
                 setStep('contact');
+            } else if (step === 'contact' && isFormValid) {
+                setStep('premium');
+            } else if (step === 'premium') {
+                setStep('success');
             }
         }
 
         x.set(0);
-    }, [step, selectedDate, selectedTime, x, triggerHapticFeedback]);
+    }, [step, selectedDate, selectedTime, isFormValid, x, triggerHapticFeedback]);
 
     // Manejar selección de fecha
     const handleDateSelect = (day: DaySlot) => {
@@ -207,11 +301,71 @@ export function QuintoAndarVisitScheduler({
         }
     };
 
+    // Continuar al paso premium
+    const handleContinueToPremium = () => {
+        if (isFormValid) {
+            triggerHapticFeedback('medium');
+            setStep('premium');
+        }
+    };
+
+    // Continuar al éxito
+    const handleContinueToSuccess = async () => {
+        triggerHapticFeedback('medium');
+
+        // Simular envío de datos
+        const result = await createVisit({
+            name: contactData.name,
+            phone: contactData.phone,
+            email: contactData.email
+        });
+
+        if (result) {
+            setStep('success');
+            onSuccess?.(result);
+
+            // Características premium
+            const visitData = {
+                date: selectedDate,
+                time: selectedTime,
+                name: contactData.name,
+                phone: contactData.phone,
+                email: contactData.email
+            };
+
+            // Enviar confirmación por WhatsApp
+            if (whatsappEnabled) {
+                await sendWhatsAppConfirmation(visitData);
+            }
+
+            // Programar notificación de recordatorio
+            if (notificationsEnabled) {
+                const visitDateTime = new Date(`${selectedDate}T${selectedTime}`);
+                const reminderTime = new Date(visitDateTime.getTime() - 24 * 60 * 60 * 1000);
+
+                if (reminderTime > new Date()) {
+                    setTimeout(() => {
+                        new Notification('Recordatorio de Visita', {
+                            body: `Tu visita a ${propertyName} es mañana a las ${selectedTime}`,
+                            icon: '/favicon.ico'
+                        });
+                    }, reminderTime.getTime() - Date.now());
+                }
+            }
+
+            trackAnalytics('visit_confirmed', visitData);
+        }
+    };
+
     // Regresar al paso anterior
     const handleBack = () => {
+        triggerHapticFeedback('medium');
         if (step === 'contact') {
-            triggerHapticFeedback('medium');
             setStep('selection');
+        } else if (step === 'premium') {
+            setStep('contact');
+        } else if (step === 'success') {
+            setStep('premium');
         }
     };
 
@@ -222,6 +376,8 @@ export function QuintoAndarVisitScheduler({
         if (!isFormValid) {
             return;
         }
+
+        trackAnalytics('form_submit_started', { step: 'contact' });
 
         const result = await createVisit({
             name: contactData.name,
@@ -234,6 +390,43 @@ export function QuintoAndarVisitScheduler({
             setShowConfetti(true);
             setStep('success');
             onSuccess?.(result);
+
+            // Características premium
+            const visitData = {
+                date: selectedDate,
+                time: selectedTime,
+                name: contactData.name,
+                phone: contactData.phone,
+                email: contactData.email
+            };
+
+            // Enviar confirmación por WhatsApp
+            if (whatsappEnabled) {
+                await sendWhatsAppConfirmation(visitData);
+            }
+
+            // Programar notificación de recordatorio
+            if (notificationsEnabled) {
+                const visitDateTime = new Date(`${selectedDate}T${selectedTime}`);
+                const reminderTime = new Date(visitDateTime.getTime() - 24 * 60 * 60 * 1000); // 24 horas antes
+
+                if (reminderTime > new Date()) {
+                    setTimeout(() => {
+                        new Notification('Recordatorio de Visita', {
+                            body: `Tu visita a ${propertyName} es mañana a las ${selectedTime}`,
+                            icon: '/favicon.ico'
+                        });
+                    }, reminderTime.getTime() - Date.now());
+                }
+            }
+
+            // Generar evento de calendario
+            if (calendarSyncEnabled) {
+                const calendarEvent = generateCalendarEvent(visitData);
+                // Aquí se podría mostrar un modal para elegir el calendario
+            }
+
+            trackAnalytics('visit_confirmed', visitData);
 
             // Ocultar confeti después de 3 segundos
             setTimeout(() => setShowConfetti(false), 3000);
@@ -264,8 +457,10 @@ export function QuintoAndarVisitScheduler({
                 return { number: 1, title: 'Fecha y Hora', description: 'Selecciona cuándo quieres visitar' };
             case 'contact':
                 return { number: 2, title: 'Contacto', description: 'Completa tus datos' };
+            case 'premium':
+                return { number: 3, title: 'Características Premium', description: 'Personaliza tu experiencia' };
             case 'success':
-                return { number: 3, title: 'Confirmación', description: 'Visita agendada' };
+                return { number: 4, title: 'Confirmación', description: 'Visita agendada' };
             default:
                 return { number: 1, title: 'Fecha y Hora', description: 'Selecciona cuándo quieres visitar' };
         }
@@ -287,14 +482,14 @@ export function QuintoAndarVisitScheduler({
                     <div className="px-4 py-3">
                         <div className="flex items-center justify-between mb-3">
                             <span className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                                Paso {stepInfo.number} de 3
+                                Paso {stepInfo.number} de 4
                             </span>
                             <span className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>{stepInfo.title}</span>
                         </div>
                         <div className={`w-full ${isDarkMode ? 'bg-gray-700' : 'bg-gray-200'} rounded-full h-2`}>
                             <div
                                 className="bg-blue-600 h-2 rounded-full transition-all duration-300 ease-out"
-                                style={{ width: `${(stepInfo.number / 3) * 100}%` }}
+                                style={{ width: `${(stepInfo.number / 4) * 100}%` }}
                             />
                         </div>
                         <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'} mt-2 text-center`}>{stepInfo.description}</p>
@@ -408,13 +603,13 @@ export function QuintoAndarVisitScheduler({
                                                     className={`
                                                         relative flex flex-col items-center justify-center p-3 rounded-2xl border-2 transition-all
                                                         min-h-[88px] touch-manipulation active:scale-95
-                                                        ${day.available
+                                                    ${day.available
                                                             ? selectedDate === day.date
                                                                 ? 'border-blue-600 bg-blue-50 text-blue-700 shadow-lg ring-2 ring-blue-200'
                                                                 : `${isDarkMode ? 'border-gray-600 hover:border-blue-400 hover:bg-blue-900/20' : 'border-gray-200 hover:border-blue-400 hover:bg-blue-50'}`
                                                             : `${isDarkMode ? 'border-gray-700 bg-gray-800 text-gray-500' : 'border-gray-200 bg-gray-50 text-gray-400'} cursor-not-allowed`
                                                         }
-                                                    `}
+                                                `}
                                                     aria-label={`Seleccionar ${day.day} ${day.number}`}
                                                     initial={{ opacity: 0, scale: 0.8 }}
                                                     animate={{ opacity: 1, scale: 1 }}
@@ -466,13 +661,13 @@ export function QuintoAndarVisitScheduler({
                                                     className={`
                                                         relative p-4 rounded-2xl border-2 transition-all text-center touch-manipulation
                                                         min-h-[72px] flex items-center justify-center active:scale-95
-                                                        ${timeSlot.available
+                                                    ${timeSlot.available
                                                             ? selectedTime === timeSlot.time
                                                                 ? 'border-green-600 bg-green-50 text-green-700 shadow-lg ring-2 ring-green-200'
                                                                 : `${isDarkMode ? 'border-gray-600 hover:border-green-400 hover:bg-green-900/20' : 'border-gray-200 hover:border-green-400 hover:bg-green-50'}`
                                                             : `${isDarkMode ? 'border-gray-700 bg-gray-800 text-gray-500' : 'border-gray-200 bg-gray-50 text-gray-400'} cursor-not-allowed`
                                                         }
-                                                    `}
+                                                `}
                                                     aria-label={`Seleccionar hora ${timeSlot.time}`}
                                                     initial={{ opacity: 0, y: 20 }}
                                                     animate={{ opacity: 1, y: 0 }}
@@ -622,17 +817,18 @@ export function QuintoAndarVisitScheduler({
                                             ← Atrás
                                         </button>
                                         <button
-                                            type="submit"
+                                            type="button"
+                                            onClick={handleContinueToPremium}
                                             disabled={!isFormValid || isLoading}
                                             className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-medium py-4 px-6 rounded-2xl transition-colors active:scale-95 shadow-lg"
                                         >
                                             {isLoading ? (
                                                 <div className="flex items-center justify-center gap-2">
                                                     <Loader2 className="w-5 h-5 animate-spin" />
-                                                    Confirmando...
+                                                    Cargando...
                                                 </div>
                                             ) : (
-                                                'Confirmar Visita'
+                                                'Continuar →'
                                             )}
                                         </button>
                                     </motion.div>
@@ -640,7 +836,23 @@ export function QuintoAndarVisitScheduler({
                             </motion.div>
                         )}
 
-                        {/* Step 3: Éxito */}
+                        {/* Step 3: Características Premium */}
+                        {step === 'premium' && (
+                            <PremiumFeaturesStep
+                                isDarkMode={isDarkMode}
+                                notificationsEnabled={notificationsEnabled}
+                                whatsappEnabled={whatsappEnabled}
+                                calendarSyncEnabled={calendarSyncEnabled}
+                                analyticsData={analyticsData}
+                                onRequestNotificationPermission={requestNotificationPermission}
+                                onToggleWhatsApp={() => setWhatsappEnabled(!whatsappEnabled)}
+                                onToggleCalendar={() => setCalendarSyncEnabled(!calendarSyncEnabled)}
+                                onBack={handleBack}
+                                onContinue={handleContinueToSuccess}
+                            />
+                        )}
+
+                        {/* Step 4: Éxito */}
                         {step === 'success' && (
                             <motion.div
                                 key="success"

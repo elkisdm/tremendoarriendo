@@ -239,3 +239,4 @@ export function PropertyTestimonials({ building, variant = "catalog", className 
         </section>
     );
 }
+

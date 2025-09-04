@@ -7,7 +7,7 @@ import { ImageGallery } from "@components/gallery/ImageGallery";
 import { Header } from "@components/marketing/Header";
 import { track } from "@lib/analytics";
 import type { Unit, Building } from "@schemas/models";
-import { VisitSchedulerModal } from "@components/flow/VisitSchedulerModal";
+import { QuintoAndarVisitScheduler } from "@components/flow/QuintoAndarVisitScheduler";
 
 // Componentes de propiedad
 import { PropertyAboveFoldMobile } from "./PropertyAboveFoldMobile";
@@ -320,22 +320,24 @@ export function PropertyClient({
                     </div>
                 </main>
 
-                {/* Visit Scheduler Modal Premium */}
-                <VisitSchedulerModal
+                {/* Modal de Agendamiento QuintoAndar */}
+                <QuintoAndarVisitScheduler
                     isOpen={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
-                    propertyId={building.id}
+                    listingId={building.id}
                     propertyName={building.name}
                     propertyAddress={building.address}
                     propertyImage={building.coverImage}
-                    propertyDetails={{
-                        bedrooms: building.units.find(unit => unit.disponible)?.bedrooms || 1,
-                        bathrooms: building.units.find(unit => unit.disponible)?.bathrooms || 1,
-                        parking: building.units.find(unit => unit.disponible)?.estacionamiento || false,
-                        area: building.units.find(unit => unit.disponible)?.m2 || 45,
-                        price: building.units.find(unit => unit.disponible)?.price || building.precio_desde || 290000
+                    onSuccess={(visitData) => {
+                        console.log('✅ Visita creada exitosamente:', visitData);
+                        track("visit_scheduled", {
+                            property_id: building.id,
+                            property_name: building.name,
+                            visit_id: visitData.visitId,
+                            variant
+                        });
+                        setIsModalOpen(false);
                     }}
-                    onConfirm={handleModalConfirm}
                 />
             </div>
         </ErrorBoundary>

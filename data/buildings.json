@@ -1,5 +1,49 @@
 [
   {
+    "id": "bld-home-amengual",
+    "slug": "home-amengual",
+    "name": "Home Amengual",
+    "comuna": "Providencia",
+    "address": "Av. Amengual 1234",
+    "amenities": [
+      "Piscina",
+      "Gimnasio",
+      "Quinchos",
+      "Cowork",
+      "Conserjería 24/7",
+      "Bicicleteros",
+      "Sala de eventos",
+      "Lavandería"
+    ],
+    "gallery": [
+      "/images/home-amengual-hero.jpg",
+      "/images/home-amengual-cover.jpg",
+      "/images/home-amengual-1.jpg",
+      "/images/home-amengual-2.jpg",
+      "/images/home-amengual-3.jpg",
+      "/images/home-amengual-4.jpg",
+      "/images/home-amengual-5.jpg"
+    ],
+    "units": [
+      {
+        "id": "207",
+        "tipologia": "2D2B",
+        "m2": 65,
+        "price": 850000,
+        "estacionamiento": true,
+        "bodega": true,
+        "disponible": true,
+        "bedrooms": 2,
+        "bathrooms": 2,
+        "area_interior_m2": 60,
+        "area_exterior_m2": 5,
+        "floor": 2,
+        "orientation": "Norte",
+        "description": "Hermoso departamento de 2 dormitorios y 2 baños en el corazón de Providencia. Excelente ubicación cerca de metro y servicios."
+      }
+    ]
+  },
+  {
     "id": "bld-las-condes",
     "slug": "edificio-vista-las-condes",
     "name": "Edificio Vista Las Condes",

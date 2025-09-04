@@ -10,7 +10,7 @@ export function ThemeToggle() {
   // No renderizar hasta que esté hidratado para evitar hydration mismatch
   if (!isHydrated) {
     return (
-      <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse" />
+      <div className="w-10 h-10 rounded-full bg-gray-200 animate-pulse" />
     );
   }
 
@@ -33,7 +33,7 @@ export function ThemeToggle() {
           <Moon className="w-5 h-5 text-cyan-400" />
         )}
       </motion.div>
-      
+
       {/* Indicador de estado */}
       <motion.div
         className="absolute inset-0 rounded-full border-2 border-transparent"

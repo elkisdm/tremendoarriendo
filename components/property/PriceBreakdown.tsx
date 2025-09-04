@@ -1,216 +1,272 @@
 "use client";
-
-import React from "react";
-import { motion } from "framer-motion";
-import { DollarSign, CheckCircle, Info } from "lucide-react";
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { DollarSign, ChevronDown, ChevronUp, Info, Bed, Bath, Square } from "lucide-react";
+import type { Unit, Building } from "@schemas/models";
 
 interface PriceBreakdownProps {
-  rent: number;
-  commonExpenses: number;
-  deposit?: number;
-  fee?: number;
-  currency?: 'CLP' | 'USD';
+  building: Building;
+  selectedUnit: Unit;
+  originalPrice: number;
+  discountPrice: number;
+  unitDetails: any;
+  onScheduleVisit: () => void;
+  onSendQuotation: () => void;
+  variant?: "catalog" | "marketing" | "admin";
   className?: string;
 }
 
-export const PriceBreakdown: React.FC<PriceBreakdownProps> = ({
-  rent,
-  commonExpenses,
-  deposit,
-  fee = 0,
-  currency = 'CLP',
+export function PriceBreakdown({
+  building,
+  selectedUnit,
+  originalPrice,
+  discountPrice,
+  unitDetails,
+  onScheduleVisit,
+  onSendQuotation,
+  variant = "catalog",
   className = ""
-}) => {
-  const totalMonthly = rent + commonExpenses;
-  const hasNoFee = fee === 0;
+}: PriceBreakdownProps) {
+  const [isDetailed, setIsDetailed] = useState(false);
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-CL', {
-      style: 'currency',
-      currency: currency,
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    }).format(amount);
+  // Cálculo del precio total mensual (arriendo + gastos comunes)
+  const gastosComunes = 102000; // Esto debería venir de los datos
+  const precioTotalMensual = discountPrice + gastosComunes;
+  const ahorroPrimerMes = originalPrice - discountPrice;
+
+  // Badge principal de 0% comisión
+  const getMainBadge = () => {
+    return {
+      label: "0% comisión",
+      tag: "Exclusivo",
+      color: "from-green-500 to-emerald-500",
+      icon: DollarSign
+    };
   };
 
-  const containerVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5,
-        ease: [0.4, 0, 0.2, 1],
-        staggerChildren: 0.1
-      }
+  const mainBadge = getMainBadge();
+
+  // Badges secundarios según variant
+  const getSecondaryBadges = () => {
+    if (variant === "marketing") {
+      return [
+        { label: "50% OFF primer mes", tag: "Oferta", color: "from-orange-500 to-red-500" },
+        { label: "Sin aval", tag: "Flexible", color: "from-purple-500 to-indigo-500" }
+      ];
     }
+    return [
+      { label: "50% OFF primer mes", tag: "Oferta", color: "from-orange-500 to-red-500" },
+      { label: "Garantía en cuotas", tag: "Flexible", color: "from-indigo-500 to-blue-500" },
+      { label: "Opción sin aval", tag: "Sin aval", color: "from-purple-500 to-indigo-500" }
+    ];
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, x: -20, scale: 0.95 },
-    visible: { 
-      opacity: 1, 
-      x: 0, 
-      scale: 1,
-      transition: {
-        duration: 0.4,
-        ease: [0.4, 0, 0.2, 1]
-      }
-    }
-  };
+  const secondaryBadges = getSecondaryBadges();
 
   return (
-    <motion.div
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-      className={`bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-lg ${className}`}
-    >
-      {/* Header con badge de 0% comisión */}
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-          Desglose de costos
-        </h3>
-        {hasNoFee && (
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.2, type: "spring" }}
-            className="flex items-center gap-2 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 px-3 py-1 rounded-full text-sm font-medium"
-          >
-            <CheckCircle className="w-4 h-4" />
-            <span>0% comisión</span>
-          </motion.div>
-        )}
+    <section className={`lg:hidden ${className}`}>
+      {/* Badge principal de 0% comisión - Above the fold */}
+      <div className="mb-4">
+        <div className={`inline-flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r ${mainBadge.color} text-white text-sm font-bold rounded-xl shadow-lg`}>
+          <mainBadge.icon className="w-4 h-4" />
+          <span>{mainBadge.label}</span>
+          <span className="text-xs opacity-90 font-normal">{mainBadge.tag}</span>
+        </div>
       </div>
 
-      {/* Tabla de costos */}
-      <div className="space-y-4">
-        <motion.div variants={itemVariants} className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-              <DollarSign className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-            </div>
-            <div>
-              <span className="text-sm font-medium text-gray-900 dark:text-white">
-                Arriendo mensual
-              </span>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                Valor base del contrato
-              </p>
-            </div>
-          </div>
-          <span className="text-sm font-semibold text-gray-900 dark:text-white">
-            {formatCurrency(rent)}
-          </span>
-        </motion.div>
+      {/* Contenedor principal */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-4 space-y-4">
+        {/* Título de la unidad */}
+        <div className="text-center">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
+            Departamento {selectedUnit.id}
+          </h2>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            {unitDetails.tipologia} • Piso {unitDetails.piso}
+          </p>
+        </div>
 
-        <motion.div variants={itemVariants} className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
-              <Info className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+        {/* Precio total mensual destacado */}
+        <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl border border-blue-200 dark:border-blue-700 p-4">
+          <div className="text-center">
+            <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+              Total estimado / mes
             </div>
-            <div>
-              <span className="text-sm font-medium text-gray-900 dark:text-white">
-                Gastos comunes
-              </span>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                Servicios y mantención
-              </p>
+            <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+              ${precioTotalMensual.toLocaleString('es-CL')}
             </div>
-          </div>
-          <span className="text-sm font-semibold text-gray-900 dark:text-white">
-            {formatCurrency(commonExpenses)}
-          </span>
-        </motion.div>
-
-        {deposit && (
-          <motion.div variants={itemVariants} className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center">
-                <DollarSign className="w-4 h-4 text-orange-600 dark:text-orange-400" />
-              </div>
-              <div>
-                <span className="text-sm font-medium text-gray-900 dark:text-white">
-                  Depósito de garantía
-                </span>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Se devuelve al finalizar
-                </p>
-              </div>
+            <div className="text-xs text-gray-500 dark:text-gray-400">
+              Arriendo + Gastos comunes
             </div>
-            <span className="text-sm font-semibold text-gray-900 dark:text-white">
-              {formatCurrency(deposit)}
-            </span>
-          </motion.div>
-        )}
-
-        {!hasNoFee && (
-          <motion.div variants={itemVariants} className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center">
-                <DollarSign className="w-4 h-4 text-red-600 dark:text-red-400" />
-              </div>
-              <div>
-                <span className="text-sm font-medium text-gray-900 dark:text-white">
-                  Comisión
-                </span>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Cargo único
-                </p>
-              </div>
-            </div>
-            <span className="text-sm font-semibold text-gray-900 dark:text-white">
-              {formatCurrency(fee)}
-            </span>
-          </motion.div>
-        )}
-
-        {/* Separador */}
-        <motion.div 
-          variants={itemVariants}
-          className="border-t border-gray-200 dark:border-gray-700 pt-4"
-        />
-
-        {/* Total mensual */}
-        <motion.div variants={itemVariants} className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
-              <DollarSign className="w-4 h-4 text-green-600 dark:text-green-400" />
-            </div>
-            <div>
-              <span className="text-base font-semibold text-gray-900 dark:text-white">
-                Total mensual
-              </span>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                Arriendo + Gastos comunes
-              </p>
-            </div>
-          </div>
-          <span className="text-lg font-bold text-green-600 dark:text-green-400">
-            {formatCurrency(totalMonthly)}
-          </span>
-        </motion.div>
-      </div>
-
-      {/* Información adicional */}
-      <motion.div 
-        variants={itemVariants}
-        className="mt-6 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl"
-      >
-        <div className="flex items-start gap-3">
-          <Info className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
-          <div className="text-sm text-gray-600 dark:text-gray-300">
-            <p className="font-medium mb-1">¿Qué incluye?</p>
-            <ul className="space-y-1 text-xs">
-              <li>• Arriendo del departamento</li>
-              <li>• Gastos comunes (agua, luz, gas)</li>
-              <li>• Mantención de áreas comunes</li>
-              {hasNoFee && <li>• <strong>Sin comisión de corretaje</strong></li>}
-            </ul>
           </div>
         </div>
-      </motion.div>
-    </motion.div>
+
+        {/* Tabla de desglose de precios */}
+        <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-3">
+          <h3 className="font-semibold text-gray-900 dark:text-white text-center mb-3 text-sm">
+            Desglose de costos
+          </h3>
+
+          <dl className="space-y-2">
+            <div className="flex items-center justify-between">
+              <dt className="text-sm text-gray-600 dark:text-gray-400">Arriendo original</dt>
+              <dd className="text-sm line-through text-gray-500">${originalPrice.toLocaleString('es-CL')}</dd>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <dt className="text-sm font-semibold text-green-600">50% OFF primer mes</dt>
+              <dd className="text-lg font-bold text-gray-900 dark:text-white">${discountPrice.toLocaleString('es-CL')}</dd>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <dt className="text-sm text-gray-600 dark:text-gray-400">Gastos comunes</dt>
+              <dd className="text-sm font-medium text-gray-900 dark:text-white">${gastosComunes.toLocaleString('es-CL')}</dd>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <dt className="text-sm text-gray-600 dark:text-gray-400">Ahorro primer mes</dt>
+              <dd className="text-sm font-semibold text-green-600">${ahorroPrimerMes.toLocaleString('es-CL')}</dd>
+            </div>
+
+            <div className="flex items-center justify-between pt-2 border-t border-gray-200 dark:border-gray-600">
+              <dt className="text-sm font-semibold text-gray-900 dark:text-white">Total mensual</dt>
+              <dd className="text-lg font-bold text-gray-900 dark:text-white">${precioTotalMensual.toLocaleString('es-CL')}</dd>
+            </div>
+          </dl>
+        </div>
+
+        {/* Badges secundarios */}
+        <div className="flex flex-wrap gap-1">
+          {secondaryBadges.map((badge, index) => (
+            <div
+              key={index}
+              className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-md bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200`}
+            >
+              <Info className="w-3 h-3" />
+              {badge.label}
+            </div>
+          ))}
+        </div>
+
+        {/* Características principales */}
+        <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-3">
+          <h3 className="font-semibold text-gray-900 dark:text-white text-center mb-3 text-sm">
+            Características principales
+          </h3>
+          <div className="grid grid-cols-3 gap-3 text-center">
+            <div className="bg-white dark:bg-gray-600 rounded-lg p-2">
+              <Bed className="w-5 h-5 text-blue-600 mx-auto mb-1" />
+              <div className="text-sm font-semibold text-gray-900 dark:text-white">{unitDetails.dormitorios}</div>
+              <div className="text-xs text-gray-500 dark:text-gray-400">Dorm.</div>
+            </div>
+            <div className="bg-white dark:bg-gray-600 rounded-lg p-2">
+              <Bath className="w-5 h-5 text-blue-600 mx-auto mb-1" />
+              <div className="text-sm font-semibold text-gray-900 dark:text-white">{unitDetails.banos}</div>
+              <div className="text-xs text-gray-500 dark:text-gray-400">Baños</div>
+            </div>
+            <div className="bg-white dark:bg-gray-600 rounded-lg p-2">
+              <Square className="w-5 h-5 text-blue-600 mx-auto mb-1" />
+              <div className="text-sm font-semibold text-gray-900 dark:text-white">{unitDetails.m2}</div>
+              <div className="text-xs text-gray-500 dark:text-gray-400">m²</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Calculadora de primer pago expandible */}
+        <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-xl border border-green-200 dark:border-green-700 p-4">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="p-2 bg-green-100 dark:bg-green-800 rounded-lg">
+              <DollarSign className="w-5 h-5 text-green-600 dark:text-green-400" />
+            </div>
+            <h3 className="font-semibold text-gray-900 dark:text-white">
+              Cálculo del primer pago
+            </h3>
+          </div>
+
+          <div className="ml-11 mb-4">
+            <div className="flex items-baseline gap-2">
+              <span className="text-sm text-gray-600 dark:text-gray-400">
+                Te mudas con
+              </span>
+              <span className="text-xl font-bold text-green-600 dark:text-green-400">
+                ${(originalPrice + gastosComunes).toLocaleString('es-CL')}
+              </span>
+            </div>
+            <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+              el {new Date().toLocaleDateString('es-CL', { day: 'numeric', month: 'short' })}
+            </div>
+          </div>
+
+          <button
+            onClick={() => setIsDetailed(!isDetailed)}
+            className="w-full flex items-center justify-center gap-2 py-2 px-4 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors duration-75"
+          >
+            {isDetailed ? (
+              <>
+                <ChevronUp className="w-4 h-4" />
+                Ocultar detalles
+              </>
+            ) : (
+              <>
+                <ChevronDown className="w-4 h-4" />
+                Ver más detalles
+              </>
+            )}
+          </button>
+
+          {/* Detalles expandibles */}
+          <AnimatePresence>
+            {isDetailed && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.2, ease: "easeInOut" }}
+                className="overflow-hidden"
+              >
+                <div className="mt-4 pt-4 border-t border-green-200 dark:border-green-700 space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600 dark:text-gray-400">Depósito</span>
+                    <span className="font-medium">${originalPrice.toLocaleString('es-CL')}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600 dark:text-gray-400">Primer mes</span>
+                    <span className="font-medium">${discountPrice.toLocaleString('es-CL')}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600 dark:text-gray-400">Gastos comunes</span>
+                    <span className="font-medium">${gastosComunes.toLocaleString('es-CL')}</span>
+                  </div>
+                  <div className="flex justify-between text-sm font-semibold pt-2 border-t border-green-200 dark:border-green-700">
+                    <span>Total primer pago</span>
+                    <span className="text-green-600 dark:text-green-400">
+                      ${(originalPrice + discountPrice + gastosComunes).toLocaleString('es-CL')}
+                    </span>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Botones de acción */}
+        <div className="space-y-2">
+          <button
+            onClick={onScheduleVisit}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-4 rounded-lg transition-colors duration-100 text-sm"
+            aria-label="Solicitar visita"
+          >
+            Solicitar visita
+          </button>
+          <button
+            onClick={onSendQuotation}
+            className="w-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white text-white font-semibold py-2.5 px-4 rounded-lg transition-colors duration-100 text-sm"
+            aria-label="Postular"
+          >
+            Postular
+          </button>
+        </div>
+      </div>
+    </section>
   );
-};
+}

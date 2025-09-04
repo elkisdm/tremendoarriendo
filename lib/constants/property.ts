@@ -7,3 +7,4 @@ export const PROPERTY_PAGE_CONSTANTS = {
   PRICE_CURRENCY: "CLP",
   AVAILABILITY_IN_STOCK: "https://schema.org/InStock"
 } as const;
+

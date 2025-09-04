@@ -1,4 +1,14 @@
-import { createClient } from '@supabase/supabase-js';
+// Importación condicional de Supabase
+let createClient: any;
+try {
+  const supabaseModule = require('@supabase/supabase-js');
+  createClient = supabaseModule.createClient;
+} catch (error) {
+  console.warn('⚠️  @supabase/supabase-js no disponible, usando mock');
+  const { createMockSupabaseClient } = require('./supabase.mock');
+  createClient = () => createMockSupabaseClient();
+}
+
 import { getTremendoUnitsProcessor } from './tremendo-units-processor';
 
 export interface SupabaseUnit {
@@ -88,10 +98,11 @@ class SupabaseDataProcessor {
     const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
     if (!supabaseUrl || !supabaseKey) {
-      throw new Error('❌ Variables de entorno de Supabase no encontradas');
+      console.warn('⚠️  Variables de entorno de Supabase no encontradas, usando mock');
+      this.supabase = createClient(); // Mock
+    } else {
+      this.supabase = createClient(supabaseUrl, supabaseKey);
     }
-
-    this.supabase = createClient(supabaseUrl, supabaseKey);
   }
 
   async loadDataFromSupabase(): Promise<void> {

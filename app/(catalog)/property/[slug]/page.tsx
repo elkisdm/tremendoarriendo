@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 import { getBuildingBySlug, getRelatedBuildings } from "@lib/data";
-import { PropertyClient } from "./PropertyClientV3";
+import { PropertyClient } from "./PropertyClient";
 import { safeJsonLd } from "@lib/seo/jsonld";
-import { PROPERTY_PAGE_CONSTANTS } from "./constants";
+import { PROPERTY_PAGE_CONSTANTS } from "@lib/constants/property";
 
 type PropertyPageProps = {
   params: Promise<{ slug: string }>;
@@ -18,7 +18,7 @@ export default async function PropertyPage({ params, searchParams }: PropertyPag
     throw new Error("Falló carga de propiedad (simulada)");
   }
   const building = await getBuildingBySlug(slug);
-  
+
   if (!building) {
     notFound();
   }
@@ -59,9 +59,9 @@ export default async function PropertyPage({ params, searchParams }: PropertyPag
       <script type="application/ld+json">
         {safeJsonLd(jsonLd)}
       </script>
-      <PropertyClient 
-        building={building} 
-        relatedBuildings={relatedBuildings} 
+      <PropertyClient
+        building={building}
+        relatedBuildings={relatedBuildings}
         defaultUnitId={resolvedSearchParams?.unit}
       />
     </>
@@ -71,7 +71,7 @@ export default async function PropertyPage({ params, searchParams }: PropertyPag
 export async function generateMetadata({ params }: PropertyPageProps) {
   const { slug } = await params;
   const building = await getBuildingBySlug(slug);
-  
+
   if (!building) {
     return {
       title: "Propiedad no encontrada",
