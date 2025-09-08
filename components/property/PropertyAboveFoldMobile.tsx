@@ -29,15 +29,15 @@ export function PropertyAboveFoldMobile({
     const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
     // Calcular precio total por mes (arriendo + GGCC)
-    const arriendo = selectedUnit?.precio || building.precio_desde || 290000;
-    const ggcc = building.gastos_comunes || 45000;
+    const arriendo = selectedUnit?.price || building.precio_desde || 290000;
+    const ggcc = 45000; // Default GGCC value
     const precioTotalMes = arriendo + ggcc;
 
     // Datos para chips y badges
     const tipologia = selectedUnit?.tipologia || "2D";
-    const m2 = selectedUnit?.area_interior_m2 || selectedUnit?.area_total_m2 || 48;
-    const petFriendly = building.pet_friendly || true;
-    const minutosMetro = building.tiempo_metro || 6;
+    const m2 = selectedUnit?.area_interior_m2 || selectedUnit?.m2 || 48;
+    const petFriendly = true; // Default pet friendly
+    const minutosMetro = 6; // Default metro time
     const stock = building.units?.filter(u => u.disponible).length || 7;
 
     // Navegación de imágenes
@@ -71,7 +71,7 @@ export function PropertyAboveFoldMobile({
     };
 
     // Hero image con fallback
-    const heroImage = building.gallery?.[0] || building.cover_image || "/images/lascondes-cover.jpg";
+    const heroImage = building.gallery?.[0] || building.coverImage || "/images/lascondes-cover.jpg";
 
     return (
         <section aria-labelledby="af-title" className="relative">
@@ -79,13 +79,13 @@ export function PropertyAboveFoldMobile({
             <div className="sticky top-0 z-30 h-14 backdrop-blur bg-white/80 dark:bg-black/30 border-b border-gray-200/50 dark:border-gray-700/50 flex items-center justify-between px-4">
                 <nav aria-label="breadcrumb" className="text-xs text-gray-800 dark:text-slate-300">
                     <span className="font-medium">{building.comuna}</span>
-                    <span className="mx-2 text-gray-600 dark:text-slate-400">·</span>
+                    <span className="mx-2 text-gray-300:text-slate-400">·</span>
                     <span className="text-gray-700 dark:text-slate-300">{building.name}</span>
                 </nav>
                 <div className="flex gap-3">
                     <button
                         onClick={onShare}
-                        className="w-8 h-8 flex items-center justify-center text-gray-800 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors"
+                        className="w-8 h-8 flex items-center justify-center text-gray-800 dark:text-white hover:bg-gray-800:hover:bg-white/10 rounded-full transition-colors"
                         aria-label="Compartir propiedad"
                     >
                         <Share2 className="w-4 h-4" />
@@ -96,8 +96,8 @@ export function PropertyAboveFoldMobile({
                             onSave?.();
                         }}
                         className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors ${isSaved
-                                ? "text-red-600 bg-red-100 dark:text-red-400 dark:bg-red-400/20"
-                                : "text-gray-800 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10"
+                            ? "text-red-600 bg-red-100 dark:text-red-400 dark:bg-red-400/20"
+                            : "text-gray-800 dark:text-white hover:bg-gray-800:hover:bg-white/10"
                             }`}
                         aria-label={isSaved ? "Quitar de favoritos" : "Guardar en favoritos"}
                     >
@@ -184,8 +184,8 @@ export function PropertyAboveFoldMobile({
                             key={i}
                             onClick={() => setCurrentImageIndex(i)}
                             className={`w-2 h-2 rounded-full transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 ${i === currentImageIndex
-                                    ? "bg-cyan-600 w-4 shadow-sm"
-                                    : "bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500"
+                                ? "bg-cyan-600 w-4 shadow-sm"
+                                : "bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500"
                                 }`}
                             aria-label={`Ir a imagen ${i + 1}`}
                             aria-current={i === currentImageIndex ? "true" : "false"}
@@ -195,19 +195,19 @@ export function PropertyAboveFoldMobile({
             )}
 
             {/* 3. Headline + Precio total/mes */}
-            <div className="px-4 py-6 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
-                <h1 id="af-title" className="text-xl font-semibold leading-tight text-gray-900 dark:text-white">
+            <div className="px-4 py-6 bg-gray-800:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
+                <h1 id="af-title" className="text-xl font-semibold leading-tight text-white:text-white">
                     {tipologia} luminoso en {building.comuna}
                 </h1>
 
                 <div className="mt-3">
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                    <p className="text-2xl font-bold text-white:text-white">
                         ${precioTotalMes.toLocaleString('es-CL')}
-                        <span className="text-sm font-normal text-gray-500 dark:text-slate-400 ml-2">
+                        <span className="text-sm font-normal text-gray-400:text-slate-400 ml-2">
                             / mes (arriendo + GGCC)
                         </span>
                     </p>
-                    <p className="text-xs text-gray-500 dark:text-slate-500 mt-1">
+                    <p className="text-xs text-gray-400:text-slate-500 mt-1">
                         Respaldado por Assetplan
                     </p>
                 </div>
@@ -220,13 +220,13 @@ export function PropertyAboveFoldMobile({
                     </span>
 
                     {/* Chips de características */}
-                    <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600 shadow-sm">
+                    <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-900:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-700:border-gray-600 shadow-sm">
                         {m2} m²
                     </span>
-                    <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600 shadow-sm">
+                    <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-900:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-700:border-gray-600 shadow-sm">
                         {petFriendly ? 'Pet-friendly' : 'No mascotas'}
                     </span>
-                    <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600 shadow-sm">
+                    <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-900:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-700:border-gray-600 shadow-sm">
                         Metro {minutosMetro}'
                     </span>
 
@@ -272,14 +272,14 @@ function StickyCtaBar({ price, onScheduleVisit, onWhatsApp }: StickyCtaBarProps)
     if (!isVisible) return null;
 
     return (
-        <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-gray-900/95 backdrop-blur border-t border-gray-200 dark:border-gray-700 shadow-lg px-4 py-3 safe-area-bottom">
+        <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-gray-900/95 backdrop-blur border-t border-gray-700:border-gray-700 shadow-lg px-4 py-3 safe-area-bottom">
             <div className="flex items-center justify-between gap-4">
                 {/* Mini precio a la izquierda */}
                 <div className="flex-shrink-0">
-                    <p className="text-lg font-bold text-gray-900 dark:text-white">
+                    <p className="text-lg font-bold text-white:text-white">
                         ${price.toLocaleString('es-CL')}
                     </p>
-                    <p className="text-xs text-gray-500 dark:text-slate-500">/ mes</p>
+                    <p className="text-xs text-gray-400:text-slate-500">/ mes</p>
                 </div>
 
                 {/* CTAs */}

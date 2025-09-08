@@ -179,7 +179,7 @@ export const StickyCtaSidebar: React.FC<StickyCtaBarProps> = ({
 
   return (
     <div className="hidden lg:block sticky top-6">
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+      <div className="bg-gray-800:bg-gray-800 rounded-2xl shadow-lg border border-gray-700:border-gray-700 p-6">
         {/* Precio destacado */}
         <div className="text-center mb-6">
           <div className="flex items-center justify-center gap-2 mb-2">
@@ -188,7 +188,7 @@ export const StickyCtaSidebar: React.FC<StickyCtaBarProps> = ({
               ${priceMonthly.toLocaleString('es-CL')}
             </span>
           </div>
-          <span className="text-sm text-gray-600 dark:text-gray-400">
+          <span className="text-sm text-gray-300:text-gray-400">
             Total estimado / mes
           </span>
         </div>
@@ -216,7 +216,7 @@ export const StickyCtaSidebar: React.FC<StickyCtaBarProps> = ({
 
         {/* Micro-trust */}
         <div className="mt-4 text-center">
-          <p className="text-xs text-gray-500 dark:text-gray-400">
+          <p className="text-xs text-gray-400:text-gray-400">
             Respaldado por Assetplan
           </p>
         </div>

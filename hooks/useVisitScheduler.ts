@@ -9,7 +9,7 @@ import {
   formatRFC3339,
   generateIdempotencyKey,
   TIME_SLOTS_30MIN
-} from '@/types/visit';
+} from '../types/visit';
 
 interface UseVisitSchedulerProps {
   listingId: string;
@@ -47,34 +47,41 @@ export function useVisitScheduler({
   const [selectedSlot, setSelectedSlot] = useState<VisitSlot | null>(null);
   const [availabilityData, setAvailabilityData] = useState<AvailabilityResponse | null>(null);
 
-  // Generar días disponibles (próximos 5 días consecutivos)
+  // Generar días disponibles (próximos 5 días laborales)
   const availableDays = useMemo((): DaySlot[] => {
     const days: DaySlot[] = [];
     const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
     
-    // Generar próximos 5 días consecutivos (incluyendo fines de semana)
-    for (let i = 1; i <= 5; i++) {
-      const date = new Date();
-      date.setDate(date.getDate() + i);
+    // Generar próximos 5 días laborales (lunes a viernes)
+    let currentDate = new Date();
+    let daysAdded = 0;
+    
+    while (daysAdded < 5) {
+      currentDate.setDate(currentDate.getDate() + 1);
+      const dayOfWeek = currentDate.getDay();
       
-      const dateString = date.toISOString().split('T')[0];
-      const dayOfWeek = date.getDay();
-      
-      // Contar slots disponibles para este día
-      const slotsForDay = availabilityData?.slots.filter(slot => 
-        slot.startTime.startsWith(dateString)
-      ) || [];
-      
-      days.push({
-        id: `day-${i}`,
-        date: dateString,
-        day: dayNames[dayOfWeek],
-        number: date.getDate().toString(),
-        available: slotsForDay.length > 0,
-        premium: false, // Por ahora sin premium
-        price: undefined,
-        slotsCount: slotsForDay.length
-      });
+      // Solo incluir días laborales (lunes a viernes)
+      if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+        const dateString = currentDate.toISOString().split('T')[0];
+        
+        // Contar slots disponibles para este día
+        const slotsForDay = availabilityData?.slots.filter(slot => 
+          slot.startTime.startsWith(dateString)
+        ) || [];
+        
+        days.push({
+          id: `day-${daysAdded + 1}`,
+          date: dateString,
+          day: dayNames[dayOfWeek],
+          number: currentDate.getDate().toString(),
+          available: slotsForDay.length > 0,
+          premium: false, // Por ahora sin premium
+          price: undefined,
+          slotsCount: slotsForDay.length
+        });
+        
+        daysAdded++;
+      }
     }
     
     return days;
@@ -118,6 +125,8 @@ export function useVisitScheduler({
       const startRFC3339 = formatRFC3339(startDate, timezone);
       const endRFC3339 = formatRFC3339(endDate, timezone);
       
+      console.log('🔍 Fetching availability:', { listingId, startRFC3339, endRFC3339 });
+      
       const response = await fetch(
         `/api/availability?listingId=${listingId}&start=${startRFC3339}&end=${endRFC3339}`
       );
@@ -128,6 +137,15 @@ export function useVisitScheduler({
       }
       
       const data: AvailabilityResponse = await response.json();
+      console.log('📅 Availability data received:', { 
+        slotsCount: data.slots.length, 
+        slots: data.slots.map(s => ({ 
+          id: s.id, 
+          startTime: s.startTime, 
+          status: s.status 
+        }))
+      });
+      
       setAvailabilityData(data);
       
     } catch (err) {
@@ -141,6 +159,8 @@ export function useVisitScheduler({
 
   // Seleccionar fecha y hora
   const selectDateTime = useCallback((date: string, time: string) => {
+    console.log('📅 Selecting date/time:', { date, time, availabilityData: !!availabilityData });
+    
     setSelectedDate(date);
     setSelectedTime(time);
     
@@ -156,6 +176,7 @@ export function useVisitScheduler({
         return slotDate === date && slotTime === time;
       });
       
+      console.log('🎯 Found slot:', slot);
       setSelectedSlot(slot || null);
     }
     

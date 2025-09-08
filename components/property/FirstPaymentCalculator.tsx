@@ -52,21 +52,21 @@ export function FirstPaymentCalculator({
           <div className="p-2 bg-green-100 dark:bg-green-800 rounded-lg">
             <DollarSign className="w-5 h-5 text-green-600 dark:text-green-400" />
           </div>
-          <h3 className="font-semibold text-gray-900 dark:text-white">
+          <h3 className="font-semibold text-white:text-white">
             Cálculo del primer pago
           </h3>
         </div>
 
         <div className="ml-11 mb-4">
           <div className="flex items-baseline gap-2">
-            <span className="text-sm text-gray-600 dark:text-gray-400">
+            <span className="text-sm text-gray-300:text-gray-400">
               Te mudas con
             </span>
             <span className="text-xl font-bold text-green-600 dark:text-green-400">
               ${getSummaryPrice()}
             </span>
           </div>
-          <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          <div className="text-sm text-gray-400:text-gray-400 mt-1">
             el {formatDateForSummary(moveInDate)}
           </div>
         </div>
@@ -114,7 +114,7 @@ export function FirstPaymentCalculator({
                       onChange={(e) => onDateChange(new Date(e.target.value))}
                       min={new Date().toISOString().split('T')[0]}
                       max={new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}
-                      className="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="w-full px-3 py-2 bg-gray-800:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-white:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     />
                   </div>
                   <p className="text-xs text-gray-500 mt-1">
@@ -129,13 +129,13 @@ export function FirstPaymentCalculator({
                   </label>
 
                   {/* Estacionamiento */}
-                  <div className="flex items-center justify-between p-2 bg-white dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+                  <div className="flex items-center justify-between p-2 bg-gray-800:bg-gray-700 rounded-lg border border-gray-700:border-gray-600">
                     <div className="flex items-center gap-2">
                       <Car className="w-4 h-4 text-orange-600" />
-                      <span className="text-sm text-gray-900 dark:text-white">Estacionamiento</span>
+                      <span className="text-sm text-white:text-white">Estacionamiento</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-gray-900 dark:text-white">$50.000</span>
+                      <span className="text-sm font-medium text-white:text-white">$50.000</span>
                       <input
                         type="checkbox"
                         checked={includeParking}
@@ -146,13 +146,13 @@ export function FirstPaymentCalculator({
                   </div>
 
                   {/* Bodega */}
-                  <div className="flex items-center justify-between p-2 bg-white dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+                  <div className="flex items-center justify-between p-2 bg-gray-800:bg-gray-700 rounded-lg border border-gray-700:border-gray-600">
                     <div className="flex items-center gap-2">
                       <Package className="w-4 h-4 text-purple-600" />
-                      <span className="text-sm text-gray-900 dark:text-white">Bodega</span>
+                      <span className="text-sm text-white:text-white">Bodega</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-gray-900 dark:text-white">$30.000</span>
+                      <span className="text-sm font-medium text-white:text-white">$30.000</span>
                       <input
                         type="checkbox"
                         checked={includeStorage}
@@ -165,34 +165,34 @@ export function FirstPaymentCalculator({
 
                 {/* Desglose detallado */}
                 <div className="space-y-2">
-                  <h4 className="font-semibold text-gray-900 dark:text-white text-sm">Desglose del primer pago</h4>
+                  <h4 className="font-semibold text-white:text-white text-sm">Desglose del primer pago</h4>
 
                   <div className="space-y-1 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-gray-600 dark:text-gray-400">Renta del mes</span>
-                      <span className="font-medium text-gray-900 dark:text-white">
+                      <span className="text-gray-300:text-gray-400">Renta del mes</span>
+                      <span className="font-medium text-white:text-white">
                         ${originalPrice.toLocaleString('es-CL')}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600 dark:text-gray-400">Días adicionales</span>
-                      <span className="font-medium text-gray-900 dark:text-white">
+                      <span className="text-gray-300:text-gray-400">Días adicionales</span>
+                      <span className="font-medium text-white:text-white">
                         ${(originalPrice * (firstPaymentCalculation.daysChargedCount / firstPaymentCalculation.daysInMonth) - originalPrice).toLocaleString('es-CL')}
                       </span>
                     </div>
                     {includeParking && (
                       <div className="flex justify-between">
-                        <span className="text-gray-600 dark:text-gray-400">Estacionamiento</span>
-                        <span className="font-medium text-gray-900 dark:text-white">$50.000</span>
+                        <span className="text-gray-300:text-gray-400">Estacionamiento</span>
+                        <span className="font-medium text-white:text-white">$50.000</span>
                       </div>
                     )}
                     {includeStorage && (
                       <div className="flex justify-between">
-                        <span className="text-gray-600 dark:text-gray-400">Bodega</span>
-                        <span className="font-medium text-gray-900 dark:text-white">$30.000</span>
+                        <span className="text-gray-300:text-gray-400">Bodega</span>
+                        <span className="font-medium text-white:text-white">$30.000</span>
                       </div>
                     )}
-                    <div className="border-t border-gray-200 dark:border-gray-600 pt-1">
+                    <div className="border-t border-gray-700:border-gray-600 pt-1">
                       <div className="flex justify-between font-bold text-green-600 dark:text-green-400">
                         <span>Total primer pago</span>
                         <span>${firstPaymentCalculation.totalFirstPayment.toLocaleString('es-CL')}</span>
@@ -245,7 +245,7 @@ export function FirstPaymentCalculator({
         <div className="p-1.5 lg:p-2 bg-green-100 dark:bg-green-800 rounded-lg">
           <DollarSign className="w-4 h-4 lg:w-5 lg:h-5 text-green-600 dark:text-green-400" />
         </div>
-        <h3 className="font-semibold text-gray-900 dark:text-white text-sm lg:text-base">
+        <h3 className="font-semibold text-white:text-white text-sm lg:text-base">
           Cálculo del primer pago
         </h3>
       </div>
@@ -253,14 +253,14 @@ export function FirstPaymentCalculator({
       {/* Resumen destacado */}
       <div className="ml-8 lg:ml-11 mb-3 lg:mb-4">
         <div className="flex items-baseline gap-2">
-          <span className="text-xs lg:text-sm text-gray-600 dark:text-gray-400">
+          <span className="text-xs lg:text-sm text-gray-300:text-gray-400">
             Te mudas con
           </span>
           <span className="text-lg lg:text-xl font-bold text-green-600 dark:text-green-400">
             ${getSummaryPrice()}
           </span>
         </div>
-        <div className="text-xs lg:text-sm text-gray-500 dark:text-gray-400 mt-1">
+        <div className="text-xs lg:text-sm text-gray-400:text-gray-400 mt-1">
           el {formatDateForSummary(moveInDate)}
         </div>
       </div>
@@ -309,7 +309,7 @@ export function FirstPaymentCalculator({
                     onChange={(e) => onDateChange(new Date(e.target.value))}
                     min={new Date().toISOString().split('T')[0]}
                     max={new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}
-                    className="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full px-3 py-2 bg-gray-800:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-white:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   />
                 </div>
                 <p className="text-xs text-gray-500 mt-1">
@@ -324,13 +324,13 @@ export function FirstPaymentCalculator({
                 </label>
 
                 {/* Estacionamiento */}
-                <div className="flex items-center justify-between p-2 bg-white dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+                <div className="flex items-center justify-between p-2 bg-gray-800:bg-gray-700 rounded-lg border border-gray-700:border-gray-600">
                   <div className="flex items-center gap-2">
                     <Car className="w-4 h-4 text-orange-600" />
-                    <span className="text-sm text-gray-900 dark:text-white">Estacionamiento</span>
+                    <span className="text-sm text-white:text-white">Estacionamiento</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-gray-900 dark:text-white">$50.000</span>
+                    <span className="text-sm font-medium text-white:text-white">$50.000</span>
                     <input
                       type="checkbox"
                       checked={includeParking}
@@ -341,13 +341,13 @@ export function FirstPaymentCalculator({
                 </div>
 
                 {/* Bodega */}
-                <div className="flex items-center justify-between p-2 bg-white dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+                <div className="flex items-center justify-between p-2 bg-gray-800:bg-gray-700 rounded-lg border border-gray-700:border-gray-600">
                   <div className="flex items-center gap-2">
                     <Package className="w-4 h-4 text-purple-600" />
-                    <span className="text-sm text-gray-900 dark:text-white">Bodega</span>
+                    <span className="text-sm text-white:text-white">Bodega</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-gray-900 dark:text-white">$30.000</span>
+                    <span className="text-sm font-medium text-white:text-white">$30.000</span>
                     <input
                       type="checkbox"
                       checked={includeStorage}
@@ -361,8 +361,8 @@ export function FirstPaymentCalculator({
               {/* Detalle del cálculo */}
               <div className="space-y-2">
                 <div className="flex justify-between items-center text-sm">
-                  <span className="text-gray-600 dark:text-gray-400">Arriendo prorrateado:</span>
-                  <span className="font-medium text-gray-900 dark:text-white">
+                  <span className="text-gray-300:text-gray-400">Arriendo prorrateado:</span>
+                  <span className="font-medium text-white:text-white">
                     ${firstPaymentCalculation.netRentStorage.toLocaleString('es-CL')}
                   </span>
                 </div>
@@ -376,7 +376,7 @@ export function FirstPaymentCalculator({
                 </div>
                 {includeParking && (
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-600 dark:text-gray-400">Estacionamiento:</span>
+                    <span className="text-gray-300:text-gray-400">Estacionamiento:</span>
                     <span className="font-medium text-orange-600">
                       ${firstPaymentCalculation.totalParking.toLocaleString('es-CL')}
                     </span>
@@ -384,33 +384,33 @@ export function FirstPaymentCalculator({
                 )}
                 {includeStorage && (
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-600 dark:text-gray-400">Bodega:</span>
+                    <span className="text-gray-300:text-gray-400">Bodega:</span>
                     <span className="font-medium text-purple-600">
                       ${firstPaymentCalculation.totalStorage.toLocaleString('es-CL')}
                     </span>
                   </div>
                 )}
                 <div className="flex justify-between items-center text-sm">
-                  <span className="text-gray-600 dark:text-gray-400">Gastos comunes:</span>
-                  <span className="font-medium text-gray-900 dark:text-white">
+                  <span className="text-gray-300:text-gray-400">Gastos comunes:</span>
+                  <span className="font-medium text-white:text-white">
                     ${firstPaymentCalculation.proratedGC.toLocaleString('es-CL')}
                   </span>
                 </div>
                 <div className="flex justify-between items-center text-sm">
-                  <span className="text-gray-600 dark:text-gray-400">Garantía inicial (33%):</span>
-                  <span className="font-medium text-gray-900 dark:text-white">
+                  <span className="text-gray-300:text-gray-400">Garantía inicial (33%):</span>
+                  <span className="font-medium text-white:text-white">
                     ${firstPaymentCalculation.initialDeposit.toLocaleString('es-CL')}
                   </span>
                 </div>
                 <div className="flex justify-between items-center text-sm">
-                  <span className="text-gray-600 dark:text-gray-400">Comisión corretaje:</span>
+                  <span className="text-gray-300:text-gray-400">Comisión corretaje:</span>
                   <span className="font-medium text-green-600">
                     ${firstPaymentCalculation.commissionToPay.toLocaleString('es-CL')}
                   </span>
                 </div>
-                <div className="border-t border-gray-200 dark:border-gray-600 pt-2">
+                <div className="border-t border-gray-700:border-gray-600 pt-2">
                   <div className="flex justify-between items-center">
-                    <span className="font-semibold text-gray-900 dark:text-white">Total primer pago:</span>
+                    <span className="font-semibold text-white:text-white">Total primer pago:</span>
                     <span className="text-lg font-bold text-green-600">
                       ${firstPaymentCalculation.totalFirstPayment.toLocaleString('es-CL')}
                     </span>
@@ -453,4 +453,9 @@ export function FirstPaymentCalculator({
     </div>
   );
 }
+
+
+
+
+
 

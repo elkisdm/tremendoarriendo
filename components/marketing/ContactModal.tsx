@@ -319,7 +319,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
       <MotionWrapper direction="up" delay={0.1}>
         <motion.div 
           ref={modalRef}
-          className="relative w-full max-w-md bg-white dark:bg-gray-900 rounded-3xl shadow-2xl ring-1 ring-gray-200 dark:ring-gray-700 overflow-hidden max-h-[90vh] flex flex-col"
+          className="relative w-full max-w-md bg-gray-800:bg-gray-900 rounded-3xl shadow-2xl ring-1 ring-gray-200 dark:ring-gray-700 overflow-hidden max-h-[90vh] flex flex-col"
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
@@ -464,10 +464,10 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4, delay: 0.3 }}
                   >
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                    <h3 className="text-lg font-bold text-white:text-white mb-2">
                       ¡Perfecto! Te contactaremos pronto
                     </h3>
-                    <p className="text-gray-600 dark:text-gray-300 text-sm">
+                    <p className="text-gray-300:text-gray-300 text-sm">
                       Hemos recibido tu información y nos pondremos en contacto contigo por {formData.contactMethod === 'whatsapp' ? 'WhatsApp' : formData.contactMethod === 'call' ? 'teléfono' : 'email'}.
                     </p>
                   </motion.div>
@@ -514,7 +514,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4, delay: 0.1 }}
                   >
-                    <label htmlFor="name" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+                    <label htmlFor="name" className="block text-sm font-semibold text-white:text-white mb-2">
                       Nombre completo *
                     </label>
                     <motion.input
@@ -523,7 +523,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                       type="text"
                       value={formData.name}
                       onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                      className="w-full rounded-xl px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all"
+                      className="w-full rounded-xl px-4 py-3 bg-gray-900:bg-gray-800 border border-gray-700:border-gray-700 text-white:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all"
                       placeholder="Tu nombre completo"
                       required
                       disabled={isLoading}
@@ -538,7 +538,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4, delay: 0.2 }}
                   >
-                    <label htmlFor="email" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+                    <label htmlFor="email" className="block text-sm font-semibold text-white:text-white mb-2">
                       Email *
                     </label>
                     <motion.input
@@ -546,7 +546,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                       type="email"
                       value={formData.email}
                       onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                      className="w-full rounded-xl px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all"
+                      className="w-full rounded-xl px-4 py-3 bg-gray-900:bg-gray-800 border border-gray-700:border-gray-700 text-white:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all"
                       placeholder="tu@email.com"
                       required
                       disabled={isLoading}
@@ -561,7 +561,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4, delay: 0.3 }}
                   >
-                    <label htmlFor="phone" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+                    <label htmlFor="phone" className="block text-sm font-semibold text-white:text-white mb-2">
                       Teléfono *
                     </label>
                     <motion.input
@@ -569,7 +569,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                       type="tel"
                       value={formData.phone}
                       onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                      className="w-full rounded-xl px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all"
+                      className="w-full rounded-xl px-4 py-3 bg-gray-900:bg-gray-800 border border-gray-700:border-gray-700 text-white:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all"
                       placeholder="+56912345678"
                       required
                       disabled={isLoading}
@@ -647,7 +647,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4, delay: 0.1 }}
                   >
-                    <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-3">
+                    <label className="block text-sm font-semibold text-white:text-white mb-3">
                       ¿Cómo prefieres que te contactemos?
                     </label>
                     <div className="space-y-2">
@@ -659,7 +659,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                           className={`w-full p-3 rounded-xl border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 relative overflow-hidden group ${
                             formData.contactMethod === method.id
                               ? `${method.bgColor} ${method.borderColor} border-2 shadow-md`
-                              : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 bg-white dark:bg-gray-800'
+                              : 'border-gray-700:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 bg-gray-800:bg-gray-800'
                           }`}
                           whileHover={{ scale: 1.02, y: -1 }}
                           whileTap={{ scale: 0.98 }}
@@ -685,10 +685,10 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                               {method.icon}
                             </motion.div>
                             <div className="flex-1 text-left">
-                              <div className={`font-medium ${formData.contactMethod === method.id ? method.textColor : 'text-gray-900 dark:text-white'}`}>
+                              <div className={`font-medium ${formData.contactMethod === method.id ? method.textColor : 'text-white:text-white'}`}>
                                 {method.label}
                               </div>
-                              <div className="text-xs text-gray-500 dark:text-gray-400">
+                              <div className="text-xs text-gray-400:text-gray-400">
                                 {method.description}
                               </div>
                             </div>
@@ -793,7 +793,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
 
                   {/* Texto de confianza */}
                   <motion.p 
-                    className="text-center text-xs text-gray-500 dark:text-gray-400"
+                    className="text-center text-xs text-gray-400:text-gray-400"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.4, delay: 0.6 }}

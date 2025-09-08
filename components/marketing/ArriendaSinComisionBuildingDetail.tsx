@@ -328,7 +328,7 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
   const lastReservation = Math.floor(Math.random() * 60) + 5; // minutos
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+    <div className="min-h-screen bg-bg">
       {/* Banner de urgencia optimizado y centrado */}
       <AnimatePresence>
         {showUrgencyBanner && (
@@ -402,7 +402,7 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
             <div className="order-1 lg:order-2">
               {/* Galería con protagonismo */}
               <motion.div
-                className="relative bg-gray-50 dark:bg-gray-700 rounded-lg overflow-hidden"
+                className="relative bg-gray-900:bg-gray-700 rounded-lg overflow-hidden"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.2, duration: 0.6 }}
@@ -456,7 +456,7 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
 
                   {/* Precio destacado - POSICIÓN ESTRATÉGICA PARA CONVERSIÓN */}
                   <motion.div
-                    className="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600"
+                    className="mt-6 p-4 bg-gray-900:bg-gray-700 rounded-lg border border-gray-700:border-gray-600"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
@@ -527,9 +527,9 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
                         <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
                           <Home className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                         </div>
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Elige tu tipología ideal</h3>
+                        <h3 className="text-lg font-semibold text-white:text-white">Elige tu tipología ideal</h3>
                       </div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                      <p className="text-sm text-gray-300:text-gray-400">
                         Selecciona la que mejor se adapte a tu estilo de vida
                       </p>
                     </div>
@@ -545,7 +545,7 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
                         return (
                           <motion.div
                             key={typology}
-                            className="group relative bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 transition-all duration-300 cursor-pointer overflow-hidden hover:bg-gray-100 dark:hover:bg-gray-600"
+                            className="group relative bg-gray-900:bg-gray-700 rounded-lg border border-gray-700:border-gray-600 transition-all duration-300 cursor-pointer overflow-hidden hover:bg-gray-800:hover:bg-gray-600"
                             whileHover={{
                               scale: 1.02,
                               y: -2,
@@ -565,8 +565,8 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
                                   <Home className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                                 </div>
                                 <div>
-                                  <h4 className="font-semibold text-gray-900 dark:text-white">{formatTypologyLabel(typology)}</h4>
-                                  <p className="text-xs text-gray-600 dark:text-gray-400">
+                                  <h4 className="font-semibold text-white:text-white">{formatTypologyLabel(typology)}</h4>
+                                  <p className="text-xs text-gray-300:text-gray-400">
                                     {units.length} unidad{units.length !== 1 ? 'es' : ''} disponible{units.length !== 1 ? 's' : ''}
                                   </p>
                                 </div>
@@ -574,15 +574,15 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
 
                               {/* Información clave */}
                               <div className="space-y-3">
-                                <div className="flex justify-between items-center p-3 bg-white dark:bg-gray-800 rounded-lg">
-                                  <span className="text-sm text-gray-600 dark:text-gray-400">Precio desde:</span>
+                                <div className="flex justify-between items-center p-3 bg-gray-800:bg-gray-800 rounded-lg">
+                                  <span className="text-sm text-gray-300:text-gray-400">Precio desde:</span>
                                   <span className="text-lg font-bold text-blue-600 dark:text-blue-400">
                                     {formatPrice(minPrice)}
                                   </span>
                                 </div>
-                                <div className="flex justify-between items-center p-3 bg-white dark:bg-gray-800 rounded-lg">
-                                  <span className="text-sm text-gray-600 dark:text-gray-400">Superficie:</span>
-                                  <span className="font-semibold text-gray-900 dark:text-white">
+                                <div className="flex justify-between items-center p-3 bg-gray-800:bg-gray-800 rounded-lg">
+                                  <span className="text-sm text-gray-300:text-gray-400">Superficie:</span>
+                                  <span className="font-semibold text-white:text-white">
                                     {minM2}-{maxM2} m²
                                   </span>
                                 </div>
@@ -618,9 +618,9 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
                         <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center">
                           <Building2 className="w-4 h-4 text-purple-600 dark:text-purple-400" />
                         </div>
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Comodidades del edificio</h3>
+                        <h3 className="text-lg font-semibold text-white:text-white">Comodidades del edificio</h3>
                       </div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                      <p className="text-sm text-gray-300:text-gray-400">
                         Descubre todas las amenidades disponibles
                       </p>
                     </div>
@@ -643,7 +643,7 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
                           if (lowerAmenity.includes('lounge') || lowerAmenity.includes('salón')) return <Coffee className="w-4 h-4 text-amber-600 dark:text-amber-400" />;
                           if (lowerAmenity.includes('transporte') || lowerAmenity.includes('cercano')) return <Car className="w-4 h-4 text-green-600 dark:text-green-400" />;
                           if (lowerAmenity.includes('conserjería') || lowerAmenity.includes('concierge')) return <Users className="w-4 h-4 text-blue-600 dark:text-blue-400" />;
-                          if (lowerAmenity.includes('ascensor') || lowerAmenity.includes('elevador')) return <ChevronUp className="w-4 h-4 text-gray-600 dark:text-gray-400" />;
+                          if (lowerAmenity.includes('ascensor') || lowerAmenity.includes('elevador')) return <ChevronUp className="w-4 h-4 text-gray-300:text-gray-400" />;
                           if (lowerAmenity.includes('comercio') || lowerAmenity.includes('tienda')) return <ShoppingCart className="w-4 h-4 text-orange-600 dark:text-orange-400" />;
                           return <CheckCircle className="w-4 h-4 text-green-500" />;
                         };
@@ -654,12 +654,12 @@ export default function ArriendaSinComisionBuildingDetail({ building }: Arrienda
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.6 + index * 0.1 }}
-                            className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+                            className="flex items-center gap-3 p-3 bg-gray-900:bg-gray-700 rounded-lg hover:bg-gray-800:hover:bg-gray-600 transition-colors"
                           >
-                            <div className="w-8 h-8 bg-white dark:bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <div className="w-8 h-8 bg-gray-800:bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0">
                               {getAmenityIcon(amenity)}
                             </div>
-                            <span className="text-sm text-gray-900 dark:text-white font-medium">{amenity}</span>
+                            <span className="text-sm text-white:text-white font-medium">{amenity}</span>
                           </motion.div>
                         );
                       })}

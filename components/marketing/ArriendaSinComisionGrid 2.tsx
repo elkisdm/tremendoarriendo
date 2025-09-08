@@ -26,13 +26,13 @@ export default function ArriendaSinComisionGrid({ initialBuildings }: ArriendaSi
     try {
       setLoading(true);
       setError(null);
-      
+
       // Usar solo los datos mock de Home Amengual
       const mockBuildings = LANDING_BUILDINGS_MOCK;
-      
+
       // Simular delay de red
       await new Promise(resolve => setTimeout(resolve, 500));
-      
+
       setBuildings(mockBuildings);
     } catch (err) {
       console.error("Error fetching buildings:", err);
@@ -44,10 +44,10 @@ export default function ArriendaSinComisionGrid({ initialBuildings }: ArriendaSi
 
   if (loading) {
     return (
-      <section className="py-16 bg-gradient-to-b from-background to-muted/20">
+      <section className="py-16 bg-gradient-to-b from-bg to-surface/20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <motion.h2 
+            <motion.h2
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="text-3xl md:text-4xl font-bold mb-4"
@@ -57,7 +57,7 @@ export default function ArriendaSinComisionGrid({ initialBuildings }: ArriendaSi
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="bg-white dark:bg-gray-800 rounded-2xl p-6 animate-pulse">
+              <div key={i} className="bg-gray-800:bg-gray-800 rounded-2xl p-6 animate-pulse">
                 <div className="h-48 bg-gray-200 dark:bg-gray-700 rounded-xl mb-4"></div>
                 <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
                 <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded mb-4"></div>
@@ -72,7 +72,7 @@ export default function ArriendaSinComisionGrid({ initialBuildings }: ArriendaSi
 
   if (error) {
     return (
-      <section className="py-16 bg-gradient-to-b from-background to-muted/20">
+      <section className="py-16 bg-gradient-to-b from-bg to-surface/20">
         <div className="container mx-auto px-4 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -98,10 +98,10 @@ export default function ArriendaSinComisionGrid({ initialBuildings }: ArriendaSi
   const total = buildings.length;
 
   return (
-    <section className="py-16 bg-gradient-to-b from-background to-muted/20" id="buildings-grid">
+    <section className="py-16 bg-gradient-to-b from-bg to-surface/20" id="buildings-grid">
       <div className="container mx-auto px-4">
         {/* Header con información */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
@@ -112,7 +112,7 @@ export default function ArriendaSinComisionGrid({ initialBuildings }: ArriendaSi
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Cada espacio está diseñado para que te sientas como en casa desde el primer día
           </p>
-          
+
           {/* Badge destacado */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
@@ -126,7 +126,7 @@ export default function ArriendaSinComisionGrid({ initialBuildings }: ArriendaSi
         </motion.div>
 
         {/* Grid de edificios */}
-        <LazyBuildingsGrid 
+        <LazyBuildingsGrid
           initialBuildings={buildings}
           hasMore={false} // Solo tenemos 1 edificio mock
           total={total}

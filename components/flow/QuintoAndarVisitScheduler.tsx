@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import * as React from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Calendar,
@@ -26,8 +27,8 @@ import {
     Smartphone,
     Download
 } from 'lucide-react';
-import { useVisitScheduler } from '@/hooks/useVisitScheduler';
-import { DaySlot, TimeSlot, ContactData } from '@/types/visit';
+import { useVisitScheduler } from '../../hooks/useVisitScheduler';
+import { DaySlot, TimeSlot, ContactData } from '../../types/visit';
 import { PremiumFeaturesStep } from './PremiumFeaturesStep';
 
 interface QuintoAndarVisitSchedulerProps {
@@ -117,6 +118,11 @@ export function QuintoAndarVisitScheduler({
         }
     }, [isOpen, fetchAvailability]);
 
+    // Debug: Log available days when they change
+    useEffect(() => {
+        console.log('📅 Available days updated:', availableDays);
+    }, [availableDays]);
+
     // Validación en tiempo real
     useEffect(() => {
         const validateForm = () => {
@@ -186,7 +192,11 @@ export function QuintoAndarVisitScheduler({
 
     // Manejar selección de fecha
     const handleDateSelect = (day: DaySlot) => {
-        if (!day.available) return;
+        console.log('🗓️ Date selected:', { day, available: day.available });
+        if (!day.available) {
+            console.log('❌ Day not available, ignoring selection');
+            return;
+        }
         selectDateTime(day.date, '');
         clearError();
     };
@@ -393,10 +403,10 @@ export function QuintoAndarVisitScheduler({
                                 <div
                                     key={stepNumber}
                                     className={`flex-1 h-2 rounded-full ${stepNumber <= stepInfo.number
-                                            ? 'bg-blue-600'
-                                            : isDarkMode
-                                                ? 'bg-gray-700'
-                                                : 'bg-gray-200'
+                                        ? 'bg-blue-600'
+                                        : isDarkMode
+                                            ? 'bg-gray-700'
+                                            : 'bg-gray-200'
                                         }`}
                                 />
                             ))}
@@ -432,14 +442,14 @@ export function QuintoAndarVisitScheduler({
                                                 onClick={() => handleDateSelect(day)}
                                                 disabled={!day.available}
                                                 className={`p-3 rounded-xl text-center transition-colors ${selectedDate === day.date
-                                                        ? 'bg-blue-600 text-white'
-                                                        : day.available
-                                                            ? isDarkMode
-                                                                ? 'bg-gray-800 text-white hover:bg-gray-700'
-                                                                : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
-                                                            : isDarkMode
-                                                                ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
-                                                                : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                                    ? 'bg-blue-600 text-white'
+                                                    : day.available
+                                                        ? isDarkMode
+                                                            ? 'bg-gray-800 text-white hover:bg-gray-700'
+                                                            : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                                                        : isDarkMode
+                                                            ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
+                                                            : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                                                     }`}
                                             >
                                                 <div className="text-xs font-medium">{day.day}</div>
@@ -468,14 +478,14 @@ export function QuintoAndarVisitScheduler({
                                                     onClick={() => handleTimeSelect(timeSlot)}
                                                     disabled={!timeSlot.available}
                                                     className={`p-3 rounded-xl text-center transition-colors ${selectedTime === timeSlot.time
-                                                            ? 'bg-green-600 text-white'
-                                                            : timeSlot.available
-                                                                ? isDarkMode
-                                                                    ? 'bg-gray-800 text-white hover:bg-gray-700'
-                                                                    : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
-                                                                : isDarkMode
-                                                                    ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
-                                                                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                                        ? 'bg-green-600 text-white'
+                                                        : timeSlot.available
+                                                            ? isDarkMode
+                                                                ? 'bg-gray-800 text-white hover:bg-gray-700'
+                                                                : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                                                            : isDarkMode
+                                                                ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
+                                                                : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                                                         }`}
                                                 >
                                                     {timeSlot.time}
@@ -519,12 +529,12 @@ export function QuintoAndarVisitScheduler({
                                                     value={contactData.name}
                                                     onChange={(e) => setContactData(prev => ({ ...prev, name: e.target.value }))}
                                                     className={`w-full p-3 rounded-xl border-2 transition-colors ${fieldValidation.name.isValid
-                                                            ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
-                                                            : fieldValidation.name.message
-                                                                ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
-                                                                : isDarkMode
-                                                                    ? 'border-gray-600 bg-gray-800 text-white focus:border-blue-500'
-                                                                    : 'border-gray-300 bg-white text-gray-900 focus:border-blue-500'
+                                                        ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
+                                                        : fieldValidation.name.message
+                                                            ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
+                                                            : isDarkMode
+                                                                ? 'border-gray-600 bg-gray-800 text-white focus:border-blue-500'
+                                                                : 'border-gray-300 bg-white text-gray-900 focus:border-blue-500'
                                                         }`}
                                                     placeholder="Tu nombre completo"
                                                 />
@@ -551,12 +561,12 @@ export function QuintoAndarVisitScheduler({
                                                     value={contactData.email}
                                                     onChange={(e) => setContactData(prev => ({ ...prev, email: e.target.value }))}
                                                     className={`w-full p-3 rounded-xl border-2 transition-colors ${fieldValidation.email.isValid
-                                                            ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
-                                                            : fieldValidation.email.message
-                                                                ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
-                                                                : isDarkMode
-                                                                    ? 'border-gray-600 bg-gray-800 text-white focus:border-blue-500'
-                                                                    : 'border-gray-300 bg-white text-gray-900 focus:border-blue-500'
+                                                        ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
+                                                        : fieldValidation.email.message
+                                                            ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
+                                                            : isDarkMode
+                                                                ? 'border-gray-600 bg-gray-800 text-white focus:border-blue-500'
+                                                                : 'border-gray-300 bg-white text-gray-900 focus:border-blue-500'
                                                         }`}
                                                     placeholder="tu@email.com"
                                                 />
@@ -583,12 +593,12 @@ export function QuintoAndarVisitScheduler({
                                                     value={contactData.rut}
                                                     onChange={(e) => setContactData(prev => ({ ...prev, rut: e.target.value }))}
                                                     className={`w-full p-3 rounded-xl border-2 transition-colors ${fieldValidation.rut.isValid
-                                                            ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
-                                                            : fieldValidation.rut.message
-                                                                ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
-                                                                : isDarkMode
-                                                                    ? 'border-gray-600 bg-gray-800 text-white focus:border-blue-500'
-                                                                    : 'border-gray-300 bg-white text-gray-900 focus:border-blue-500'
+                                                        ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
+                                                        : fieldValidation.rut.message
+                                                            ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
+                                                            : isDarkMode
+                                                                ? 'border-gray-600 bg-gray-800 text-white focus:border-blue-500'
+                                                                : 'border-gray-300 bg-white text-gray-900 focus:border-blue-500'
                                                         }`}
                                                     placeholder="12.345.678-9"
                                                 />
@@ -615,12 +625,12 @@ export function QuintoAndarVisitScheduler({
                                                     value={contactData.phone}
                                                     onChange={(e) => setContactData(prev => ({ ...prev, phone: e.target.value }))}
                                                     className={`w-full p-3 rounded-xl border-2 transition-colors ${fieldValidation.phone.isValid
-                                                            ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
-                                                            : fieldValidation.phone.message
-                                                                ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
-                                                                : isDarkMode
-                                                                    ? 'border-gray-600 bg-gray-800 text-white focus:border-blue-500'
-                                                                    : 'border-gray-300 bg-white text-gray-900 focus:border-blue-500'
+                                                        ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
+                                                        : fieldValidation.phone.message
+                                                            ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
+                                                            : isDarkMode
+                                                                ? 'border-gray-600 bg-gray-800 text-white focus:border-blue-500'
+                                                                : 'border-gray-300 bg-white text-gray-900 focus:border-blue-500'
                                                         }`}
                                                     placeholder="+56 9 1234 5678"
                                                 />
@@ -643,8 +653,8 @@ export function QuintoAndarVisitScheduler({
                                             type="button"
                                             onClick={handleBack}
                                             className={`w-full py-3 px-6 rounded-xl font-semibold transition-colors ${isDarkMode
-                                                    ? 'bg-gray-800 text-white hover:bg-gray-700'
-                                                    : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                                                ? 'bg-gray-800 text-white hover:bg-gray-700'
+                                                : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
                                                 }`}
                                         >
                                             ← Atrás

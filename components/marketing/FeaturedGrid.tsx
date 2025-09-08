@@ -18,15 +18,15 @@ async function fetchFeaturedBuildings(): Promise<FeaturedBuildingItem[]> {
     // URL absoluta para desarrollo
     const url = 'http://localhost:3000/api/landing/featured';
     // console.log('🌐 FeaturedGrid: Fetching from:', url);
-    
+
     const response = await fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
       // Cache durante 5 minutos en desarrollo, 1 hora en producción
-      next: { 
-        revalidate: process.env.NODE_ENV === 'production' ? 3600 : 300 
+      next: {
+        revalidate: process.env.NODE_ENV === 'production' ? 3600 : 300
       }
     });
 
@@ -39,7 +39,7 @@ async function fetchFeaturedBuildings(): Promise<FeaturedBuildingItem[]> {
 
     const data = await response.json();
     // console.log('📦 FeaturedGrid: Response data:', data);
-    
+
     return data.buildings || [];
   } catch (error) {
     // console.error('Error in fetchFeaturedBuildings:', error);
@@ -87,7 +87,7 @@ export default async function FeaturedGrid(_: FeaturedGridProps) {
       {/* Background gradient */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-gradient-to-b from-background via-background to-muted/20"
+        className="absolute inset-0 -z-10 bg-gradient-to-b from-bg via-bg to-surface/20"
       />
 
       <div className="mx-auto max-w-6xl">
@@ -117,7 +117,7 @@ export default async function FeaturedGrid(_: FeaturedGridProps) {
                   className="object-cover transition-transform duration-300 group-hover:scale-105"
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 />
-                
+
                 {/* Badge de disponibilidad */}
                 {building.has_availability && (
                   <div className="absolute top-3 left-3">

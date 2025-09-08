@@ -1,8 +1,9 @@
-import type { Building } from "@types";
+import type { LegacyBuilding } from "@types";
 
-export const MOCK_BUILDINGS: Building[] = [
+export const MOCK_BUILDINGS: LegacyBuilding[] = [
   {
     id: "bldg-001",
+    slug: "edificio-mirador-la-florida",
     name: "Edificio Mirador de La Florida",
     comuna: "La Florida",
     address: "Av. Vicuña Mackenna 6800",
@@ -19,6 +20,7 @@ export const MOCK_BUILDINGS: Building[] = [
   },
   {
     id: "bldg-002",
+    slug: "parque-nunoa-residence",
     name: "Parque Ñuñoa Residence",
     comuna: "Ñuñoa",
     address: "Irarrázaval 2400",
@@ -34,6 +36,7 @@ export const MOCK_BUILDINGS: Building[] = [
   },
   {
     id: "bldg-003",
+    slug: "sky-alto-las-condes",
     name: "Sky Alto Las Condes",
     comuna: "Las Condes",
     address: "Apoquindo 5400",

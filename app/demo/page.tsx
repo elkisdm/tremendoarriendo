@@ -1,10 +1,11 @@
 import { BuildingCardV2 } from '@components/ui/BuildingCardV2';
-import { Building } from '@types';
+import { LegacyBuilding } from '@types';
 // import { PromotionType } from '@schemas/models';
 
-const demoBuildings: Building[] = [
+const demoBuildings: LegacyBuilding[] = [
   {
     id: 'demo-1',
+    slug: 'mirador-las-condes',
     name: 'Mirador Las Condes',
     comuna: 'Las Condes',
     address: 'Av. Las Condes 12345',
@@ -53,6 +54,7 @@ const demoBuildings: Building[] = [
   },
   {
     id: 'demo-2',
+    slug: 'nunoa-central',
     name: 'Nunoa Central',
     comuna: 'Ñuñoa',
     address: 'Av. Grecia 6789',
@@ -87,6 +89,7 @@ const demoBuildings: Building[] = [
   },
   {
     id: 'demo-3',
+    slug: 'las-condes-premium',
     name: 'Las Condes Premium',
     comuna: 'Las Condes',
     address: 'Av. Apoquindo 11111',
@@ -126,6 +129,7 @@ const demoBuildings: Building[] = [
   },
   {
     id: 'demo-4',
+    slug: 'nunoa-residencial',
     name: 'Ñuñoa Residencial',
     comuna: 'Ñuñoa',
     address: 'Av. Irarrázaval 22222',
@@ -170,7 +174,7 @@ export default function DemoPage() {
           <p className="text-[var(--subtext)] mb-6">
             Vista previa del componente BuildingCardV2 implementado en el Sprint 1
           </p>
-          
+
           <div className="bg-[var(--card)] rounded-2xl p-6 mb-8">
             <h2 className="text-xl font-semibold text-[var(--text)] mb-4">
               Características Implementadas

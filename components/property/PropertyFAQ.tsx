@@ -81,13 +81,13 @@ export function PropertyFAQ({ building, variant = "catalog", className = "" }: P
     const categories = Object.keys(faqByCategory);
 
     return (
-        <section className={`bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 lg:p-8 ${className}`}>
+        <section className={`bg-gray-800:bg-gray-800 rounded-2xl shadow-lg border border-gray-700:border-gray-700 p-6 lg:p-8 ${className}`}>
             {/* Header */}
             <div className="text-center mb-8">
-                <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                <h2 className="text-2xl lg:text-3xl font-bold text-white:text-white mb-4">
                     Preguntas frecuentes
                 </h2>
-                <p className="text-base lg:text-lg text-gray-600 dark:text-gray-300">
+                <p className="text-base lg:text-lg text-gray-300:text-gray-300">
                     Resolvemos las dudas más comunes sobre esta propiedad
                 </p>
             </div>
@@ -96,7 +96,7 @@ export function PropertyFAQ({ building, variant = "catalog", className = "" }: P
             <div className="space-y-8">
                 {categories.map((category, categoryIndex) => (
                     <div key={category} className="space-y-4">
-                        <h3 className="text-lg lg:text-xl font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2">
+                        <h3 className="text-lg lg:text-xl font-semibold text-white:text-white border-b border-gray-700:border-gray-700 pb-2">
                             {category}
                         </h3>
 
@@ -106,11 +106,11 @@ export function PropertyFAQ({ building, variant = "catalog", className = "" }: P
                                 const isOpen = openItems.has(globalIndex);
 
                                 return (
-                                    <div key={globalIndex} className="bg-gray-50 dark:bg-gray-700 rounded-xl overflow-hidden">
+                                    <div key={globalIndex} className="bg-gray-900:bg-gray-700 rounded-xl overflow-hidden">
                                         {/* Pregunta clickeable */}
                                         <button
                                             onClick={() => toggleItem(globalIndex)}
-                                            className="w-full px-4 py-4 text-left flex items-center justify-between hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                                            className="w-full px-4 py-4 text-left flex items-center justify-between hover:bg-gray-800:hover:bg-gray-600 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                                             aria-expanded={isOpen}
                                             aria-controls={`faq-answer-${globalIndex}`}
                                         >
@@ -118,14 +118,14 @@ export function PropertyFAQ({ building, variant = "catalog", className = "" }: P
                                                 <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
                                                     <item.icon className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                                                 </div>
-                                                <span className="font-medium text-gray-900 dark:text-white text-sm lg:text-base">
+                                                <span className="font-medium text-white:text-white text-sm lg:text-base">
                                                     {item.question}
                                                 </span>
                                             </div>
                                             {isOpen ? (
-                                                <ChevronUp className="w-5 h-5 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+                                                <ChevronUp className="w-5 h-5 text-gray-400:text-gray-400 flex-shrink-0" />
                                             ) : (
-                                                <ChevronDown className="w-5 h-5 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+                                                <ChevronDown className="w-5 h-5 text-gray-400:text-gray-400 flex-shrink-0" />
                                             )}
                                         </button>
 
@@ -141,7 +141,7 @@ export function PropertyFAQ({ building, variant = "catalog", className = "" }: P
                                                     className="overflow-hidden"
                                                 >
                                                     <div className="px-4 pb-4">
-                                                        <p className="text-sm lg:text-base text-gray-600 dark:text-gray-300 leading-relaxed">
+                                                        <p className="text-sm lg:text-base text-gray-300:text-gray-300 leading-relaxed">
                                                             {item.answer}
                                                         </p>
                                                     </div>
@@ -159,10 +159,10 @@ export function PropertyFAQ({ building, variant = "catalog", className = "" }: P
             {/* CTA de contacto */}
             <div className="mt-8 text-center">
                 <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-6 border border-blue-200 dark:border-blue-700">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                    <h3 className="text-lg font-semibold text-white:text-white mb-2">
                         ¿Tienes más preguntas?
                     </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+                    <p className="text-sm text-gray-300:text-gray-300 mb-4">
                         Nuestro equipo está disponible para ayudarte con cualquier consulta
                     </p>
                     <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -170,7 +170,7 @@ export function PropertyFAQ({ building, variant = "catalog", className = "" }: P
                             <Phone className="w-4 h-4" />
                             Llamar ahora
                         </button>
-                        <button className="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-semibold px-6 py-3 rounded-xl transition-colors duration-200">
+                        <button className="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-white:text-white font-semibold px-6 py-3 rounded-xl transition-colors duration-200">
                             <Calendar className="w-4 h-4" />
                             Agendar visita
                         </button>

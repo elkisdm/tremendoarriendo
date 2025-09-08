@@ -139,7 +139,7 @@ export default function ArriendaSinComisionBuildingCard({ building }: ArriendaSi
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="group relative bg-white dark:bg-gray-900 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-800 w-full max-w-sm flex flex-col h-[750px]"
+      className="group relative bg-gray-800:bg-gray-900 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-800 w-full max-w-sm flex flex-col h-[750px]"
       role="article"
       aria-labelledby={`building-${building.id}-title`}
     >
@@ -310,7 +310,7 @@ export default function ArriendaSinComisionBuildingCard({ building }: ArriendaSi
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.1 }}
-            className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors"
+            className="text-lg font-bold text-white:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors"
           >
             <Link href={`/arrienda-sin-comision/${building.slug}`} className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
               {building.name}
@@ -322,7 +322,7 @@ export default function ArriendaSinComisionBuildingCard({ building }: ArriendaSi
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.15 }}
-            className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-1"
+            className="text-sm text-gray-300:text-gray-400 flex items-center gap-1"
           >
             <span role="img" aria-label="ubicación">📍</span> {building.address}, {building.comuna}
           </motion.p>
@@ -357,10 +357,10 @@ export default function ArriendaSinComisionBuildingCard({ building }: ArriendaSi
             transition={{ delay: 0.25 }}
             className="space-y-1"
           >
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-sm text-gray-300:text-gray-400">
               Arriendo mensual desde:
             </p>
-            <p className="text-xl font-bold text-gray-900 dark:text-white">
+            <p className="text-xl font-bold text-white:text-white">
               ${minPrice.toLocaleString('es-CL')} - ${maxPrice.toLocaleString('es-CL')}
             </p>
           </motion.div>
@@ -380,7 +380,7 @@ export default function ArriendaSinComisionBuildingCard({ building }: ArriendaSi
               {sortedTypologies.map((typology, index) => (
                 <div
                   key={typology.key}
-                  className="flex items-center justify-between p-2.5 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group cursor-pointer"
+                  className="flex items-center justify-between p-2.5 bg-gray-900:bg-gray-800 rounded-lg border border-gray-700:border-gray-700 hover:bg-gray-800:hover:bg-gray-700 transition-colors group cursor-pointer"
                   role="listitem"
                   tabIndex={0}
                   aria-label={`${typology.label}, ${typology.count} unidades disponibles`}
@@ -390,10 +390,10 @@ export default function ArriendaSinComisionBuildingCard({ building }: ArriendaSi
                       {getTypologyIcon(typology.label)}
                     </div>
                     <div className="min-w-0">
-                      <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                      <p className="text-sm font-medium text-white:text-white truncate">
                         {typology.label}
                       </p>
-                      <p className="text-xs text-gray-600 dark:text-gray-400">
+                      <p className="text-xs text-gray-300:text-gray-400">
                         {typology.count} disp.
                       </p>
                     </div>

@@ -151,6 +151,7 @@ export function useBuildingsPagination({
       // Convertir BuildingListItem a Building para el store
       const buildings = data.data.map(item => ({
         id: item.id,
+        slug: item.slug,
         name: item.name,
         comuna: item.comuna,
         address: item.address,
@@ -295,6 +296,7 @@ export function useBuildingsInfinite({
         // Convertir BuildingListItem a Building para el store
         const buildings = page.data.map(item => ({
           id: item.id,
+          slug: item.slug,
           name: item.name,
           comuna: item.comuna,
           address: item.address,

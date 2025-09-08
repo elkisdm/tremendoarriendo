@@ -36,10 +36,10 @@ export function PropertyHero({ building, variant = "catalog" }: PropertyHeroProp
         <section className="space-y-4 lg:space-y-6">
             {/* Título y ubicación con mejor jerarquía */}
             <div className="space-y-3">
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 dark:text-white leading-tight">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-white:text-white leading-tight">
                     {building.name}
                 </h1>
-                <div className="flex items-center gap-2 text-base lg:text-lg text-gray-600 dark:text-gray-400">
+                <div className="flex items-center gap-2 text-base lg:text-lg text-gray-300:text-gray-400">
                     <MapPin className="w-4 h-4 lg:w-5 lg:h-5 text-blue-600" />
                     <span className="font-medium">{building.comuna}</span>
                     <span className="text-gray-400">•</span>

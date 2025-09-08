@@ -32,16 +32,31 @@ export default {
         "accent-warning": "var(--accent-warning)",
         "accent-error": "var(--accent-error)",
       },
+      // Utilidades de tema unificadas
+      backgroundColor: {
+        "theme-bg": "var(--bg)",
+        "theme-surface": "var(--surface)",
+        "theme-card": "var(--card)",
+        "theme-muted": "var(--surface)",
+      },
+      textColor: {
+        "theme-text": "var(--text)",
+        "theme-secondary": "var(--text-secondary)",
+        "theme-muted": "var(--text-muted)",
+        "theme-accent": "var(--accent)",
+      },
+      borderColor: {
+        "theme-border": "var(--border)",
+        "theme-border-secondary": "var(--border-secondary)",
+        DEFAULT: "color-mix(in oklab, white 12%, transparent)",
+        ring: "var(--ring)",
+      },
       boxShadow: {
         glass: "0 1px 2px rgba(255,255,255,0.06), 0 8px 24px rgba(0,0,0,0.25)",
       },
       backdropBlur: {
         xs: "2px",
       },
-      borderColor: ({ theme }) => ({
-        DEFAULT: "color-mix(in oklab, white 12%, transparent)",
-        ring: theme("colors.ring"),
-      }),
     },
   },
   plugins: [

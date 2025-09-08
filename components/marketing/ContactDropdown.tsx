@@ -111,7 +111,7 @@ export function ContactDropdown() {
             className="absolute right-0 top-full mt-2 origin-top-right"
           >
             {/* Contenedor simplificado */}
-            <div className="relative flex flex-col items-end space-y-2 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-2 min-w-[160px]">
+            <div className="relative flex flex-col items-end space-y-2 bg-gray-800:bg-gray-800 rounded-xl shadow-lg border border-gray-700:border-gray-700 p-2 min-w-[160px]">
 
               {/* Opción WhatsApp */}
               <motion.button

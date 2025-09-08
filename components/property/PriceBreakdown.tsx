@@ -75,13 +75,13 @@ export function PriceBreakdown({
       </div>
 
       {/* Contenedor principal */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-4 space-y-4">
+      <div className="bg-gray-800:bg-gray-800 rounded-xl shadow-lg border border-gray-700:border-gray-700 p-4 space-y-4">
         {/* Título de la unidad */}
         <div className="text-center">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
+          <h2 className="text-xl font-bold text-white:text-white mb-1">
             Departamento {selectedUnit.id}
           </h2>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <p className="text-sm text-gray-300:text-gray-400">
             {unitDetails.tipologia} • Piso {unitDetails.piso}
           </p>
         </div>
@@ -89,48 +89,48 @@ export function PriceBreakdown({
         {/* Precio total mensual destacado */}
         <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl border border-blue-200 dark:border-blue-700 p-4">
           <div className="text-center">
-            <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+            <div className="text-sm text-gray-300:text-gray-400 mb-1">
               Total estimado / mes
             </div>
-            <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+            <div className="text-2xl font-bold text-white:text-white mb-1">
               ${precioTotalMensual.toLocaleString('es-CL')}
             </div>
-            <div className="text-xs text-gray-500 dark:text-gray-400">
+            <div className="text-xs text-gray-400:text-gray-400">
               Arriendo + Gastos comunes
             </div>
           </div>
         </div>
 
         {/* Tabla de desglose de precios */}
-        <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-3">
-          <h3 className="font-semibold text-gray-900 dark:text-white text-center mb-3 text-sm">
+        <div className="bg-gray-900:bg-gray-700 rounded-xl p-3">
+          <h3 className="font-semibold text-white:text-white text-center mb-3 text-sm">
             Desglose de costos
           </h3>
 
           <dl className="space-y-2">
             <div className="flex items-center justify-between">
-              <dt className="text-sm text-gray-600 dark:text-gray-400">Arriendo original</dt>
+              <dt className="text-sm text-gray-300:text-gray-400">Arriendo original</dt>
               <dd className="text-sm line-through text-gray-500">${originalPrice.toLocaleString('es-CL')}</dd>
             </div>
 
             <div className="flex items-center justify-between">
               <dt className="text-sm font-semibold text-green-600">50% OFF primer mes</dt>
-              <dd className="text-lg font-bold text-gray-900 dark:text-white">${discountPrice.toLocaleString('es-CL')}</dd>
+              <dd className="text-lg font-bold text-white:text-white">${discountPrice.toLocaleString('es-CL')}</dd>
             </div>
 
             <div className="flex items-center justify-between">
-              <dt className="text-sm text-gray-600 dark:text-gray-400">Gastos comunes</dt>
-              <dd className="text-sm font-medium text-gray-900 dark:text-white">${gastosComunes.toLocaleString('es-CL')}</dd>
+              <dt className="text-sm text-gray-300:text-gray-400">Gastos comunes</dt>
+              <dd className="text-sm font-medium text-white:text-white">${gastosComunes.toLocaleString('es-CL')}</dd>
             </div>
 
             <div className="flex items-center justify-between">
-              <dt className="text-sm text-gray-600 dark:text-gray-400">Ahorro primer mes</dt>
+              <dt className="text-sm text-gray-300:text-gray-400">Ahorro primer mes</dt>
               <dd className="text-sm font-semibold text-green-600">${ahorroPrimerMes.toLocaleString('es-CL')}</dd>
             </div>
 
-            <div className="flex items-center justify-between pt-2 border-t border-gray-200 dark:border-gray-600">
-              <dt className="text-sm font-semibold text-gray-900 dark:text-white">Total mensual</dt>
-              <dd className="text-lg font-bold text-gray-900 dark:text-white">${precioTotalMensual.toLocaleString('es-CL')}</dd>
+            <div className="flex items-center justify-between pt-2 border-t border-gray-700:border-gray-600">
+              <dt className="text-sm font-semibold text-white:text-white">Total mensual</dt>
+              <dd className="text-lg font-bold text-white:text-white">${precioTotalMensual.toLocaleString('es-CL')}</dd>
             </div>
           </dl>
         </div>
@@ -149,25 +149,25 @@ export function PriceBreakdown({
         </div>
 
         {/* Características principales */}
-        <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-3">
-          <h3 className="font-semibold text-gray-900 dark:text-white text-center mb-3 text-sm">
+        <div className="bg-gray-900:bg-gray-700 rounded-xl p-3">
+          <h3 className="font-semibold text-white:text-white text-center mb-3 text-sm">
             Características principales
           </h3>
           <div className="grid grid-cols-3 gap-3 text-center">
-            <div className="bg-white dark:bg-gray-600 rounded-lg p-2">
+            <div className="bg-gray-800:bg-gray-600 rounded-lg p-2">
               <Bed className="w-5 h-5 text-blue-600 mx-auto mb-1" />
-              <div className="text-sm font-semibold text-gray-900 dark:text-white">{unitDetails.dormitorios}</div>
-              <div className="text-xs text-gray-500 dark:text-gray-400">Dorm.</div>
+              <div className="text-sm font-semibold text-white:text-white">{unitDetails.dormitorios}</div>
+              <div className="text-xs text-gray-400:text-gray-400">Dorm.</div>
             </div>
-            <div className="bg-white dark:bg-gray-600 rounded-lg p-2">
+            <div className="bg-gray-800:bg-gray-600 rounded-lg p-2">
               <Bath className="w-5 h-5 text-blue-600 mx-auto mb-1" />
-              <div className="text-sm font-semibold text-gray-900 dark:text-white">{unitDetails.banos}</div>
-              <div className="text-xs text-gray-500 dark:text-gray-400">Baños</div>
+              <div className="text-sm font-semibold text-white:text-white">{unitDetails.banos}</div>
+              <div className="text-xs text-gray-400:text-gray-400">Baños</div>
             </div>
-            <div className="bg-white dark:bg-gray-600 rounded-lg p-2">
+            <div className="bg-gray-800:bg-gray-600 rounded-lg p-2">
               <Square className="w-5 h-5 text-blue-600 mx-auto mb-1" />
-              <div className="text-sm font-semibold text-gray-900 dark:text-white">{unitDetails.m2}</div>
-              <div className="text-xs text-gray-500 dark:text-gray-400">m²</div>
+              <div className="text-sm font-semibold text-white:text-white">{unitDetails.m2}</div>
+              <div className="text-xs text-gray-400:text-gray-400">m²</div>
             </div>
           </div>
         </div>
@@ -178,21 +178,21 @@ export function PriceBreakdown({
             <div className="p-2 bg-green-100 dark:bg-green-800 rounded-lg">
               <DollarSign className="w-5 h-5 text-green-600 dark:text-green-400" />
             </div>
-            <h3 className="font-semibold text-gray-900 dark:text-white">
+            <h3 className="font-semibold text-white:text-white">
               Cálculo del primer pago
             </h3>
           </div>
 
           <div className="ml-11 mb-4">
             <div className="flex items-baseline gap-2">
-              <span className="text-sm text-gray-600 dark:text-gray-400">
+              <span className="text-sm text-gray-300:text-gray-400">
                 Te mudas con
               </span>
               <span className="text-xl font-bold text-green-600 dark:text-green-400">
                 ${(originalPrice + gastosComunes).toLocaleString('es-CL')}
               </span>
             </div>
-            <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            <div className="text-sm text-gray-400:text-gray-400 mt-1">
               el {new Date().toLocaleDateString('es-CL', { day: 'numeric', month: 'short' })}
             </div>
           </div>
@@ -226,15 +226,15 @@ export function PriceBreakdown({
               >
                 <div className="mt-4 pt-4 border-t border-green-200 dark:border-green-700 space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600 dark:text-gray-400">Depósito</span>
+                    <span className="text-gray-300:text-gray-400">Depósito</span>
                     <span className="font-medium">${originalPrice.toLocaleString('es-CL')}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600 dark:text-gray-400">Primer mes</span>
+                    <span className="text-gray-300:text-gray-400">Primer mes</span>
                     <span className="font-medium">${discountPrice.toLocaleString('es-CL')}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600 dark:text-gray-400">Gastos comunes</span>
+                    <span className="text-gray-300:text-gray-400">Gastos comunes</span>
                     <span className="font-medium">${gastosComunes.toLocaleString('es-CL')}</span>
                   </div>
                   <div className="flex justify-between text-sm font-semibold pt-2 border-t border-green-200 dark:border-green-700">
@@ -260,7 +260,7 @@ export function PriceBreakdown({
           </button>
           <button
             onClick={onSendQuotation}
-            className="w-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white text-white font-semibold py-2.5 px-4 rounded-lg transition-colors duration-100 text-sm"
+            className="w-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-white:text-white text-white font-semibold py-2.5 px-4 rounded-lg transition-colors duration-100 text-sm"
             aria-label="Postular"
           >
             Postular

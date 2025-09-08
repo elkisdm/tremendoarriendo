@@ -462,7 +462,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+    <div className="min-h-screen bg-bg">
       {/* Banner de urgencia */}
       <AnimatePresence>
         {showUrgencyBanner && (
@@ -568,7 +568,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
             {/* COLUMNA IZQUIERDA - INFORMACIÓN PRINCIPAL INTEGRADA */}
             <div>
               {/* CONTENEDOR PRINCIPAL INTEGRADO - PRECIOS, PROMOCIONES Y CTAS */}
-              <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 space-y-5">
+              <div className="bg-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 space-y-5">
                 {/* UBICACIÓN */}
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -697,7 +697,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
             whileInView="visible"
             viewport={{ once: true, amount: 0.3 }}
           >
-            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+            <div className="bg-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Características principales</h3>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
                 {/* Dormitorios */}
@@ -967,7 +967,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
 
               {/* Tabs Estratégicos */}
               <section aria-label="Información detallada">
-                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <div className="bg-card rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
                   <div className="border-b border-gray-200 dark:border-gray-700">
                     <nav className="flex space-x-8 px-6">
                       {[
@@ -1003,49 +1003,49 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Terminaciones</h3>
                           </div>
                           <div className="space-y-3">
-                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                            <div className="flex items-center gap-3 p-3 bg-card rounded-lg">
                               <div className="w-8 h-8 bg-blue-50 dark:bg-blue-900/10 rounded-lg flex items-center justify-center">
                                 <Square className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                               </div>
                               <span className="text-sm text-gray-700 dark:text-gray-300">Ventanas: Termopanel en PVC</span>
                             </div>
-                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                            <div className="flex items-center gap-3 p-3 bg-card rounded-lg">
                               <div className="w-8 h-8 bg-blue-50 dark:bg-blue-900/10 rounded-lg flex items-center justify-center">
                                 <Droplets className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                               </div>
                               <span className="text-sm text-gray-700 dark:text-gray-300">Agua caliente: Central</span>
                             </div>
-                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                            <div className="flex items-center gap-3 p-3 bg-card rounded-lg">
                               <div className="w-8 h-8 bg-blue-50 dark:bg-blue-900/10 rounded-lg flex items-center justify-center">
                                 <Square className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                               </div>
                               <span className="text-sm text-gray-700 dark:text-gray-300">Cocina: Encimera Vitrocerámica</span>
                             </div>
-                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                            <div className="flex items-center gap-3 p-3 bg-card rounded-lg">
                               <div className="w-8 h-8 bg-blue-50 dark:bg-blue-900/10 rounded-lg flex items-center justify-center">
                                 <Square className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                               </div>
                               <span className="text-sm text-gray-700 dark:text-gray-300">Piso baños: Porcelanato/Cerámica</span>
                             </div>
-                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                            <div className="flex items-center gap-3 p-3 bg-card rounded-lg">
                               <div className="w-8 h-8 bg-blue-50 dark:bg-blue-900/10 rounded-lg flex items-center justify-center">
                                 <Square className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                               </div>
                               <span className="text-sm text-gray-700 dark:text-gray-300">Piso estar: Vinílico</span>
                             </div>
-                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                            <div className="flex items-center gap-3 p-3 bg-card rounded-lg">
                               <div className="w-8 h-8 bg-blue-50 dark:bg-blue-900/10 rounded-lg flex items-center justify-center">
                                 <Square className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                               </div>
                               <span className="text-sm text-gray-700 dark:text-gray-300">Piso dormitorios: Vinílico</span>
                             </div>
-                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                            <div className="flex items-center gap-3 p-3 bg-card rounded-lg">
                               <div className="w-8 h-8 bg-blue-50 dark:bg-blue-900/10 rounded-lg flex items-center justify-center">
                                 <Lock className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                               </div>
                               <span className="text-sm text-gray-700 dark:text-gray-300">Chapa: Electrónica</span>
                             </div>
-                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                            <div className="flex items-center gap-3 p-3 bg-card rounded-lg">
                               <div className="w-8 h-8 bg-blue-50 dark:bg-blue-900/10 rounded-lg flex items-center justify-center">
                                 <Bell className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                               </div>
@@ -1063,49 +1063,49 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Equipamiento</h3>
                           </div>
                           <div className="space-y-3">
-                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                            <div className="flex items-center gap-3 p-3 bg-card rounded-lg">
                               <div className="w-8 h-8 bg-green-50 dark:bg-green-900/10 rounded-lg flex items-center justify-center">
                                 <Refrigerator className="w-4 h-4 text-green-600 dark:text-green-400" />
                               </div>
                               <span className="text-sm text-gray-700 dark:text-gray-300">Refrigerador</span>
                             </div>
-                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                            <div className="flex items-center gap-3 p-3 bg-card rounded-lg">
                               <div className="w-8 h-8 bg-green-50 dark:bg-green-900/10 rounded-lg flex items-center justify-center">
                                 <Fan className="w-4 h-4 text-green-600 dark:text-green-400" />
                               </div>
                               <span className="text-sm text-gray-700 dark:text-gray-300">Campana</span>
                             </div>
-                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                            <div className="flex items-center gap-3 p-3 bg-card rounded-lg">
                               <div className="w-8 h-8 bg-green-50 dark:bg-green-900/10 rounded-lg flex items-center justify-center">
                                 <Square className="w-4 h-4 text-green-600 dark:text-green-400" />
                               </div>
                               <span className="text-sm text-gray-700 dark:text-gray-300">Cortinas Roller</span>
                             </div>
-                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                            <div className="flex items-center gap-3 p-3 bg-card rounded-lg">
                               <div className="w-8 h-8 bg-green-50 dark:bg-green-900/10 rounded-lg flex items-center justify-center">
                                 <Tv className="w-4 h-4 text-green-600 dark:text-green-400" />
                               </div>
                               <span className="text-sm text-gray-700 dark:text-gray-300">Porta TV</span>
                             </div>
-                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                            <div className="flex items-center gap-3 p-3 bg-card rounded-lg">
                               <div className="w-8 h-8 bg-green-50 dark:bg-green-900/10 rounded-lg flex items-center justify-center">
                                 <Bed className="w-4 h-4 text-green-600 dark:text-green-400" />
                               </div>
                               <span className="text-sm text-gray-700 dark:text-gray-300">Cama</span>
                             </div>
-                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                            <div className="flex items-center gap-3 p-3 bg-card rounded-lg">
                               <div className="w-8 h-8 bg-green-50 dark:bg-green-900/10 rounded-lg flex items-center justify-center">
                                 <Microwave className="w-4 h-4 text-green-600 dark:text-green-400" />
                               </div>
                               <span className="text-sm text-gray-700 dark:text-gray-300">Microondas</span>
                             </div>
-                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                            <div className="flex items-center gap-3 p-3 bg-card rounded-lg">
                               <div className="w-8 h-8 bg-green-50 dark:bg-green-900/10 rounded-lg flex items-center justify-center">
                                 <Square className="w-4 h-4 text-green-600 dark:text-green-400" />
                               </div>
                               <span className="text-sm text-gray-700 dark:text-gray-300">Horno Eléctrico</span>
                             </div>
-                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                            <div className="flex items-center gap-3 p-3 bg-card rounded-lg">
                               <div className="w-8 h-8 bg-green-50 dark:bg-green-900/10 rounded-lg flex items-center justify-center">
                                 <Sofa className="w-4 h-4 text-green-600 dark:text-green-400" />
                               </div>
@@ -1152,7 +1152,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                                 key={index}
                                 className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
                               >
-                                <div className="w-8 h-8 bg-white dark:bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <div className="w-8 h-8 bg-card rounded-lg flex items-center justify-center flex-shrink-0">
                                   {getAmenityIcon(amenity)}
                                 </div>
                                 <span className="text-sm text-gray-900 dark:text-white font-medium">{amenity}</span>
@@ -1174,15 +1174,15 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Requisitos Generales</h3>
                           </div>
                           <div className="grid gap-3">
-                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                            <div className="flex items-center gap-3 p-3 bg-card rounded-lg">
                               <CheckCircle className="w-4 h-4 text-blue-500 flex-shrink-0" />
                               <span className="text-sm text-gray-900 dark:text-white">Cédula de identidad chilena vigente</span>
                             </div>
-                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                            <div className="flex items-center gap-3 p-3 bg-card rounded-lg">
                               <CheckCircle className="w-4 h-4 text-blue-500 flex-shrink-0" />
                               <span className="text-sm text-gray-900 dark:text-white">Puntaje financiero 999 titular y aval(es)</span>
                             </div>
-                            <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                            <div className="flex items-center gap-3 p-3 bg-card rounded-lg">
                               <CheckCircle className="w-4 h-4 text-blue-500 flex-shrink-0" />
                               <span className="text-sm text-gray-900 dark:text-white">Renta líquida igual o mayor a <span className="font-semibold text-blue-600 dark:text-blue-400">${(originalPrice * 3).toLocaleString('es-CL')}</span></span>
                             </div>
@@ -1200,11 +1200,11 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Trabajador Dependiente</h3>
                             </div>
                             <div className="space-y-3">
-                              <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                              <div className="flex items-center gap-3 p-3 bg-card rounded-lg">
                                 <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
                                 <span className="text-sm text-gray-900 dark:text-white">Tres últimas liquidaciones de sueldo</span>
                               </div>
-                              <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                              <div className="flex items-center gap-3 p-3 bg-card rounded-lg">
                                 <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
                                 <span className="text-sm text-gray-900 dark:text-white">Certificado de cotizaciones de AFP</span>
                               </div>
@@ -1220,11 +1220,11 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Trabajador Independiente</h3>
                             </div>
                             <div className="space-y-3">
-                              <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                              <div className="flex items-center gap-3 p-3 bg-card rounded-lg">
                                 <CheckCircle className="w-4 h-4 text-purple-500 flex-shrink-0" />
                                 <span className="text-sm text-gray-900 dark:text-white">Informe mensual de boletas de honorario (6 meses)</span>
                               </div>
-                              <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                              <div className="flex items-center gap-3 p-3 bg-card rounded-lg">
                                 <CheckCircle className="w-4 h-4 text-purple-500 flex-shrink-0" />
                                 <span className="text-sm text-gray-900 dark:text-white">Carpeta tributaria o formulario 29 (6 meses)</span>
                               </div>
@@ -1417,7 +1417,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
             <div className="space-y-6">
               {/* Cálculo del primer pago */}
               <section aria-label="Cálculo del primer pago">
-                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                <div className="bg-card rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Cálculo del primer pago</h3>
 
                   {/* Selector de fecha de mudanza */}
@@ -1438,7 +1438,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
 
                       {/* Calendario */}
                       {showDatePicker && (
-                        <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg z-10 p-3">
+                        <div className="absolute top-full left-0 right-0 mt-1 bg-card border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg z-10 p-3">
                           <div className="grid grid-cols-7 gap-1 text-xs">
                             {['D', 'L', 'Ma', 'Mi', 'J', 'V', 'S'].map((day, index) => (
                               <div key={`day-${index}`} className="p-2 text-center text-gray-500 font-medium">
@@ -1483,7 +1483,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                     </label>
 
                     {/* Estacionamiento */}
-                    <div className={`flex items-center justify-between p-3 rounded-lg border transition-colors ${false ? 'bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600' : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600'
+                    <div className={`flex items-center justify-between p-3 rounded-lg border transition-colors ${false ? 'bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600' : 'bg-card border-gray-200 dark:border-gray-600'
                       }`}>
                       <div className="flex items-center gap-3">
                         <Car className={`w-5 h-5 ${false ? 'text-gray-400' : 'text-orange-600 dark:text-orange-400'}`} />
@@ -1512,7 +1512,7 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
                     </div>
 
                     {/* Bodega */}
-                    <div className={`flex items-center justify-between p-3 rounded-lg border transition-colors ${true ? 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600' : 'bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600'
+                    <div className={`flex items-center justify-between p-3 rounded-lg border transition-colors ${true ? 'bg-card border-gray-200 dark:border-gray-600' : 'bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600'
                       }`}>
                       <div className="flex items-center gap-3">
                         <Package className={`w-5 h-5 ${true ? 'text-purple-600 dark:text-purple-400' : 'text-gray-400'}`} />
@@ -1671,7 +1671,10 @@ export function PropertyClient({ building, relatedBuildings, defaultUnitId }: Pr
           </section>
 
           {/* Sticky Mobile CTA */}
-          <StickyMobileCTA />
+          <StickyMobileCTA
+            onScheduleVisit={() => console.log('Schedule visit')}
+            price={290000}
+          />
         </div>
       </main>
     </div>

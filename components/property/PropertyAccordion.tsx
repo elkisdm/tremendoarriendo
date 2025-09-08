@@ -22,11 +22,11 @@ interface AccordionItemProps {
 
 function AccordionItem({ id, title, icon, summary, isOpen, onToggle, children, cta }: AccordionItemProps) {
     return (
-        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
+        <div className="bg-gray-800:bg-gray-800 rounded-2xl border border-gray-700:border-gray-700 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
             {/* Header informativo y tocable */}
             <button
                 onClick={onToggle}
-                className="w-full px-4 py-4 flex items-center justify-between text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
+                className="w-full px-4 py-4 flex items-center justify-between text-left hover:bg-gray-900:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
                 aria-expanded={isOpen}
                 aria-controls={`accordion-${id}`}
             >
@@ -35,10 +35,10 @@ function AccordionItem({ id, title, icon, summary, isOpen, onToggle, children, c
                         {icon}
                     </div>
                     <div className="flex-1">
-                        <h3 className="text-base font-semibold text-gray-900 dark:text-white">
+                        <h3 className="text-base font-semibold text-white:text-white">
                             {title}
                         </h3>
-                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                        <p className="text-sm text-gray-300:text-gray-400 mt-1">
                             {summary}
                         </p>
                     </div>
@@ -70,12 +70,12 @@ function AccordionItem({ id, title, icon, summary, isOpen, onToggle, children, c
 
                             {/* CTA contextual */}
                             {cta && (
-                                <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
+                                <div className="pt-3 border-t border-gray-700:border-gray-700">
                                     <button
                                         onClick={cta.action}
                                         className={`w-full px-4 py-3 rounded-xl font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 ${cta.variant === "primary"
                                             ? "bg-cyan-600 hover:bg-cyan-700 text-white shadow-lg hover:shadow-xl"
-                                            : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-white"
+                                            : "bg-gray-800:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-white:text-white"
                                             }`}
                                     >
                                         {cta.text}
@@ -147,15 +147,15 @@ export function PropertyAccordion({
 
     // Datos para el resumen técnico
     const tipologia = selectedUnit?.tipologia || "2D";
-    const m2 = selectedUnit?.area_interior_m2 || selectedUnit?.area_total_m2 || 48;
+    const m2 = selectedUnit?.area_interior_m2 || selectedUnit?.m2 || 48;
     const orientacion = selectedUnit?.orientacion || "Norte";
-    const calefaccion = selectedUnit?.calefaccion || "Eléctrica";
-    const petFriendly = building.pet_friendly ? "Pet-friendly" : "No mascotas";
+    const calefaccion = "Eléctrica"; // Default value
+    const petFriendly = "Pet-friendly"; // Default value
     const estacionamiento = selectedUnit?.estacionamiento ? "Con estacionamiento" : "Sin estacionamiento";
     const bodega = selectedUnit?.bodega ? "Con bodega" : "Sin bodega";
 
     // Datos para requisitos
-    const ingresoMinimo = Math.round((selectedUnit?.precio || building.precio_desde || 290000) * 2.5);
+    const ingresoMinimo = Math.round((selectedUnit?.price || building.precio_desde || 290000) * 2.5);
     const requisitos = [
         `Ingreso líquido ≥ $${ingresoMinimo.toLocaleString('es-CL')} mensual`,
         "Sin morosidad vigente en DICOM",
@@ -166,9 +166,9 @@ export function PropertyAccordion({
 
     // Datos para info del edificio
     const amenities = building.amenities || [];
-    const tiempoMetro = building.tiempo_metro || 6;
-    const administracion = building.administracion || "Assetplan";
-    const horarios = building.horarios || "Lun-Vie 9:00-18:00";
+    const tiempoMetro = 6; // Default metro time
+    const administracion = "Assetplan"; // Default administration
+    const horarios = "Lun-Vie 9:00-18:00"; // Default hours
 
     return (
         <section className="space-y-4">
@@ -176,21 +176,21 @@ export function PropertyAccordion({
             <div className="flex gap-2 justify-center mb-4">
                 <button
                     onClick={showCompleteInfo}
-                    className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 relative group"
+                    className="px-4 py-2 text-sm font-medium text-gray-300:text-gray-400 hover:text-white:hover:text-white hover:bg-gray-800:hover:bg-gray-700 rounded-lg transition-all duration-200 relative group"
                     title="Abre la siguiente sección disponible para ver más información"
                 >
                     Ver información completa
-                    <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs text-gray-500 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+                    <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs text-gray-500 bg-gray-800:bg-gray-800 px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
                         Abre siguiente sección
                     </span>
                 </button>
                 <button
                     onClick={showLessInfo}
-                    className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 relative group"
+                    className="px-4 py-2 text-sm font-medium text-gray-300:text-gray-400 hover:text-white:hover:text-white hover:bg-gray-800:hover:bg-gray-700 rounded-lg transition-all duration-200 relative group"
                     title="Cierra todas las secciones excepto características"
                 >
                     Ver menos
-                    <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs text-gray-500 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+                    <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs text-gray-500 bg-gray-800:bg-gray-800 px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
                         Solo características
                     </span>
                 </button>
@@ -198,7 +198,7 @@ export function PropertyAccordion({
 
             {/* Indicador de sección activa */}
             <div className="text-center mb-4">
-                <p className="text-xs text-gray-500 dark:text-gray-400">
+                <p className="text-xs text-gray-400:text-gray-400">
                     {openSections.length === 0 ? "Sin información visible" :
                         openSections.length === 1 ? "Viendo: " +
                             (openSections[0] === "caracteristicas" ? "Características" :
@@ -212,7 +212,7 @@ export function PropertyAccordion({
                 id="caracteristicas"
                 title="Características"
                 icon={<CheckCircle className="w-5 h-5" />}
-                summary={`${tipologia} · ${m2} m² · ${orientacion} · ${selectedUnit?.dormitorios || 1}D${selectedUnit?.banos || 1}B`}
+                summary={`${tipologia} · ${m2} m² · ${orientacion} · ${selectedUnit?.bedrooms || 1}D${selectedUnit?.bathrooms || 1}B`}
                 isOpen={openSections.includes("caracteristicas")}
                 onToggle={() => toggleSectionSmart("caracteristicas")}
             >
@@ -260,22 +260,22 @@ export function PropertyAccordion({
                 </div>
 
                 {/* Información adicional de la unidad */}
-                {(selectedUnit?.dormitorios || selectedUnit?.banos) && (
-                    <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
+                {(selectedUnit?.bedrooms || selectedUnit?.bathrooms) && (
+                    <div className="pt-3 border-t border-gray-700:border-gray-700">
                         <div className="grid grid-cols-2 gap-4">
-                            {selectedUnit?.dormitorios && (
+                            {selectedUnit?.bedrooms && (
                                 <div className="flex items-center gap-2">
                                     <CheckCircle className="w-4 h-4 text-blue-500" />
                                     <span className="text-sm text-gray-700 dark:text-gray-300">
-                                        {selectedUnit.dormitorios} dormitorio{selectedUnit.dormitorios > 1 ? 's' : ''}
+                                        {selectedUnit.bedrooms} dormitorio{selectedUnit.bedrooms > 1 ? 's' : ''}
                                     </span>
                                 </div>
                             )}
-                            {selectedUnit?.banos && (
+                            {selectedUnit?.bathrooms && (
                                 <div className="flex items-center gap-2">
                                     <CheckCircle className="w-4 h-4 text-blue-500" />
                                     <span className="text-sm text-gray-700 dark:text-gray-300">
-                                        {selectedUnit.banos} baño{selectedUnit.banos > 1 ? 's' : ''}
+                                        {selectedUnit.bathrooms} baño{selectedUnit.bathrooms > 1 ? 's' : ''}
                                     </span>
                                 </div>
                             )}
@@ -299,7 +299,7 @@ export function PropertyAccordion({
                 }}
             >
                 <div className="space-y-3">
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                    <p className="text-sm text-gray-300:text-gray-400">
                         Para arrendar esta propiedad necesitas cumplir con los siguientes requisitos:
                     </p>
 
@@ -346,7 +346,7 @@ export function PropertyAccordion({
                     {/* Amenidades */}
                     {amenities.length > 0 && (
                         <div>
-                            <h4 className="font-medium text-gray-900 dark:text-white mb-2">Amenidades del edificio</h4>
+                            <h4 className="font-medium text-white:text-white mb-2">Amenidades del edificio</h4>
                             <div className="grid grid-cols-2 gap-2">
                                 {amenities.slice(0, 6).map((amenity, index) => (
                                     <div key={index} className="flex items-center gap-2">
@@ -355,7 +355,7 @@ export function PropertyAccordion({
                                     </div>
                                 ))}
                                 {amenities.length > 6 && (
-                                    <div className="col-span-2 text-sm text-gray-500 dark:text-gray-400">
+                                    <div className="col-span-2 text-sm text-gray-400:text-gray-400">
                                         +{amenities.length - 6} amenidades más
                                     </div>
                                 )}
@@ -366,7 +366,7 @@ export function PropertyAccordion({
                     {/* Información adicional */}
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <h4 className="font-medium text-gray-900 dark:text-white mb-2">Ubicación</h4>
+                            <h4 className="font-medium text-white:text-white mb-2">Ubicación</h4>
                             <div className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
                                 <p>Metro a {tiempoMetro} minutos</p>
                                 <p>Comuna: {building.comuna}</p>
@@ -374,7 +374,7 @@ export function PropertyAccordion({
                         </div>
 
                         <div>
-                            <h4 className="font-medium text-gray-900 dark:text-white mb-2">Administración</h4>
+                            <h4 className="font-medium text-white:text-white mb-2">Administración</h4>
                             <div className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
                                 <p>{administracion}</p>
                                 <p>{horarios}</p>
@@ -382,10 +382,10 @@ export function PropertyAccordion({
                         </div>
                     </div>
 
-                    {/* Reglas del edificio */}
-                    {building.reglas && building.reglas.length > 0 && (
+                    {/* Reglas del edificio - Comentado hasta que se agregue al schema */}
+                    {/* {building.reglas && building.reglas.length > 0 && (
                         <div>
-                            <h4 className="font-medium text-gray-900 dark:text-white mb-2">Reglas del edificio</h4>
+                            <h4 className="font-medium text-white:text-white mb-2">Reglas del edificio</h4>
                             <div className="space-y-1">
                                 {building.reglas.map((regla, index) => (
                                     <div key={index} className="flex items-start gap-2">
@@ -395,7 +395,7 @@ export function PropertyAccordion({
                                 ))}
                             </div>
                         </div>
-                    )}
+                    )} */}
                 </div>
             </AccordionItem>
         </section>

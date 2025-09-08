@@ -80,12 +80,12 @@ export function PropertyMobilePricing({
             </div>
 
             {/* Precio total mensual prominente */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-4 mb-4">
+            <div className="bg-gray-800:bg-gray-800 rounded-xl shadow-lg border border-gray-700:border-gray-700 p-4 mb-4">
                 <div className="text-center mb-4">
-                    <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
+                    <h2 className="text-xl font-bold text-white:text-white mb-1">
                         Departamento {selectedUnit.id}
                     </h2>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                    <p className="text-sm text-gray-300:text-gray-400">
                         {unitDetails.tipologia} • Piso {unitDetails.piso}
                     </p>
                 </div>
@@ -93,36 +93,36 @@ export function PropertyMobilePricing({
                 {/* Precio total mensual destacado */}
                 <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl border border-blue-200 dark:border-blue-700 p-4 mb-4">
                     <div className="text-center">
-                        <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+                        <div className="text-sm text-gray-300:text-gray-400 mb-1">
                             Total mensual
                         </div>
-                        <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+                        <div className="text-2xl font-bold text-white:text-white mb-1">
                             ${precioTotalMensual.toLocaleString('es-CL')}
                         </div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                        <div className="text-xs text-gray-400:text-gray-400">
                             Arriendo + Gastos comunes
                         </div>
                     </div>
                 </div>
 
                 {/* Desglose de precios */}
-                <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-3 mb-4">
+                <div className="bg-gray-800:bg-gray-800 rounded-xl border border-gray-700:border-gray-700 p-3 mb-4">
                     <div className="space-y-2">
                         <div className="flex items-center justify-between">
-                            <span className="text-sm text-gray-600 dark:text-gray-400">Valor arriendo</span>
+                            <span className="text-sm text-gray-300:text-gray-400">Valor arriendo</span>
                             <span className="text-sm line-through text-gray-500">${originalPrice.toLocaleString('es-CL')}</span>
                         </div>
                         <div className="flex items-center justify-between">
                             <span className="text-sm font-semibold text-green-600">50% OFF primer mes</span>
-                            <span className="text-lg font-bold text-gray-900 dark:text-white">${discountPrice.toLocaleString('es-CL')}</span>
+                            <span className="text-lg font-bold text-white:text-white">${discountPrice.toLocaleString('es-CL')}</span>
                         </div>
                         <div className="flex items-center justify-between">
-                            <span className="text-sm text-gray-600 dark:text-gray-400">Gasto común fijo</span>
-                            <span className="text-sm font-medium text-gray-900 dark:text-white">${gastosComunes.toLocaleString('es-CL')}</span>
+                            <span className="text-sm text-gray-300:text-gray-400">Gasto común fijo</span>
+                            <span className="text-sm font-medium text-white:text-white">${gastosComunes.toLocaleString('es-CL')}</span>
                         </div>
                         <div className="flex items-center justify-between">
-                            <span className="text-sm text-gray-600 dark:text-gray-400">Garantía</span>
-                            <span className="text-sm font-medium text-gray-900 dark:text-white">${originalPrice.toLocaleString('es-CL')}</span>
+                            <span className="text-sm text-gray-300:text-gray-400">Garantía</span>
+                            <span className="text-sm font-medium text-white:text-white">${originalPrice.toLocaleString('es-CL')}</span>
                         </div>
                     </div>
                 </div>
@@ -141,25 +141,25 @@ export function PropertyMobilePricing({
                 </div>
 
                 {/* Características principales */}
-                <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-3 mb-4">
-                    <h3 className="font-semibold text-gray-900 dark:text-white text-center mb-3 text-sm">
+                <div className="bg-gray-900:bg-gray-700 rounded-xl p-3 mb-4">
+                    <h3 className="font-semibold text-white:text-white text-center mb-3 text-sm">
                         Características principales
                     </h3>
                     <div className="grid grid-cols-3 gap-3 text-center">
-                        <div className="bg-white dark:bg-gray-600 rounded-lg p-2">
+                        <div className="bg-gray-800:bg-gray-600 rounded-lg p-2">
                             <Bed className="w-5 h-5 text-blue-600 mx-auto mb-1" />
-                            <div className="text-sm font-semibold text-gray-900 dark:text-white">{unitDetails.dormitorios}</div>
-                            <div className="text-xs text-gray-500 dark:text-gray-400">Dorm.</div>
+                            <div className="text-sm font-semibold text-white:text-white">{unitDetails.dormitorios}</div>
+                            <div className="text-xs text-gray-400:text-gray-400">Dorm.</div>
                         </div>
-                        <div className="bg-white dark:bg-gray-600 rounded-lg p-2">
+                        <div className="bg-gray-800:bg-gray-600 rounded-lg p-2">
                             <Bath className="w-5 h-5 text-blue-600 mx-auto mb-1" />
-                            <div className="text-sm font-semibold text-gray-900 dark:text-white">{unitDetails.banos}</div>
-                            <div className="text-xs text-gray-500 dark:text-gray-400">Baños</div>
+                            <div className="text-sm font-semibold text-white:text-white">{unitDetails.banos}</div>
+                            <div className="text-xs text-gray-400:text-gray-400">Baños</div>
                         </div>
-                        <div className="bg-white dark:bg-gray-600 rounded-lg p-2">
+                        <div className="bg-gray-800:bg-gray-600 rounded-lg p-2">
                             <Square className="w-5 h-5 text-blue-600 mx-auto mb-1" />
-                            <div className="text-sm font-semibold text-gray-900 dark:text-white">{unitDetails.m2}</div>
-                            <div className="text-xs text-gray-500 dark:text-gray-400">m²</div>
+                            <div className="text-sm font-semibold text-white:text-white">{unitDetails.m2}</div>
+                            <div className="text-xs text-gray-400:text-gray-400">m²</div>
                         </div>
                     </div>
                 </div>
@@ -197,7 +197,7 @@ export function PropertyMobilePricing({
                     </button>
                     <button
                         onClick={onSendQuotation}
-                        className="w-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white text-white font-semibold py-2.5 px-4 rounded-lg transition-colors duration-100 text-sm"
+                        className="w-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-white:text-white text-white font-semibold py-2.5 px-4 rounded-lg transition-colors duration-100 text-sm"
                         aria-label="Postular"
                     >
                         Postular

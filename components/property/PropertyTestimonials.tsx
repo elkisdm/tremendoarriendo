@@ -84,13 +84,13 @@ export function PropertyTestimonials({ building, variant = "catalog", className 
     const currentTestimonial = testimonials[currentIndex];
 
     return (
-        <section className={`bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 lg:p-8 ${className}`}>
+        <section className={`bg-gray-800:bg-gray-800 rounded-2xl shadow-lg border border-gray-700:border-gray-700 p-6 lg:p-8 ${className}`}>
             {/* Header */}
             <div className="text-center mb-8">
-                <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                <h2 className="text-2xl lg:text-3xl font-bold text-white:text-white mb-4">
                     Lo que dicen nuestros inquilinos
                 </h2>
-                <p className="text-base lg:text-lg text-gray-600 dark:text-gray-300">
+                <p className="text-base lg:text-lg text-gray-300:text-gray-300">
                     Experiencias reales de personas que han vivido en {building.name}
                 </p>
             </div>
@@ -122,7 +122,7 @@ export function PropertyTestimonials({ building, variant = "catalog", className 
                                         }`}
                                 />
                             ))}
-                            <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                            <span className="ml-2 text-sm text-gray-300:text-gray-400">
                                 {currentTestimonial.rating}/5
                             </span>
                         </div>
@@ -134,7 +134,7 @@ export function PropertyTestimonials({ building, variant = "catalog", className 
                             </div>
                             <div className="text-left">
                                 <div className="flex items-center gap-2">
-                                    <h3 className="font-semibold text-gray-900 dark:text-white">
+                                    <h3 className="font-semibold text-white:text-white">
                                         {currentTestimonial.name}
                                     </h3>
                                     {currentTestimonial.verified && (
@@ -145,8 +145,8 @@ export function PropertyTestimonials({ building, variant = "catalog", className 
                                         </div>
                                     )}
                                 </div>
-                                <p className="text-sm text-gray-600 dark:text-gray-400">{currentTestimonial.role}</p>
-                                <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-500">
+                                <p className="text-sm text-gray-300:text-gray-400">{currentTestimonial.role}</p>
+                                <div className="flex items-center gap-2 text-xs text-gray-400:text-gray-500">
                                     <Calendar className="w-3 h-3" />
                                     {currentTestimonial.date}
                                     <MapPin className="w-3 h-3" />
@@ -161,18 +161,18 @@ export function PropertyTestimonials({ building, variant = "catalog", className 
                 <div className="flex justify-center gap-4 mt-6">
                     <button
                         onClick={prevTestimonial}
-                        className="w-10 h-10 bg-white dark:bg-gray-700 rounded-full flex items-center justify-center border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                        className="w-10 h-10 bg-gray-800:bg-gray-700 rounded-full flex items-center justify-center border border-gray-700:border-gray-600 hover:bg-gray-900:hover:bg-gray-600 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                         aria-label="Testimonio anterior"
                     >
-                        <ChevronLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                        <ChevronLeft className="w-5 h-5 text-gray-300:text-gray-400" />
                     </button>
 
                     <button
                         onClick={nextTestimonial}
-                        className="w-10 h-10 bg-white dark:bg-gray-700 rounded-full flex items-center justify-center border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                        className="w-10 h-10 bg-gray-800:bg-gray-700 rounded-full flex items-center justify-center border border-gray-700:border-gray-600 hover:bg-gray-900:hover:bg-gray-600 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                         aria-label="Testimonio siguiente"
                     >
-                        <ChevronRight className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                        <ChevronRight className="w-5 h-5 text-gray-300:text-gray-400" />
                     </button>
                 </div>
             </div>
@@ -195,27 +195,27 @@ export function PropertyTestimonials({ building, variant = "catalog", className 
 
             {/* Estadísticas de confianza */}
             <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
+                <div className="text-center p-4 bg-gray-900:bg-gray-700 rounded-xl">
                     <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-1">
                         {testimonials.filter(t => t.rating === 5).length}/{testimonials.length}
                     </div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                    <div className="text-sm text-gray-300:text-gray-400">
                         Calificación 5 estrellas
                     </div>
                 </div>
-                <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
+                <div className="text-center p-4 bg-gray-900:bg-gray-700 rounded-xl">
                     <div className="text-2xl font-bold text-green-600 dark:text-green-400 mb-1">
                         {testimonials.filter(t => t.verified).length}
                     </div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                    <div className="text-sm text-gray-300:text-gray-400">
                         Testimonios verificados
                     </div>
                 </div>
-                <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
+                <div className="text-center p-4 bg-gray-900:bg-gray-700 rounded-xl">
                     <div className="text-2xl font-bold text-purple-600 dark:text-purple-400 mb-1">
                         {testimonials.length}
                     </div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                    <div className="text-sm text-gray-300:text-gray-400">
                         Experiencias compartidas
                     </div>
                 </div>
@@ -224,10 +224,10 @@ export function PropertyTestimonials({ building, variant = "catalog", className 
             {/* CTA para dejar testimonio */}
             <div className="mt-8 text-center">
                 <div className="bg-green-50 dark:bg-green-900/20 rounded-xl p-6 border border-green-200 dark:border-green-700">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                    <h3 className="text-lg font-semibold text-white:text-white mb-2">
                         ¿Vives o viviste aquí?
                     </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+                    <p className="text-sm text-gray-300:text-gray-300 mb-4">
                         Comparte tu experiencia y ayuda a otros a tomar la mejor decisión
                     </p>
                     <button className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-xl transition-colors duration-200">
@@ -239,4 +239,9 @@ export function PropertyTestimonials({ building, variant = "catalog", className 
         </section>
     );
 }
+
+
+
+
+
 

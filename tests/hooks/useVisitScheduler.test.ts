@@ -13,7 +13,9 @@ describe('useVisitScheduler', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        (fetch as jest.Mock).mockClear();
+        if (global.fetch && typeof global.fetch.mockClear === 'function') {
+            global.fetch.mockClear();
+        }
     });
 
     afterEach(() => {

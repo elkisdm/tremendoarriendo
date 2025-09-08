@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Agendamiento de visitas - E2E', () => {
     test.beforeEach(async ({ page }) => {
         // Navegar a la página de la propiedad
-        await page.goto('http://localhost:3002/property/home-amengual?unit=207');
+        await page.goto('http://localhost:3001/property/home-amengual?unit=207');
         
         // Esperar a que la página cargue completamente
         await page.waitForLoadState('networkidle');

@@ -5,13 +5,13 @@ import { motion } from "framer-motion";
 import { PromotionBadge } from "@components/ui/PromotionBadge";
 import { formatPrice } from "@lib/utils";
 import { track } from "@lib/analytics";
-import type { Building, Unit } from "@types";
+import type { Building, Unit, LegacyBuilding } from "@types";
 import type { BuildingSummary } from "../../hooks/useFetchBuildings";
 // import type { PromotionBadge as PromotionBadgeType } from "@schemas/models";
 import { PromotionType } from "@schemas/models";
 
 type BuildingCardV2Props = {
-  building: Building | BuildingSummary;
+  building: Building | BuildingSummary | LegacyBuilding;
   priority?: boolean;
   showBadge?: boolean;
   className?: string;
@@ -20,15 +20,15 @@ type BuildingCardV2Props = {
 const DEFAULT_BLUR =
   "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTYnIGhlaWdodD0nMTAnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zyc+PHJlY3Qgd2lkdGg9JzE2JyBoZWlnaHQ9JzEwJyBmaWxsPSIjMjIyMjIyIi8+PC9zdmc+";
 
-// Helper functions to work with both Building and BuildingSummary types
-function getCoverImage(building: Building | BuildingSummary): string {
+// Helper functions to work with Building, BuildingSummary, and LegacyBuilding types
+function getCoverImage(building: Building | BuildingSummary | LegacyBuilding): string {
   if ('cover' in building) return building.cover;
   if ('coverImage' in building && building.coverImage) return building.coverImage;
   if ('gallery' in building && building.gallery.length > 0) return building.gallery[0];
   return '';
 }
 
-function getUnitsInfo(building: Building | BuildingSummary) {
+function getUnitsInfo(building: Building | BuildingSummary | LegacyBuilding) {
   if ('units' in building) {
     const available = building.units.filter((unit: Unit) => unit.disponible);
     return { available: available.length, total: building.units.length };
@@ -40,7 +40,7 @@ function getUnitsInfo(building: Building | BuildingSummary) {
   return { available: 0, total: 0 };
 }
 
-function getPromoInfo(building: Building | BuildingSummary) {
+function getPromoInfo(building: Building | BuildingSummary | LegacyBuilding) {
   if ('promo' in building && building.promo) {
     return {
       label: building.promo.label,
@@ -57,7 +57,7 @@ function getPromoInfo(building: Building | BuildingSummary) {
   return null;
 }
 
-function getPrice(building: Building | BuildingSummary): number {
+function getPrice(building: Building | BuildingSummary | LegacyBuilding): number {
   if ('precioDesde' in building) return building.precioDesde;
   if ('units' in building && building.units.length > 0) {
     const availableUnits = building.units.filter((unit: Unit) => unit.disponible);
@@ -87,17 +87,17 @@ function getPrice(building: Building | BuildingSummary): number {
 function calculateBuildingStats(building: Building) {
   const availableUnits = building.units.filter(unit => unit.disponible);
   const totalUnits = building.units.length;
-  
+
   // Calculate price range
   const prices = availableUnits.map(unit => unit.price);
   const minPrice = Math.min(...prices);
   const maxPrice = Math.max(...prices);
-  
+
   // Calculate m2 range
   const m2s = availableUnits.map(unit => unit.m2);
   const minM2 = Math.min(...m2s);
   const maxM2 = Math.max(...m2s);
-  
+
   // Group by tipologia
   const tipologiaGroups = availableUnits.reduce((acc, unit) => {
     if (!acc[unit.tipologia]) {
@@ -106,7 +106,7 @@ function calculateBuildingStats(building: Building) {
     acc[unit.tipologia].push(unit);
     return acc;
   }, {} as Record<string, typeof availableUnits>);
-  
+
   const tipologiaSummary = Object.entries(tipologiaGroups).map(([tipologia, units]) => ({
     key: tipologia,
     label: tipologia,
@@ -114,7 +114,7 @@ function calculateBuildingStats(building: Building) {
     minPrice: Math.min(...units.map(u => u.price)),
     minM2: Math.min(...units.map(u => u.m2)),
   }));
-  
+
   return {
     hasAvailability: availableUnits.length > 0,
     availableCount: availableUnits.length,
@@ -131,16 +131,16 @@ function calculateBuildingStats(building: Building) {
 function formatTypologyChip(summary: { key: string; label: string; count: number; minPrice?: number; minM2?: number }): string {
   const displayLabel = summary.label;
   const count = summary.count;
-  
+
   if (count === 1) {
     return `${displayLabel} — 1 disp`;
   }
   return `${displayLabel} — +${count} disp`;
 }
 
-export function BuildingCardV2({ 
-  building, 
-  priority = false, 
+export function BuildingCardV2({
+  building,
+  priority = false,
   showBadge = true,
   className = ""
 }: BuildingCardV2Props) {
@@ -148,21 +148,21 @@ export function BuildingCardV2({
   const href = `/propiedad/${building.id}`;
   const unitsInfo = getUnitsInfo(building);
   const price = getPrice(building);
-  
+
   const handleClick = () => {
     track("property_view", {
       property_id: building.id,
       property_name: building.name,
     });
   };
-  
+
   const promoInfo = getPromoInfo(building);
   const primaryBadge = promoInfo ? {
     type: PromotionType.FREE_COMMISSION,
     label: promoInfo.label,
     tag: promoInfo.tag
   } : null;
-  
+
   const hasAvailability = unitsInfo.available > 0;
   let typologyChips: { key: string; label: string; count: number }[] = [];
   if ('units' in building && hasAvailability) {
@@ -171,7 +171,7 @@ export function BuildingCardV2({
   }
 
   // Enhanced aria-label with availability info
-  const ariaLabel = hasAvailability 
+  const ariaLabel = hasAvailability
     ? `Ver propiedad ${building.name} en ${building.comuna}, ${typologyChips.length > 0 ? `${typologyChips.length} tipologías disponibles` : 'unidades disponibles'}`
     : `Ver propiedad ${building.name} en ${building.comuna}, sin disponibilidad`;
 
@@ -202,8 +202,8 @@ export function BuildingCardV2({
             />
             {showBadge && primaryBadge && (
               <div className="absolute top-3 left-3">
-                <PromotionBadge 
-                  label={primaryBadge.label} 
+                <PromotionBadge
+                  label={primaryBadge.label}
                   tag={primaryBadge.tag}
                 />
               </div>
@@ -231,12 +231,12 @@ export function BuildingCardV2({
                 )}
               </div>
             </div>
-            
+
             {/* Typology chips */}
             {hasAvailability && typologyChips.length > 0 && (
               <div className="flex flex-wrap gap-1.5 min-h-[24px]">
                 {typologyChips.slice(0, 3).map((chip, _index) => (
-                  <span 
+                  <span
                     key={chip.key}
                     className="inline-flex items-center px-2 py-1 rounded-md text-[11px] font-medium bg-[var(--soft)] text-[var(--text)] ring-1 ring-white/10"
                     title={chip.label}
@@ -251,7 +251,7 @@ export function BuildingCardV2({
                 )}
               </div>
             )}
-            
+
             {/* Empty state for no availability with subtle visual indication */}
             {!hasAvailability && (
               <div className="flex items-center justify-center min-h-[24px] opacity-50">

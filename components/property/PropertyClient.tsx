@@ -42,12 +42,12 @@ class ErrorBoundary extends React.Component<
         if (this.state.hasError) {
             return (
                 <div className="min-h-screen bg-bg flex items-center justify-center p-6">
-                    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 max-w-md text-center">
+                    <div className="bg-card rounded-2xl shadow-lg p-8 max-w-md text-center">
                         <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-                        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                        <h2 className="text-xl font-semibold text-text mb-2">
                             Algo salió mal
                         </h2>
-                        <p className="text-gray-600 dark:text-gray-300 mb-4">
+                        <p className="text-text-secondary mb-4">
                             No pudimos cargar la información de la propiedad. Por favor, intenta de nuevo.
                         </p>
                         <button
@@ -187,12 +187,12 @@ export function PropertyClient({
     if (error) {
         return (
             <div className="min-h-screen bg-bg flex items-center justify-center p-6">
-                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 max-w-md text-center">
+                <div className="bg-card rounded-2xl shadow-lg p-8 max-w-md text-center">
                     <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                    <h2 className="text-xl font-semibold text-text mb-2">
                         Error de carga
                     </h2>
-                    <p className="text-gray-600 dark:text-gray-300 mb-4">{error}</p>
+                    <p className="text-text-secondary mb-4">{error}</p>
                     <button
                         onClick={() => window.location.reload()}
                         className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl font-semibold transition-colors"
@@ -219,7 +219,15 @@ export function PropertyClient({
                             {/* Above the fold móvil optimizado para conversión + Galería integrada */}
                             <PropertyAboveFoldMobile
                                 building={building}
-                                selectedUnit={building.units.find(unit => unit.disponible) || null}
+                                selectedUnit={building.units.find(unit => unit.disponible) || building.units[0] || {
+                                    id: 'default',
+                                    tipologia: '2D1B',
+                                    m2: 50,
+                                    price: building.precio_desde || 290000,
+                                    estacionamiento: false,
+                                    bodega: false,
+                                    disponible: false
+                                }}
                                 variant={variant}
                                 onScheduleVisit={() => setIsModalOpen(true)}
                                 onWhatsApp={() => {
@@ -255,7 +263,7 @@ export function PropertyClient({
                                 aria-label="Propiedades relacionadas"
                                 className="mt-12 lg:mt-16"
                             >
-                                <h2 className="text-xl lg:text-2xl font-bold text-gray-900 dark:text-white mb-4 lg:mb-6">
+                                <h2 className="text-xl lg:text-2xl font-bold text-text mb-4 lg:mb-6">
                                     Propiedades relacionadas
                                 </h2>
                                 <Suspense fallback={

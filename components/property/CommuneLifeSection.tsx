@@ -34,13 +34,13 @@ export function CommuneLifeSection({ building, variant = "catalog", className = 
     };
 
     return (
-        <section className={`bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 lg:p-8 ${className}`}>
+        <section className={`bg-gray-800:bg-gray-800 rounded-2xl shadow-lg border border-gray-700:border-gray-700 p-6 lg:p-8 ${className}`}>
             {/* Header con título y descripción */}
             <div className="mb-6 lg:mb-8">
-                <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                <h2 className="text-2xl lg:text-3xl font-bold text-white:text-white mb-4">
                     Cómo es vivir en {communeData.name}
                 </h2>
-                <p className="text-base lg:text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+                <p className="text-base lg:text-lg text-gray-300:text-gray-300 leading-relaxed">
                     {communeData.description}
                 </p>
             </div>
@@ -48,15 +48,15 @@ export function CommuneLifeSection({ building, variant = "catalog", className = 
             {/* Highlights principales con íconos */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 mb-8">
                 {communeData.highlights.map((highlight, index) => (
-                    <div key={index} className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
+                    <div key={index} className="flex items-start gap-3 p-4 bg-gray-900:bg-gray-700 rounded-xl">
                         <div className="flex-shrink-0 w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
                             <highlight.icon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                         </div>
                         <div className="flex-1">
-                            <h3 className="font-semibold text-gray-900 dark:text-white text-sm lg:text-base mb-1">
+                            <h3 className="font-semibold text-white:text-white text-sm lg:text-base mb-1">
                                 {highlight.label}
                             </h3>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                            <p className="text-sm text-gray-300:text-gray-400">
                                 {highlight.value}
                             </p>
                         </div>
@@ -68,20 +68,20 @@ export function CommuneLifeSection({ building, variant = "catalog", className = 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
                 {/* Amenidades de la comuna */}
                 <div>
-                    <h3 className="text-lg lg:text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                    <h3 className="text-lg lg:text-xl font-semibold text-white:text-white mb-4">
                         Amenidades de la comuna
                     </h3>
                     <div className="space-y-3">
                         {communeData.amenities.map((amenity, index) => (
-                            <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                            <div key={index} className="flex items-center gap-3 p-3 bg-gray-900:bg-gray-700 rounded-lg">
                                 <div className="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
                                     <amenity.icon className="w-4 h-4 text-green-600 dark:text-green-400" />
                                 </div>
                                 <div>
-                                    <span className="font-medium text-gray-900 dark:text-white text-sm">
+                                    <span className="font-medium text-white:text-white text-sm">
                                         {amenity.label}:
                                     </span>
-                                    <span className="text-sm text-gray-600 dark:text-gray-400 ml-2">
+                                    <span className="text-sm text-gray-300:text-gray-400 ml-2">
                                         {amenity.value}
                                     </span>
                                 </div>
@@ -92,10 +92,10 @@ export function CommuneLifeSection({ building, variant = "catalog", className = 
 
                 {/* Mapa estático con pins */}
                 <div>
-                    <h3 className="text-lg lg:text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                    <h3 className="text-lg lg:text-xl font-semibold text-white:text-white mb-4">
                         Ubicación estratégica
                     </h3>
-                    <div className="relative bg-gray-100 dark:bg-gray-600 rounded-xl h-48 lg:h-56 overflow-hidden">
+                    <div className="relative bg-gray-800:bg-gray-600 rounded-xl h-48 lg:h-56 overflow-hidden">
                         {/* Mapa de fondo (placeholder - en producción sería una imagen real) */}
                         <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-green-50 dark:from-blue-900/20 dark:to-green-900/20 flex items-center justify-center">
                             <MapPin className="w-16 h-16 text-gray-400 dark:text-gray-500" />
@@ -123,7 +123,7 @@ export function CommuneLifeSection({ building, variant = "catalog", className = 
                         {/* Leyenda del mapa */}
                         <div className="absolute bottom-3 left-3 right-3">
                             <div className="bg-white/90 dark:bg-gray-800/90 rounded-lg p-2 text-xs">
-                                <div className="flex items-center justify-center gap-4 text-gray-600 dark:text-gray-300">
+                                <div className="flex items-center justify-center gap-4 text-gray-300:text-gray-300">
                                     <div className="flex items-center gap-1">
                                         <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
                                         <span>Metro</span>

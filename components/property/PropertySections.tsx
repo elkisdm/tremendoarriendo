@@ -45,7 +45,7 @@ const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
-    <div className="border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-shadow duration-300">
+    <div className="border border-gray-700:border-gray-700 rounded-2xl overflow-hidden bg-gray-800:bg-gray-800 shadow-sm hover:shadow-md transition-shadow duration-300">
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full px-6 py-5 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 hover:from-gray-100 hover:to-gray-200 dark:hover:from-gray-700 dark:hover:to-gray-600 transition-all duration-300 flex items-center justify-between text-left group"
@@ -56,17 +56,17 @@ const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({
           {Icon && (
             <div className={`p-2 rounded-lg transition-colors duration-300 ${isOpen
               ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
-              : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30 group-hover:text-blue-600 dark:group-hover:text-blue-400'
+              : 'bg-gray-800:bg-gray-700 text-gray-300:text-gray-400 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30 group-hover:text-blue-600 dark:group-hover:text-blue-400'
               }`}>
               <Icon className="w-5 h-5" />
             </div>
           )}
-          <h3 className="font-bold text-lg text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
+          <h3 className="font-bold text-lg text-white:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
             {title}
           </h3>
         </div>
-        <div className="p-2 rounded-lg bg-white dark:bg-gray-600 shadow-sm">
-          <ChevronDown className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+        <div className="p-2 rounded-lg bg-gray-800:bg-gray-600 shadow-sm">
+          <ChevronDown className="w-5 h-5 text-gray-300:text-gray-400" />
         </div>
       </button>
 
@@ -75,7 +75,7 @@ const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({
           id={`collapsible-${title.toLowerCase().replace(/\s+/g, '-')}`}
           className="overflow-hidden"
         >
-          <div className="px-6 py-6 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-700">
+          <div className="px-6 py-6 bg-gray-800:bg-gray-900 border-t border-gray-100 dark:border-gray-700">
             {children}
           </div>
         </div>
@@ -151,8 +151,8 @@ export function PropertySections({
               <Star className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
             </div>
             <div>
-              <div className="font-bold text-gray-900 dark:text-white text-sm lg:text-base">{unitDetails.tipologia}</div>
-              <div className="text-xs lg:text-sm text-gray-600 dark:text-gray-400">Tipología</div>
+              <div className="font-bold text-white:text-white text-sm lg:text-base">{unitDetails.tipologia}</div>
+              <div className="text-xs lg:text-sm text-gray-300:text-gray-400">Tipología</div>
             </div>
           </div>
 
@@ -161,8 +161,8 @@ export function PropertySections({
               <Square className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
             </div>
             <div>
-              <div className="font-bold text-gray-900 dark:text-white text-sm lg:text-base">{unitDetails.m2}</div>
-              <div className="text-xs lg:text-sm text-gray-600 dark:text-gray-400">Metros cuadrados</div>
+              <div className="font-bold text-white:text-white text-sm lg:text-base">{unitDetails.m2}</div>
+              <div className="text-xs lg:text-sm text-gray-300:text-gray-400">Metros cuadrados</div>
             </div>
           </div>
 
@@ -171,8 +171,8 @@ export function PropertySections({
               <MapPin className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
             </div>
             <div>
-              <div className="font-bold text-gray-900 dark:text-white text-sm lg:text-base">{unitDetails.piso}</div>
-              <div className="text-xs lg:text-sm text-gray-600 dark:text-gray-400">Piso</div>
+              <div className="font-bold text-white:text-white text-sm lg:text-base">{unitDetails.piso}</div>
+              <div className="text-xs lg:text-sm text-gray-300:text-gray-400">Piso</div>
             </div>
           </div>
 
@@ -181,8 +181,8 @@ export function PropertySections({
               <Info className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
             </div>
             <div>
-              <div className="font-bold text-gray-900 dark:text-white">{unitDetails.orientacion}</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Orientación</div>
+              <div className="font-bold text-white:text-white">{unitDetails.orientacion}</div>
+              <div className="text-sm text-gray-300:text-gray-400">Orientación</div>
             </div>
           </div>
 
@@ -193,8 +193,8 @@ export function PropertySections({
                 <Square className="w-5 h-5 text-green-600 dark:text-green-400" />
               </div>
               <div>
-                <div className="font-bold text-gray-900 dark:text-white">{unitDetails.area_interior}m²</div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">Área interior</div>
+                <div className="font-bold text-white:text-white">{unitDetails.area_interior}m²</div>
+                <div className="text-sm text-gray-300:text-gray-400">Área interior</div>
               </div>
             </div>
           )}
@@ -205,8 +205,8 @@ export function PropertySections({
                 <Square className="w-5 h-5 text-green-600 dark:text-green-400" />
               </div>
               <div>
-                <div className="font-bold text-gray-900 dark:text-white">{unitDetails.area_exterior}m²</div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">Área exterior</div>
+                <div className="font-bold text-white:text-white">{unitDetails.area_exterior}m²</div>
+                <div className="text-sm text-gray-300:text-gray-400">Área exterior</div>
               </div>
             </div>
           )}
@@ -217,8 +217,8 @@ export function PropertySections({
               <Car className="w-5 h-5 text-red-600 dark:text-red-400" />
             </div>
             <div>
-              <div className="font-bold text-gray-900 dark:text-white">No disponible</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Estacionamiento</div>
+              <div className="font-bold text-white:text-white">No disponible</div>
+              <div className="text-sm text-gray-300:text-gray-400">Estacionamiento</div>
             </div>
           </div>
 
@@ -227,41 +227,41 @@ export function PropertySections({
               <Square className="w-5 h-5 text-green-600 dark:text-green-400" />
             </div>
             <div>
-              <div className="font-bold text-gray-900 dark:text-white">Desde $30.000</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Bodega</div>
+              <div className="font-bold text-white:text-white">Desde $30.000</div>
+              <div className="text-sm text-gray-300:text-gray-400">Bodega</div>
             </div>
           </div>
 
           {/* Características especiales */}
           <div className={`flex items-center gap-3 p-3 rounded-xl border ${unitDetails.amoblado
             ? 'bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-700'
-            : 'bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600'}`}>
+            : 'bg-gray-900:bg-gray-700 border-gray-700:border-gray-600'}`}>
             <div className={`p-2 rounded-lg ${unitDetails.amoblado
               ? 'bg-orange-100 dark:bg-orange-800 text-orange-600 dark:text-orange-400'
-              : 'bg-gray-100 dark:bg-gray-600 text-gray-400'}`}>
+              : 'bg-gray-800:bg-gray-600 text-gray-400'}`}>
               <CheckCircle className="w-5 h-5" />
             </div>
             <div>
-              <div className="font-bold text-gray-900 dark:text-white">
+              <div className="font-bold text-white:text-white">
                 {unitDetails.amoblado ? 'Amoblado' : 'Sin amoblar'}
               </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Estado</div>
+              <div className="text-sm text-gray-300:text-gray-400">Estado</div>
             </div>
           </div>
 
           <div className={`flex items-center gap-3 p-3 rounded-xl border ${unitDetails.petFriendly
             ? 'bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-700'
-            : 'bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600'}`}>
+            : 'bg-gray-900:bg-gray-700 border-gray-700:border-gray-600'}`}>
             <div className={`p-2 rounded-lg ${unitDetails.petFriendly
               ? 'bg-purple-100 dark:bg-purple-800 text-purple-600 dark:text-purple-400'
-              : 'bg-gray-100 dark:bg-gray-600 text-gray-400'}`}>
+              : 'bg-gray-800:bg-gray-600 text-gray-400'}`}>
               <Users className="w-5 h-5" />
             </div>
             <div>
-              <div className="font-bold text-gray-900 dark:text-white">
+              <div className="font-bold text-white:text-white">
                 {unitDetails.petFriendly ? 'Permitidas' : 'No permitidas'}
               </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Mascotas</div>
+              <div className="text-sm text-gray-300:text-gray-400">Mascotas</div>
             </div>
           </div>
 
@@ -272,8 +272,8 @@ export function PropertySections({
                 <Shield className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
               </div>
               <div>
-                <div className="font-bold text-gray-900 dark:text-white">{unitDetails.garantia_cuotas} cuotas</div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">Garantía</div>
+                <div className="font-bold text-white:text-white">{unitDetails.garantia_cuotas} cuotas</div>
+                <div className="text-sm text-gray-300:text-gray-400">Garantía</div>
               </div>
             </div>
           )}
@@ -284,21 +284,21 @@ export function PropertySections({
                 <Calendar className="w-5 h-5 text-red-600 dark:text-red-400" />
               </div>
               <div>
-                <div className="font-bold text-gray-900 dark:text-white">${unitDetails.renta_minima.toLocaleString('es-CL')}</div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">Renta mínima</div>
+                <div className="font-bold text-white:text-white">${unitDetails.renta_minima.toLocaleString('es-CL')}</div>
+                <div className="text-sm text-gray-300:text-gray-400">Renta mínima</div>
               </div>
             </div>
           )}
 
           {/* Código interno */}
           {unitDetails.codigoInterno && (
-            <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600">
-              <div className="p-2 bg-gray-100 dark:bg-gray-600 rounded-lg">
-                <Info className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            <div className="flex items-center gap-3 p-3 bg-gray-900:bg-gray-700 rounded-xl border border-gray-700:border-gray-600">
+              <div className="p-2 bg-gray-800:bg-gray-600 rounded-lg">
+                <Info className="w-5 h-5 text-gray-300:text-gray-400" />
               </div>
               <div>
-                <div className="font-bold text-gray-900 dark:text-white">{unitDetails.codigoInterno}</div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">Código interno</div>
+                <div className="font-bold text-white:text-white">{unitDetails.codigoInterno}</div>
+                <div className="text-sm text-gray-300:text-gray-400">Código interno</div>
               </div>
             </div>
           )}
@@ -313,18 +313,18 @@ export function PropertySections({
               key={amenidad.nombre}
               className={`flex items-center gap-3 p-3 rounded-xl transition-all duration-300 ${amenidad.disponible
                 ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700'
-                : 'bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600'
+                : 'bg-gray-900:bg-gray-700 border border-gray-700:border-gray-600'
                 }`}
             >
               <div className={`p-2 rounded-lg ${amenidad.disponible
                 ? 'bg-green-100 dark:bg-green-800 text-green-600 dark:text-green-400'
-                : 'bg-gray-100 dark:bg-gray-600 text-gray-400'
+                : 'bg-gray-800:bg-gray-600 text-gray-400'
                 }`}>
                 <amenidad.icon className="w-5 h-5" />
               </div>
               <span className={`flex-1 font-medium ${amenidad.disponible
-                ? 'text-gray-900 dark:text-white'
-                : 'text-gray-500 dark:text-gray-400'
+                ? 'text-white:text-white'
+                : 'text-gray-400:text-gray-400'
                 }`}>
                 {amenidad.nombre}
               </span>
@@ -355,7 +355,7 @@ export function PropertySections({
                 <div className="p-1.5 bg-blue-100 dark:bg-blue-800 rounded-lg">
                   <CheckCircle className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                 </div>
-                <span className="font-medium text-gray-900 dark:text-white">{feature}</span>
+                <span className="font-medium text-white:text-white">{feature}</span>
               </div>
             ))}
           </div>
@@ -373,7 +373,7 @@ export function PropertySections({
                 <div className="p-1.5 bg-blue-100 dark:bg-blue-800 rounded-lg">
                   <CheckCircle className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                 </div>
-                <span className="font-medium text-gray-900 dark:text-white">{feature}</span>
+                <span className="font-medium text-white:text-white">{feature}</span>
               </div>
             ))}
           </div>
@@ -389,13 +389,13 @@ export function PropertySections({
               <div className="p-2 bg-blue-100 dark:bg-blue-800 rounded-lg">
                 <Shield className="w-5 h-5 text-blue-600 dark:text-blue-400" />
               </div>
-              <h3 className="font-semibold text-gray-900 dark:text-white">Requisitos Generales</h3>
+              <h3 className="font-semibold text-white:text-white">Requisitos Generales</h3>
             </div>
             <div className="space-y-3">
               {requisitos.generales.map((requisito, index) => (
-                <div key={index} className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                <div key={index} className="flex items-center gap-3 p-3 bg-gray-800:bg-gray-800 rounded-lg">
                   <CheckCircle className="w-4 h-4 text-blue-500 flex-shrink-0" />
-                  <span className="text-sm text-gray-900 dark:text-white">{requisito}</span>
+                  <span className="text-sm text-white:text-white">{requisito}</span>
                 </div>
               ))}
             </div>
@@ -409,13 +409,13 @@ export function PropertySections({
                 <div className="p-2 bg-green-100 dark:bg-green-800 rounded-lg">
                   <Users className="w-5 h-5 text-green-600 dark:text-green-400" />
                 </div>
-                <h3 className="font-semibold text-gray-900 dark:text-white">Trabajador Dependiente</h3>
+                <h3 className="font-semibold text-white:text-white">Trabajador Dependiente</h3>
               </div>
               <div className="space-y-3">
                 {requisitos.dependiente.map((requisito, index) => (
-                  <div key={index} className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                  <div key={index} className="flex items-center gap-3 p-3 bg-gray-800:bg-gray-800 rounded-lg">
                     <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                    <span className="text-sm text-gray-900 dark:text-white">{requisito}</span>
+                    <span className="text-sm text-white:text-white">{requisito}</span>
                   </div>
                 ))}
               </div>
@@ -427,13 +427,13 @@ export function PropertySections({
                 <div className="p-2 bg-purple-100 dark:bg-purple-800 rounded-lg">
                   <Square className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                 </div>
-                <h3 className="font-semibold text-gray-900 dark:text-white">Trabajador Independiente</h3>
+                <h3 className="font-semibold text-white:text-white">Trabajador Independiente</h3>
               </div>
               <div className="space-y-3">
                 {requisitos.independiente.map((requisito, index) => (
-                  <div key={index} className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+                  <div key={index} className="flex items-center gap-3 p-3 bg-gray-800:bg-gray-800 rounded-lg">
                     <CheckCircle className="w-4 h-4 text-purple-500 flex-shrink-0" />
-                    <span className="text-sm text-gray-900 dark:text-white">{requisito}</span>
+                    <span className="text-sm text-white:text-white">{requisito}</span>
                   </div>
                 ))}
               </div>
@@ -462,7 +462,7 @@ export function PropertySections({
               <div className="p-2 bg-purple-100 dark:bg-purple-800 rounded-lg">
                 <MapPin className="w-5 h-5 text-purple-600 dark:text-purple-400" />
               </div>
-              <h4 className="font-bold text-gray-900 dark:text-white">Ubicación</h4>
+              <h4 className="font-bold text-white:text-white">Ubicación</h4>
             </div>
             <p className="text-gray-700 dark:text-gray-300 font-medium">{building.comuna}, Santiago</p>
           </div>
@@ -472,7 +472,7 @@ export function PropertySections({
               <div className="p-2 bg-purple-100 dark:bg-purple-800 rounded-lg">
                 <Calendar className="w-5 h-5 text-purple-600 dark:text-purple-400" />
               </div>
-              <h4 className="font-bold text-gray-900 dark:text-white">Construcción</h4>
+              <h4 className="font-bold text-white:text-white">Construcción</h4>
             </div>
             <p className="text-gray-700 dark:text-gray-300 font-medium">2020</p>
           </div>
@@ -482,7 +482,7 @@ export function PropertySections({
               <div className="p-2 bg-purple-100 dark:bg-purple-800 rounded-lg">
                 <Users className="w-5 h-5 text-purple-600 dark:text-purple-400" />
               </div>
-              <h4 className="font-bold text-gray-900 dark:text-white">Unidades</h4>
+              <h4 className="font-bold text-white:text-white">Unidades</h4>
             </div>
             <p className="text-gray-700 dark:text-gray-300 font-medium">{building.units.length} departamentos</p>
           </div>
@@ -492,7 +492,7 @@ export function PropertySections({
               <div className="p-2 bg-purple-100 dark:bg-purple-800 rounded-lg">
                 <Shield className="w-5 h-5 text-purple-600 dark:text-purple-400" />
               </div>
-              <h4 className="font-bold text-gray-900 dark:text-white">Administración</h4>
+              <h4 className="font-bold text-white:text-white">Administración</h4>
             </div>
             <p className="text-gray-700 dark:text-gray-300 font-medium">Profesional con conserjería 24/7</p>
           </div>
@@ -501,4 +501,9 @@ export function PropertySections({
     </section>
   );
 }
+
+
+
+
+
 

@@ -31,18 +31,15 @@ function adaptBuildingSummaryToBuilding(buildingSummary: BuildingSummary): Build
 
   return {
     id: buildingSummary.id,
+    slug: buildingSummary.slug,
     name: buildingSummary.name,
     comuna: buildingSummary.comuna,
     address: buildingSummary.address,
-    cover: buildingSummary.coverImage ?? buildingSummary.gallery?.[0] ?? "/images/nunoa-cover.jpg",
-    hero: buildingSummary.gallery?.[1] ?? buildingSummary.gallery?.[0] ?? "/images/nunoa-cover.jpg",
+    coverImage: buildingSummary.coverImage ?? buildingSummary.gallery?.[0] ?? "/images/nunoa-cover.jpg",
     gallery: buildingSummary.gallery,
     units: syntheticUnits,
     amenities: [],
-    promo: buildingSummary.badges?.[0] ? {
-      label: buildingSummary.badges[0].label,
-      tag: buildingSummary.badges[0].tag
-    } : undefined
+    badges: buildingSummary.badges || []
   };
 }
 
@@ -85,14 +82,14 @@ const GridCell = React.memo<GridCellProps>(({ columnIndex, rowIndex, style, data
         className="h-full"
       >
         {CARD_V2 ? (
-          <BuildingCardV2 
+          <BuildingCardV2
             building={adaptBuildingSummaryToBuilding(building)}
             priority={itemIndex === 0}
             showBadge={true}
             className="h-full"
           />
         ) : (
-          <BuildingCard 
+          <BuildingCard
             building={building}
             priority={itemIndex === 0}
           />
@@ -104,10 +101,10 @@ const GridCell = React.memo<GridCellProps>(({ columnIndex, rowIndex, style, data
 
 GridCell.displayName = 'GridCell';
 
-export function VirtualResultsGrid({ 
-  items = [], 
-  isLoading, 
-  error, 
+export function VirtualResultsGrid({
+  items = [],
+  isLoading,
+  error,
   onResultsChange,
   className = ""
 }: VirtualResultsGridProps) {
@@ -182,13 +179,13 @@ export function VirtualResultsGrid({
             transition={{ duration: 0.3, delay: idx * 0.05 }}
           >
             {CARD_V2 ? (
-              <BuildingCardV2 
+              <BuildingCardV2
                 building={adaptBuildingSummaryToBuilding(building)}
                 priority={idx === 0}
                 showBadge={true}
               />
             ) : (
-              <BuildingCard 
+              <BuildingCard
                 building={building}
                 priority={idx === 0}
               />
@@ -230,15 +227,15 @@ interface VirtualResultsWrapperProps {
   };
 }
 
-export function VirtualResultsWrapper({ 
-  filters, 
-  sort, 
+export function VirtualResultsWrapper({
+  filters,
+  sort,
   onResultsChange,
   useFetchBuildings
 }: VirtualResultsWrapperProps) {
-  const { data: buildings = [], isLoading, isFetching, error } = useFetchBuildings({ 
-    filters, 
-    sort 
+  const { data: buildings = [], isLoading, isFetching, error } = useFetchBuildings({
+    filters,
+    sort
   });
 
   return (

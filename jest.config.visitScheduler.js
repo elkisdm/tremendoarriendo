@@ -8,7 +8,12 @@ const createJestConfig = nextJest({
 // Add any custom config to be passed to Jest
 const customJestConfig = {
     setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
+    setupFiles: ['<rootDir>/tests/setup-polyfills.ts'],
     testEnvironment: 'jsdom',
+    // Configuración específica para Next.js
+    testEnvironmentOptions: {
+        customExportConditions: [''],
+    },
     testMatch: [
         '<rootDir>/tests/**/*.test.{ts,tsx}',
         '<rootDir>/tests/**/*.spec.{ts,tsx}'
@@ -40,12 +45,21 @@ const customJestConfig = {
             statements: 85,
         },
     },
-    moduleNameMapping: {
+    moduleNameMapper: {
         '^@/(.*)$': '<rootDir>/$1',
         '^@components/(.*)$': '<rootDir>/components/$1',
         '^@hooks/(.*)$': '<rootDir>/hooks/$1',
         '^@lib/(.*)$': '<rootDir>/lib/$1',
         '^@types/(.*)$': '<rootDir>/types/$1',
+        '^@data/(.*)$': '<rootDir>/data/$1',
+        '^@schemas/(.*)$': '<rootDir>/schemas/$1',
+        // Mocks para librerías externas
+        '^lucide-react$': '<rootDir>/tests/__mocks__/lucide-react.tsx',
+        '^@lib/whatsapp$': '<rootDir>/tests/__mocks__/whatsapp.ts',
+        '^@lib/analytics$': '<rootDir>/tests/__mocks__/analytics.ts',
+        '^server-only$': '<rootDir>/tests/__mocks__/server-only.ts',
+        '^framer-motion$': '<rootDir>/tests/__mocks__/framer-motion.tsx',
+        '^@heroicons/react/24/outline$': '<rootDir>/tests/__mocks__/heroicons.tsx',
     },
     transform: {
         '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { presets: ['next/babel'] }],

@@ -54,7 +54,7 @@ export default function SocialProof() {
                 <h2 id="confianza" className="text-2xl font-bold mb-4">
                     ¿Por qué confiar en mí?
                 </h2>
-                <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
+                <p className="text-gray-300:text-gray-300 max-w-2xl mx-auto mb-8">
                     Apalancado en resultados reales y testimonios de clientes satisfechos
                 </p>
             </div>
@@ -65,17 +65,17 @@ export default function SocialProof() {
                     <div
                         key={index}
                         className="text-center p-6 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 
-                       dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700
+                       dark:from-gray-800 dark:to-gray-900 border border-gray-700:border-gray-700
                        hover:shadow-lg transition-all duration-300 hover:scale-105"
                     >
                         <div className="text-4xl mb-3">{credential.icon}</div>
-                        <div className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-1">
+                        <div className="text-3xl font-bold text-white:text-gray-100 mb-1">
                             {credential.number}
                         </div>
                         <div className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">
                             {credential.label}
                         </div>
-                        <div className="text-sm text-gray-600 dark:text-gray-400">
+                        <div className="text-sm text-gray-300:text-gray-400">
                             {credential.description}
                         </div>
                     </div>
@@ -97,10 +97,10 @@ export default function SocialProof() {
                                     <span className="text-2xl">🎬</span>
                                 </div>
                                 <div>
-                                    <h4 className="font-semibold text-gray-900 dark:text-gray-100">
+                                    <h4 className="font-semibold text-white:text-gray-100">
                                         Video para TikTok
                                     </h4>
-                                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                                    <p className="text-sm text-gray-300:text-gray-400">
                                         Arriendo en Las Condes
                                     </p>
                                 </div>
@@ -117,10 +117,10 @@ export default function SocialProof() {
                                     <span className="text-2xl">📱</span>
                                 </div>
                                 <div>
-                                    <h4 className="font-semibold text-gray-900 dark:text-gray-100">
+                                    <h4 className="font-semibold text-white:text-gray-100">
                                         Reel para Instagram
                                     </h4>
-                                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                                    <p className="text-sm text-gray-300:text-gray-400">
                                         Arriendo en Providencia
                                     </p>
                                 </div>
@@ -155,10 +155,10 @@ export default function SocialProof() {
                                 </span>
                             </div>
                             <div>
-                                <div className="font-semibold text-gray-900 dark:text-gray-100">
+                                <div className="font-semibold text-white:text-gray-100">
                                     {testimonial.author}
                                 </div>
-                                <div className="text-sm text-gray-600 dark:text-gray-400">
+                                <div className="text-sm text-gray-300:text-gray-400">
                                     {testimonial.role}
                                 </div>
                             </div>
@@ -172,7 +172,7 @@ export default function SocialProof() {
                             <div className="w-10 h-10 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
                                 <span className="text-green-600 dark:text-green-400 text-xl">✓</span>
                             </div>
-                            <h4 className="text-lg font-bold text-gray-900 dark:text-gray-100">
+                            <h4 className="text-lg font-bold text-white:text-gray-100">
                                 Garantía 10 interacciones
                             </h4>
                         </div>
@@ -185,7 +185,7 @@ export default function SocialProof() {
 
             {/* CTA de confianza */}
             <div className="text-center pt-6">
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                <p className="text-sm text-gray-400:text-gray-400 mb-4">
                     ¿Listo para generar leads constantes?
                 </p>
                 <a

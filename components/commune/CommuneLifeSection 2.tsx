@@ -110,10 +110,10 @@ export function CommuneLifeSection({
         >
             {/* Header */}
             <div className="text-center">
-                <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                <h2 className="text-3xl lg:text-4xl font-bold text-white:text-white mb-4">
                     Cómo es vivir en {commune}
                 </h2>
-                <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                <p className="text-lg text-gray-300:text-gray-400 max-w-2xl mx-auto">
                     Descubre por qué {commune} es uno de los lugares más atractivos para vivir en Santiago
                 </p>
             </div>
@@ -143,17 +143,17 @@ export function CommuneLifeSection({
                     <motion.div
                         key={index}
                         variants={itemVariants}
-                        className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-700"
+                        className="bg-gray-800:bg-gray-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-700:border-gray-700"
                     >
                         <div className="flex items-center gap-3 mb-4">
                             <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
                                 <highlight.icon className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                             </div>
-                            <h3 className="font-semibold text-gray-900 dark:text-white">
+                            <h3 className="font-semibold text-white:text-white">
                                 {highlight.title}
                             </h3>
                         </div>
-                        <p className="text-gray-600 dark:text-gray-400 text-sm">
+                        <p className="text-gray-300:text-gray-400 text-sm">
                             {highlight.description}
                         </p>
                     </motion.div>
@@ -167,19 +167,19 @@ export function CommuneLifeSection({
             >
                 <div className="flex items-center gap-3 mb-6">
                     <MapPin className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                    <h3 className="text-xl font-semibold text-white:text-white">
                         Puntos de interés cercanos
                     </h3>
                 </div>
 
                 {/* Mock Map */}
-                <div className="relative bg-white dark:bg-gray-700 rounded-xl p-4 h-48 lg:h-64 mb-6">
+                <div className="relative bg-gray-800:bg-gray-700 rounded-xl p-4 h-48 lg:h-64 mb-6">
                     <div className="absolute inset-0 flex items-center justify-center">
                         <div className="text-center">
                             <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-4 mx-auto">
                                 <MapPin className="w-8 h-8 text-blue-600 dark:text-blue-400" />
                             </div>
-                            <p className="text-gray-600 dark:text-gray-400 text-sm">
+                            <p className="text-gray-300:text-gray-400 text-sm">
                                 Mapa interactivo de {commune}
                             </p>
                         </div>
@@ -195,7 +195,7 @@ export function CommuneLifeSection({
                                 top: `${30 + (index % 2) * 30}%`
                             }}
                         >
-                            <div className="bg-white dark:bg-gray-800 rounded-lg px-2 py-1 text-xs shadow-lg border border-gray-200 dark:border-gray-600">
+                            <div className="bg-gray-800:bg-gray-800 rounded-lg px-2 py-1 text-xs shadow-lg border border-gray-700:border-gray-600">
                                 <span className="mr-1">{getPinIcon(pin.type)}</span>
                                 {pin.name}
                             </div>
@@ -208,7 +208,7 @@ export function CommuneLifeSection({
                     {mapPins.map((pin, index) => (
                         <div
                             key={index}
-                            className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400"
+                            className="flex items-center gap-2 text-sm text-gray-300:text-gray-400"
                         >
                             <span>{getPinIcon(pin.type)}</span>
                             <span>{pin.name}</span>

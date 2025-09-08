@@ -23,7 +23,7 @@ const categoryColors = {
   luxury: "bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-200",
   outdoor: "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200",
   security: "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200",
-  default: "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
+  default: "bg-gray-800:bg-gray-700 text-gray-800 dark:text-gray-200"
 };
 
 export const AmenityChips: React.FC<AmenityChipsProps> = ({
@@ -79,10 +79,10 @@ export const AmenityChips: React.FC<AmenityChipsProps> = ({
     <div className={`space-y-4 ${className}`}>
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+        <h3 className="text-lg font-semibold text-white:text-white">
           Amenidades destacadas
         </h3>
-        <span className="text-sm text-gray-500 dark:text-gray-400">
+        <span className="text-sm text-gray-400:text-gray-400">
           {items.length} amenidades
         </span>
       </div>
@@ -106,7 +106,7 @@ export const AmenityChips: React.FC<AmenityChipsProps> = ({
               className="relative group"
             >
               <motion.div
-                className={`flex items-center gap-2 px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 cursor-pointer transition-all duration-300 ${getCategoryColor(item.category)}`}
+                className={`flex items-center gap-2 px-3 py-2 rounded-xl border border-gray-700:border-gray-700 cursor-pointer transition-all duration-300 ${getCategoryColor(item.category)}`}
                 whileHover={{
                   scale: 1.05,
                   y: -2,
@@ -174,7 +174,7 @@ export const AmenityChips: React.FC<AmenityChipsProps> = ({
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="pt-4 border-t border-gray-200 dark:border-gray-700"
+            className="pt-4 border-t border-gray-700:border-gray-700"
           >
             <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
               Categorías

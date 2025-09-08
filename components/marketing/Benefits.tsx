@@ -44,7 +44,7 @@ const benefits = [
 
 export default function Benefits() {
   return (
-    <section className="py-24 bg-gradient-to-b from-background to-muted/20">
+    <section className="py-24 bg-gradient-to-b from-bg to-surface/20">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -71,7 +71,7 @@ export default function Benefits() {
               transition={{ duration: 0.6, delay: index * 0.1 }}
               className="group relative"
             >
-              <div className="relative p-6 rounded-3xl bg-gradient-to-br from-background to-muted/50 border border-border/50 hover:border-border transition-all duration-300 hover:shadow-lg hover:shadow-black/5 dark:hover:shadow-white/5">
+              <div className="relative p-6 rounded-3xl bg-card border border-border/50 hover:border-border transition-all duration-300 hover:shadow-lg hover:shadow-black/5 dark:hover:shadow-white/5">
                 {/* Icono con gradiente */}
                 <div className={`inline-flex p-3 rounded-2xl bg-gradient-to-br ${benefit.bgColor} dark:${benefit.darkBgColor} ring-1 ${benefit.ringColor} mb-4 group-hover:scale-110 transition-transform duration-300`}>
                   <benefit.icon className={`w-6 h-6 bg-gradient-to-r ${benefit.color} bg-clip-text text-transparent`} />

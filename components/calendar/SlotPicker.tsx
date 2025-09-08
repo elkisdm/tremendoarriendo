@@ -28,7 +28,7 @@ export default function SlotPicker({ slots, onSelect, className }: SlotPickerPro
           <button
             type="button"
             className={clx(
-              "w-full rounded-xl border border-[var(--ring)]/20 bg-white dark:bg-zinc-900 text-sm",
+              "w-full rounded-xl border border-[var(--ring)]/20 bg-gray-800:bg-zinc-900 text-sm",
               "px-3 py-2 text-zinc-900 dark:text-zinc-100 shadow-sm",
               "transition-colors motion-reduce:transition-none",
               "hover:bg-violet-50 dark:hover:bg-violet-900/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-zinc-900"

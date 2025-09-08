@@ -64,11 +64,11 @@ export const PriceBreakdown: React.FC<PriceBreakdownProps> = ({
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className={`bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-lg ${className}`}
+      className={`bg-gray-800:bg-gray-800 rounded-2xl border border-gray-700:border-gray-700 p-6 shadow-lg ${className}`}
     >
       {/* Header con badge de 0% comisión */}
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+        <h3 className="text-lg font-semibold text-white:text-white">
           Desglose de costos
         </h3>
         {hasNoFee && (
@@ -92,15 +92,15 @@ export const PriceBreakdown: React.FC<PriceBreakdownProps> = ({
               <DollarSign className="w-4 h-4 text-blue-600 dark:text-blue-400" />
             </div>
             <div>
-              <span className="text-sm font-medium text-gray-900 dark:text-white">
+              <span className="text-sm font-medium text-white:text-white">
                 Arriendo mensual
               </span>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
+              <p className="text-xs text-gray-400:text-gray-400">
                 Valor base del contrato
               </p>
             </div>
           </div>
-          <span className="text-sm font-semibold text-gray-900 dark:text-white">
+          <span className="text-sm font-semibold text-white:text-white">
             {formatCurrency(rent)}
           </span>
         </motion.div>
@@ -111,15 +111,15 @@ export const PriceBreakdown: React.FC<PriceBreakdownProps> = ({
               <Info className="w-4 h-4 text-purple-600 dark:text-purple-400" />
             </div>
             <div>
-              <span className="text-sm font-medium text-gray-900 dark:text-white">
+              <span className="text-sm font-medium text-white:text-white">
                 Gastos comunes
               </span>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
+              <p className="text-xs text-gray-400:text-gray-400">
                 Servicios y mantención
               </p>
             </div>
           </div>
-          <span className="text-sm font-semibold text-gray-900 dark:text-white">
+          <span className="text-sm font-semibold text-white:text-white">
             {formatCurrency(commonExpenses)}
           </span>
         </motion.div>
@@ -131,15 +131,15 @@ export const PriceBreakdown: React.FC<PriceBreakdownProps> = ({
                 <DollarSign className="w-4 h-4 text-orange-600 dark:text-orange-400" />
               </div>
               <div>
-                <span className="text-sm font-medium text-gray-900 dark:text-white">
+                <span className="text-sm font-medium text-white:text-white">
                   Depósito de garantía
                 </span>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
+                <p className="text-xs text-gray-400:text-gray-400">
                   Se devuelve al finalizar
                 </p>
               </div>
             </div>
-            <span className="text-sm font-semibold text-gray-900 dark:text-white">
+            <span className="text-sm font-semibold text-white:text-white">
               {formatCurrency(deposit)}
             </span>
           </motion.div>
@@ -152,15 +152,15 @@ export const PriceBreakdown: React.FC<PriceBreakdownProps> = ({
                 <DollarSign className="w-4 h-4 text-red-600 dark:text-red-400" />
               </div>
               <div>
-                <span className="text-sm font-medium text-gray-900 dark:text-white">
+                <span className="text-sm font-medium text-white:text-white">
                   Comisión
                 </span>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
+                <p className="text-xs text-gray-400:text-gray-400">
                   Cargo único
                 </p>
               </div>
             </div>
-            <span className="text-sm font-semibold text-gray-900 dark:text-white">
+            <span className="text-sm font-semibold text-white:text-white">
               {formatCurrency(fee)}
             </span>
           </motion.div>
@@ -169,7 +169,7 @@ export const PriceBreakdown: React.FC<PriceBreakdownProps> = ({
         {/* Separador */}
         <motion.div 
           variants={itemVariants}
-          className="border-t border-gray-200 dark:border-gray-700 pt-4"
+          className="border-t border-gray-700:border-gray-700 pt-4"
         />
 
         {/* Total mensual */}
@@ -179,10 +179,10 @@ export const PriceBreakdown: React.FC<PriceBreakdownProps> = ({
               <DollarSign className="w-4 h-4 text-green-600 dark:text-green-400" />
             </div>
             <div>
-              <span className="text-base font-semibold text-gray-900 dark:text-white">
+              <span className="text-base font-semibold text-white:text-white">
                 Total mensual
               </span>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
+              <p className="text-xs text-gray-400:text-gray-400">
                 Arriendo + Gastos comunes
               </p>
             </div>
@@ -196,11 +196,11 @@ export const PriceBreakdown: React.FC<PriceBreakdownProps> = ({
       {/* Información adicional */}
       <motion.div 
         variants={itemVariants}
-        className="mt-6 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl"
+        className="mt-6 p-4 bg-gray-900:bg-gray-700/50 rounded-xl"
       >
         <div className="flex items-start gap-3">
           <Info className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
-          <div className="text-sm text-gray-600 dark:text-gray-300">
+          <div className="text-sm text-gray-300:text-gray-300">
             <p className="font-medium mb-1">¿Qué incluye?</p>
             <ul className="space-y-1 text-xs">
               <li>• Arriendo del departamento</li>

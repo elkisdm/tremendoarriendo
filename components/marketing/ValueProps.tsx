@@ -40,7 +40,7 @@ export default function ValueProps() {
         <h2 id="beneficios" className="text-2xl font-bold mb-2">
           ¿Por qué elegir este pack?
         </h2>
-        <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+        <p className="text-gray-300:text-gray-300 max-w-2xl mx-auto">
           Diseñado para maximizar tus conversiones con elementos probados en el mercado inmobiliario
         </p>
       </div>
@@ -49,7 +49,7 @@ export default function ValueProps() {
         {valueProps.map((prop, index) => (
           <div
             key={index}
-            className="group relative p-6 rounded-xl border border-gray-200 dark:border-gray-700 
+            className="group relative p-6 rounded-xl border border-gray-700:border-gray-700 
                        hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-200
                        hover:shadow-md dark:hover:shadow-gray-900/20"
           >
@@ -68,10 +68,10 @@ export default function ValueProps() {
 
             {/* Contenido */}
             <div className="space-y-2">
-              <h3 className="font-semibold text-lg text-gray-900 dark:text-gray-100">
+              <h3 className="font-semibold text-lg text-white:text-gray-100">
                 {prop.title}
               </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+              <p className="text-sm text-gray-300:text-gray-300 leading-relaxed">
                 {prop.description}
               </p>
             </div>
@@ -86,7 +86,7 @@ export default function ValueProps() {
 
       {/* CTA secundario */}
       <div className="text-center pt-4">
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+        <p className="text-sm text-gray-400:text-gray-400 mb-2">
           ¿Necesitas más información?
         </p>
         <a

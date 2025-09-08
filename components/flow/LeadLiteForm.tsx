@@ -143,7 +143,7 @@ export function LeadLiteForm({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className={`bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden max-w-md w-full mx-4 sm:mx-0 ${className}`}
+            className={`bg-gray-800:bg-gray-900 rounded-2xl shadow-2xl border border-gray-700:border-gray-700 overflow-hidden max-w-md w-full mx-4 sm:mx-0 ${className}`}
         >
             {/* Header */}
             <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-4 sm:p-6 text-white">
@@ -202,7 +202,7 @@ export function LeadLiteForm({
                                         value={formData[currentField]}
                                         onChange={(e) => handleFieldChange(currentField, e.target.value)}
                                         placeholder={getFieldPlaceholder(currentField)}
-                                        className="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                                        className="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-800:bg-gray-800 text-white:text-white"
                                         autoFocus
                                         onKeyPress={(e) => {
                                             if (e.key === 'Enter' && isFieldValid(currentField)) {
@@ -218,7 +218,7 @@ export function LeadLiteForm({
                         <div className="flex gap-3">
                             <button
                                 onClick={handleBack}
-                                className="flex-1 px-4 py-3 text-gray-600 dark:text-gray-400 border border-gray-300 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                                className="flex-1 px-4 py-3 text-gray-300:text-gray-400 border border-gray-300 dark:border-gray-600 rounded-xl hover:bg-gray-900:hover:bg-gray-800 transition-colors"
                             >
                                 Atrás
                             </button>
@@ -249,7 +249,7 @@ export function LeadLiteForm({
 
                         {/* Trust Indicators */}
                         <div className="text-center space-y-2">
-                            <div className="flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                            <div className="flex items-center justify-center gap-2 text-sm text-gray-400:text-gray-400">
                                 <Shield className="w-4 h-4" />
                                 <span>Datos protegidos</span>
                             </div>

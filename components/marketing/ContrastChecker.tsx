@@ -83,7 +83,7 @@ export function ContrastChecker({
     }
 
     return (
-        <div className="fixed bottom-4 right-4 bg-white dark:bg-gray-800 p-3 rounded-lg shadow-lg border text-xs z-50">
+        <div className="fixed bottom-4 right-4 bg-gray-800:bg-gray-800 p-3 rounded-lg shadow-lg border text-xs z-50">
             <div className="font-semibold mb-1">{label}</div>
             <div className="space-y-1">
                 <div className="flex items-center gap-2">
@@ -147,5 +147,10 @@ export function getAAColors(baseColor: string, isDark = false) {
     // Fallback
     return isDark ? AA_COLORS.light : AA_COLORS.highContrast;
 }
+
+
+
+
+
 
 

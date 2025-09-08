@@ -39,7 +39,7 @@ export function PropertyBreadcrumb({ building, variant = "catalog" }: PropertyBr
       aria-label="Navegación de migas de pan"
       className="mb-4 lg:mb-6"
     >
-      <ol className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+      <ol className="flex items-center space-x-2 text-sm text-gray-300:text-gray-400">
         {breadcrumbItems.map((item, index) => (
           <React.Fragment key={item.href}>
             <li>
@@ -56,11 +56,16 @@ export function PropertyBreadcrumb({ building, variant = "catalog" }: PropertyBr
             )}
           </React.Fragment>
         ))}
-        <li className="text-gray-900 dark:text-white font-medium" aria-current="page">
+        <li className="text-white:text-white font-medium" aria-current="page">
           {building.name}
         </li>
       </ol>
     </nav>
   );
 }
+
+
+
+
+
 

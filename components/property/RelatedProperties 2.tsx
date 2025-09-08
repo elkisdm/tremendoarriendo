@@ -63,10 +63,10 @@ export function RelatedProperties({
         >
             {/* Header */}
             <div className="text-center lg:text-left">
-                <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                <h2 className="text-2xl lg:text-3xl font-bold text-white:text-white mb-2">
                     Propiedades relacionadas
                 </h2>
-                <p className="text-gray-600 dark:text-gray-400">
+                <p className="text-gray-300:text-gray-400">
                     Descubre más opciones en {currentBuilding.comuna}
                 </p>
             </div>

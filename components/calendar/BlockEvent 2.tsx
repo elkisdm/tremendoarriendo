@@ -59,8 +59,8 @@ export default function BlockEvent({ event, className }: BlockEventProps) {
                     };
                 default:
                     return {
-                        bg: 'bg-gray-50 dark:bg-gray-900/20',
-                        border: 'border-gray-200 dark:border-gray-800',
+                        bg: 'bg-gray-900:bg-gray-900/20',
+                        border: 'border-gray-700:border-gray-800',
                         text: 'text-gray-800 dark:text-gray-200',
                         icon: '⏰'
                     };

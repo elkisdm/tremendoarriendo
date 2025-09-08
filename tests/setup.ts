@@ -1,5 +1,26 @@
 import '@testing-library/jest-dom';
 import React from 'react';
+import { server } from './mocks/server';
+
+// Polyfill para TextEncoder/TextDecoder para MSW
+import { TextEncoder, TextDecoder } from 'util';
+global.TextEncoder = TextEncoder;
+global.TextDecoder = TextDecoder as any;
+
+// Configurar MSW para tests
+beforeAll(() => {
+  server.listen({
+    onUnhandledRequest: 'error',
+  });
+});
+
+afterEach(() => {
+  server.resetHandlers();
+});
+
+afterAll(() => {
+  server.close();
+});
 
 // Mock de Next.js router
 jest.mock('next/navigation', () => ({
@@ -174,7 +195,7 @@ Object.defineProperty(window, 'sessionStorage', {
 });
 
 // Mock de fetch
-global.fetch = jest.fn();
+global.fetch = jest.fn() as jest.MockedFunction<typeof fetch>;
 
 // Mock de console para evitar ruido en los tests
 const originalConsole = console;

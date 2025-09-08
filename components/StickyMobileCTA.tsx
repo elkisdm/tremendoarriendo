@@ -73,12 +73,12 @@ export function StickyMobileCTA({
           <div className="flex gap-2 lg:gap-3 max-w-sm mx-auto">
             {/* Precio resumido a la izquierda */}
             {price && (
-              <div className="flex items-center gap-2 px-3 py-2 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+              <div className="flex items-center gap-2 px-3 py-2 bg-gray-900:bg-gray-800 rounded-lg border border-gray-700:border-gray-700">
                 <div className="text-right">
-                  <div className="text-xs text-gray-500 dark:text-gray-400">
+                  <div className="text-xs text-gray-400:text-gray-400">
                     {discountPrice ? 'Desde' : 'Precio'}
                   </div>
-                  <div className="text-sm font-bold text-gray-900 dark:text-white">
+                  <div className="text-sm font-bold text-white:text-white">
                     ${(discountPrice || price).toLocaleString('es-CL')}
                   </div>
                 </div>
@@ -109,7 +109,7 @@ export function StickyMobileCTA({
             {onCall && (
               <button
                 onClick={handleCall}
-                className="flex items-center justify-center gap-2 px-3 lg:px-4 py-2.5 lg:py-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white text-sm lg:text-base font-medium rounded-lg hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900 transition-all duration-200 motion-reduce:transition-none"
+                className="flex items-center justify-center gap-2 px-3 lg:px-4 py-2.5 lg:py-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-white:text-white text-sm lg:text-base font-medium rounded-lg hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900 transition-all duration-200 motion-reduce:transition-none"
                 aria-label="Llamar por teléfono"
               >
                 <Phone className="w-4 h-4" aria-hidden="true" />

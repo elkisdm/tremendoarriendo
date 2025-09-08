@@ -52,7 +52,7 @@ export function UpsellStepper({ isOpen, onClose, onComplete }: UpsellStepperProp
                 <h3 className="text-2xl font-bold mb-4">
                     {flashOfferContent.upsells.chatbot.title}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-6">
+                <p className="text-gray-300:text-gray-300 mb-6">
                     {flashOfferContent.upsells.chatbot.description}
                 </p>
             </div>
@@ -76,17 +76,17 @@ export function UpsellStepper({ isOpen, onClose, onComplete }: UpsellStepperProp
                 <button
                     onClick={() => handleSelection('chatbot', false)}
                     className={`flex-1 py-3 px-4 rounded-lg border-2 transition-colors ${!selections.chatbot
-                        ? 'border-gray-300 bg-gray-50 dark:border-gray-600 dark:bg-gray-800'
-                        : 'border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'
+                        ? 'border-gray-300 bg-gray-900:border-gray-600 dark:bg-gray-800'
+                        : 'border-gray-200 bg-gray-800:border-gray-700 dark:bg-gray-900'
                         }`}
                 >
-                    <span className="text-sm text-gray-600 dark:text-gray-400">(opcional) Puedo agregarlo más tarde</span>
+                    <span className="text-sm text-gray-300:text-gray-400">(opcional) Puedo agregarlo más tarde</span>
                 </button>
                 <button
                     onClick={() => handleSelection('chatbot', true)}
                     className={`flex-1 py-3 px-4 rounded-lg border-2 transition-colors ${selections.chatbot
                         ? 'border-green-500 bg-green-50 dark:border-green-400 dark:bg-green-900/20'
-                        : 'border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'
+                        : 'border-gray-200 bg-gray-800:border-gray-700 dark:bg-gray-900'
                         }`}
                 >
                     <span className="text-sm font-medium">Sí, quiero el asistente</span>
@@ -101,7 +101,7 @@ export function UpsellStepper({ isOpen, onClose, onComplete }: UpsellStepperProp
                 <h3 className="text-2xl font-bold mb-4">
                     {flashOfferContent.upsells.metaAds.title}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-6">
+                <p className="text-gray-300:text-gray-300 mb-6">
                     {flashOfferContent.upsells.metaAds.description}
                 </p>
             </div>
@@ -118,17 +118,17 @@ export function UpsellStepper({ isOpen, onClose, onComplete }: UpsellStepperProp
                 <button
                     onClick={() => handleSelection('metaAds', false)}
                     className={`flex-1 py-3 px-4 rounded-lg border-2 transition-colors ${!selections.metaAds
-                        ? 'border-gray-300 bg-gray-50 dark:border-gray-600 dark:bg-gray-800'
-                        : 'border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'
+                        ? 'border-gray-300 bg-gray-900:border-gray-600 dark:bg-gray-800'
+                        : 'border-gray-200 bg-gray-800:border-gray-700 dark:bg-gray-900'
                         }`}
                 >
-                    <span className="text-sm text-gray-600 dark:text-gray-400">(opcional) Puedo agregarlo más tarde</span>
+                    <span className="text-sm text-gray-300:text-gray-400">(opcional) Puedo agregarlo más tarde</span>
                 </button>
                 <button
                     onClick={() => handleSelection('metaAds', true)}
                     className={`flex-1 py-3 px-4 rounded-lg border-2 transition-colors ${selections.metaAds
                         ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-900/20'
-                        : 'border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'
+                        : 'border-gray-200 bg-gray-800:border-gray-700 dark:bg-gray-900'
                         }`}
                 >
                     <span className="text-sm font-medium">Quiero el impulso con Ads</span>
@@ -144,27 +144,27 @@ export function UpsellStepper({ isOpen, onClose, onComplete }: UpsellStepperProp
             </div>
 
             <div className="space-y-4">
-                <div className="flex justify-between items-center py-3 border-b border-gray-200 dark:border-gray-700">
+                <div className="flex justify-between items-center py-3 border-b border-gray-700:border-gray-700">
                     <span className="text-gray-700 dark:text-gray-300">Pack Base</span>
                     <span className="font-semibold">{formatPrice(flashOfferContent.totals.base)}</span>
                 </div>
 
                 {selections.chatbot && (
-                    <div className="flex justify-between items-center py-3 border-b border-gray-200 dark:border-gray-700">
+                    <div className="flex justify-between items-center py-3 border-b border-gray-700:border-gray-700">
                         <span className="text-gray-700 dark:text-gray-300">+ Chatbot</span>
                         <span className="font-semibold">{formatPrice(flashOfferContent.upsells.chatbot.price)}</span>
                     </div>
                 )}
 
                 {selections.metaAds && (
-                    <div className="flex justify-between items-center py-3 border-b border-gray-200 dark:border-gray-700">
+                    <div className="flex justify-between items-center py-3 border-b border-gray-700:border-gray-700">
                         <span className="text-gray-700 dark:text-gray-300">+ Meta Ads</span>
                         <span className="font-semibold">{formatPrice(flashOfferContent.upsells.metaAds.price)}</span>
                     </div>
                 )}
 
                 {selections.chatbot && selections.metaAds && (
-                    <div className="flex justify-between items-center py-3 border-b border-gray-200 dark:border-gray-700">
+                    <div className="flex justify-between items-center py-3 border-b border-gray-700:border-gray-700">
                         <span className="text-green-600 dark:text-green-400">Descuento Bundle (10%)</span>
                         <span className="text-green-600 dark:text-green-400 font-semibold">
                             -{formatPrice(flashOfferContent.totals.base + flashOfferContent.upsells.chatbot.price + flashOfferContent.upsells.metaAds.price - flashOfferContent.totals.fullBundle)}
@@ -189,22 +189,22 @@ export function UpsellStepper({ isOpen, onClose, onComplete }: UpsellStepperProp
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-            <div className="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div className="relative bg-gray-800:bg-gray-900 rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
                 {/* Header */}
-                <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+                <div className="flex items-center justify-between p-6 border-b border-gray-700:border-gray-700">
                     <div className="flex items-center space-x-4">
                         <div className="flex space-x-2">
                             <div className={`w-3 h-3 rounded-full ${currentStep >= 1 ? 'bg-green-500' : 'bg-gray-300'}`} />
                             <div className={`w-3 h-3 rounded-full ${currentStep >= 2 ? 'bg-green-500' : 'bg-gray-300'}`} />
                             <div className={`w-3 h-3 rounded-full ${currentStep >= 3 ? 'bg-green-500' : 'bg-gray-300'}`} />
                         </div>
-                        <span className="text-sm text-gray-600 dark:text-gray-400">
+                        <span className="text-sm text-gray-300:text-gray-400">
                             Paso {currentStep} de 3
                         </span>
                     </div>
                     <button
                         onClick={onClose}
-                        className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                        className="text-gray-400 hover:text-gray-300:hover:text-gray-300"
                         aria-label="Cerrar"
                     >
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -221,11 +221,11 @@ export function UpsellStepper({ isOpen, onClose, onComplete }: UpsellStepperProp
                 </div>
 
                 {/* Footer */}
-                <div className="flex justify-between p-6 border-t border-gray-200 dark:border-gray-700">
+                <div className="flex justify-between p-6 border-t border-gray-700:border-gray-700">
                     {currentStep > 1 && (
                         <button
                             onClick={handleBack}
-                            className="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
+                            className="px-4 py-2 text-gray-300:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
                         >
                             Atrás
                         </button>

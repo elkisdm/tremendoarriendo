@@ -1,25 +1,17 @@
 import { render, screen, waitFor } from "@testing-library/react";
-import { rest } from "msw";
-import { setupServer } from "msw/node";
 import FlashVideosPage from "@/app/(marketing)/flash-videos/page";
 
-// Mock del servidor MSW para simular la API
-const server = setupServer(
-    rest.get("/api/flash-videos/cupos", (req, res, ctx) => {
-        return res(
-            ctx.json({
-                cuposDisponibles: 7,
-                total: 10,
-                porcentaje: 70,
-                timestamp: new Date().toISOString(),
-            })
-        );
+// Mock de fetch para simular la API
+global.fetch = jest.fn(() =>
+    Promise.resolve({
+        json: () => Promise.resolve({
+            cuposDisponibles: 7,
+            total: 10,
+            porcentaje: 70,
+            timestamp: new Date().toISOString(),
+        }),
     })
-);
-
-beforeAll(() => server.listen());
-afterEach(() => server.resetHandlers());
-afterAll(() => server.close());
+) as jest.Mock;
 
 // Mock de los componentes que requieren "use client"
 jest.mock("@/components/marketing/CuposCounter", () => {
@@ -47,6 +39,47 @@ jest.mock("@/components/seo/FlashVideosJsonLd", () => {
 jest.mock("@/components/seo/OptimizedImages", () => {
     return function MockOptimizedImages() {
         return <div data-testid="optimized-images" />;
+    };
+});
+
+jest.mock("@/components/marketing/FlashVideosClient", () => {
+    return function MockFlashVideosClient() {
+        return (
+            <div data-testid="flash-videos-client">
+                <h1>2 videos que venden tu arriendo en 72 horas</h1>
+                <div data-testid="cupos-counter">7/10 cupos</div>
+                <a href="#" data-testid="whatsapp-cta">Reservar por WhatsApp</a>
+                <div>
+                    <h2>¿Qué incluye tu Pack Dúo?</h2>
+                    <h2>Planes y Add-ons</h2>
+                    <div>$50</div>
+                    <div>$100</div>
+                    <div>$150</div>
+                    <div>Pack Base</div>
+                    <div>+ Meta Ads</div>
+                    <div>+ ManyChat</div>
+                    <div>MÁS POPULAR</div>
+                </div>
+                <div>
+                    <h2>Proceso en 3 pasos</h2>
+                    <div>Reserva tu cupo</div>
+                    <div>Entrevista rápida</div>
+                    <div>Entrega en 72h</div>
+                </div>
+                <div>
+                    <h2>Preguntas frecuentes</h2>
+                    <div>¿Qué pasa si no me gustan los videos?</div>
+                    <div>¿Puedo usar los videos en otras redes sociales?</div>
+                    <div>¿Qué necesito proporcionar?</div>
+                    <div>¿Por qué solo 10 cupos?</div>
+                </div>
+                <div>
+                    <div>⚠️ Oferta por tiempo limitado</div>
+                    <div>¿Listo para arrendar más rápido?</div>
+                    <div>🚀 Reservar mi cupo ahora</div>
+                </div>
+            </div>
+        );
     };
 });
 

@@ -39,15 +39,15 @@ export function RelatedList({ buildings }: RelatedListProps) {
         className="text-center py-12"
       >
         <div className="max-w-md mx-auto">
-          <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
+          <div className="w-16 h-16 mx-auto mb-4 bg-gray-800:bg-gray-800 rounded-full flex items-center justify-center">
             <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
             </svg>
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+          <h3 className="text-lg font-semibold text-white:text-white mb-2">
             No hay propiedades relacionadas
           </h3>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-gray-300:text-gray-400">
             Explora otras propiedades en nuestra plataforma
           </p>
         </div>
@@ -64,10 +64,10 @@ export function RelatedList({ buildings }: RelatedListProps) {
         transition={{ duration: 0.4 }}
         className="text-center"
       >
-        <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-3">
+        <h2 className="text-3xl font-bold text-white:text-white mb-3">
           Propiedades similares
         </h2>
-        <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+        <p className="text-gray-300:text-gray-400 max-w-2xl mx-auto">
           Descubre otras opciones que podrían interesarte en la misma zona
         </p>
       </motion.div>

@@ -133,21 +133,21 @@ export function ContactForm({ buildingId, buildingName, onClose }: ContactFormPr
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
-          className="relative w-full max-w-md bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden"
+          className="relative w-full max-w-md bg-gray-800:bg-gray-900 rounded-2xl shadow-2xl border border-gray-700:border-gray-700 overflow-hidden"
         >
           {/* Header */}
-          <div className="relative p-6 border-b border-gray-200 dark:border-gray-700">
+          <div className="relative p-6 border-b border-gray-700:border-gray-700">
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-300:hover:text-gray-300 transition-colors"
               aria-label="Cerrar formulario"
             >
               <X className="w-5 h-5" />
             </button>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white pr-8">
+            <h2 className="text-xl font-bold text-white:text-white pr-8">
               Quiero ser contactado
             </h2>
-            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+            <p className="mt-2 text-sm text-gray-300:text-gray-400">
               {buildingName 
                 ? `Te contactaremos para darte más información sobre ${buildingName}`
                 : "Te contactaremos para ayudarte a encontrar tu próximo hogar"
@@ -175,7 +175,7 @@ export function ContactForm({ buildingId, buildingName, onClose }: ContactFormPr
                   className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
                     errors.name 
                       ? "border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20" 
-                      : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
+                      : "border-gray-300 dark:border-gray-600 bg-gray-800:bg-gray-800"
                   }`}
                   placeholder="Tu nombre completo"
                   required
@@ -206,7 +206,7 @@ export function ContactForm({ buildingId, buildingName, onClose }: ContactFormPr
                   className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
                     errors.email 
                       ? "border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20" 
-                      : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
+                      : "border-gray-300 dark:border-gray-600 bg-gray-800:bg-gray-800"
                   }`}
                   placeholder="tu@email.com"
                   required
@@ -237,7 +237,7 @@ export function ContactForm({ buildingId, buildingName, onClose }: ContactFormPr
                   className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
                     errors.phone 
                       ? "border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20" 
-                      : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
+                      : "border-gray-300 dark:border-gray-600 bg-gray-800:bg-gray-800"
                   }`}
                   placeholder="+56 9 1234 5678"
                   required
@@ -264,7 +264,7 @@ export function ContactForm({ buildingId, buildingName, onClose }: ContactFormPr
                   value={formData.message}
                   onChange={(e) => handleInputChange("message", e.target.value)}
                   rows={3}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors bg-white dark:bg-gray-800"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors bg-gray-800:bg-gray-800"
                   placeholder="Cuéntanos más sobre lo que buscas..."
                 />
               </div>

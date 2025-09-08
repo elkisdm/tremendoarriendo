@@ -110,59 +110,59 @@ export function PropertySidebar({
   return (
     <aside className={`hidden lg:block lg:col-span-1 ${className}`}>
       <div className="sticky top-8">
-        <div className="bg-white dark:bg-gray-800 rounded-xl lg:rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-4 lg:p-6 space-y-4 lg:space-y-6">
+        <div className="bg-card rounded-xl lg:rounded-2xl shadow-lg border border-border p-4 lg:p-6 space-y-4 lg:space-y-6">
           {/* Título de la unidad */}
           <div className="text-center">
-            <h2 className="text-xl lg:text-2xl font-bold text-gray-900 dark:text-white mb-1">
+            <h2 className="text-xl lg:text-2xl font-bold text-text mb-1">
               Departamento {selectedUnit?.id || 'N/A'}
             </h2>
-            <p className="text-xs lg:text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-xs lg:text-sm text-text-secondary">
               {selectedUnit?.tipologia} • Piso {unitDetails.piso}
             </p>
           </div>
 
           {/* Precio destacado mejorado - Ultra compacto */}
           <div className="text-center p-3 lg:p-4 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-lg lg:rounded-xl border border-blue-200 dark:border-blue-700">
-            <div className="text-2xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-1 lg:mb-2">
+            <div className="text-2xl lg:text-4xl font-bold text-text mb-1 lg:mb-2">
               ${originalPrice.toLocaleString('es-CL')}
             </div>
             <div className="text-sm lg:text-lg text-green-600 font-bold mb-1">
               50% OFF primer mes
             </div>
-            <div className="text-xs lg:text-sm text-gray-600 dark:text-gray-400">
+            <div className="text-xs lg:text-sm text-text-secondary">
               ${discountPrice.toLocaleString('es-CL')} primer mes
             </div>
-            <div className="mt-2 lg:mt-3 text-xs text-gray-500 dark:text-gray-400">
+            <div className="mt-2 lg:mt-3 text-xs text-text-muted">
               Sin comisión de arriendo
             </div>
           </div>
 
           {/* Información rápida de la unidad */}
-          <div className="bg-gray-50 dark:bg-gray-700 rounded-lg lg:rounded-xl p-3 lg:p-4 space-y-2 lg:space-y-3">
-            <h3 className="font-semibold text-gray-900 dark:text-white text-center mb-2 lg:mb-3 text-sm lg:text-base">
+          <div className="bg-surface rounded-lg lg:rounded-xl p-3 lg:p-4 space-y-2 lg:space-y-3">
+            <h3 className="font-semibold text-text text-center mb-2 lg:mb-3 text-sm lg:text-base">
               Características principales
             </h3>
             <div className="grid grid-cols-3 gap-2 lg:gap-3 text-center">
-              <div className="bg-white dark:bg-gray-600 rounded-lg p-1.5 lg:p-2">
+              <div className="bg-card rounded-lg p-1.5 lg:p-2">
                 <Bed className="w-4 h-4 lg:w-5 lg:h-5 text-blue-600 mx-auto mb-1" />
-                <div className="text-xs lg:text-sm font-semibold text-gray-900 dark:text-white">
+                <div className="text-xs lg:text-sm font-semibold text-text">
                   {unitDetails.dormitorios}
                 </div>
-                <div className="text-xs text-gray-500 dark:text-gray-400">Dorm.</div>
+                <div className="text-xs text-text-muted">Dorm.</div>
               </div>
-              <div className="bg-white dark:bg-gray-600 rounded-lg p-1.5 lg:p-2">
+              <div className="bg-card rounded-lg p-1.5 lg:p-2">
                 <Bath className="w-4 h-4 lg:w-5 lg:h-5 text-blue-600 mx-auto mb-1" />
-                <div className="text-xs lg:text-sm font-semibold text-gray-900 dark:text-white">
+                <div className="text-xs lg:text-sm font-semibold text-text">
                   {unitDetails.banos}
                 </div>
-                <div className="text-xs text-gray-500 dark:text-gray-400">Baños</div>
+                <div className="text-xs text-text-muted">Baños</div>
               </div>
-              <div className="bg-white dark:bg-gray-600 rounded-lg p-1.5 lg:p-2">
+              <div className="bg-card rounded-lg p-1.5 lg:p-2">
                 <Square className="w-4 h-4 lg:w-5 lg:h-5 text-blue-600 mx-auto mb-1" />
-                <div className="text-xs lg:text-sm font-semibold text-gray-900 dark:text-white">
+                <div className="text-xs lg:text-sm font-semibold text-text">
                   {unitDetails.m2}
                 </div>
-                <div className="text-xs text-gray-500 dark:text-gray-400">m²</div>
+                <div className="text-xs text-text-muted">m²</div>
               </div>
             </div>
           </div>

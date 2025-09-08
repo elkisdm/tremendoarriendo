@@ -85,7 +85,7 @@ export function Header() {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
   return (
-    <header className="sticky top-0 z-40 w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-lg shadow-black/5">
+    <header className="sticky top-0 z-40 w-full bg-gray-800:bg-gray-900 border-b border-gray-700:border-gray-700 shadow-lg shadow-black/5">
       <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 py-2 lg:py-4">
         <div className="flex items-center justify-between max-w-none">
           {/* Logo y Branding */}
@@ -105,7 +105,7 @@ export function Header() {
                 <span className="text-lg lg:text-2xl font-black bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 bg-clip-text text-transparent tracking-tight">
                   Elkis Realtor
                 </span>
-                <span className="text-xs font-medium text-gray-500 dark:text-gray-400 tracking-wider uppercase hidden sm:block">
+                <span className="text-xs font-medium text-gray-400:text-gray-400 tracking-wider uppercase hidden sm:block">
                   Propiedades Premium
                 </span>
               </div>
@@ -180,7 +180,7 @@ export function Header() {
           <div className="flex items-center space-x-2 lg:space-x-3 xl:space-x-4">
             {/* Búsqueda - Solo en desktop */}
             <button
-              className="hidden lg:block p-2 lg:p-3 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg lg:rounded-xl transition-all duration-200 group"
+              className="hidden lg:block p-2 lg:p-3 text-gray-300:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg lg:rounded-xl transition-all duration-200 group"
               aria-label="Buscar propiedades"
             >
               <Search className="w-4 h-4 lg:w-5 lg:h-5 group-hover:scale-110 transition-transform duration-200" />
@@ -188,7 +188,7 @@ export function Header() {
 
             {/* Favoritos - Con contador */}
             <button
-              className="hidden sm:block p-2 lg:p-3 text-gray-600 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg lg:rounded-xl transition-all duration-200 group relative"
+              className="hidden sm:block p-2 lg:p-3 text-gray-300:text-gray-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg lg:rounded-xl transition-all duration-200 group relative"
               aria-label="Ver favoritos (3 propiedades guardadas)"
             >
               <Heart className="w-4 h-4 lg:w-5 lg:h-5 group-hover:scale-110 transition-transform duration-200" />
@@ -198,7 +198,7 @@ export function Header() {
             </button>
 
             {/* Theme Toggle - Compacto */}
-            <div className="p-1 bg-gray-100 dark:bg-gray-800 rounded-lg lg:rounded-xl">
+            <div className="p-1 bg-gray-800:bg-gray-800 rounded-lg lg:rounded-xl">
               <ThemeToggle />
             </div>
 
@@ -210,7 +210,7 @@ export function Header() {
             {/* Menú móvil */}
             <button
               onClick={toggleMobileMenu}
-              className="lg:hidden p-2 lg:p-3 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg lg:rounded-xl transition-all duration-200 group"
+              className="lg:hidden p-2 lg:p-3 text-gray-300:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg lg:rounded-xl transition-all duration-200 group"
               aria-label={isMobileMenuOpen ? "Cerrar menú principal" : "Abrir menú principal"}
               aria-expanded={isMobileMenuOpen}
               aria-controls="mobile-menu"
@@ -232,7 +232,7 @@ export function Header() {
 
       {/* Breadcrumb Móvil */}
       {showBreadcrumb && (
-        <div className="lg:hidden border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+        <div className="lg:hidden border-b border-gray-700:border-gray-700 bg-gray-800:bg-gray-900">
           <div className="w-full px-4 sm:px-6 py-2">
             <nav className="flex items-center space-x-1 text-sm" aria-label="Breadcrumb">
               {breadcrumbs.map((crumb, index) => (
@@ -243,7 +243,7 @@ export function Header() {
                   {index === 0 ? (
                     <a
                       href={crumb.href}
-                      className="flex items-center text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                      className="flex items-center text-gray-400:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                     >
                       <Home className="w-3 h-3 mr-1" />
                       {crumb.label}
@@ -255,7 +255,7 @@ export function Header() {
                   ) : (
                     <a
                       href={crumb.href}
-                      className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors truncate"
+                      className="text-gray-400:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors truncate"
                     >
                       {crumb.label}
                     </a>
@@ -293,13 +293,13 @@ export function Header() {
                 stiffness: 300,
                 damping: 30
               }}
-              className="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-white dark:bg-gray-900 shadow-2xl border-l border-gray-200 dark:border-gray-700 z-[60] lg:hidden"
+              className="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-gray-800:bg-gray-900 shadow-2xl border-l border-gray-700:border-gray-700 z-[60] lg:hidden"
               role="dialog"
               aria-modal="true"
               aria-label="Menú de navegación móvil"
             >
               {/* Header del drawer */}
-              <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+              <div className="flex items-center justify-between p-4 border-b border-gray-700:border-gray-700">
                 <div className="flex items-center space-x-3">
                   <div className="w-8 h-8 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 rounded-xl flex items-center justify-center">
                     <span className="text-sm font-black text-white">E</span>
@@ -310,7 +310,7 @@ export function Header() {
                 </div>
                 <button
                   onClick={toggleMobileMenu}
-                  className="p-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all duration-200"
+                  className="p-2 text-gray-300:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all duration-200"
                   aria-label="Cerrar menú"
                 >
                   <X className="w-5 h-5" />
@@ -382,9 +382,9 @@ export function Header() {
               </nav>
 
               {/* Acciones móviles */}
-              <div className="p-4 border-t border-gray-200 dark:border-gray-700 space-y-2">
+              <div className="p-4 border-t border-gray-700:border-gray-700 space-y-2">
                 <div className="flex items-center justify-between px-4 py-2">
-                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Tema</span>
+                  <span className="text-sm font-medium text-gray-300:text-gray-400">Tema</span>
                   <ThemeToggle />
                 </div>
 

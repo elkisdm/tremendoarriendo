@@ -43,50 +43,47 @@ function adaptBuildingSummaryToBuilding(buildingSummary: BuildingSummary): Build
 
   return {
     id: buildingSummary.id,
+    slug: buildingSummary.slug,
     name: buildingSummary.name,
     comuna: buildingSummary.comuna,
     address: buildingSummary.address,
-    cover: buildingSummary.coverImage ?? buildingSummary.gallery?.[0] ?? "/images/nunoa-cover.jpg",
-    hero: buildingSummary.gallery?.[1] ?? buildingSummary.gallery?.[0] ?? "/images/nunoa-cover.jpg",
+    coverImage: buildingSummary.coverImage ?? buildingSummary.gallery?.[0] ?? "/images/nunoa-cover.jpg",
     gallery: buildingSummary.gallery,
     units: syntheticUnits,
     amenities: [], // Not available in BuildingSummary
-    promo: buildingSummary.badges?.[0] ? {
-      label: buildingSummary.badges[0].label,
-      tag: buildingSummary.badges[0].tag
-    } : undefined
+    badges: buildingSummary.badges || []
   };
 }
 
-export function ResultsGrid({ 
-  filters, 
-  sort, 
-  onResultsChange, 
-  paginationMode = 'traditional' 
+export function ResultsGrid({
+  filters,
+  sort,
+  onResultsChange,
+  paginationMode = 'traditional'
 }: ResultsGridProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 12;
 
   // Choose data source based on pagination feature flag
   const usePagination = PAGINATION;
-  
+
   // Legacy system (original hook)
-  const { 
-    data: legacyBuildings = [], 
-    isLoading: legacyLoading, 
-    isFetching: legacyFetching, 
-    error: legacyError 
-  } = useFetchBuildings({ 
-    filters, 
-    sort 
+  const {
+    data: legacyBuildings = [],
+    isLoading: legacyLoading,
+    isFetching: legacyFetching,
+    error: legacyError
+  } = useFetchBuildings({
+    filters,
+    sort
   });
 
   // New pagination system
   const buildingFilters = adaptFilterValuesToBuildingFilters(filters);
-  
+
   // Use appropriate pagination hook based on mode
   const isInfiniteMode = paginationMode === 'infinite' || paginationMode === 'auto-infinite';
-  
+
   // Traditional pagination
   const {
     buildings: paginatedBuildings,
@@ -121,33 +118,33 @@ export function ResultsGrid({
   });
 
   // Use appropriate data source - force type with explicit casting
-  const buildingsData = usePagination ? 
-    (isInfiniteMode 
+  const buildingsData = usePagination ?
+    (isInfiniteMode
       ? (infiniteBuildings || [])  // BuildingListItem[]
       : (paginatedBuildings || [])  // BuildingListItem[]
     ) :
     legacyBuildings;
-  
+
   const buildings = buildingsData as unknown as BuildingSummary[];
-  
-  const isLoading = usePagination ? 
-    (isInfiniteMode ? infiniteLoading : paginationLoading) : 
+
+  const isLoading = usePagination ?
+    (isInfiniteMode ? infiniteLoading : paginationLoading) :
     legacyLoading;
-  
-  const isFetching = usePagination ? 
-    (isInfiniteMode ? isFetchingNextPage : false) : 
+
+  const isFetching = usePagination ?
+    (isInfiniteMode ? isFetchingNextPage : false) :
     legacyFetching;
-  
-  const error = usePagination ? 
-    (isInfiniteMode ? 
-      (infiniteError ? infiniteErrorDetails : null) : 
+
+  const error = usePagination ?
+    (isInfiniteMode ?
+      (infiniteError ? infiniteErrorDetails : null) :
       (paginationError ? paginationErrorDetails : null)
-    ) : 
+    ) :
     legacyError;
 
   // Get pagination info for current mode
-  const currentPagination = usePagination ? 
-    (isInfiniteMode ? infinitePagination : pagination) : 
+  const currentPagination = usePagination ?
+    (isInfiniteMode ? infinitePagination : pagination) :
     null;
 
   // Notify parent component of results count changes
@@ -234,20 +231,20 @@ export function ResultsGrid({
             // Use BuildingCardV2 when flag is enabled
             const adaptedBuilding = adaptBuildingSummaryToBuilding(building);
             return (
-              <BuildingCardV2 
-                key={building.id} 
-                building={adaptedBuilding} 
-                priority={idx === 0} 
+              <BuildingCardV2
+                key={building.id}
+                building={adaptedBuilding}
+                priority={idx === 0}
                 showBadge={true}
               />
             );
           } else {
             // Use original BuildingCard when flag is disabled
             return (
-              <BuildingCard 
-                key={building.id} 
-                building={building} 
-                priority={idx === 0} 
+              <BuildingCard
+                key={building.id}
+                building={building}
+                priority={idx === 0}
               />
             );
           }

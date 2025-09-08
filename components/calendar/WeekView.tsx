@@ -103,7 +103,7 @@ export default function WeekView({
             </div>
 
             {/* Grid del calendario */}
-            <div className="rounded-2xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900 overflow-hidden">
+            <div className="rounded-2xl border border-zinc-200 bg-gray-800:border-zinc-700 dark:bg-zinc-900 overflow-hidden">
                 {/* Header de días */}
                 <div className="grid grid-cols-8 border-b border-zinc-200 dark:border-zinc-700">
                     <div className="p-3 text-sm font-medium text-zinc-500 dark:text-zinc-400">

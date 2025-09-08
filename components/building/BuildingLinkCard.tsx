@@ -39,7 +39,7 @@ export const BuildingLinkCard: React.FC<BuildingLinkCardProps> = ({
         scale: 0.98,
         transition: { duration: 0.1, ease: [0.4, 0, 0.2, 1] }
       }}
-      className={`group relative overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-all duration-300 ${className}`}
+      className={`group relative overflow-hidden rounded-2xl border border-gray-700:border-gray-700 bg-gray-800:bg-gray-800 shadow-lg hover:shadow-xl transition-all duration-300 ${className}`}
     >
       <Link href={href} className="block">
         {/* Image Container */}
@@ -59,7 +59,7 @@ export const BuildingLinkCard: React.FC<BuildingLinkCardProps> = ({
           {/* Badge con contador de unidades */}
           {unitCount && (
             <div className="absolute top-3 right-3 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-lg px-2 py-1 flex items-center gap-1">
-              <Users className="w-3 h-3 text-gray-600 dark:text-gray-400" />
+              <Users className="w-3 h-3 text-gray-300:text-gray-400" />
               <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
                 {unitCount} unidades
               </span>
@@ -77,11 +77,11 @@ export const BuildingLinkCard: React.FC<BuildingLinkCardProps> = ({
                   <Building2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                  <h3 className="text-sm font-semibold text-white:text-white truncate">
                     {buildingName}
                   </h3>
                   {commune && (
-                    <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                    <p className="text-xs text-gray-400:text-gray-400 truncate">
                       {commune}
                     </p>
                   )}
@@ -90,7 +90,7 @@ export const BuildingLinkCard: React.FC<BuildingLinkCardProps> = ({
 
               {/* Description */}
               {description && (
-                <p className="text-xs text-gray-600 dark:text-gray-300 line-clamp-2 mb-3">
+                <p className="text-xs text-gray-300:text-gray-300 line-clamp-2 mb-3">
                   {description}
                 </p>
               )}
@@ -114,7 +114,7 @@ export const BuildingLinkCard: React.FC<BuildingLinkCardProps> = ({
 // Componente de skeleton para loading
 export const BuildingLinkCardSkeleton: React.FC = () => {
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-lg">
+    <div className="relative overflow-hidden rounded-2xl border border-gray-700:border-gray-700 bg-gray-800:bg-gray-800 shadow-lg">
       {/* Image skeleton */}
       <div className="aspect-video bg-gray-200 dark:bg-gray-700 animate-pulse" />
       
@@ -153,7 +153,7 @@ export const BuildingLinkCardCompact: React.FC<BuildingLinkCardProps> = ({
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.2 }}
-      className={`group relative overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-all duration-200 ${className}`}
+      className={`group relative overflow-hidden rounded-xl border border-gray-700:border-gray-700 bg-gray-800:bg-gray-800 shadow-sm hover:shadow-md transition-all duration-200 ${className}`}
     >
       <Link href={href} className="flex items-center p-3">
         {/* Image */}
@@ -169,11 +169,11 @@ export const BuildingLinkCardCompact: React.FC<BuildingLinkCardProps> = ({
 
         {/* Content */}
         <div className="flex-1 min-w-0 ml-3">
-          <h4 className="text-sm font-medium text-gray-900 dark:text-white truncate">
+          <h4 className="text-sm font-medium text-white:text-white truncate">
             {buildingName}
           </h4>
           {commune && (
-            <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+            <p className="text-xs text-gray-400:text-gray-400 truncate">
               {commune}
             </p>
           )}
