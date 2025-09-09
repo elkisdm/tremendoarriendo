@@ -30,8 +30,10 @@ const generateMockSlots = (listingId: string, startDate: Date, endDate: Date): V
         const slotDate = new Date(currentDate);
         slotDate.setHours(hours, minutes, 0, 0);
         
-        // Solo slots futuros
-        if (slotDate > new Date()) {
+        // Solo slots futuros (permitir slots de hoy en adelante)
+        const now = new Date();
+        now.setHours(0, 0, 0, 0); // Resetear a medianoche para comparar solo fechas
+        if (slotDate >= now) {
           const startTime = formatRFC3339(slotDate);
           const endTime = formatRFC3339(new Date(slotDate.getTime() + 30 * 60 * 1000));
           

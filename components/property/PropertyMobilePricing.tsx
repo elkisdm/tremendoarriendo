@@ -168,20 +168,13 @@ export function PropertyMobilePricing({
                 <FirstPaymentCalculator
                     originalPrice={originalPrice}
                     discountPrice={discountPrice}
-                    firstPaymentCalculation={{
-                        totalFirstPayment: originalPrice + 102000,
-                        breakdown: {
-                            deposit: originalPrice,
-                            firstMonth: discountPrice,
-                            commonExpenses: 102000
-                        }
-                    }}
-                    moveInDate={new Date()}
-                    includeParking={selectedUnit.estacionamiento}
-                    includeStorage={false}
-                    onDateChange={() => { }}
-                    onParkingChange={() => { }}
-                    onStorageChange={() => { }}
+                    firstPaymentCalculation={unitDetails.firstPaymentCalculation}
+                    moveInDate={unitDetails.moveInDate}
+                    includeParking={unitDetails.includeParking}
+                    includeStorage={unitDetails.includeStorage}
+                    onDateChange={unitDetails.handleDateChange}
+                    onParkingChange={unitDetails.setIncludeParking}
+                    onStorageChange={unitDetails.setIncludeStorage}
                     onSendQuotation={onSendQuotation}
                     variant="compact"
                 />

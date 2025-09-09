@@ -7,6 +7,8 @@ import { ImageGallery } from "@components/gallery/ImageGallery";
 import { track } from "@lib/analytics";
 import type { Unit, Building } from "@schemas/models";
 import { QuintoAndarVisitScheduler } from "@components/flow/QuintoAndarVisitScheduler";
+import { usePropertyUnit } from "@hooks/usePropertyUnit";
+import { FirstPaymentDetails } from "./FirstPaymentDetails";
 
 // Componentes de propiedad
 import { PropertyAboveFoldMobile } from "./PropertyAboveFoldMobile";
@@ -109,9 +111,20 @@ export function PropertyClient({
     const [error, setError] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    // Calcular precios para usar en StickyMobileCTA
-    const originalPrice = building.precio_desde || 290000;
-    const discountPrice = Math.round(originalPrice * 0.5);
+    // Usar el hook para manejar la lógica de la unidad
+    const {
+        selectedUnit,
+        moveInDate,
+        includeParking,
+        includeStorage,
+        originalPrice,
+        discountPrice,
+        unitDetails,
+        firstPaymentCalculation,
+        handleDateChange,
+        setIncludeParking,
+        setIncludeStorage
+    } = usePropertyUnit({ building, defaultUnitId });
 
     // Analytics tracking on mount
     useEffect(() => {
@@ -170,6 +183,17 @@ export function PropertyClient({
         alert(`Cotización enviada por email para la propiedad ${building.name}`);
     };
 
+    // Función para navegar a la sección de detalles del primer pago
+    const handleViewPaymentDetails = () => {
+        const element = document.getElementById('first-payment-details');
+        if (element) {
+            element.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    };
+
     // Handle keyboard navigation
     const handleKeyDown = useCallback((e: React.KeyboardEvent, action: () => void) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -219,7 +243,7 @@ export function PropertyClient({
                             {/* Above the fold móvil optimizado para conversión + Galería integrada */}
                             <PropertyAboveFoldMobile
                                 building={building}
-                                selectedUnit={building.units.find(unit => unit.disponible) || building.units[0] || {
+                                selectedUnit={selectedUnit || building.units[0] || {
                                     id: 'default',
                                     tipologia: '2D1B',
                                     m2: 50,
@@ -247,7 +271,7 @@ export function PropertyClient({
                             {/* Acordeones optimizados para conversión */}
                             <PropertyAccordion
                                 building={building}
-                                selectedUnit={building.units.find(unit => unit.disponible) || null}
+                                selectedUnit={selectedUnit}
                                 onScheduleVisit={() => setIsModalOpen(true)}
                                 onPreapproval={() => {
                                     // TODO: Implementar modal de preaprobación
@@ -257,6 +281,20 @@ export function PropertyClient({
 
                             {/* Cómo es vivir en la comuna */}
                             <CommuneLifeSection building={building} variant={variant} />
+
+                            {/* Calculadora detallada del primer pago */}
+                            <FirstPaymentDetails
+                                originalPrice={originalPrice}
+                                discountPrice={discountPrice}
+                                firstPaymentCalculation={firstPaymentCalculation}
+                                moveInDate={moveInDate}
+                                includeParking={includeParking}
+                                includeStorage={includeStorage}
+                                onDateChange={handleDateChange}
+                                onParkingChange={setIncludeParking}
+                                onStorageChange={setIncludeStorage}
+                                onSendQuotation={handleSendQuotation}
+                            />
 
                             {/* Propiedades relacionadas */}
                             <section
@@ -286,37 +324,20 @@ export function PropertyClient({
                         {/* Sidebar sticky (1/3) - Oculto en móviles */}
                         <PropertySidebar
                             building={building}
-                            selectedUnit={building.units.find(unit => unit.disponible) || null}
-                            unitDetails={{
-                                dormitorios: building.units.find(unit => unit.disponible)?.bedrooms || 1,
-                                banos: building.units.find(unit => unit.disponible)?.bathrooms || 1,
-                                m2: building.units.find(unit => unit.disponible)?.m2 || 45,
-                                piso: building.units.find(unit => unit.disponible)?.piso || "N/A"
-                            }}
-                            originalPrice={building.precio_desde || 290000}
-                            discountPrice={Math.round((building.precio_desde || 290000) * 0.5)}
-                            firstPaymentCalculation={{
-                                totalFirstPayment: Math.round((building.precio_desde || 290000) * 1.5),
-                                netRentStorage: building.precio_desde || 290000,
-                                proratedGC: Math.round((building.precio_desde || 290000) * 0.21),
-                                initialDeposit: Math.round((building.precio_desde || 290000) * 0.33),
-                                commissionToPay: 0,
-                                daysChargedCount: 30,
-                                daysInMonth: 30,
-                                promoDays: 30,
-                                regularDays: 0,
-                                totalRent: building.precio_desde || 290000,
-                                totalParking: 0,
-                                totalStorage: 0
-                            }}
-                            moveInDate={new Date()}
-                            includeParking={false}
-                            includeStorage={false}
-                            onDateChange={() => { }}
-                            onParkingChange={() => { }}
-                            onStorageChange={() => { }}
+                            selectedUnit={selectedUnit}
+                            unitDetails={unitDetails}
+                            originalPrice={originalPrice}
+                            discountPrice={discountPrice}
+                            firstPaymentCalculation={firstPaymentCalculation}
+                            moveInDate={moveInDate}
+                            includeParking={includeParking}
+                            includeStorage={includeStorage}
+                            onDateChange={handleDateChange}
+                            onParkingChange={setIncludeParking}
+                            onStorageChange={setIncludeStorage}
                             onSendQuotation={handleSendQuotation}
                             onScheduleVisit={() => setIsModalOpen(true)}
+                            onViewPaymentDetails={handleViewPaymentDetails}
                             variant={variant}
                         />
                     </div>

@@ -47,43 +47,55 @@ export function useVisitScheduler({
   const [selectedSlot, setSelectedSlot] = useState<VisitSlot | null>(null);
   const [availabilityData, setAvailabilityData] = useState<AvailabilityResponse | null>(null);
 
-  // Generar días disponibles (próximos 5 días laborales)
+  // Generar días disponibles basándose en los slots de la API
   const availableDays = useMemo((): DaySlot[] => {
+    if (!availabilityData || !availabilityData.slots.length) {
+      console.log('🔍 No availability data, returning empty days');
+      return [];
+    }
+    
     const days: DaySlot[] = [];
     const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
     
-    // Generar próximos 5 días laborales (lunes a viernes)
-    let currentDate = new Date();
-    let daysAdded = 0;
+    console.log('🔍 Generating available days from API data:', availabilityData.slots.length, 'slots');
     
-    while (daysAdded < 5) {
-      currentDate.setDate(currentDate.getDate() + 1);
-      const dayOfWeek = currentDate.getDay();
+    // Extraer fechas únicas de los slots disponibles
+    const uniqueDates = new Set<string>();
+    availabilityData.slots.forEach(slot => {
+      const dateString = slot.startTime.split('T')[0];
+      uniqueDates.add(dateString);
+    });
+    
+    // Convertir a array y ordenar
+    const sortedDates = Array.from(uniqueDates).sort();
+    
+    // Generar objetos DaySlot para cada fecha
+    sortedDates.forEach((dateString, index) => {
+      const date = new Date(dateString);
+      const dayOfWeek = date.getDay();
       
       // Solo incluir días laborales (lunes a viernes)
       if (dayOfWeek >= 1 && dayOfWeek <= 5) {
-        const dateString = currentDate.toISOString().split('T')[0];
-        
-        // Contar slots disponibles para este día
-        const slotsForDay = availabilityData?.slots.filter(slot => 
+        const slotsForDay = availabilityData.slots.filter(slot => 
           slot.startTime.startsWith(dateString)
-        ) || [];
+        );
+        
+        console.log(`📅 Day ${dateString}: ${slotsForDay.length} slots available`);
         
         days.push({
-          id: `day-${daysAdded + 1}`,
+          id: `day-${index + 1}`,
           date: dateString,
           day: dayNames[dayOfWeek],
-          number: currentDate.getDate().toString(),
+          number: date.getDate().toString(),
           available: slotsForDay.length > 0,
-          premium: false, // Por ahora sin premium
+          premium: false,
           price: undefined,
           slotsCount: slotsForDay.length
         });
-        
-        daysAdded++;
       }
-    }
+    });
     
+    console.log('📅 Generated days:', days);
     return days;
   }, [availabilityData]);
 

@@ -1,7 +1,8 @@
 "use client";
 import React from "react";
 import { Bed, Bath, Square, Calendar, Phone } from "lucide-react";
-import { FirstPaymentCalculator } from "./FirstPaymentCalculator";
+import { FirstPaymentSummary } from "./FirstPaymentSummary";
+import { useScrollVisibility } from "@hooks/useScrollVisibility";
 import type { Unit, Building } from "@schemas/models";
 
 interface PropertySidebarProps {
@@ -19,6 +20,7 @@ interface PropertySidebarProps {
   onStorageChange: (include: boolean) => void;
   onSendQuotation: () => void;
   onScheduleVisit: () => void;
+  onViewPaymentDetails: () => void;
   variant?: "catalog" | "marketing" | "admin";
   className?: string;
 }
@@ -38,9 +40,15 @@ export function PropertySidebar({
   onStorageChange,
   onSendQuotation,
   onScheduleVisit,
+  onViewPaymentDetails,
   variant = "catalog",
   className = ""
 }: PropertySidebarProps) {
+  // Hook para detectar cuando el usuario llega a la sección de detalles
+  const isPaymentDetailsVisible = useScrollVisibility({
+    targetId: "first-payment-details",
+    threshold: 0.1
+  });
   const getCTAs = () => {
     if (variant === "marketing") {
       return [
@@ -167,20 +175,13 @@ export function PropertySidebar({
             </div>
           </div>
 
-          {/* Cálculo del primer pago - Rediseñado */}
-          <FirstPaymentCalculator
-            originalPrice={originalPrice}
-            discountPrice={discountPrice}
-            firstPaymentCalculation={firstPaymentCalculation}
-            moveInDate={moveInDate}
-            includeParking={includeParking}
-            includeStorage={includeStorage}
-            onDateChange={onDateChange}
-            onParkingChange={onParkingChange}
-            onStorageChange={onStorageChange}
-            onSendQuotation={onSendQuotation}
-            variant="detailed"
-          />
+          {/* Resumen del primer pago - Se oculta cuando se llega a la sección de detalles */}
+          {!isPaymentDetailsVisible && (
+            <FirstPaymentSummary
+              totalFirstPayment={firstPaymentCalculation.totalFirstPayment}
+              onViewDetails={onViewPaymentDetails}
+            />
+          )}
 
           {/* CTAs principales */}
           <div className="space-y-3">

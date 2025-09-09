@@ -3,10 +3,26 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { DollarSign, ChevronDown, ChevronUp, Car, Package } from "lucide-react";
 
+interface FirstPaymentCalculation {
+  netRentStorage: number;
+  proratedGC: number;
+  initialDeposit: number;
+  commissionToPay: number;
+  totalFirstPayment: number;
+  daysChargedCount: number;
+  daysInMonth: number;
+  prorateFactor: number;
+  promoDays: number;
+  regularDays: number;
+  totalRent: number;
+  totalParking: number;
+  totalStorage: number;
+}
+
 interface FirstPaymentCalculatorProps {
   originalPrice: number;
   discountPrice: number;
-  firstPaymentCalculation: any;
+  firstPaymentCalculation: FirstPaymentCalculation;
   moveInDate: Date;
   includeParking: boolean;
   includeStorage: boolean;
@@ -453,6 +469,7 @@ export function FirstPaymentCalculator({
     </div>
   );
 }
+
 
 
 

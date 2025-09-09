@@ -195,7 +195,7 @@ Object.defineProperty(window, 'sessionStorage', {
 });
 
 // Mock de fetch
-global.fetch = jest.fn() as jest.MockedFunction<typeof fetch>;
+global.fetch = jest.fn();
 
 // Mock de console para evitar ruido en los tests
 const originalConsole = console;
