@@ -18,8 +18,6 @@ import {
     ArrowLeft,
     Check,
     AlertTriangle,
-    Sun,
-    Moon,
     Bell,
     MessageCircle,
     Calendar as CalendarIcon,
@@ -71,8 +69,39 @@ export function QuintoAndarVisitScheduler({
         phone: { isValid: false, message: '' }
     });
     const [isFormValid, setIsFormValid] = useState(false);
-    const [isDarkMode, setIsDarkMode] = useState(false);
+    // Usar el tema de la página en lugar de detectar el modo oscuro del sistema
+    const isDarkMode = false; // Se heredará del tema de la página
     const [showConfetti, setShowConfetti] = useState(false);
+
+    // Estados para calificación de arriendo
+    const [rentalQualification, setRentalQualification] = useState({
+        needsToMoveIn30Days: null as boolean | null,
+        hasGuarantor: null as boolean | null,
+        hasSufficientIncome: null as boolean | null,
+        rentalPurpose: 'residencial' as 'residencial' | 'inversión'
+    });
+
+    // Estado para controlar qué pregunta está visible
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+
+    // Configuración de preguntas de calificación
+    const qualificationQuestions = [
+        {
+            key: 'needsToMoveIn30Days',
+            title: '¿Necesitas mudarte en los próximos 30 días?',
+            options: ['Sí', 'No']
+        },
+        {
+            key: 'hasGuarantor',
+            title: '¿Tienes aval o garantía?',
+            options: ['Sí', 'No']
+        },
+        {
+            key: 'hasSufficientIncome',
+            title: '¿Tienes ingresos suficientes para el arriendo?',
+            options: ['Sí', 'No']
+        }
+    ];
 
     // Estados para características premium
     const [notificationsEnabled, setNotificationsEnabled] = useState(false);
@@ -98,22 +127,13 @@ export function QuintoAndarVisitScheduler({
         clearError
     } = useVisitScheduler({ listingId });
 
-    // Detectar modo oscuro del sistema
-    useEffect(() => {
-        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-        setIsDarkMode(mediaQuery.matches);
-
-        const handleChange = (e: MediaQueryListEvent) => setIsDarkMode(e.matches);
-        mediaQuery.addEventListener('change', handleChange);
-        return () => mediaQuery.removeEventListener('change', handleChange);
-    }, []);
 
     // Cargar disponibilidad al abrir
     useEffect(() => {
         if (isOpen) {
             const startDate = new Date();
             const endDate = new Date();
-            endDate.setDate(endDate.getDate() + 7);
+            endDate.setDate(endDate.getDate() + 5); // Solo 5 días como permite la API
             fetchAvailability(startDate, endDate);
         }
     }, [isOpen, fetchAvailability]);
@@ -208,8 +228,26 @@ export function QuintoAndarVisitScheduler({
         clearError();
     };
 
+    // Manejar respuesta de calificación
+    const handleQualificationAnswer = (questionKey: string, answer: boolean | string) => {
+        setRentalQualification(prev => ({
+            ...prev,
+            [questionKey]: answer
+        }));
+
+        // Avanzar a la siguiente pregunta después de un pequeño delay
+        setTimeout(() => {
+            if (currentQuestionIndex < qualificationQuestions.length - 1) {
+                setCurrentQuestionIndex(prev => prev + 1);
+            }
+        }, 300);
+    };
+
     // Verificar si se puede continuar
-    const canContinue = selectedDate && selectedTime;
+    const canContinue = selectedDate && selectedTime &&
+        rentalQualification.needsToMoveIn30Days !== null &&
+        rentalQualification.hasGuarantor !== null &&
+        rentalQualification.hasSufficientIncome !== null;
 
     // Continuar al formulario
     const handleContinue = () => {
@@ -338,7 +376,7 @@ export function QuintoAndarVisitScheduler({
             case 'selection':
                 return { number: 1, title: 'Selecciona fecha y hora', description: 'Elige el mejor momento para tu visita' };
             case 'contact':
-                return { number: 2, title: 'Datos de contacto', description: 'Completa tu información' };
+                return { number: 2, title: 'Datos de contacto', description: 'Completa tu información para el arriendo' };
             case 'premium':
                 return { number: 3, title: 'Características premium', description: 'Mejora tu experiencia' };
             case 'success':
@@ -365,63 +403,78 @@ export function QuintoAndarVisitScheduler({
                     initial={{ scale: 0.95, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     exit={{ scale: 0.95, opacity: 0 }}
-                    className={`relative w-full max-w-md h-[90vh] ${isDarkMode ? 'bg-gray-900' : 'bg-white'} rounded-2xl shadow-2xl overflow-hidden`}
+                    className="relative w-full max-w-md h-[90vh] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden"
                     onClick={(e) => e.stopPropagation()}
                 >
                     {/* Header */}
-                    <div className={`p-4 border-b ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+                    <div className="p-4 border-b border-gray-200 dark:border-gray-700">
                         <div className="flex items-center justify-between mb-4">
-                            <div className="flex items-center gap-3">
-                                <button
-                                    onClick={handleClose}
-                                    className={`p-2 rounded-xl ${isDarkMode ? 'hover:bg-gray-800' : 'hover:bg-gray-100'} transition-colors`}
-                                    aria-label="Cerrar"
-                                >
-                                    <X className={`w-5 h-5 ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`} />
-                                </button>
-                                <div>
-                                    <h2 className={`text-lg font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                                        {propertyName}
-                                    </h2>
-                                    <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                                        {propertyAddress}
-                                    </p>
-                                </div>
-                            </div>
                             <button
-                                onClick={() => setIsDarkMode(!isDarkMode)}
-                                className={`p-2 rounded-xl ${isDarkMode ? 'hover:bg-gray-800' : 'hover:bg-gray-100'} transition-colors`}
-                                aria-label="Cambiar tema"
+                                onClick={handleClose}
+                                className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                                aria-label="Cerrar"
                             >
-                                {isDarkMode ? <Sun className="w-5 h-5 text-yellow-500" /> : <Moon className="w-5 h-5 text-gray-600" />}
+                                <X className="w-5 h-5 text-gray-500 dark:text-gray-300" />
                             </button>
                         </div>
 
-                        {/* Progress bar */}
-                        <div className="flex items-center gap-2 mb-2">
-                            {[1, 2, 3, 4].map((stepNumber) => (
-                                <div
-                                    key={stepNumber}
-                                    className={`flex-1 h-2 rounded-full ${stepNumber <= stepInfo.number
-                                        ? 'bg-blue-600'
-                                        : isDarkMode
-                                            ? 'bg-gray-700'
-                                            : 'bg-gray-200'
-                                        }`}
+                        {/* Título principal */}
+                        <h1 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                            ¿Cuándo quieres visitar esta propiedad?
+                        </h1>
+
+                        {/* Card de propiedad */}
+                        <div className="flex gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-xl">
+                            {propertyImage && (
+                                <img
+                                    src={propertyImage}
+                                    alt={propertyName}
+                                    className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
                                 />
-                            ))}
+                            )}
+                            <div className="flex-1 min-w-0">
+                                <div className="text-lg font-bold text-gray-900 dark:text-white">
+                                    $450.000 arriendo
+                                </div>
+                                <div className="text-sm text-gray-600 dark:text-gray-400">
+                                    $50.000 gastos comunes
+                                </div>
+                                <div className="text-sm text-gray-600 dark:text-gray-400">
+                                    {propertyAddress}
+                                </div>
+                                <div className="text-sm text-gray-600 dark:text-gray-400">
+                                    150 m² · 3 dormitorios · 1 estacionamiento
+                                </div>
+                            </div>
                         </div>
-                        <div className="flex items-center justify-between">
-                            <h3 className={`text-base font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                                {stepInfo.title}
-                            </h3>
-                            <span className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                                {stepInfo.number}/4
-                            </span>
-                        </div>
-                        <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                            {stepInfo.description}
-                        </p>
+
+                        {/* Progress bar - solo mostrar en pasos posteriores */}
+                        {step !== 'selection' && (
+                            <>
+                                <div className="flex items-center gap-2 mb-2">
+                                    {[1, 2, 3, 4].map((stepNumber) => (
+                                        <div
+                                            key={stepNumber}
+                                            className={`flex-1 h-2 rounded-full ${stepNumber <= stepInfo.number
+                                                ? 'bg-blue-600'
+                                                : 'bg-gray-200 dark:bg-gray-700'
+                                                }`}
+                                        />
+                                    ))}
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <h3 className="text-base font-semibold text-gray-900 dark:text-white">
+                                        {stepInfo.title}
+                                    </h3>
+                                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                                        {stepInfo.number}/4
+                                    </span>
+                                </div>
+                                <p className="text-sm mt-1 text-gray-600 dark:text-gray-400">
+                                    {stepInfo.description}
+                                </p>
+                            </>
+                        )}
                     </div>
 
                     {/* Content */}
@@ -431,34 +484,24 @@ export function QuintoAndarVisitScheduler({
                             <div className="h-full flex flex-col">
                                 {/* Selección de fecha */}
                                 <div className="mb-6">
-                                    <h4 className={`text-base font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-4 flex items-center gap-2`}>
-                                        <Calendar className="w-5 h-5 text-blue-600" />
-                                        Fecha
+                                    <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                                        Elige un día
                                     </h4>
-                                    <div className="grid grid-cols-5 gap-2">
+                                    <div className="flex gap-3 overflow-x-auto pb-2">
                                         {availableDays.map((day, index) => (
                                             <button
                                                 key={day.id}
                                                 onClick={() => handleDateSelect(day)}
                                                 disabled={!day.available}
-                                                className={`p-3 rounded-xl text-center transition-colors ${selectedDate === day.date
-                                                    ? 'bg-blue-600 text-white'
+                                                className={`flex-shrink-0 w-16 h-16 rounded-full text-center transition-colors ${selectedDate === day.date
+                                                    ? 'bg-blue-500 text-white'
                                                     : day.available
-                                                        ? isDarkMode
-                                                            ? 'bg-gray-800 text-white hover:bg-gray-700'
-                                                            : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
-                                                        : isDarkMode
-                                                            ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
-                                                            : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                                        ? 'bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700'
+                                                        : 'bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-gray-800 dark:text-gray-500'
                                                     }`}
                                             >
                                                 <div className="text-xs font-medium">{day.day}</div>
                                                 <div className="text-lg font-bold">{day.number}</div>
-                                                {day.available && (
-                                                    <div className="flex justify-center mt-1">
-                                                        <Check className="w-2.5 h-2.5 text-white" />
-                                                    </div>
-                                                )}
                                             </button>
                                         ))}
                                     </div>
@@ -467,38 +510,96 @@ export function QuintoAndarVisitScheduler({
                                 {/* Selección de hora */}
                                 {selectedDate && (
                                     <div className="mb-6">
-                                        <h4 className={`text-base font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-4 flex items-center gap-2`}>
-                                            <Clock className="w-5 h-5 text-green-600" />
-                                            Hora
+                                        <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                                            Elige un horario
                                         </h4>
-                                        <div className="grid grid-cols-2 gap-2">
+                                        <div className="flex gap-3 overflow-x-auto pb-2">
                                             {availableSlots.map((timeSlot) => (
                                                 <button
                                                     key={timeSlot.id}
                                                     onClick={() => handleTimeSelect(timeSlot)}
                                                     disabled={!timeSlot.available}
-                                                    className={`p-3 rounded-xl text-center transition-colors ${selectedTime === timeSlot.time
-                                                        ? 'bg-green-600 text-white'
+                                                    className={`flex-shrink-0 px-4 py-3 rounded-xl text-center transition-colors min-w-[80px] ${selectedTime === timeSlot.time
+                                                        ? 'bg-blue-500 text-white'
                                                         : timeSlot.available
-                                                            ? isDarkMode
-                                                                ? 'bg-gray-800 text-white hover:bg-gray-700'
-                                                                : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
-                                                            : isDarkMode
-                                                                ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
-                                                                : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                                            ? 'bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700'
+                                                            : 'bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-gray-800 dark:text-gray-500'
                                                         }`}
                                                 >
                                                     {timeSlot.time}
-                                                    {selectedTime === timeSlot.time && (
-                                                        <div className="flex justify-center mt-1">
-                                                            <Check className="w-2.5 h-2.5 text-white" />
-                                                        </div>
-                                                    )}
                                                 </button>
                                             ))}
                                         </div>
                                     </div>
                                 )}
+
+                                {/* Preguntas de calificación progresivas */}
+                                {selectedDate && selectedTime && (
+                                    <div className="mb-6">
+                                        {/* Indicador de progreso */}
+                                        <div className="flex items-center justify-between mb-4">
+                                            <span className="text-sm text-gray-600 dark:text-gray-400">
+                                                Pregunta {currentQuestionIndex + 1} de {qualificationQuestions.length}
+                                            </span>
+                                            <div className="flex gap-1">
+                                                {qualificationQuestions.map((_, index) => (
+                                                    <div
+                                                        key={index}
+                                                        className={`w-2 h-2 rounded-full transition-colors ${index <= currentQuestionIndex
+                                                            ? 'bg-blue-500'
+                                                            : 'bg-gray-300 dark:bg-gray-600'
+                                                            }`}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* Pregunta actual */}
+                                        <AnimatePresence mode="wait">
+                                            <motion.div
+                                                key={currentQuestionIndex}
+                                                initial={{ opacity: 0, x: 20 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                exit={{ opacity: 0, x: -20 }}
+                                                transition={{ duration: 0.3 }}
+                                            >
+                                                <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                                                    {qualificationQuestions[currentQuestionIndex].title}
+                                                </h4>
+                                                <div className="flex gap-3">
+                                                    {qualificationQuestions[currentQuestionIndex].options.map((option, optionIndex) => {
+                                                        const questionKey = qualificationQuestions[currentQuestionIndex].key;
+                                                        const currentValue = rentalQualification[questionKey as keyof typeof rentalQualification];
+                                                        const isSelected = currentValue === (option === 'Sí' ? true : false);
+
+                                                        return (
+                                                            <button
+                                                                key={optionIndex}
+                                                                onClick={() => {
+                                                                    const answer = option === 'Sí' ? true : false;
+                                                                    handleQualificationAnswer(questionKey, answer);
+                                                                }}
+                                                                className={`flex-1 py-3 px-4 rounded-xl text-center transition-colors font-medium ${isSelected
+                                                                    ? 'bg-blue-500 text-white'
+                                                                    : 'bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700'
+                                                                    }`}
+                                                            >
+                                                                {option}
+                                                            </button>
+                                                        );
+                                                    })}
+                                                </div>
+                                            </motion.div>
+                                        </AnimatePresence>
+                                    </div>
+                                )}
+
+                                {/* Link para otra fecha */}
+                                <div className="mb-6">
+                                    <button className="text-blue-600 text-sm underline hover:text-blue-700 transition-colors">
+                                        Solicitar otra fecha y horario
+                                    </button>
+                                </div>
 
                                 {/* Botón continuar */}
                                 <div className="mt-auto pt-4">
@@ -520,7 +621,7 @@ export function QuintoAndarVisitScheduler({
                                     <div className="space-y-4 mb-6">
                                         {/* Nombre */}
                                         <div>
-                                            <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                                            <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-white">
                                                 Nombre completo *
                                             </label>
                                             <div className="relative">
@@ -532,9 +633,7 @@ export function QuintoAndarVisitScheduler({
                                                         ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
                                                         : fieldValidation.name.message
                                                             ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
-                                                            : isDarkMode
-                                                                ? 'border-gray-600 bg-gray-800 text-white focus:border-blue-500'
-                                                                : 'border-gray-300 bg-white text-gray-900 focus:border-blue-500'
+                                                            : 'border-gray-300 bg-white text-gray-900 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white'
                                                         }`}
                                                     placeholder="Tu nombre completo"
                                                 />
@@ -552,7 +651,7 @@ export function QuintoAndarVisitScheduler({
 
                                         {/* Email */}
                                         <div>
-                                            <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                                            <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-white">
                                                 Email *
                                             </label>
                                             <div className="relative">
@@ -564,9 +663,7 @@ export function QuintoAndarVisitScheduler({
                                                         ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
                                                         : fieldValidation.email.message
                                                             ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
-                                                            : isDarkMode
-                                                                ? 'border-gray-600 bg-gray-800 text-white focus:border-blue-500'
-                                                                : 'border-gray-300 bg-white text-gray-900 focus:border-blue-500'
+                                                            : 'border-gray-300 bg-white text-gray-900 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white'
                                                         }`}
                                                     placeholder="tu@email.com"
                                                 />
@@ -584,7 +681,7 @@ export function QuintoAndarVisitScheduler({
 
                                         {/* RUT */}
                                         <div>
-                                            <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                                            <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-white">
                                                 RUT *
                                             </label>
                                             <div className="relative">
@@ -596,9 +693,7 @@ export function QuintoAndarVisitScheduler({
                                                         ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
                                                         : fieldValidation.rut.message
                                                             ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
-                                                            : isDarkMode
-                                                                ? 'border-gray-600 bg-gray-800 text-white focus:border-blue-500'
-                                                                : 'border-gray-300 bg-white text-gray-900 focus:border-blue-500'
+                                                            : 'border-gray-300 bg-white text-gray-900 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white'
                                                         }`}
                                                     placeholder="12.345.678-9"
                                                 />
@@ -616,7 +711,7 @@ export function QuintoAndarVisitScheduler({
 
                                         {/* Teléfono */}
                                         <div>
-                                            <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                                            <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-white">
                                                 Teléfono *
                                             </label>
                                             <div className="relative">
@@ -628,9 +723,7 @@ export function QuintoAndarVisitScheduler({
                                                         ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
                                                         : fieldValidation.phone.message
                                                             ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
-                                                            : isDarkMode
-                                                                ? 'border-gray-600 bg-gray-800 text-white focus:border-blue-500'
-                                                                : 'border-gray-300 bg-white text-gray-900 focus:border-blue-500'
+                                                            : 'border-gray-300 bg-white text-gray-900 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white'
                                                         }`}
                                                     placeholder="+56 9 1234 5678"
                                                 />
@@ -652,10 +745,7 @@ export function QuintoAndarVisitScheduler({
                                         <button
                                             type="button"
                                             onClick={handleBack}
-                                            className={`w-full py-3 px-6 rounded-xl font-semibold transition-colors ${isDarkMode
-                                                ? 'bg-gray-800 text-white hover:bg-gray-700'
-                                                : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
-                                                }`}
+                                            className="w-full py-3 px-6 rounded-xl font-semibold transition-colors bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
                                         >
                                             ← Atrás
                                         </button>
@@ -732,25 +822,25 @@ export function QuintoAndarVisitScheduler({
                                     <CheckCircle className="w-16 h-16 text-green-600 mx-auto mb-4" />
                                 </motion.div>
 
-                                <h3 className={`text-2xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                                <h3 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">
                                     ¡Visita confirmada!
                                 </h3>
-                                <p className={`text-base mb-6 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                <p className="text-base mb-6 text-gray-600 dark:text-gray-400">
                                     Tu visita ha sido programada exitosamente. Te contactaremos pronto con los detalles.
                                 </p>
 
-                                <div className={`p-4 rounded-xl mb-6 w-full ${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
-                                    <h4 className={`font-semibold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                                <div className="p-4 rounded-xl mb-6 w-full bg-gray-100 dark:bg-gray-800">
+                                    <h4 className="font-semibold mb-2 text-gray-900 dark:text-white">
                                         Detalles de la visita:
                                     </h4>
                                     <div className="space-y-1 text-sm">
-                                        <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>
+                                        <p className="text-gray-600 dark:text-gray-300">
                                             <strong>Fecha:</strong> {selectedDate}
                                         </p>
-                                        <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>
+                                        <p className="text-gray-600 dark:text-gray-300">
                                             <strong>Hora:</strong> {selectedTime}
                                         </p>
-                                        <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>
+                                        <p className="text-gray-600 dark:text-gray-300">
                                             <strong>Propiedad:</strong> {propertyName}
                                         </p>
                                     </div>
@@ -768,7 +858,7 @@ export function QuintoAndarVisitScheduler({
 
                     {/* Error message */}
                     {error && (
-                        <div className={`p-4 border-t ${isDarkMode ? 'border-gray-700 bg-red-900/20' : 'border-gray-200 bg-red-50'}`}>
+                        <div className="p-4 border-t border-gray-200 bg-red-50 dark:border-gray-700 dark:bg-red-900/20">
                             <div className="flex items-center gap-2 text-red-600">
                                 <AlertCircle className="w-5 h-5" />
                                 <span className="text-sm">{error}</span>
@@ -780,3 +870,4 @@ export function QuintoAndarVisitScheduler({
         </AnimatePresence>
     );
 }
+
