@@ -20,16 +20,26 @@ const inter = Inter({
   preload: true,
 });
 
-// Script para prevenir parpadeo inicial - solo aplica el tema guardado
+// Script para prevenir parpadeo inicial - aplica el tema guardado consistentemente
 const themeScript = `
   (function() {
     try {
       var theme = localStorage.getItem('theme');
+      var root = document.documentElement;
+      
+      // Remover clases de tema existentes
+      root.classList.remove('dark', 'light');
+      
+      // Aplicar el tema guardado o light por defecto
       if (theme === 'dark') {
-        document.documentElement.classList.add('dark');
+        root.classList.add('dark');
+      } else {
+        root.classList.add('light');
       }
     } catch (e) {
-      // Silenciar errores de localStorage
+      // En caso de error, aplicar light por defecto
+      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
     }
   })();
 `;

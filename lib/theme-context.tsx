@@ -34,17 +34,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setIsHydrated(true);
   }, []);
 
-  // Aplicar tema inmediatamente al montar para evitar flash
+  // Aplicar tema solo después de la hidratación para evitar conflictos con el script inicial
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const root = window.document.documentElement;
-      root.classList.remove('dark', 'light');
-      root.classList.add(theme);
-    }
-  }, [theme]);
-
-  useEffect(() => {
-    if (!isHydrated) return;
+    if (!isHydrated || typeof window === 'undefined') return;
 
     const root = window.document.documentElement;
 

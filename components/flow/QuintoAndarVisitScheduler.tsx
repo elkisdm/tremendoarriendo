@@ -27,7 +27,6 @@ import {
 } from 'lucide-react';
 import { useVisitScheduler } from '../../hooks/useVisitScheduler';
 import { DaySlot, TimeSlot, ContactData } from '../../types/visit';
-import { PremiumFeaturesStep } from './PremiumFeaturesStep';
 
 interface QuintoAndarVisitSchedulerProps {
     isOpen: boolean;
@@ -84,6 +83,9 @@ export function QuintoAndarVisitScheduler({
     // Estado para controlar qué pregunta está visible
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
+    // Estado para controlar qué campo del formulario está visible
+    const [currentFieldIndex, setCurrentFieldIndex] = useState(0);
+
     // Configuración de preguntas de calificación
     const qualificationQuestions = [
         {
@@ -103,16 +105,38 @@ export function QuintoAndarVisitScheduler({
         }
     ];
 
-    // Estados para características premium
-    const [notificationsEnabled, setNotificationsEnabled] = useState(false);
-    const [whatsappEnabled, setWhatsappEnabled] = useState(false);
-    const [calendarSyncEnabled, setCalendarSyncEnabled] = useState(false);
-    const [showPremiumFeatures, setShowPremiumFeatures] = useState(false);
-    const [analyticsData, setAnalyticsData] = useState({
-        conversionRate: 0,
-        avgTimeToComplete: 0,
-        userEngagement: 0
-    });
+    // Configuración de campos del formulario
+    const formFields = [
+        {
+            key: 'name',
+            title: '¿Cuál es tu nombre completo?',
+            type: 'text',
+            placeholder: 'Tu nombre completo',
+            validation: (value: string) => value.length >= 2
+        },
+        {
+            key: 'email',
+            title: '¿Cuál es tu email?',
+            type: 'email',
+            placeholder: 'tu@email.com',
+            validation: (value: string) => value.includes('@') && value.includes('.')
+        },
+        {
+            key: 'rut',
+            title: '¿Cuál es tu RUT?',
+            type: 'text',
+            placeholder: '12.345.678-9',
+            validation: (value: string) => value.length >= 8
+        },
+        {
+            key: 'phone',
+            title: '¿Cuál es tu teléfono?',
+            type: 'tel',
+            placeholder: '+56 9 1234 5678',
+            validation: (value: string) => value.length >= 8
+        }
+    ];
+
 
     const {
         isLoading,
@@ -177,38 +201,6 @@ export function QuintoAndarVisitScheduler({
         validateForm();
     }, [contactData]);
 
-    // Funciones para características premium
-    const requestNotificationPermission = useCallback(async (): Promise<boolean> => {
-        if ('Notification' in window) {
-            const permission = await Notification.requestPermission();
-            const granted = permission === 'granted';
-            setNotificationsEnabled(granted);
-            return granted;
-        }
-        return false;
-    }, []);
-
-    const sendWhatsAppConfirmation = useCallback((visitData: any) => {
-        const message = `Hola! Confirmo mi visita para ${visitData.date} a las ${visitData.time} en ${propertyName}.`;
-        const whatsappUrl = `https://wa.me/56912345678?text=${encodeURIComponent(message)}`;
-        window.open(whatsappUrl, '_blank');
-    }, [propertyName]);
-
-    const generateCalendarEvent = useCallback((visitData: any) => {
-        const startDate = new Date(`${visitData.date}T${visitData.time}`);
-        const endDate = new Date(startDate.getTime() + 60 * 60 * 1000); // 1 hora después
-
-        const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=Visita: ${propertyName}&dates=${startDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z/${endDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z&details=Visita programada para ${propertyName} en ${propertyAddress}`;
-        window.open(googleCalendarUrl, '_blank');
-    }, [propertyName, propertyAddress]);
-
-    const trackAnalytics = useCallback((event: string, data: any) => {
-        console.log('Analytics:', event, data);
-        setAnalyticsData(prev => ({
-            ...prev,
-            userEngagement: prev.userEngagement + 1
-        }));
-    }, []);
 
     // Manejar selección de fecha
     const handleDateSelect = (day: DaySlot) => {
@@ -230,6 +222,8 @@ export function QuintoAndarVisitScheduler({
 
     // Manejar respuesta de calificación
     const handleQualificationAnswer = (questionKey: string, answer: boolean | string) => {
+        console.log('📝 Answering question:', { questionKey, answer, currentQuestionIndex });
+
         setRentalQualification(prev => ({
             ...prev,
             [questionKey]: answer
@@ -238,30 +232,70 @@ export function QuintoAndarVisitScheduler({
         // Avanzar a la siguiente pregunta después de un pequeño delay
         setTimeout(() => {
             if (currentQuestionIndex < qualificationQuestions.length - 1) {
-                setCurrentQuestionIndex(prev => prev + 1);
+                setCurrentQuestionIndex(prev => {
+                    const newIndex = prev + 1;
+                    console.log('➡️ Moving to next question:', newIndex);
+                    return newIndex;
+                });
+            } else {
+                console.log('✅ All questions completed');
             }
         }, 300);
     };
 
-    // Verificar si se puede continuar
+    // Manejar respuesta de campo del formulario
+    const handleFieldAnswer = (fieldKey: string, value: string) => {
+        console.log('📝 Answering field:', { fieldKey, value, currentFieldIndex });
+
+        setContactData(prev => ({
+            ...prev,
+            [fieldKey]: value
+        }));
+
+        // Avanzar a la siguiente pregunta inmediatamente
+        if (currentFieldIndex < formFields.length - 1) {
+            setCurrentFieldIndex(prev => {
+                const newIndex = prev + 1;
+                console.log('➡️ Moving to next field:', newIndex);
+                return newIndex;
+            });
+        } else {
+            console.log('✅ All fields completed');
+        }
+    };
+
+    // Verificar si se puede continuar del paso de selección
     const canContinue = selectedDate && selectedTime &&
         rentalQualification.needsToMoveIn30Days !== null &&
         rentalQualification.hasGuarantor !== null &&
         rentalQualification.hasSufficientIncome !== null;
 
+    // Verificar si se puede continuar del formulario de contacto
+    const canContinueForm = formFields.every(field => {
+        const value = contactData[field.key as keyof ContactData];
+        return value && field.validation(value);
+    });
+
+    // Debug: Log para verificar el estado
+    useEffect(() => {
+        console.log('🔍 Debug canContinue:', {
+            selectedDate,
+            selectedTime,
+            needsToMoveIn30Days: rentalQualification.needsToMoveIn30Days,
+            hasGuarantor: rentalQualification.hasGuarantor,
+            hasSufficientIncome: rentalQualification.hasSufficientIncome,
+            canContinue
+        });
+    }, [selectedDate, selectedTime, rentalQualification, canContinue]);
+
     // Continuar al formulario
     const handleContinue = () => {
         if (canContinue) {
+            setCurrentFieldIndex(0); // Resetear índice del formulario
             setStep('contact');
         }
     };
 
-    // Continuar al paso premium
-    const handleContinueToPremium = () => {
-        if (isFormValid) {
-            setStep('premium');
-        }
-    };
 
     // Continuar al éxito
     const handleContinueToSuccess = async () => {
@@ -274,46 +308,18 @@ export function QuintoAndarVisitScheduler({
 
         if (result) {
             setStep('success');
-
-            // Características premium
-            const visitData = {
-                date: selectedDate,
-                time: selectedTime,
-                name: contactData.name,
-                phone: contactData.phone,
-                email: contactData.email
-            };
-
-            if (whatsappEnabled) {
-                sendWhatsAppConfirmation(visitData);
-            }
-
-            if (calendarSyncEnabled) {
-                generateCalendarEvent(visitData);
-            }
-
-            if (notificationsEnabled) {
-                // Simular notificación programada
-                setTimeout(() => {
-                    new Notification('Recordatorio de visita', {
-                        body: `Tu visita a ${propertyName} es en 1 hora`,
-                        icon: propertyImage
-                    });
-                }, 1000);
-            }
-
-            trackAnalytics('visit_confirmed', visitData);
+            setShowConfetti(true);
+            onSuccess?.(result);
         }
     };
 
     // Regresar al paso anterior
     const handleBack = () => {
         if (step === 'contact') {
+            setCurrentFieldIndex(0); // Resetear índice del formulario
             setStep('selection');
-        } else if (step === 'premium') {
-            setStep('contact');
         } else if (step === 'success') {
-            setStep('premium');
+            setStep('contact');
         }
     };
 
@@ -332,36 +338,19 @@ export function QuintoAndarVisitScheduler({
             setShowConfetti(true);
             setStep('success');
             onSuccess?.(result);
-
-            // Características premium
-            const visitData = {
-                date: selectedDate,
-                time: selectedTime,
-                name: contactData.name,
-                phone: contactData.phone,
-                email: contactData.email
-            };
-
-            if (whatsappEnabled) {
-                sendWhatsAppConfirmation(visitData);
-            }
-
-            if (calendarSyncEnabled) {
-                generateCalendarEvent(visitData);
-            }
-
-            if (notificationsEnabled) {
-                setTimeout(() => {
-                    new Notification('Recordatorio de visita', {
-                        body: `Tu visita a ${propertyName} es en 1 hora`,
-                        icon: propertyImage
-                    });
-                }, 1000);
-            }
-
-            trackAnalytics('visit_confirmed', visitData);
         }
     };
+
+    // Generar evento de calendario
+    const generateCalendarEvent = useCallback(() => {
+        if (!selectedDate || !selectedTime) return;
+
+        const startDate = new Date(`${selectedDate}T${selectedTime}:00-03:00`);
+        const endDate = new Date(startDate.getTime() + 60 * 60 * 1000); // 1 hora después
+
+        const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=Visita: ${propertyName}&dates=${startDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z/${endDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z&details=Visita programada para ${propertyName} en ${propertyAddress}`;
+        window.open(googleCalendarUrl, '_blank');
+    }, [selectedDate, selectedTime, propertyName, propertyAddress]);
 
     // Manejar cierre
     const handleClose = () => {
@@ -377,10 +366,8 @@ export function QuintoAndarVisitScheduler({
                 return { number: 1, title: 'Selecciona fecha y hora', description: 'Elige el mejor momento para tu visita' };
             case 'contact':
                 return { number: 2, title: 'Datos de contacto', description: 'Completa tu información para el arriendo' };
-            case 'premium':
-                return { number: 3, title: 'Características premium', description: 'Mejora tu experiencia' };
             case 'success':
-                return { number: 4, title: '¡Visita confirmada!', description: 'Todo listo para tu visita' };
+                return { number: 3, title: '¡Visita confirmada!', description: 'Todo listo para tu visita' };
             default:
                 return { number: 1, title: 'Agendar visita', description: 'Programa tu visita' };
         }
@@ -403,7 +390,7 @@ export function QuintoAndarVisitScheduler({
                     initial={{ scale: 0.95, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     exit={{ scale: 0.95, opacity: 0 }}
-                    className="relative w-full max-w-md h-[90vh] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden"
+                    className="relative w-full max-w-md h-[95vh] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden flex flex-col"
                     onClick={(e) => e.stopPropagation()}
                 >
                     {/* Header */}
@@ -452,7 +439,7 @@ export function QuintoAndarVisitScheduler({
                         {step !== 'selection' && (
                             <>
                                 <div className="flex items-center gap-2 mb-2">
-                                    {[1, 2, 3, 4].map((stepNumber) => (
+                                    {[1, 2, 3].map((stepNumber) => (
                                         <div
                                             key={stepNumber}
                                             className={`flex-1 h-2 rounded-full ${stepNumber <= stepInfo.number
@@ -467,7 +454,7 @@ export function QuintoAndarVisitScheduler({
                                         {stepInfo.title}
                                     </h3>
                                     <span className="text-sm text-gray-600 dark:text-gray-400">
-                                        {stepInfo.number}/4
+                                        {stepInfo.number}/3
                                     </span>
                                 </div>
                                 <p className="text-sm mt-1 text-gray-600 dark:text-gray-400">
@@ -478,380 +465,324 @@ export function QuintoAndarVisitScheduler({
                     </div>
 
                     {/* Content */}
-                    <div className="flex-1 p-4 overflow-y-auto">
+                    <div className="flex-1 flex flex-col overflow-hidden">
                         {/* Step 1: Selección de fecha y hora */}
                         {step === 'selection' && (
-                            <div className="h-full flex flex-col">
-                                {/* Selección de fecha */}
-                                <div className="mb-6">
-                                    <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                                        Elige un día
-                                    </h4>
-                                    <div className="flex gap-3 overflow-x-auto pb-2">
-                                        {availableDays.map((day, index) => (
-                                            <button
-                                                key={day.id}
-                                                onClick={() => handleDateSelect(day)}
-                                                disabled={!day.available}
-                                                className={`flex-shrink-0 w-16 h-16 rounded-full text-center transition-colors ${selectedDate === day.date
-                                                    ? 'bg-blue-500 text-white'
-                                                    : day.available
-                                                        ? 'bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700'
-                                                        : 'bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-gray-800 dark:text-gray-500'
-                                                    }`}
-                                            >
-                                                <div className="text-xs font-medium">{day.day}</div>
-                                                <div className="text-lg font-bold">{day.number}</div>
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* Selección de hora */}
-                                {selectedDate && (
+                            <div className="flex-1 flex flex-col overflow-hidden">
+                                <div className="flex-1 p-4 overflow-y-auto">
+                                    {/* Selección de fecha */}
                                     <div className="mb-6">
                                         <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                                            Elige un horario
+                                            Elige un día
                                         </h4>
                                         <div className="flex gap-3 overflow-x-auto pb-2">
-                                            {availableSlots.map((timeSlot) => (
+                                            {availableDays.map((day, index) => (
                                                 <button
-                                                    key={timeSlot.id}
-                                                    onClick={() => handleTimeSelect(timeSlot)}
-                                                    disabled={!timeSlot.available}
-                                                    className={`flex-shrink-0 px-4 py-3 rounded-xl text-center transition-colors min-w-[80px] ${selectedTime === timeSlot.time
+                                                    key={day.id}
+                                                    onClick={() => handleDateSelect(day)}
+                                                    disabled={!day.available}
+                                                    className={`flex-shrink-0 w-16 h-16 rounded-full text-center transition-colors ${selectedDate === day.date
                                                         ? 'bg-blue-500 text-white'
-                                                        : timeSlot.available
+                                                        : day.available
                                                             ? 'bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700'
                                                             : 'bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-gray-800 dark:text-gray-500'
                                                         }`}
                                                 >
-                                                    {timeSlot.time}
+                                                    <div className="text-xs font-medium">{day.day}</div>
+                                                    <div className="text-lg font-bold">{day.number}</div>
                                                 </button>
                                             ))}
                                         </div>
                                     </div>
-                                )}
 
-                                {/* Preguntas de calificación progresivas */}
-                                {selectedDate && selectedTime && (
-                                    <div className="mb-6">
-                                        {/* Indicador de progreso */}
-                                        <div className="flex items-center justify-between mb-4">
-                                            <span className="text-sm text-gray-600 dark:text-gray-400">
-                                                Pregunta {currentQuestionIndex + 1} de {qualificationQuestions.length}
-                                            </span>
-                                            <div className="flex gap-1">
-                                                {qualificationQuestions.map((_, index) => (
-                                                    <div
-                                                        key={index}
-                                                        className={`w-2 h-2 rounded-full transition-colors ${index <= currentQuestionIndex
-                                                            ? 'bg-blue-500'
-                                                            : 'bg-gray-300 dark:bg-gray-600'
+                                    {/* Selección de hora */}
+                                    {selectedDate && (
+                                        <div className="mb-6">
+                                            <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                                                Elige un horario
+                                            </h4>
+                                            <div className="flex gap-3 overflow-x-auto pb-2">
+                                                {availableSlots.map((timeSlot) => (
+                                                    <button
+                                                        key={timeSlot.id}
+                                                        onClick={() => handleTimeSelect(timeSlot)}
+                                                        disabled={!timeSlot.available}
+                                                        className={`flex-shrink-0 px-4 py-3 rounded-xl text-center transition-colors min-w-[80px] ${selectedTime === timeSlot.time
+                                                            ? 'bg-blue-500 text-white'
+                                                            : timeSlot.available
+                                                                ? 'bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700'
+                                                                : 'bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-gray-800 dark:text-gray-500'
                                                             }`}
-                                                    />
+                                                    >
+                                                        {timeSlot.time}
+                                                    </button>
                                                 ))}
                                             </div>
                                         </div>
+                                    )}
 
-                                        {/* Pregunta actual */}
-                                        <AnimatePresence mode="wait">
-                                            <motion.div
-                                                key={currentQuestionIndex}
-                                                initial={{ opacity: 0, x: 20 }}
-                                                animate={{ opacity: 1, x: 0 }}
-                                                exit={{ opacity: 0, x: -20 }}
-                                                transition={{ duration: 0.3 }}
-                                            >
-                                                <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                                                    {qualificationQuestions[currentQuestionIndex].title}
-                                                </h4>
-                                                <div className="flex gap-3">
-                                                    {qualificationQuestions[currentQuestionIndex].options.map((option, optionIndex) => {
-                                                        const questionKey = qualificationQuestions[currentQuestionIndex].key;
-                                                        const currentValue = rentalQualification[questionKey as keyof typeof rentalQualification];
-                                                        const isSelected = currentValue === (option === 'Sí' ? true : false);
-
-                                                        return (
-                                                            <button
-                                                                key={optionIndex}
-                                                                onClick={() => {
-                                                                    const answer = option === 'Sí' ? true : false;
-                                                                    handleQualificationAnswer(questionKey, answer);
-                                                                }}
-                                                                className={`flex-1 py-3 px-4 rounded-xl text-center transition-colors font-medium ${isSelected
-                                                                    ? 'bg-blue-500 text-white'
-                                                                    : 'bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700'
-                                                                    }`}
-                                                            >
-                                                                {option}
-                                                            </button>
-                                                        );
-                                                    })}
+                                    {/* Preguntas de calificación progresivas */}
+                                    {selectedDate && selectedTime && (
+                                        <div className="mb-6">
+                                            {/* Indicador de progreso */}
+                                            <div className="flex items-center justify-between mb-4">
+                                                <span className="text-sm text-gray-600 dark:text-gray-400">
+                                                    Pregunta {currentQuestionIndex + 1} de {qualificationQuestions.length}
+                                                </span>
+                                                <div className="flex gap-1">
+                                                    {qualificationQuestions.map((_, index) => (
+                                                        <div
+                                                            key={index}
+                                                            className={`w-2 h-2 rounded-full transition-colors ${index <= currentQuestionIndex
+                                                                ? 'bg-blue-500'
+                                                                : 'bg-gray-300 dark:bg-gray-600'
+                                                                }`}
+                                                        />
+                                                    ))}
                                                 </div>
-                                            </motion.div>
-                                        </AnimatePresence>
-                                    </div>
-                                )}
+                                            </div>
 
-                                {/* Link para otra fecha */}
-                                <div className="mb-6">
-                                    <button className="text-blue-600 text-sm underline hover:text-blue-700 transition-colors">
-                                        Solicitar otra fecha y horario
-                                    </button>
+                                            {/* Pregunta actual */}
+                                            <AnimatePresence mode="wait">
+                                                <motion.div
+                                                    key={currentQuestionIndex}
+                                                    initial={{ opacity: 0, x: 20 }}
+                                                    animate={{ opacity: 1, x: 0 }}
+                                                    exit={{ opacity: 0, x: -20 }}
+                                                    transition={{ duration: 0.3 }}
+                                                >
+                                                    <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                                                        {qualificationQuestions[currentQuestionIndex].title}
+                                                    </h4>
+                                                    <div className="flex gap-3">
+                                                        {qualificationQuestions[currentQuestionIndex].options.map((option, optionIndex) => {
+                                                            const questionKey = qualificationQuestions[currentQuestionIndex].key;
+                                                            const currentValue = rentalQualification[questionKey as keyof typeof rentalQualification];
+                                                            const isSelected = currentValue === (option === 'Sí' ? true : false);
+
+                                                            return (
+                                                                <button
+                                                                    key={optionIndex}
+                                                                    onClick={() => {
+                                                                        const answer = option === 'Sí' ? true : false;
+                                                                        handleQualificationAnswer(questionKey, answer);
+                                                                    }}
+                                                                    className={`flex-1 py-3 px-4 rounded-xl text-center transition-colors font-medium ${isSelected
+                                                                        ? 'bg-blue-500 text-white'
+                                                                        : 'bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700'
+                                                                        }`}
+                                                                >
+                                                                    {option}
+                                                                </button>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </motion.div>
+                                            </AnimatePresence>
+                                        </div>
+                                    )}
                                 </div>
 
-                                {/* Botón continuar */}
-                                <div className="mt-auto pt-4">
+                                {/* Botón continuar - fijo en la parte inferior */}
+                                <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
                                     <button
                                         onClick={handleContinue}
                                         disabled={!canContinue}
                                         className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold py-4 px-6 rounded-2xl transition-colors text-lg touch-manipulation disabled:cursor-not-allowed active:scale-95 shadow-lg"
                                     >
-                                        Continuar →
+                                        {canContinue ? 'Continuar →' : 'Completa todas las opciones'}
                                     </button>
                                 </div>
                             </div>
                         )}
 
-                        {/* Step 2: Formulario de contacto */}
+                        {/* Step 2: Formulario de contacto secuencial */}
                         {step === 'contact' && (
-                            <div className="h-full flex flex-col">
-                                <form onSubmit={handleSubmit} className="flex-1 flex flex-col">
-                                    <div className="space-y-4 mb-6">
-                                        {/* Nombre */}
-                                        <div>
-                                            <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-white">
-                                                Nombre completo *
-                                            </label>
-                                            <div className="relative">
-                                                <input
-                                                    type="text"
-                                                    value={contactData.name}
-                                                    onChange={(e) => setContactData(prev => ({ ...prev, name: e.target.value }))}
-                                                    className={`w-full p-3 rounded-xl border-2 transition-colors ${fieldValidation.name.isValid
-                                                        ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
-                                                        : fieldValidation.name.message
-                                                            ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
-                                                            : 'border-gray-300 bg-white text-gray-900 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white'
+                            <div className="flex-1 flex flex-col overflow-hidden">
+                                <div className="flex-1 p-4 overflow-y-auto">
+                                    {/* Indicador de progreso */}
+                                    <div className="flex items-center justify-between mb-4">
+                                        <span className="text-sm text-gray-600 dark:text-gray-400">
+                                            Campo {currentFieldIndex + 1} de {formFields.length}
+                                        </span>
+                                        <div className="flex gap-1">
+                                            {formFields.map((_, index) => (
+                                                <div
+                                                    key={index}
+                                                    className={`w-2 h-2 rounded-full transition-colors ${index <= currentFieldIndex
+                                                        ? 'bg-blue-500'
+                                                        : 'bg-gray-300 dark:bg-gray-600'
                                                         }`}
-                                                    placeholder="Tu nombre completo"
                                                 />
-                                                {fieldValidation.name.isValid && (
-                                                    <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-600" />
-                                                )}
-                                                {fieldValidation.name.message && (
-                                                    <AlertTriangle className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-red-500" />
-                                                )}
-                                            </div>
-                                            {fieldValidation.name.message && (
-                                                <p className="text-red-500 text-sm mt-1">{fieldValidation.name.message}</p>
-                                            )}
-                                        </div>
-
-                                        {/* Email */}
-                                        <div>
-                                            <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-white">
-                                                Email *
-                                            </label>
-                                            <div className="relative">
-                                                <input
-                                                    type="email"
-                                                    value={contactData.email}
-                                                    onChange={(e) => setContactData(prev => ({ ...prev, email: e.target.value }))}
-                                                    className={`w-full p-3 rounded-xl border-2 transition-colors ${fieldValidation.email.isValid
-                                                        ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
-                                                        : fieldValidation.email.message
-                                                            ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
-                                                            : 'border-gray-300 bg-white text-gray-900 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white'
-                                                        }`}
-                                                    placeholder="tu@email.com"
-                                                />
-                                                {fieldValidation.email.isValid && (
-                                                    <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-600" />
-                                                )}
-                                                {fieldValidation.email.message && (
-                                                    <AlertTriangle className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-red-500" />
-                                                )}
-                                            </div>
-                                            {fieldValidation.email.message && (
-                                                <p className="text-red-500 text-sm mt-1">{fieldValidation.email.message}</p>
-                                            )}
-                                        </div>
-
-                                        {/* RUT */}
-                                        <div>
-                                            <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-white">
-                                                RUT *
-                                            </label>
-                                            <div className="relative">
-                                                <input
-                                                    type="text"
-                                                    value={contactData.rut}
-                                                    onChange={(e) => setContactData(prev => ({ ...prev, rut: e.target.value }))}
-                                                    className={`w-full p-3 rounded-xl border-2 transition-colors ${fieldValidation.rut.isValid
-                                                        ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
-                                                        : fieldValidation.rut.message
-                                                            ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
-                                                            : 'border-gray-300 bg-white text-gray-900 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white'
-                                                        }`}
-                                                    placeholder="12.345.678-9"
-                                                />
-                                                {fieldValidation.rut.isValid && (
-                                                    <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-600" />
-                                                )}
-                                                {fieldValidation.rut.message && (
-                                                    <AlertTriangle className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-red-500" />
-                                                )}
-                                            </div>
-                                            {fieldValidation.rut.message && (
-                                                <p className="text-red-500 text-sm mt-1">{fieldValidation.rut.message}</p>
-                                            )}
-                                        </div>
-
-                                        {/* Teléfono */}
-                                        <div>
-                                            <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-white">
-                                                Teléfono *
-                                            </label>
-                                            <div className="relative">
-                                                <input
-                                                    type="tel"
-                                                    value={contactData.phone}
-                                                    onChange={(e) => setContactData(prev => ({ ...prev, phone: e.target.value }))}
-                                                    className={`w-full p-3 rounded-xl border-2 transition-colors ${fieldValidation.phone.isValid
-                                                        ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
-                                                        : fieldValidation.phone.message
-                                                            ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
-                                                            : 'border-gray-300 bg-white text-gray-900 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white'
-                                                        }`}
-                                                    placeholder="+56 9 1234 5678"
-                                                />
-                                                {fieldValidation.phone.isValid && (
-                                                    <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-600" />
-                                                )}
-                                                {fieldValidation.phone.message && (
-                                                    <AlertTriangle className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-red-500" />
-                                                )}
-                                            </div>
-                                            {fieldValidation.phone.message && (
-                                                <p className="text-red-500 text-sm mt-1">{fieldValidation.phone.message}</p>
-                                            )}
+                                            ))}
                                         </div>
                                     </div>
 
-                                    {/* Botones de navegación */}
-                                    <div className="mt-auto pt-4 space-y-3">
-                                        <button
-                                            type="button"
-                                            onClick={handleBack}
-                                            className="w-full py-3 px-6 rounded-xl font-semibold transition-colors bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
+                                    {/* Campo actual */}
+                                    <AnimatePresence mode="wait">
+                                        <motion.div
+                                            key={currentFieldIndex}
+                                            initial={{ opacity: 0, x: 20 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            exit={{ opacity: 0, x: -20 }}
+                                            transition={{ duration: 0.3 }}
                                         >
-                                            ← Atrás
-                                        </button>
-                                        <button
-                                            type="submit"
-                                            disabled={!isFormValid || isLoading}
-                                            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold py-4 px-6 rounded-2xl transition-colors text-lg touch-manipulation disabled:cursor-not-allowed active:scale-95 shadow-lg flex items-center justify-center gap-2"
-                                        >
-                                            {isLoading ? (
-                                                <>
-                                                    <Loader2 className="w-5 h-5 animate-spin" />
-                                                    Procesando...
-                                                </>
-                                            ) : (
-                                                'Continuar →'
-                                            )}
-                                        </button>
-                                    </div>
-                                </form>
+                                            <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                                                {formFields[currentFieldIndex].title}
+                                            </h4>
+                                            <div className="relative">
+                                                <input
+                                                    type={formFields[currentFieldIndex].type}
+                                                    value={contactData[formFields[currentFieldIndex].key as keyof ContactData] || ''}
+                                                    onChange={(e) => {
+                                                        const value = e.target.value;
+                                                        setContactData(prev => ({ ...prev, [formFields[currentFieldIndex].key]: value }));
+                                                    }}
+                                                    onKeyPress={(e) => {
+                                                        if (e.key === 'Enter') {
+                                                            const currentField = formFields[currentFieldIndex];
+                                                            const value = contactData[currentField.key as keyof ContactData];
+                                                            if (value && currentField.validation(value)) {
+                                                                handleFieldAnswer(currentField.key, value);
+                                                            }
+                                                        }
+                                                    }}
+                                                    className="w-full p-4 pr-16 rounded-xl border-2 border-gray-300 bg-white text-gray-900 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white transition-colors text-lg"
+                                                    placeholder={formFields[currentFieldIndex].placeholder}
+                                                    autoFocus
+                                                />
+                                                {/* Botón de flecha */}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        const currentField = formFields[currentFieldIndex];
+                                                        const value = contactData[currentField.key as keyof ContactData];
+                                                        if (value && currentField.validation(value)) {
+                                                            handleFieldAnswer(currentField.key, value);
+                                                        }
+                                                    }}
+                                                    disabled={!contactData[formFields[currentFieldIndex].key as keyof ContactData] || !formFields[currentFieldIndex].validation(contactData[formFields[currentFieldIndex].key as keyof ContactData] || '')}
+                                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 p-2 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white transition-colors"
+                                                >
+                                                    <ChevronRight className="w-5 h-5" />
+                                                </button>
+                                            </div>
+                                        </motion.div>
+                                    </AnimatePresence>
+                                </div>
+
+                                {/* Botones de navegación - fijos en la parte inferior */}
+                                <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 space-y-3">
+                                    <button
+                                        type="button"
+                                        onClick={handleBack}
+                                        className="w-full py-3 px-6 rounded-xl font-semibold transition-colors bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
+                                    >
+                                        ← Atrás
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={handleContinueToSuccess}
+                                        disabled={!canContinueForm || isLoading}
+                                        className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold py-4 px-6 rounded-2xl transition-colors text-lg touch-manipulation disabled:cursor-not-allowed active:scale-95 shadow-lg flex items-center justify-center gap-2"
+                                    >
+                                        {isLoading ? (
+                                            <>
+                                                <Loader2 className="w-5 h-5 animate-spin" />
+                                                Procesando...
+                                            </>
+                                        ) : (
+                                            canContinueForm ? 'Continuar →' : 'Completa todos los campos'
+                                        )}
+                                    </button>
+                                </div>
                             </div>
                         )}
 
-                        {/* Step 3: Características premium */}
-                        {step === 'premium' && (
-                            <PremiumFeaturesStep
-                                isDarkMode={isDarkMode}
-                                notificationsEnabled={notificationsEnabled}
-                                whatsappEnabled={whatsappEnabled}
-                                calendarSyncEnabled={calendarSyncEnabled}
-                                analyticsData={analyticsData}
-                                onRequestNotificationPermission={requestNotificationPermission}
-                                onToggleWhatsApp={() => setWhatsappEnabled(!whatsappEnabled)}
-                                onToggleCalendar={() => setCalendarSyncEnabled(!calendarSyncEnabled)}
-                                onBack={handleBack}
-                                onContinue={handleContinueToSuccess}
-                            />
-                        )}
-
-                        {/* Step 4: Éxito */}
+                        {/* Step 3: Éxito */}
                         {step === 'success' && (
-                            <div className="h-full flex flex-col items-center justify-center text-center">
-                                {/* Confeti animado */}
-                                {showConfetti && (
-                                    <div className="absolute inset-0 pointer-events-none">
-                                        {[...Array(20)].map((_, i) => (
-                                            <motion.div
-                                                key={i}
-                                                className="absolute w-2 h-2 bg-yellow-400 rounded-full"
-                                                initial={{
-                                                    x: Math.random() * window.innerWidth,
-                                                    y: -10,
-                                                    rotate: 0
-                                                }}
-                                                animate={{
-                                                    y: window.innerHeight + 10,
-                                                    rotate: 360
-                                                }}
-                                                transition={{
-                                                    duration: 1.5 + Math.random() * 0.5,
-                                                    delay: Math.random() * 0.2,
-                                                    ease: "easeOut"
-                                                }}
-                                            />
-                                        ))}
+                            <div className="flex-1 flex flex-col overflow-hidden">
+                                <div className="flex-1 p-4 overflow-y-auto flex flex-col items-center justify-center text-center">
+                                    {/* Confeti animado */}
+                                    {showConfetti && (
+                                        <div className="absolute inset-0 pointer-events-none">
+                                            {[...Array(20)].map((_, i) => (
+                                                <motion.div
+                                                    key={i}
+                                                    className="absolute w-2 h-2 bg-yellow-400 rounded-full"
+                                                    initial={{
+                                                        x: Math.random() * window.innerWidth,
+                                                        y: -10,
+                                                        rotate: 0
+                                                    }}
+                                                    animate={{
+                                                        y: window.innerHeight + 10,
+                                                        rotate: 360
+                                                    }}
+                                                    transition={{
+                                                        duration: 1.5 + Math.random() * 0.5,
+                                                        delay: Math.random() * 0.2,
+                                                        ease: "easeOut"
+                                                    }}
+                                                />
+                                            ))}
+                                        </div>
+                                    )}
+
+                                    <motion.div
+                                        initial={{ scale: 0.98 }}
+                                        animate={{ scale: 1 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="mb-6"
+                                    >
+                                        <CheckCircle className="w-16 h-16 text-green-600 mx-auto mb-4" />
+                                    </motion.div>
+
+                                    <h3 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">
+                                        ¡Visita confirmada!
+                                    </h3>
+                                    <p className="text-base mb-6 text-gray-600 dark:text-gray-400">
+                                        Tu visita ha sido programada exitosamente. Te contactaremos pronto con los detalles.
+                                    </p>
+
+                                    <div className="p-4 rounded-xl mb-6 w-full bg-gray-100 dark:bg-gray-800">
+                                        <h4 className="font-semibold mb-2 text-gray-900 dark:text-white">
+                                            Detalles de la visita:
+                                        </h4>
+                                        <div className="space-y-1 text-sm">
+                                            <p className="text-gray-600 dark:text-gray-300">
+                                                <strong>Fecha:</strong> {selectedDate}
+                                            </p>
+                                            <p className="text-gray-600 dark:text-gray-300">
+                                                <strong>Hora:</strong> {selectedTime}
+                                            </p>
+                                            <p className="text-gray-600 dark:text-gray-300">
+                                                <strong>Propiedad:</strong> {propertyName}
+                                            </p>
+                                        </div>
                                     </div>
-                                )}
 
-                                <motion.div
-                                    initial={{ scale: 0.98 }}
-                                    animate={{ scale: 1 }}
-                                    transition={{ duration: 0.2 }}
-                                    className="mb-6"
-                                >
-                                    <CheckCircle className="w-16 h-16 text-green-600 mx-auto mb-4" />
-                                </motion.div>
-
-                                <h3 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">
-                                    ¡Visita confirmada!
-                                </h3>
-                                <p className="text-base mb-6 text-gray-600 dark:text-gray-400">
-                                    Tu visita ha sido programada exitosamente. Te contactaremos pronto con los detalles.
-                                </p>
-
-                                <div className="p-4 rounded-xl mb-6 w-full bg-gray-100 dark:bg-gray-800">
-                                    <h4 className="font-semibold mb-2 text-gray-900 dark:text-white">
-                                        Detalles de la visita:
-                                    </h4>
-                                    <div className="space-y-1 text-sm">
-                                        <p className="text-gray-600 dark:text-gray-300">
-                                            <strong>Fecha:</strong> {selectedDate}
-                                        </p>
-                                        <p className="text-gray-600 dark:text-gray-300">
-                                            <strong>Hora:</strong> {selectedTime}
-                                        </p>
-                                        <p className="text-gray-600 dark:text-gray-300">
-                                            <strong>Propiedad:</strong> {propertyName}
-                                        </p>
+                                    {/* Botón de calendario */}
+                                    <div className="mb-6">
+                                        <button
+                                            onClick={generateCalendarEvent}
+                                            className="w-full flex items-center justify-center gap-3 py-3 px-6 rounded-xl border-2 border-blue-600 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors font-semibold"
+                                        >
+                                            <CalendarIcon className="w-5 h-5" />
+                                            Añadir al calendario
+                                        </button>
                                     </div>
                                 </div>
 
-                                <button
-                                    onClick={handleClose}
-                                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-2xl transition-colors text-lg touch-manipulation active:scale-95 shadow-lg"
-                                >
-                                    Cerrar
-                                </button>
+                                {/* Botón cerrar - fijo en la parte inferior */}
+                                <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+                                    <button
+                                        onClick={handleClose}
+                                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-2xl transition-colors text-lg touch-manipulation active:scale-95 shadow-lg"
+                                    >
+                                        Cerrar
+                                    </button>
+                                </div>
                             </div>
                         )}
                     </div>
