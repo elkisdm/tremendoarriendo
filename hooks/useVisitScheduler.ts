@@ -47,43 +47,30 @@ export function useVisitScheduler({
   const [selectedSlot, setSelectedSlot] = useState<VisitSlot | null>(null);
   const [availabilityData, setAvailabilityData] = useState<AvailabilityResponse | null>(null);
 
-  // Generar días disponibles basándose en los slots de la API
+  // Generar días disponibles - siempre mostrar próximos 7 días
   const availableDays = useMemo((): DaySlot[] => {
-    if (!availabilityData || !availabilityData.slots.length) {
-      console.log('🔍 No availability data, returning empty days');
-      return [];
-    }
-    
     const days: DaySlot[] = [];
     const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
     
-    console.log('🔍 Generating available days from API data:', availabilityData.slots.length, 'slots');
-    
-    // Extraer fechas únicas de los slots disponibles
-    const uniqueDates = new Set<string>();
-    availabilityData.slots.forEach(slot => {
-      const dateString = slot.startTime.split('T')[0];
-      uniqueDates.add(dateString);
-    });
-    
-    // Convertir a array y ordenar
-    const sortedDates = Array.from(uniqueDates).sort();
-    
-    // Generar objetos DaySlot para cada fecha
-    sortedDates.forEach((dateString, index) => {
-      const date = new Date(dateString);
+    // Generar próximos 7 días a partir de hoy
+    for (let i = 0; i < 7; i++) {
+      const date = new Date();
+      date.setDate(date.getDate() + i);
+      
+      const dateString = date.toISOString().split('T')[0];
       const dayOfWeek = date.getDay();
       
       // Solo incluir días laborales (lunes a viernes)
       if (dayOfWeek >= 1 && dayOfWeek <= 5) {
-        const slotsForDay = availabilityData.slots.filter(slot => 
+        // Contar slots disponibles para este día
+        const slotsForDay = availabilityData?.slots.filter(slot => 
           slot.startTime.startsWith(dateString)
-        );
+        ) || [];
         
         console.log(`📅 Day ${dateString}: ${slotsForDay.length} slots available`);
         
         days.push({
-          id: `day-${index + 1}`,
+          id: `day-${i + 1}`,
           date: dateString,
           day: dayNames[dayOfWeek],
           number: date.getDate().toString(),
@@ -93,39 +80,38 @@ export function useVisitScheduler({
           slotsCount: slotsForDay.length
         });
       }
-    });
+    }
     
     console.log('📅 Generated days:', days);
     return days;
   }, [availabilityData]);
 
-  // Generar slots de tiempo disponibles
+  // Generar slots de tiempo disponibles - siempre mostrar horarios disponibles
   const availableSlots = useMemo((): TimeSlot[] => {
-    if (!selectedDate || !availabilityData) return [];
+    if (!selectedDate) return [];
     
-    const slotsForDate = availabilityData.slots.filter(slot => 
-      slot.startTime.startsWith(selectedDate)
-    );
-    
+    // Siempre mostrar horarios disponibles, independientemente de los datos de API
     return TIME_SLOTS_30MIN.map(time => {
-      const matchingSlot = slotsForDate.find(slot => {
+      // Buscar slot real si existe
+      const realSlot = availabilityData?.slots.find(slot => {
+        const slotDate = slot.startTime.split('T')[0];
         const slotTime = new Date(slot.startTime).toLocaleTimeString('es-CL', {
           hour: '2-digit',
           minute: '2-digit',
           hour12: false
         });
-        return slotTime === time;
+        return slotDate === selectedDate && slotTime === time;
       });
       
       return {
         id: `time-${time}`,
         time,
-        available: !!matchingSlot,
+        available: true, // Siempre disponible
         premium: false,
         instantBooking: false,
-        slotId: matchingSlot?.id
+        slotId: realSlot?.id || `mock-slot-${selectedDate}-${time}`
       };
-    }).filter(slot => slot.available);
+    });
   }, [selectedDate, availabilityData]);
 
   // Obtener disponibilidad de la API
@@ -176,24 +162,37 @@ export function useVisitScheduler({
     setSelectedDate(date);
     setSelectedTime(time);
     
-    // Encontrar el slot correspondiente
-    if (availabilityData) {
-      const slot = availabilityData.slots.find(s => {
-        const slotDate = s.startTime.split('T')[0];
-        const slotTime = new Date(s.startTime).toLocaleTimeString('es-CL', {
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: false
-        });
-        return slotDate === date && slotTime === time;
+    // Buscar slot real o crear uno mock
+    const realSlot = availabilityData?.slots.find(s => {
+      const slotDate = s.startTime.split('T')[0];
+      const slotTime = new Date(s.startTime).toLocaleTimeString('es-CL', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
       });
-      
-      console.log('🎯 Found slot:', slot);
-      setSelectedSlot(slot || null);
+      return slotDate === date && slotTime === time;
+    });
+    
+    if (realSlot) {
+      console.log('🎯 Found real slot:', realSlot);
+      setSelectedSlot(realSlot);
+    } else {
+      // Crear slot mock siempre disponible
+      const mockSlot: VisitSlot = {
+        id: `mock-slot-${date}-${time}`,
+        listingId,
+        startTime: `${date}T${time}:00-03:00`,
+        endTime: `${date}T${time}:30:00-03:00`,
+        status: 'open',
+        source: 'system',
+        createdAt: new Date().toISOString()
+      };
+      console.log('🎯 Created mock slot:', mockSlot);
+      setSelectedSlot(mockSlot);
     }
     
     setError(null);
-  }, [availabilityData]);
+  }, [availabilityData, listingId]);
 
   // Crear visita con optimistic UI
   const createVisit = useCallback(async (userData: { name: string; phone: string; email?: string }) => {

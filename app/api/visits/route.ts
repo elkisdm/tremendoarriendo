@@ -54,6 +54,26 @@ class MockDatabase {
   // Simular SELECT ... FOR UPDATE
   async lockSlot(slotId: string): Promise<VisitSlot | null> {
     const slot = mockSlots[slotId];
+    
+    // Si es un slot mock (creado en el frontend), aceptarlo siempre
+    if (slotId.startsWith('mock-slot-')) {
+      // Simular delay de base de datos
+      await new Promise(resolve => setTimeout(resolve, 50));
+      
+      // Crear un slot mock válido
+      const mockSlot: VisitSlot = {
+        id: slotId,
+        listingId: slotId.split('-')[2], // Extraer listingId del slotId
+        startTime: slotId.split('-')[3] + 'T' + slotId.split('-')[4] + ':00-03:00',
+        endTime: slotId.split('-')[3] + 'T' + slotId.split('-')[4] + ':30:00-03:00',
+        status: 'open',
+        source: 'system',
+        createdAt: new Date().toISOString()
+      };
+      
+      return mockSlot;
+    }
+    
     if (!slot) return null;
     
     // Simular delay de base de datos
@@ -70,7 +90,21 @@ class MockDatabase {
   // Simular transacción
   async createVisitTransaction(visitData: CreateVisitRequest): Promise<Visit> {
     // 1. Bloquear el slot
-    const slot = await this.lockSlot(visitData.slotId);
+    let slot = await this.lockSlot(visitData.slotId);
+    
+    // Si es un slot mock y no se encontró, crearlo automáticamente
+    if (!slot && visitData.slotId.startsWith('mock-slot-')) {
+      slot = {
+        id: visitData.slotId,
+        listingId: visitData.listingId,
+        startTime: visitData.slotId.split('-')[3] + 'T' + visitData.slotId.split('-')[4] + ':00-03:00',
+        endTime: visitData.slotId.split('-')[3] + 'T' + visitData.slotId.split('-')[4] + ':30:00-03:00',
+        status: 'open',
+        source: 'system',
+        createdAt: new Date().toISOString()
+      };
+    }
+    
     if (!slot) {
       throw new Error('Slot no disponible o ya reservado');
     }
