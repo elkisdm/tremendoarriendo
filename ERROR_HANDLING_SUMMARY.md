@@ -100,3 +100,5 @@ Hemos logrado una **base sólida de testing** con:
 
 El proyecto está **listo para desarrollo** con una base de testing funcional que puede expandirse gradualmente.
 
+
+
